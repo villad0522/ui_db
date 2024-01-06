@@ -97,12 +97,6 @@ export default async function (command, parameters) {
         case "RUN_SQL_WRITE_ONLY":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _runSqlWriteOnly(parameters);
-        case "START_TRANSACTION":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _startTransaction(parameters);
-        case "END_TRANSACTION":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _endTransaction(parameters);
         case "DELETE_LOG":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _deleteLog(parameters);

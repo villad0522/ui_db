@@ -239,7 +239,6 @@ async function _createRecordsFromCsv(parameters) {
     // CSVファイルの行数を調べる
     const fileContent = await fs.promises.readFile(parameters.filePath, 'utf8');
     const csvSize = fileContent.split('\n').length;
-    console.log(`${csvSize}件のデータをインポートします。`);
     //
     // CSVファイルからデータベースへ移行する
     const stmt = await db.prepare(`INSERT INTO t${tableNumber} VALUES ( ${headers.join(", ")} )`);
@@ -366,6 +365,9 @@ async function _test() {
         filePath: csvFilePath,
         columnSize: 3,
     });
+    //
+    // わざと再接続
+    await action("START_UP", { isDebug: true });
     //
     // テーブルから読み出す
     const matrix = await db.all(`SELECT * FROM t99999`);

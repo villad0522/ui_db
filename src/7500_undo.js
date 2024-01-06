@@ -284,12 +284,12 @@ async function _runSqlWriteOnly(parameters) {
 
 //【サブ関数】トランザクション処理開始
 async function _startTransaction(parameters) {
-    return null;
+    await action("START_TRANSACTION", parameters);   // 下層の関数を呼び出す
 }
 
 //【サブ関数】トランザクション処理終了
 async function _endTransaction(parameters) {
-    return null;
+    await action("END_TRANSACTION", parameters);   // 下層の関数を呼び出す
 }
 
 //【サブ関数】変更履歴を削除
