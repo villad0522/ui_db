@@ -1,0 +1,11 @@
+.history/
+build/
+prebuild/
+node_modules/
+old/
+src/cache/
+src/frontend/app/
+src/savedata/
+src/static_data/heavy/
+*.exe
+*.db
