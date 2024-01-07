@@ -27,7 +27,10 @@
                 <br>
                 <div class="row">
                     <div class="col-sm-4">
-                        <h3>表の一覧</h3>
+                        <h3 style="display: inline-block;">
+                            表の一覧
+                        </h3>
+                        （<span name="main_total"></span>件）
                     </div>
                     <div class="col-sm-8" style="text-align: right;">
                         <a href="./csv.html" class="btn btn-outline-primary">
@@ -62,8 +65,10 @@
                         for (let i = 0; i < 35; i++) {
                             htmlText += `
                                 <div class="col-6 col-sm-4 col-md-3 col-lg-2" style="margin-top: 30px">
-                                    <input name="tableId${i}" type="text" style="display: none;">
-                                    <input name="trigger${i}" class="trigger" type="checkbox" style="display: none;">
+                                    <input name="main${i}_id" type="text" style="display: none;">
+                                    <!--  -->
+                                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                                    <input name="main${i}_flag" class="flag" type="checkbox" style="display: none;">
                                     <div>
                                         <div class="card clickable" onclick="tableButton(${i})">
                                             <div class="card-img-top" style="padding: 25% 30% 5% 30%; opacity: 0.7;">
@@ -72,16 +77,9 @@
                                                 </svg>
                                             </div>
                                             <div class="card-body">
-                                                <h6 class="card-title">
-                                                    <input name="tableName${i}" type="text" class="only_text" disabled>
-                                                </h6>
+                                                <h6 name="main${i}_name" class="card-title"></h6>
                                             </div>
                                         </div>
-                                        <button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${i}" aria-expanded="false" aria-controls="collapse${i}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                                                <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                                            </svg>
-                                        </button>
                                         <span class="collapse" id="collapse${i}" style="text-align: right;">
                                             <button onclick="copyButton(${i})" type="button" class="btn btn-outline-primary btn-sm">
                                                 コピー
@@ -100,42 +98,39 @@
                 <br>
                 <br>
                 <div style="position: sticky; bottom: 0; padding: 5px; width: max-content; box-sizing: border-box; margin: 0 auto; background: #eee;">
+
                     <ul class="pagination" style="margin-bottom: 3px;">
                         <!--  -->
                         <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
-                        <input name="triggerPaginationFirst" class="trigger" type="checkbox" style="display: none;">
+                        <input name="main_pageFirst_flag" class="flag" type="checkbox" style="display: none;">
                         <li class="page-item">
-                            <a class="page-link" href="./?page=1" aria-label="Previous">
+                            <button onclick="paginationButtonFirst()" type="button" class="page-link">
                                 <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <!--  -->
-                        <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
-                        <input name="triggerPaginationPrev" class="trigger" type="checkbox" style="display: none;">
-                        <li class="page-item">
-                            <button onclick="paginationButtonPrev()" type="button" class="page-link">
-                                <input name="pageNumberPrev" type="text" class="only_text" style="width: 10px;" disabled>
                             </button>
                         </li>
                         <!--  -->
                         <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
-                        <input name="triggerPaginationNow" class="trigger" type="checkbox" style="display: none;">
+                        <input name="main_pagePrev_flag" class="flag" type="checkbox" style="display: none;">
+                        <li class="page-item">
+                            <button name="main_pagePrev" onclick="paginationButtonPrev()" type="button" class="page-link">
+                            </button>
+                        </li>
+                        <!--  -->
+                        <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                        <input name="main_pageNow_flag" class="flag" type="checkbox" style="display: none;">
                         <li class="page-item active">
-                            <span class="page-link">
-                                <input name="pageNumber" type="text" class="only_text" style="width: 10px;" disabled>
-                            </span>
+                            <span class="page-link" name="main_pageNow"> </span>
                         </li>
                         <!--  -->
                         <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
-                        <input name="triggerPaginationNext" class="trigger" type="checkbox" style="display: none;">
+                        <input name="main_pageNext_flag" class="flag" type="checkbox" style="display: none;">
                         <li class="page-item">
-                            <button onclick="paginationButtonNext()" type="button" class="page-link">
-                                <input name="pageNumberNext" type="text" class="only_text" style="width: 10px;" disabled>
+                            <button name="main_pageNext" onclick="paginationButtonNext()" type="button" class="page-link">
                             </button>
                         </li>
                         <!--  -->
                         <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
-                        <input name="triggerPaginationLast" class="trigger" type="checkbox" style="display: none;">
+                        <input name="main_pageLast_flag" class="flag" type="checkbox" style="display: none;">
                         <li class="page-item">
                             <button onclick="paginationButtonLast()" type="button" class="page-link">
                                 <span aria-hidden="true">&raquo;</span>
@@ -143,7 +138,7 @@
                         </li>
                         <!--  -->
                         <!-- 不可視のテキストボックス -->
-                        <input name="pageNumberLast" type="text" style="display: none;">
+                        <input name="main_pageLast" type="text" style="display: none;">
                     </ul>
                 </div>
                 <br>

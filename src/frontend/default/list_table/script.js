@@ -1,10 +1,11 @@
 
 //###############################################################
+
 // 初期データを読み込む関数
 async function load() {
     // サーバーと通信する
     const response = await window.fetch(
-        "./form_data" + location.search,
+        "./json_data" + location.search,
         {
             method: "GET",
             cache: "no-store",
@@ -31,12 +32,12 @@ window.addEventListener('DOMContentLoaded', async () => {
 // フォームデータを画面に反映させる関数
 function _setFormData(formData) {
     formData.forEach((value, key) => {
-        console.log({ key, value });
         // name属性の値が変数keyと等しいHTML要素を探す。
         const elements = document.getElementsByName(key);
         if (elements.length > 0) {
             // フォームに値を設定
             elements[0].value = value;
+            elements[0].innerText = value;
             elements[0].checked = (value.toLowerCase() === "true") || (value === "1");
         }
         else {
@@ -50,7 +51,7 @@ function _setFormData(formData) {
     elementsWithNameAttribute.forEach(function (element) {
         const name = element.getAttribute("name");
         if (!formData.has(name)) {
-            console.error(`データが不足しています。name=${name}`);
+            console.error(`データが不足しています。${name}`);
         }
     });
 }
@@ -64,23 +65,20 @@ function renameButton() {
 //
 //###############################################################
 // テーブルがクリックされたときに実行する関数
-function tableButton(number) {
-    // HTML要素のname属性
-    const elementName = "tableName" + number;
-    //
+function tableButton(i) {
     // テーブル名
-    let tableName = document.getElementsByName(elementName)[0].value;
+    let tableId = document.getElementsByName(`main${i}_id`)[0].value;
     //
     // 別のページに移動する
-    tableName = encodeURIComponent(tableName);
-    window.location.href = `../list_record.html?table=${tableName}`;
+    tableId = encodeURIComponent(tableId);
+    window.location.href = `../list_record.html?table=${tableId}`;
 }
 //
 //###############################################################
 // コピーボタンがクリックされたときに実行する関数
 async function copyButton(number) {
     // HTML要素のname属性
-    const elementName = "tableName" + number;
+    const elementName = "mainArrayId" + number;
     //
     // テーブル名
     const tableName = document.getElementsByName(elementName)[0].value;
@@ -112,7 +110,7 @@ async function copyButton(number) {
 // 削除ボタンがクリックされたときに実行する関数
 async function deleteButton(number) {
     // HTML要素のname属性
-    const elementName = "tableName" + number;
+    const elementName = "mainArrayId" + number;
     //
     // テーブル名
     const tableName = document.getElementsByName(elementName)[0].value;
@@ -173,30 +171,49 @@ function cancelButton() {
 }
 //
 //###############################################################
+// ページネーションボタンの「First」がクリックされたときに実行する関数
+function paginationButtonFirst(arrayName) {
+    // クエリパラメータ―を作成
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page_main", 1);
+    // ページを再読み込み
+    window.location.href = "./?" + searchParams.toString();
+}
+//
+//###############################################################
 // ページネーションボタンの「Prev」がクリックされたときに実行する関数
 function paginationButtonPrev() {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("pageNumberPrev")[0].value;
+    const pageNumber = document.getElementsByName("main_pagePrev")[0].value;
+    // クエリパラメータ―を作成
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page_main", pageNumber);
     // ページを再読み込み
-    window.location.href = `./?page=${pageNumber}`;
+    window.location.href = "./?" + searchParams.toString();
 }
 //
 //###############################################################
 // ページネーションボタンの「Next」がクリックされたときに実行する関数
 function paginationButtonNext() {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("pageNumberNext")[0].value;
+    const pageNumber = document.getElementsByName("main_pageNext")[0].value;
+    // クエリパラメータ―を作成
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page_main", pageNumber);
     // ページを再読み込み
-    window.location.href = `./?page=${pageNumber}`;
+    window.location.href = "./?" + searchParams.toString();
 }
 //
 //###############################################################
 // ページネーションボタンの「Last」がクリックされたときに実行する関数
 function paginationButtonLast() {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("pageNumberLast")[0].value;
+    const pageNumber = document.getElementsByName("main_pageLast")[0].value;
+    // クエリパラメータ―を作成
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page_main", pageNumber);
     // ページを再読み込み
-    window.location.href = `./?page=${pageNumber}`;
+    window.location.href = "./?" + searchParams.toString();
 }
 //
 //###############################################################

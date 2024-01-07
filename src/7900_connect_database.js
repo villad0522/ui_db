@@ -258,8 +258,12 @@ async function _createRecordsFromCsv(parameters) {
             if (allCount % 10000 === 0) {
                 progressCSV = Math.floor(allCount / csvSize * 100);
                 console.log(`${progressCSV}%`);
-                await db.run("COMMIT TRANSACTION;");
-                await db.run("BEGIN TRANSACTION;");
+                //
+                // トランザクション処理で処理を高速化する。
+                //   開始と終了は、0200_transaction.jsに記述してあるので、
+                //   ここでは１万行ごとの再接続のみを行う。
+                await db.run("COMMIT TRANSACTION;");    // 終了
+                await db.run("BEGIN TRANSACTION;");     // 開始
             }
         }).on('end', () => {
             resolve();

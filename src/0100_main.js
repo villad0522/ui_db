@@ -54,60 +54,56 @@ export async function main({ isDebug }) {
             }
         });
         app.get('*/json_data', async (req, res) => {
-            res.send("a");
+            try {
+                // 処理本体を実行する
+                const responseData = await action(
+                    "RUN_API",
+                    {
+                        endpointPath: String(req.path).replace("/json_data", ""),
+                        requestBody: {},
+                        queryParameters: req.query,
+                        isResponseFormData: false,
+                    },
+                );
+                // Content-Typeヘッダを設定してレスポンスを送信
+                res.header('Content-Type', 'application/json');
+                res.send(responseData);
+            }
+            catch (err) {
+                console.error(String(err));
+                res.status(500).send(String(err));
+            }
         });
         //
         app.get('*/form_data', async (req, res) => {
-            const maxNumber = 9;
-            let pageNumber = 1;
-            if (!isNaN(req.query["page"])) {
-                pageNumber = Number(req.query["page"]);
+            try {
+                // 処理本体を実行する
+                const responseData = await action(
+                    "RUN_API",
+                    {
+                        endpointPath: String(req.path).replace("/form_data", ""),
+                        requestBody: {},
+                        queryParameters: req.query,
+                        isResponseFormData: true,
+                    },
+                );
+                // FormData形式に変換
+                const formData = new URLSearchParams(responseData).toString();
+                // Content-Typeヘッダを設定してレスポンスを送信
+                res.header('Content-Type', 'application/x-www-form-urlencoded');
+                res.send(formData);
             }
-            if (pageNumber < 1) {
-                pageNumber = 1;
+            catch (err) {
+                console.error(String(err));
+                res.status(500).send(String(err));
             }
-            if (pageNumber >= maxNumber) {
-                pageNumber = maxNumber;
-            }
-            const responseData = {
-                "trigger0": 1,
-                "tableName0": 'テーブル名0',
-                "trigger1": 1,
-                "tableName1": 'テーブル名1',
-                "trigger2": 1,
-                "tableName2": 'テーブル名2',
-                "trigger3": 0,
-                "tableName3": 'テーブル名3',
-                "trigger4": 0,
-                "tableName4": 'テーブル名4',
-                "trigger5": 0,
-                "tableName5": 'テーブル名5',
-                "trigger6": 0,
-                "tableName6": 'テーブル名6',
-                "pageNumber": 1,
-                "triggerPaginationFirst": (pageNumber >= 3) ? true : false,
-                "triggerPaginationPrev": (pageNumber >= 2) ? true : false,
-                "triggerPaginationNow": (maxNumber >= 2) ? true : false,
-                "triggerPaginationNext": (pageNumber < maxNumber) ? true : false,
-                "triggerPaginationLast": (pageNumber < maxNumber - 1) ? true : false,
-                "pageNumberPrev": pageNumber - 1,
-                "pageNumber": pageNumber,
-                "pageNumberNext": pageNumber + 1,
-                "pageNumberLast": maxNumber,
-            };
-
-            app.post('*/json_data', async (req, res) => {
-                res.send("a");
-            });
-            app.post('*/form_data', async (req, res) => {
-                res.send("a");
-            });
-            // FormData形式に変換
-            const formData = new URLSearchParams(responseData).toString();
-
-            // Content-Typeヘッダを設定してレスポンスを送信
-            res.header('Content-Type', 'application/x-www-form-urlencoded');
-            res.send(formData);
+        });
+        //
+        app.post('*/json_data', async (req, res) => {
+            res.send("a");
+        });
+        app.post('*/form_data', async (req, res) => {
+            res.send("a");
         });
         //
         if (isDebug === false) {

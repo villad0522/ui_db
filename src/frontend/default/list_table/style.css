@@ -1,15 +1,13 @@
-hr {
-    margin: 50px 0;
+/* 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される */
+.flag+* {
+    display: none;
 }
 
-.only_text {
-    border: none;
-    background: none;
-    padding: 0;
-    min-width: none;
-    width: 100%;
-    pointer-events: none;
+.flag:checked+* {
+    display: block;
 }
+
+/* クリックできるカード */
 
 .clickable {
     background: #fafafa;
@@ -21,19 +19,7 @@ hr {
     background: #fff;
 }
 
+/* テーブル名を表示するinput要素 */
 .card-title>input {
     font-weight: bold;
-}
-
-/* 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される */
-.trigger+* {
-    display: none;
-}
-
-.trigger:checked+* {
-    display: block;
-}
-
-.active>.page-link>input {
-    color: #fff;
 }
