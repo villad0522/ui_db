@@ -1,0 +1,39 @@
+hr {
+    margin: 50px 0;
+}
+
+.only_text {
+    border: none;
+    background: none;
+    padding: 0;
+    min-width: none;
+    width: 100%;
+    pointer-events: none;
+}
+
+.clickable {
+    background: #fafafa;
+    cursor: pointer;
+    box-shadow: 0 10px 10px -6px rgba(0, 0, 0, 0.3);
+}
+
+.clickable:hover {
+    background: #fff;
+}
+
+.card-title>input {
+    font-weight: bold;
+}
+
+/* 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される */
+.trigger+* {
+    display: none;
+}
+
+.trigger:checked+* {
+    display: block;
+}
+
+.active>.page-link>input {
+    color: #fff;
+}

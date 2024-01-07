@@ -39,7 +39,7 @@ export default async function (command, parameters) {
             // （データベースから切断された後に、処理が行われるため）
             return await action(command, parameters);
         default:
-            // トランザクション処理　あり
+            // トランザクション処理をする
             await action("START_TRANSACTION", parameters);
             const result = await action(command, parameters);
             await action("END_TRANSACTION", parameters);

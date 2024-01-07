@@ -4,7 +4,7 @@ prebuild/
 node_modules/
 old/
 src/cache/
-src/frontend/app/
+src/frontend/custom/
 src/savedata/
 src/static_data/heavy/
 *.exe

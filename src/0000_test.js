@@ -1,10 +1,10 @@
 'use strict';
-import action from "./0100_main.js";
+import action from "./0200_transaction.js";
+import { main, endProcess } from "./0100_main.js";
 
-setTimeout(async () => {
+async function test() {
     try {
-        await action("START_UP", { isDebug: true });
-        //
+        await main({ isDebug: true });
         {
             const res = await action("TEST_FRAMEWORK", { targetLayer: "7900" });
             console.log(res.userMessage);
@@ -13,6 +13,8 @@ setTimeout(async () => {
     catch (err) {
         console.error(err);
     }
-    console.log("テストが終了しました");
-    process.exit();
-}, 4000);
+    console.log("\n\nテストが終了しました\n");
+    await endProcess();
+}
+
+test();

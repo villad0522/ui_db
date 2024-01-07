@@ -59,14 +59,14 @@ async function _startUp(parameters) {
         fs.mkdirSync(frontendPath);   // フォルダが存在しなかったら、作成する
     }
     //
-    const frontendAppPath = await _getPath({ directoryCode: "FRONTEND_APP" });
-    if (!fs.existsSync(frontendAppPath)) {
-        fs.mkdirSync(frontendAppPath);   // フォルダが存在しなかったら、作成する
+    const frontendCustomPath = await _getPath({ directoryCode: "FRONTEND_CUSTOM" });
+    if (!fs.existsSync(frontendCustomPath)) {
+        fs.mkdirSync(frontendCustomPath);   // フォルダが存在しなかったら、作成する
     }
     //
-    const frontendSystemPath = await _getPath({ directoryCode: "FRONTEND_SYSTEM" });
-    if (!fs.existsSync(frontendSystemPath)) {
-        fs.mkdirSync(frontendSystemPath);   // フォルダが存在しなかったら、作成する
+    const frontendDefaultPath = await _getPath({ directoryCode: "FRONTEND_DEFAULT" });
+    if (!fs.existsSync(frontendDefaultPath)) {
+        fs.mkdirSync(frontendDefaultPath);   // フォルダが存在しなかったら、作成する
     }
     //
     const staticPath = await _getPath({ directoryCode: "STATIC_DATA" });
@@ -106,21 +106,21 @@ async function _getPath(parameters) {
     }
     // コマンドごとに場合分け
     switch (parameters.directoryCode) {
-        case "FRONTEND_APP":
+        case "FRONTEND_CUSTOM":
             if (bugMode === 3) return;  // 意図的にバグを混入させる（ミューテーション解析）
             if (_isDevelop()) {
-                return path.join(getDirName(), "frontend/app"); // 開発環境の場合
+                return path.join(getDirName(), "frontend/custom"); // 開発環境の場合
             }
             else {
-                return path.join(getDirName(), "frontend/app"); // 本番環境の場合
+                return path.join(getDirName(), "frontend/custom"); // 本番環境の場合
             }
-        case "FRONTEND_SYSTEM":
+        case "FRONTEND_DEFAULT":
             if (bugMode === 4) return;  // 意図的にバグを混入させる（ミューテーション解析）
             if (_isDevelop()) {
-                return path.join(getDirName(), "frontend/system"); // 開発環境の場合
+                return path.join(getDirName(), "frontend/default"); // 開発環境の場合
             }
             else {
-                return path.join(getDirName(), "frontend/system"); // 本番環境の場合
+                return path.join(getDirName(), "frontend/default"); // 本番環境の場合
             }
         case "STATIC_DATA":
             if (bugMode === 5) return;  // 意図的にバグを混入させる（ミューテーション解析）

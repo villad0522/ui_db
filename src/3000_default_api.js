@@ -3,10 +3,10 @@
 // 
 //###############################################################
 
-import action from "."; // 下層から提供されているメイン関数
+import action from "./5600_frontend_app.js"; // 下層から提供されているメイン関数
 
 //【定数】このJavaScriptファイルの階層番号
-const LAYER_CODE = "";
+const LAYER_CODE = "3000";
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
 let bugMode = 0;

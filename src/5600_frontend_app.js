@@ -64,14 +64,14 @@ async function _startUp(parameters) {
     //
     if (bugMode === 1) return;  // 意図的にバグを混入させる（ミューテーション解析）
     //
-    const frontendAppPath = await action("GET_PATH", { directoryCode: "FRONTEND_APP" });
+    const customDirPath = await action("GET_PATH", { directoryCode: "FRONTEND_CUSTOM" });
     //
-    // フォルダ「./src/frontend/app」を削除する
-    await fs.promises.rm(frontendAppPath, { recursive: true });
+    // フォルダ「./src/frontend/custom」を削除する
+    await fs.promises.rm(customDirPath, { recursive: true });
     //
-    // フォルダ「./src/frontend/app」を作成する
-    if (!fs.existsSync(frontendAppPath)) {
-        fs.mkdirSync(frontendAppPath);   // フォルダが存在しなかったら、作成する
+    // フォルダ「./src/frontend/custom」を作成する
+    if (!fs.existsSync(customDirPath)) {
+        fs.mkdirSync(customDirPath);   // フォルダが存在しなかったら、作成する
     }
     //
     return null;
@@ -106,9 +106,10 @@ async function _listPages(parameters) {
 
 //【サブ関数】バックエンドプログラム終了
 async function _close(parameters) {
-    // フォルダ「./src/frontend/app」を削除する
-    const frontendAppPath = await action("GET_PATH", { directoryCode: "FRONTEND_APP" });
-    await fs.promises.rm(frontendAppPath, { recursive: true });
+    const customDirPath = await action("GET_PATH", { directoryCode: "FRONTEND_CUSTOM" });
+    //
+    // フォルダ「./src/frontend/custom」を削除する
+    await fs.promises.rm(customDirPath, { recursive: true, force: true });
     //
     await action("CLOSE", parameters);   // 下層の関数を呼び出す
 }
