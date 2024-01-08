@@ -127,9 +127,6 @@ export default async function (command, parameters) {
         case "UPDATE_COLUMN_NAME":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _updateColumnName(parameters);
-        case "LIST_TABLES":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _listTables(parameters);
         case "UPDATE_TABLE_NAME":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _updateTableName(parameters);
@@ -183,8 +180,7 @@ async function _runSql(parameters) {
 
 //【サブ関数】インメモリキャッシュを削除
 async function _clearCache(parameters) {
-    await action("CLEAR_CACHE", parameters);   // 下層の関数を呼び出す
-    return null;
+    return await action("CLEAR_CACHE", parameters);   // 下層の関数を呼び出す
 }
 
 //【サブ関数】カラムを作成
@@ -274,12 +270,12 @@ async function _redo(parameters) {
 
 //【サブ関数】SQLクエリ実行（読み取りのみ）
 async function _runSqlReadOnly(parameters) {
-    return null;
+    return await action("RUN_SQL_READ_ONLY", parameters);
 }
 
 //【サブ関数】SQLクエリ実行（書き込みのみ）
 async function _runSqlWriteOnly(parameters) {
-    return null;
+    return await action("RUN_SQL_WRITE_ONLY", parameters);
 }
 
 //【サブ関数】トランザクション処理開始
@@ -334,11 +330,6 @@ async function _runUserSql(parameters) {
 
 //【サブ関数】カラム名を変更
 async function _updateColumnName(parameters) {
-    return null;
-}
-
-//【サブ関数】テーブルの一覧を取得
-async function _listTables(parameters) {
     return null;
 }
 

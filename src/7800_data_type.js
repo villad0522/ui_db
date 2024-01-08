@@ -77,7 +77,7 @@ async function _startUp(parameters) {
     try {
         // テーブルを作成する（データ型を保存するため）
         await action("RUN_SQL_WRITE_ONLY", {
-            sql: `CREATE TABLE IF NOT EXISTS k0522_data_type (
+            sql: `CREATE TABLE IF NOT EXISTS data_types (
                 "column_number" INTEGER PRIMARY KEY NOT NULL,
                 "table_number" INTEGER NOT NULL,
                 "data_type" TEXT NOT NULL
@@ -86,12 +86,11 @@ async function _startUp(parameters) {
         });
     }
     catch (err) {
-        throw `[${LAYER_CODE}層] テーブルの作成に失敗しました。${String(err)}`;
+        throw `[${LAYER_CODE}層] システム管理用テーブルの作成に失敗しました。${String(err)}`;
     }
     //
     // メモリに再読み込み
     await _reload();
-    return null;
 }
 
 //【グローバル変数】データ型を保存するキャッシュ
@@ -115,12 +114,12 @@ async function _reload() {
     try {
         // 
         matrix = await action("RUN_SQL_READ_ONLY", {
-            sql: `SELECT * FROM k0522_data_type`,
+            sql: `SELECT * FROM data_types`,
             params: {},
         });
     }
     catch (err) {
-        throw `[${LAYER_CODE}層] テーブルの作成に失敗しました。${String(err)}`;
+        throw `[${LAYER_CODE}層] テーブル「data_types」の読み込みに失敗しました。${String(err)}`;
     }
 }
 
@@ -132,6 +131,9 @@ async function _clearCache(parameters) {
     //
     // メモリに再読み込み
     await _reload();
+    return {
+        userMessage: `${LAYER_CODE}層までのキャッシュデータを削除しました。`,
+    };
 }
 
 //【サブ関数】カラムを作成

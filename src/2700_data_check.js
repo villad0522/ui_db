@@ -53,21 +53,72 @@ async function _runApi(parameters) {
         throw `[${LAYER_CODE}層] パラメーター「endpointPath」が文字列ではありません`;
     }
     const endpointPath = parameters.endpointPath;
-    let requestBody = parameters.requestBody;
+    const requestBody = parameters.requestBody;
     const isResponseFormData = parameters.isResponseFormData;
     //
     // エンドポイントの情報を取得する
     const endpointInfo = await action("GET_ENDPOINT_INFO", { endpointPath, isResponseFormData });
     //
     // リクエストボディをチェックする（可能なら変換も行う）
-    requestBody = _validateRequestBody({ endpointPath, endpointInfo, requestBody });
+    // requestBody を requestBody2 に変換する
+    const requestBody2 = {};
+    for (const parentKey in endpointInfo.requestBody) {
+        const parentInfo = endpointInfo.requestBody[parentKey];
+        let parentValue = requestBody[parentKey];
+        if (!parentInfo || typeof parentInfo !== 'object') {
+            throw `[${LAYER_CODE}層] リクエストボディの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}"`;
+        }
+        if (parentInfo.isArray) {
+            // 配列の場合
+            if (parentInfo.isRequired === false && !parentValue) {
+                continue; // 空欄かつ空欄OKの場合
+            }
+            requestBody2[parentKey] = _validatorArray({
+                array: parentValue,
+                parentKey,
+                arrayInfo: parentInfo,
+                allData: requestBody,
+                endpointPath,
+            });
+        }
+        else {
+            // 配列ではない場合
+            if (parentInfo.example === null || parentInfo.example === undefined) {
+                throw `[${LAYER_CODE}層] 仕様書にexampleが指定されていません。endpointPath="${endpointPath}", key="${parentKey}"`;
+            }
+            try {
+                parentValue = _validator({
+                    value: parentValue,
+                    dataType: parentInfo.dataType,
+                    isRequired: parentInfo.isRequired,
+                });
+                requestBody2[parentKey] = parentValue;
+            }
+            catch (err) {
+                // 記入漏れや書式エラーが発生した場合
+                if (!isResponseFormData) throw err;
+                // FormData形式の場合
+                return {
+                    ...requestBody,
+                    [parentKey + "_error"]: String(err),
+                };
+            }
+        }
+    }
+    for (const parentKey in requestBody) {
+        const rule = endpointInfo.requestBody[parentKey];
+        if (!rule) {
+            // もしレスポンスの規格が未定義だったら
+            throw `[${LAYER_CODE}層] 未定義のリクエストボディが渡されました。endpointPath="${endpointPath}", key="${parentKey}"`;
+        }
+    }
     //
     // APIのメイン処理を実行する
     let response = await action(
         "RUN_API",
         {
             ...parameters,
-            "requestBody": requestBody,
+            "requestBody": requestBody2,
         },
     );
     //
@@ -78,12 +129,148 @@ async function _runApi(parameters) {
 }
 
 
-//【サブ関数】リクエストボディをチェックする関数（可能なら変換も行う）
-function _validateRequestBody({ endpointPath, endpointInfo, requestBody }) {
-    // requestBody を requestBody2 に変換する
-    const requestBody2 = requestBody;
-    return requestBody2;
+function _validatorArray({ array, parentKey, arrayInfo, allData, endpointPath }) {
+    // 配列の場合
+    if (!Array.isArray(array)) {
+        console.error("\n\n");
+        console.error(JSON.stringify(allData, null, 2));
+        console.error("\n\n");
+        throw `パラメータ「${parentKey}」を配列にしてください。`;
+    }
+    newArray = [];
+    for (let i = 0; i < array.length; i++) {
+        if (typeof array[i] !== 'object') {
+            // 配列の要素がオブジェクトではない場合
+            console.error("\n\n");
+            console.error(JSON.stringify(allData, null, 2));
+            console.error("\n\n");
+            throw `配列の要素（${parentKey}[${i}]）をオブジェクトにしてください。`;
+        }
+        if (!arrayInfo.children || typeof arrayInfo.children !== 'object') {
+            throw `[${LAYER_CODE}層] 仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}.children"`;
+        }
+        newArray[i] = {};
+        for (const childKey in arrayInfo.children) {
+            if (childKey === "flag") {
+                throw `[${LAYER_CODE}層] Keyには文字列「flag」を使用できません。endpointPath=${endpointPath} key=${parentKey}`;
+            }
+            const childInfo = arrayInfo.children[childKey];
+            if (!childInfo || typeof childInfo !== 'object') {
+                throw `[${LAYER_CODE}層] 仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
+            }
+            if (childInfo.example === null || childInfo.example === undefined) {
+                throw `[${LAYER_CODE}層] 仕様書にexampleが指定されていません。endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
+            }
+            try {
+                let childValue = array[i][childKey];
+                childValue = _validator({
+                    value: childValue,
+                    dataType: childInfo.dataType,
+                    isRequired: childInfo.isRequired,
+                });
+                newArray[i][childKey] = childValue;
+            }
+            catch (err) {
+                console.error("\n\n");
+                console.error(JSON.stringify(allData, null, 2));
+                console.error("\n\n");
+                throw `配列の中身（${parentKey}[${i}]）が不正な書式です。${err}`;
+            }
+        }
+    }
+    return newArray;
 }
+
+function _validator({ value, dataType, isRequired }) {
+    switch (dataType) {
+        case "INTEGER":
+            if (!isNaN(value)) {
+                // 数値に変換できる場合
+                value = Number(value);
+                if (!Number.isInteger(value)) {
+                    throw "小数は指定できません。指定できるのは整数のみです。";
+                }
+                return value;
+            }
+            // 数値に変換できない場合
+            if (value) {
+                // 空欄ではない場合
+                throw "指定できるのは整数のみです。";
+            }
+            // 空欄の場合
+            if (isRequired === false) {
+                // 空欄OKの場合
+                return null;
+            }
+            // 空欄NGの場合
+            throw "必須項目が空欄です。";
+        case "REAL":
+            if (!isNaN(value)) {
+                // 数値に変換できる場合
+                return Number(value);
+            }
+            // 数値に変換できない場合
+            if (value) {
+                // 空欄ではない場合
+                throw "指定できるのは整数のみです。";
+            }
+            // 空欄の場合
+            if (isRequired === false) {
+                // 空欄OKの場合
+                return null;
+            }
+            // 空欄NGの場合
+            throw "必須項目が空欄です。";
+        case "TEXT":
+            if (value) {
+                // 空欄ではない場合
+                // 文字列に変換して、前後の空白を切り取って、よく確かめる。
+                if (String(value).trim()) {
+                    // やっぱり空欄ではない場合
+                    return String(value);
+                }
+            }
+            // 空欄の場合
+            if (isRequired === false) {
+                // 空欄OKの場合
+                return null;
+            }
+            throw "必須項目が空欄です。";
+        case "BOOL":
+            if (value === true) {
+                return true;
+            }
+            else if (value === false) {
+                return false;
+            }
+            if (String(value).toLowerCase() === "true") {
+                return true;
+            }
+            else if (String(value).toLowerCase() === "false") {
+                return false;
+            }
+            if (!isNaN(value)) {
+                // 数値に変換できる場合
+                return Number(value) !== 0;
+            }
+            // 数値に変換できない場合
+            if (value) {
+                // 空欄ではない場合
+                throw "指定できるのはBOOL値のみです。";
+            }
+            // 空欄の場合
+            if (isRequired === false) {
+                // 空欄OKの場合
+                return null;
+            }
+            // 空欄NGの場合
+            throw "必須項目が空欄です。";
+        default:
+            throw `[${LAYER_CODE}層] サポートされていないデータ型です。detaType="${childInfo.dataType}"`;
+    }
+}
+
+
 
 //【サブ関数】レスポンスデータをチェックする関数
 function _validateResponseData({ endpointPath, endpointInfo, response }) {
@@ -91,171 +278,41 @@ function _validateResponseData({ endpointPath, endpointInfo, response }) {
     const response2 = {};
     for (const parentKey in endpointInfo.response) {
         const parentInfo = endpointInfo.response[parentKey];
-        const parentValue = response[parentKey];
+        let parentValue = response[parentKey];
         if (!parentInfo || typeof parentInfo !== 'object') {
             throw `[${LAYER_CODE}層] レスポンスデータの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}"`;
         }
         if (parentInfo.isArray) {
             // 配列の場合
-            if (!Array.isArray(parentValue)) {
-                if (parentInfo.isRequired === false && !parentValue) {
-                    continue; // 空欄の場合
-                }
-                else {
-                    console.log(JSON.stringify(response, null, 2));
-                    throw `[${LAYER_CODE}層] 想定外のレスポンスデータを返そうとしました。本来は配列です。endpointPath=${endpointPath} key=${parentKey}`;
-                }
+            if (parentInfo.isRequired === false && !parentValue) {
+                continue; // 空欄の場合
             }
-            response2[parentKey] = [];
-            for (let i = 0; i < parentValue.length; i++) {
-                if (typeof parentValue[i] !== 'object') {
-                    // 配列の要素がオブジェクトではない場合
-                    console.log(JSON.stringify(response, null, 2));
-                    throw `[${LAYER_CODE}層] 想定外のレスポンスデータを返そうとしました。配列の要素はオブジェクトにしてください。endpointPath=${endpointPath} key=${parentKey}`;
-                }
-                if (!parentInfo.children || typeof parentInfo.children !== 'object') {
-                    throw `[${LAYER_CODE}層] レスポンスデータの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}.children"`;
-                }
-                response2[parentKey][i] = {};
-                for (const childKey in parentInfo.children) {
-                    if (childKey === "flag") {
-                        throw `[${LAYER_CODE}層] レスポンスデータのKeyには、文字列「flag」を使用できません。endpointPath=${endpointPath} key=${parentKey}`;
-                    }
-                    const childInfo = parentInfo.children[childKey];
-                    if (!childInfo || typeof childInfo !== 'object') {
-                        throw `[${LAYER_CODE}層] レスポンスデータの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
-                    }
-                    if (childInfo.example === null || childInfo.example === undefined) {
-                        throw `[${LAYER_CODE}層] 仕様書にexampleが指定されていません。endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
-                    }
-                    const childValue = parentValue[i][childKey];
-                    switch (childInfo.dataType) {
-                        case "INTEGER":
-                            if (typeof childValue === "number" && Number.isInteger(childValue)) {
-                                response2[parentKey][i][childKey] = childValue;
-                            }
-                            else {
-                                if (childInfo.isRequired === false && !childValue) {
-                                    // 空欄の場合
-                                }
-                                else {
-                                    console.log(JSON.stringify(response, null, 2));
-                                    throw `[${LAYER_CODE}層] 整数ではありません。value="${childValue}", endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
-                                }
-                            }
-                            break;
-                        case "REAL":
-                            if (typeof childValue === "number" && !isNaN(childValue)) {
-                                response2[parentKey][i][childKey] = childValue;
-                            }
-                            else {
-                                if (childInfo.isRequired === false && !childValue) {
-                                    // 空欄の場合
-                                }
-                                else {
-                                    console.log(JSON.stringify(response, null, 2));
-                                    throw `[${LAYER_CODE}層] 数値ではありません。value="${childValue}", endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
-                                }
-                            }
-                            break;
-                        case "TEXT":
-                            if (typeof childValue === "string") {
-                                response2[parentKey][i][childKey] = childValue;
-                            }
-                            else {
-                                if (childInfo.isRequired === false && !childValue) {
-                                    // 空欄の場合
-                                }
-                                else {
-                                    console.log(JSON.stringify(response, null, 2));
-                                    throw `[${LAYER_CODE}層] 文字列ではありません。value="${childValue}", endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
-                                }
-                            }
-                            break;
-                        case "BOOL":
-                            if (typeof childValue === "boolean") {
-                                response2[parentKey][i][childKey] = childValue;
-                            }
-                            else {
-                                if (childInfo.isRequired === false && !childValue) {
-                                    // 空欄の場合
-                                }
-                                else {
-                                    console.log(JSON.stringify(response, null, 2));
-                                    throw `[${LAYER_CODE}層] BOOL型ではありません。value="${childValue}", endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
-                                }
-                            }
-                            break;
-                        default:
-                            throw `[${LAYER_CODE}層] API通信で使用できないデータ型です。detaType=${childInfo.dataType}, endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
-                    }
-                }
-            }
+            response2[parentKey] = _validatorArray({
+                array: parentValue,
+                parentKey,
+                arrayInfo: parentInfo,
+                allData: response,
+                endpointPath,
+            });
         }
         else {
             // 配列ではない場合
             if (parentInfo.example === null || parentInfo.example === undefined) {
                 throw `[${LAYER_CODE}層] 仕様書にexampleが指定されていません。endpointPath="${endpointPath}", key="${parentKey}"`;
             }
-            switch (parentInfo.dataType) {
-                case "INTEGER":
-                    if (typeof parentValue === "number" && Number.isInteger(parentValue)) {
-                        response2[parentKey] = parentValue;
-                    }
-                    else {
-                        if (parentInfo.isRequired === false && !parentValue) {
-                            // 空欄の場合
-                        }
-                        else {
-                            console.log(JSON.stringify(response, null, 2));
-                            throw `[${LAYER_CODE}層] 整数ではありません。value="${parentValue}", endpointPath="${endpointPath}", key="${parentKey}"`;
-                        }
-                    }
-                    break;
-                case "REAL":
-                    if (typeof parentValue === "number" && !isNaN(parentValue)) {
-                        response2[parentKey] = parentValue;
-                    }
-                    else {
-                        if (parentInfo.isRequired === false && !parentValue) {
-                            // 空欄の場合
-                        }
-                        else {
-                            console.log(JSON.stringify(response, null, 2));
-                            throw `[${LAYER_CODE}層] 数値ではありません。value="${parentValue}", endpointPath="${endpointPath}", key="${parentKey}"`;
-                        }
-                    }
-                    break;
-                case "TEXT":
-                    if (typeof parentValue === "string") {
-                        response2[parentKey] = parentValue;
-                    }
-                    else {
-                        if (parentInfo.isRequired === false && !parentValue) {
-                            // 空欄の場合
-                        }
-                        else {
-                            console.log(JSON.stringify(response, null, 2));
-                            throw `[${LAYER_CODE}層] 文字列ではありません。value="${parentValue}", endpointPath="${endpointPath}", key="${parentKey}"`;
-                        }
-                    }
-                    break;
-                case "BOOL":
-                    if (typeof parentValue === "boolean") {
-                        response2[parentKey] = parentValue;
-                    }
-                    else {
-                        if (parentInfo.isRequired === false && !parentValue) {
-                            // 空欄の場合
-                        }
-                        else {
-                            console.log(JSON.stringify(response, null, 2));
-                            throw `[${LAYER_CODE}層] BOOL型ではありません。value="${parentValue}", endpointPath="${endpointPath}", key="${parentKey}"`;
-                        }
-                    }
-                    break;
-                default:
-                    throw `[${LAYER_CODE}層] API通信で使用できないデータ型です。detaType=${childInfo.dataType}, endpointPath="${endpointPath}", key="${parentKey}"`;
+            try {
+                parentValue = _validator({
+                    value: parentValue,
+                    dataType: parentInfo.dataType,
+                    isRequired: parentInfo.isRequired,
+                });
+                response2[parentKey] = parentValue;
+            }
+            catch (err) {
+                console.error("\n\n");
+                console.error(JSON.stringify(response, null, 2));
+                console.error("\n\n");
+                throw `レスポンスデータの項目「${parentKey}」が不正な書式です。${err}  endpointPath="${endpointPath}"`;
             }
         }
     }

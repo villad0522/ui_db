@@ -82,7 +82,10 @@ async function _runApi(parameters) {
         if (!commandInfo?.commandName) {
             throw `[${LAYER_CODE}層] commands[?].commandName が定義されていません。endpointPath="${endpointPath}"`;
         }
-        const result = await action(
+        if (typeof commandInfo?.resultNameSpace !== "string") {
+            throw `[${LAYER_CODE}層] commands[?].resultNameSpace が定義されていません。endpointPath="${endpointPath}"`;
+        }
+        const result1 = await action(
             commandInfo.commandName,
             {
                 ...parameters.queryParameters,
@@ -90,17 +93,21 @@ async function _runApi(parameters) {
                 ...commandInfo.additionalParameters,
             },
         );
-        if (typeof result !== "object") {
+        if (typeof result1 !== "object") {
             throw `[${LAYER_CODE}層] コマンド「${commandInfo.commandName}」の実行結果がオブジェクト形式ではありません"`;
         }
-        for (const key in result) {
+        const result2 = {};
+        for (const key in result1) {
+            result2[commandInfo.resultNameSpace + key] = result1[key];
+        }
+        for (const key in result2) {
             if (allResults[key]) {
                 console.error(`[${LAYER_CODE}層] コマンド「${commandInfo.commandName}」の実行結果のうち、項目「${key}」が他のコマンドの実行結果と競合しています。`);
             }
         }
         allResults = {
             ...allResults,
-            result,
+            ...result2,
         };
     }
     return allResults;

@@ -34,6 +34,9 @@ export default async function (command, parameters) {
         case "CLEAR_CACHE":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _clearCache(parameters);
+        case "LIST_TABLES":
+            // このJavaScriptファイルの中のサブ関数を呼び出す
+            return await _listTables(parameters);
         case "CREATE_COLUMN":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _createColumn(parameters);
@@ -70,36 +73,15 @@ export default async function (command, parameters) {
         case "CREATE_TABLE":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _createTable(parameters);
-        case "LIST_BRANCHES":
+        case "CREATE_RECORDS_FROM_CSV":
             // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _listBranches(parameters);
-        case "LIST_LOGS":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _listLogs(parameters);
-        case "GET_LOG_DETAIL":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _getLogDetail(parameters);
-        case "UNDO":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _undo(parameters);
-        case "REDO":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _redo(parameters);
+            return await _createRecordsFromCsv(parameters);
         case "RUN_SQL_READ_ONLY":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _runSqlReadOnly(parameters);
         case "RUN_SQL_WRITE_ONLY":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _runSqlWriteOnly(parameters);
-        case "DELETE_LOG":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _deleteLog(parameters);
-        case "DISABLE_LOG":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _disableLog(parameters);
-        case "ENABLE_LOG":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _enableLog(parameters);
         case "CREATE_USER_SQL":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _createUserSql(parameters);
@@ -115,36 +97,15 @@ export default async function (command, parameters) {
         case "LIST_USER_SQL":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _listUserSql(parameters);
-        case "RUN_USER_SQL":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _runUserSql(parameters);
-        case "UPDATE_COLUMN_NAME":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _updateColumnName(parameters);
-        case "LIST_TABLES":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _listTables(parameters);
         case "UPDATE_TABLE_NAME":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _updateTableName(parameters);
-        case "LIST_SQL_LOGS":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _listSqlLogs(parameters);
-        case "DISABLE_COLUMN":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _disableColumn(parameters);
-        case "ENABLE_COLUMN":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _enableColumn(parameters);
         case "DISABLE_TABLE":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _disableTable(parameters);
         case "ENABLE_TABLE":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _enableTable(parameters);
-        case "SET_VALIDATOR":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _setValidator(parameters);
         default:
             // 下層のメイン関数を呼び出す
             // （下層の機能をそのまま上層に提供する）
@@ -157,83 +118,102 @@ async function _startUp(parameters) {
     await action("START_UP", parameters);   // 下層の関数を呼び出す
     //
     if (bugMode === 1) return;  // 意図的にバグを混入させる（ミューテーション解析）
-    return null;
+    try {
+        // テーブルを作成する（データ型を保存するため）
+        await action("RUN_SQL_WRITE_ONLY", {
+            sql: `CREATE TABLE IF NOT EXISTS table_names (
+                "table_id" INTEGER PRIMARY KEY AUTOINCREMENT,
+                "table_name" TEXT UNIQUE NOT NULL,
+                "enable" INTEGER NOT NULL,
+                "created_at" INTEGER NOT NULL,
+                "deleted_at" INTEGER
+            );`,
+            params: {},
+        });
+    }
+    catch (err) {
+        throw `[${LAYER_CODE}層] システム管理用テーブルの作成に失敗しました。${String(err)}`;
+    }
+    //
+    // メモリに再読み込み
+    await _reload();
 }
 
-//【サブ関数】パスを取得
-async function _getPath(parameters) {
-    return null;
+//【グローバル変数】テーブル名を保存するキャッシュ
+let cacheData1 = {
+    // データの例
+    // "2": "テーブル名１",
+    // "8": "テーブル名２"
+};
+let cacheData2 = {
+    // データの例
+    // "テーブル名１": 2,
+    // "テーブル名２": 8
+};
+
+//【サブ関数】メモリに再読み込み
+async function _reload() {
+    let matrix = [];
+    try {
+        matrix = await action("RUN_SQL_READ_ONLY", {
+            sql: `SELECT * FROM table_names WHERE enable = 1;`,
+            params: {},
+        });
+    }
+    catch (err) {
+        throw `[${LAYER_CODE}層] テーブル「table_names」の読み込みに失敗しました。${String(err)}`;
+    }
+    cacheData1 = {};
+    cacheData2 = {};
+    for (const record of matrix) {
+        const tableName = record["table_name"];
+        const tableId = record["table_id"];
+        cacheData1[String(tableId)] = tableName;
+        cacheData2[String(tableName)] = Number(tableId);
+    }
 }
 
-//【サブ関数】デバッグモード判定
-async function _getDebugMode(parameters) {
-    return null;
+//【サブ関数】テーブル番号を取得
+async function _getTableId(tableName) {
+    if (!tableName) {
+        throw `[${LAYER_CODE}層] テーブル名が空欄です。tableName=${tableName}`;
+    }
+    let tableId = cacheData2[String(tableName)];
+    if (tableId) {
+        return Number(tableId);
+    }
+    // メモリに再読み込み
+    await _reload();
+    tableId = cacheData2[String(tableName)];
+    if (tableId) {
+        return tableId;
+    }
+    throw `[${LAYER_CODE}層] 未定義のテーブル名です。tableName=${tableName}`;
 }
 
-//【サブ関数】SQLクエリ実行（読み書き）
-async function _runSql(parameters) {
-    return null;
+//【サブ関数】テーブル名を取得
+async function _getTableName(tableId) {
+    if (!tableId) {
+        throw `[${LAYER_CODE}層] テーブル番号が空欄です。tableId=${tableId}`;
+    }
+    let tableName = cacheData1[String(tableId)];
+    if (tableName) {
+        return String(tableName);
+    }
+    // メモリに再読み込み
+    await _reload();
+    tableName = cacheData1[String(tableId)];
+    if (tableName) {
+        return String(tableName);
+    }
+    throw `[${LAYER_CODE}層] 未定義のテーブル番号です。tableId=${tableId}`;
 }
 
 //【サブ関数】インメモリキャッシュを削除
 async function _clearCache(parameters) {
-    await action("CLEAR_CACHE", parameters);   // 下層の関数を呼び出す
-    return null;
-}
-
-//【サブ関数】カラムを作成
-async function _createColumn(parameters) {
-    return null;
-}
-
-//【サブ関数】カラムの一覧を取得
-async function _listColumns(parameters) {
-    return null;
-}
-
-//【サブ関数】レコード追加
-async function _createRecord(parameters) {
-    return null;
-}
-
-//【サブ関数】レコード上書き
-async function _updateRecord(parameters) {
-    return null;
-}
-
-//【サブ関数】フィールドの検証
-async function _checkField(parameters) {
-    return null;
-}
-
-//【サブ関数】レコードの検証
-async function _checkRecord(parameters) {
-    return null;
-}
-
-//【サブ関数】レコードを削除
-async function _deleteRecord(parameters) {
-    return null;
-}
-
-//【サブ関数】予測変換
-async function _autoCorrect(parameters) {
-    return null;
-}
-
-//【サブ関数】文字列検索
-async function _searchText(parameters) {
-    return null;
-}
-
-//【サブ関数】検索用の辞書を再生成
-async function _rebuildDictionary(parameters) {
-    return null;
-}
-
-//【サブ関数】テーブルを丸ごとバックアップ
-async function _backupTable(parameters) {
-    return null;
+    // メモリに再読み込み
+    await _reload();
+    return await action("CLEAR_CACHE", parameters);   // 下層の関数を呼び出す
 }
 
 //【サブ関数】テーブルを作成
@@ -241,29 +221,198 @@ async function _createTable(parameters) {
     return null;
 }
 
-//【サブ関数】変更履歴の分岐先を取得
-async function _listBranches(parameters) {
+//【サブ関数】テーブルの一覧を取得
+async function _listTables(parameters) {
+    if (!parameters?.onePageMaxSize) {
+        throw `[${LAYER_CODE}層] パラメーター「onePageMaxSize」がNULLです`;
+    }
+    if (isNaN(parameters.onePageMaxSize)) {
+        throw `[${LAYER_CODE}層] パラメーター「onePageMaxSize」を数値に変換できません`;
+    }
+    const onePageMaxSize = Number(parameters.onePageMaxSize);
+    let pageNumber = Number(parameters.page_tables);
+    if (!(pageNumber >= 1)) {
+        pageNumber = 1;
+    }
+    if (parameters.isTrash) {
+        // 削除済みのテーブル
+    }
+    else {
+        // 削除されていないテーブル
+        const count = await action("RUN_SQL_READ_ONLY", {
+            sql: `
+                SELECT COUNT(*)
+                    FROM table_names
+                    WHERE enable = 1;
+            `,
+            params: {},
+        });
+        const matrix = await action("RUN_SQL_READ_ONLY", {
+            sql: `
+                SELECT table_id, table_name
+                    FROM table_names
+                    WHERE enable = 1
+                    ORDER BY created_at DESC
+                    LIMIT :limit OFFSET :offset;
+            `,
+            params: {
+                ":limit": onePageMaxSize,
+                ":offset": onePageMaxSize * (pageNumber - 1),
+            },
+        });
+        return {
+            "tables": matrix,
+            "tables_total": 1,
+        }
+    }
+}
+
+//【サブ関数】テーブル名を変更
+async function _updateTableName(parameters) {
     return null;
 }
 
-//【サブ関数】変更履歴の一覧を取得
-async function _listLogs(parameters) {
+//【サブ関数】テーブルを無効化
+async function _disableTable(parameters) {
     return null;
 }
 
-//【サブ関数】変更履歴の詳細を取得
-async function _getLogDetail(parameters) {
+//【サブ関数】テーブルを再度有効化
+async function _enableTable(parameters) {
     return null;
 }
 
-//【サブ関数】前の状態に戻す
-async function _undo(parameters) {
-    return null;
+//【サブ関数】カラムを作成
+async function _createColumn(parameters) {
+    //入力パラメータに含まれるテーブル名を番号に置き換える
+    const newParameters = {
+        ...parameters,
+        tableId: await _getTableId(parameters.tableName),
+    };
+    // 下層の関数を呼び出す
+    return await action("", newParameters);
 }
 
-//【サブ関数】以前の操作をもう一度行う
-async function _redo(parameters) {
-    return null;
+//【サブ関数】カラムの一覧を取得
+async function _listColumns(parameters) {
+    //入力パラメータに含まれるテーブル名を番号に置き換える
+    const newParameters = {
+        ...parameters,
+        tableId: await _getTableId(parameters.tableName),
+    };
+    // 下層の関数を呼び出す
+    return await action("", newParameters);
+}
+
+//【サブ関数】レコード追加
+async function _createRecord(parameters) {
+    //入力パラメータに含まれるテーブル名を番号に置き換える
+    const newParameters = {
+        ...parameters,
+        tableId: await _getTableId(parameters.tableName),
+    };
+    // 下層の関数を呼び出す
+    return await action("", newParameters);
+}
+
+//【サブ関数】レコード上書き
+async function _updateRecord(parameters) {
+    //入力パラメータに含まれるテーブル名を番号に置き換える
+    const newParameters = {
+        ...parameters,
+        tableId: await _getTableId(parameters.tableName),
+    };
+    // 下層の関数を呼び出す
+    return await action("", newParameters);
+}
+
+//【サブ関数】フィールドの検証
+async function _checkField(parameters) {
+    //入力パラメータに含まれるテーブル名を番号に置き換える
+    const newParameters = {
+        ...parameters,
+        tableId: await _getTableId(parameters.tableName),
+    };
+    // 下層の関数を呼び出す
+    return await action("", newParameters);
+}
+
+//【サブ関数】レコードの検証
+async function _checkRecord(parameters) {
+    //入力パラメータに含まれるテーブル名を番号に置き換える
+    const newParameters = {
+        ...parameters,
+        tableId: await _getTableId(parameters.tableName),
+    };
+    // 下層の関数を呼び出す
+    return await action("", newParameters);
+}
+
+//【サブ関数】レコードを削除
+async function _deleteRecord(parameters) {
+    //入力パラメータに含まれるテーブル名を番号に置き換える
+    const newParameters = {
+        ...parameters,
+        tableId: await _getTableId(parameters.tableName),
+    };
+    // 下層の関数を呼び出す
+    return await action("", newParameters);
+}
+
+//【サブ関数】予測変換
+async function _autoCorrect(parameters) {
+    //入力パラメータに含まれるテーブル名を番号に置き換える
+    const newParameters = {
+        ...parameters,
+        tableId: await _getTableId(parameters.tableName),
+    };
+    // 下層の関数を呼び出す
+    return await action("", newParameters);
+}
+
+//【サブ関数】文字列検索
+async function _searchText(parameters) {
+    //入力パラメータに含まれるテーブル名を番号に置き換える
+    const newParameters = {
+        ...parameters,
+        tableId: await _getTableId(parameters.tableName),
+    };
+    // 下層の関数を呼び出す
+    return await action("", newParameters);
+}
+
+//【サブ関数】検索用の辞書を再生成
+async function _rebuildDictionary(parameters) {
+    //入力パラメータに含まれるテーブル名を番号に置き換える
+    const newParameters = {
+        ...parameters,
+        tableId: await _getTableId(parameters.tableName),
+    };
+    // 下層の関数を呼び出す
+    return await action("", newParameters);
+}
+
+//【サブ関数】テーブルを丸ごとバックアップ
+async function _backupTable(parameters) {
+    //入力パラメータに含まれるテーブル名を番号に置き換える
+    const newParameters = {
+        ...parameters,
+        tableId: await _getTableId(parameters.tableName),
+    };
+    // 下層の関数を呼び出す
+    return await action("", newParameters);
+}
+
+//【サブ関数】既に存在するテーブルにCSVファイルを読み込む関数
+//       ※テーブルとカラムは既に用意してあるものとする。
+async function _createRecordsFromCsv(parameters) {
+    //入力パラメータに含まれるテーブル名を番号に置き換える
+    const newParameters = {
+        ...parameters,
+        tableId: await _getTableId(parameters.tableName),
+    };
+    // 下層の関数を呼び出す
+    return await action("", newParameters);
 }
 
 //【サブ関数】SQLクエリ実行（読み取りのみ）
@@ -273,31 +422,6 @@ async function _runSqlReadOnly(parameters) {
 
 //【サブ関数】SQLクエリ実行（書き込みのみ）
 async function _runSqlWriteOnly(parameters) {
-    return null;
-}
-
-//【サブ関数】トランザクション処理開始
-async function _startTransaction(parameters) {
-    return null;
-}
-
-//【サブ関数】トランザクション処理終了
-async function _endTransaction(parameters) {
-    return null;
-}
-
-//【サブ関数】変更履歴を削除
-async function _deleteLog(parameters) {
-    return null;
-}
-
-//【サブ関数】変更履歴機能を無効化する
-async function _disableLog(parameters) {
-    return null;
-}
-
-//【サブ関数】変更履歴機能を有効化する
-async function _enableLog(parameters) {
     return null;
 }
 
@@ -313,136 +437,6 @@ async function _updateUserSql(parameters) {
 
 //【サブ関数】事前登録したクエリを取得
 async function _getUserSql(parameters) {
-    return null;
-}
-
-//【サブ関数】事前登録したクエリの一覧を取得
-async function _listUserSql(parameters) {
-    return null;
-}
-
-//【サブ関数】事前登録したクエリを実行
-async function _runUserSql(parameters) {
-    return null;
-}
-
-//【サブ関数】カラム名を変更
-async function _updateColumnName(parameters) {
-    return null;
-}
-
-//【サブ関数】テーブルの一覧を取得
-async function _listTables(parameters) {
-    return null;
-}
-
-//【サブ関数】テーブル名を変更
-async function _updateTableName(parameters) {
-    return null;
-}
-
-//【サブ関数】SQLのログを取得
-async function _listSqlLogs(parameters) {
-    return null;
-}
-
-//【サブ関数】カラムを無効化
-async function _disableColumn(parameters) {
-    return null;
-}
-
-//【サブ関数】カラムを再度有効化
-async function _enableColumn(parameters) {
-    return null;
-}
-
-//【サブ関数】テーブルを無効化
-async function _disableTable(parameters) {
-    return null;
-}
-
-//【サブ関数】テーブルを再度有効化
-async function _enableTable(parameters) {
-    return null;
-}
-
-//【サブ関数】バリデーターを設定する
-async function _setValidator(parameters) {
-    return null;
-}
-
-//【サブ関数】親テーブルを取得する
-async function _getParentTable(parameters) {
-    return null;
-}
-
-//【サブ関数】子テーブルを取得する
-async function _listChildrenTables(parameters) {
-    return null;
-}
-
-//【サブ関数】自動SELECT文（自動でテーブル結合）
-async function _listRows(parameters) {
-    return null;
-}
-
-//【サブ関数】フォーマッターを設定する
-async function _setFormatter(parameters) {
-    return null;
-}
-
-//【サブ関数】入力パラメータを追加
-async function _createParameter(parameters) {
-    return null;
-}
-
-//【サブ関数】入力パラメータを上書き
-async function _updateParameter(parameters) {
-    return null;
-}
-
-//【サブ関数】事前登録したクエリを自動テスト
-async function _testUserSql(parameters) {
-    return null;
-}
-
-//【サブ関数】HTMLを削除
-async function _deletePage(parameters) {
-    return null;
-}
-
-//【サブ関数】HTMLを上書き
-async function _updatePage(parameters) {
-    return null;
-}
-
-//【サブ関数】HTMLの一覧を取得
-async function _listPages(parameters) {
-    return null;
-}
-
-//【サブ関数】HTMLをリセット
-async function _resetPage(parameters) {
-    return null;
-}
-
-//【サブ関数】POSTコマンドの実行
-async function _runPostCommand(parameters) {
-    return null;
-}
-
-//【サブ関数】GETコマンドの実行
-async function _runGetCommand(parameters) {
-    return null;
-}
-
-//【サブ関数】コマンド情報を取得
-async function _getCommandInfo(parameters) {
-    return null;
-}
-
-//【サブ関数】コマンドの一覧を取得
-async function _listCommands(parameters) {
     return null;
 }
 

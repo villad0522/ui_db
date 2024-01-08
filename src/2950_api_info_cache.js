@@ -45,7 +45,7 @@ export default async function (command, parameters) {
 }
 
 //【グローバル変数】キャッシュデータ
-const endpointInfo = {};
+let endpointInfo = {};
 let endpointList = null;
 
 //【サブ関数】エンドポイントの情報を取得
@@ -85,7 +85,7 @@ async function _listEndpoints(parameters) {
 async function _clearCache(parameters) {
     endpointInfo = {};
     endpointList = null;
-    await action("CLEAR_CACHE", parameters);   // 下層の関数を呼び出す
+    return await action("CLEAR_CACHE", parameters);   // 下層の関数を呼び出す
 }
 
 //###############################################################

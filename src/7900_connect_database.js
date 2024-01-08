@@ -150,7 +150,12 @@ async function _runSqlReadOnly(parameters) {
     }
     if (!parameters?.params) {
         // パラメータなし
-        return await db.all(parameters.sql);
+        try {
+            return await db.all(parameters.sql);
+        }
+        catch (err) {
+            throw `SQL文の実行中にエラーが発生しました。\n\n${err}\n\n${parameters.sql}`;
+        }
     }
     else {
         // パラメータあり
@@ -160,7 +165,12 @@ async function _runSqlReadOnly(parameters) {
         if (Array.isArray(parameters.params)) {
             throw `[${LAYER_CODE}層] パラメーター「params」は配列を格納しないでください`;
         }
-        return await db.all(parameters.sql, parameters?.params);
+        try {
+            return await db.all(parameters.sql, parameters?.params);
+        }
+        catch (err) {
+            throw `SQL文の実行中にエラーが発生しました。\n\n${err}\n\n${parameters.sql}\n\n${JSON.stringify(parameters?.params, null, 2)}`;
+        }
     }
 }
 
@@ -174,7 +184,12 @@ async function _runSqlWriteOnly(parameters) {
     }
     if (!parameters?.params) {
         // パラメータなし
-        await db.run(parameters.sql);
+        try {
+            return await db.run(parameters.sql);
+        }
+        catch (err) {
+            throw `SQL文の実行中にエラーが発生しました。\n\n${err}\n\n${parameters.sql}`;
+        }
     }
     else {
         // パラメータあり
@@ -184,7 +199,12 @@ async function _runSqlWriteOnly(parameters) {
         if (Array.isArray(parameters.params)) {
             throw `[${LAYER_CODE}層] パラメーター「params」は配列を格納しないでください`;
         }
-        await db.run(parameters.sql, parameters?.params);
+        try {
+            return await db.run(parameters.sql, parameters?.params);
+        }
+        catch (err) {
+            throw `SQL文の実行中にエラーが発生しました。\n\n${err}\n\n${parameters.sql}\n\n${JSON.stringify(parameters?.params, null, 2)}`;
+        }
     }
 }
 

@@ -17,7 +17,7 @@
         }
     },
     "response": {
-        "main": {
+        "tables": {
             "title": "テーブル一覧",
             "isArray": true,
             "onePageMaxSize": 35,
@@ -34,16 +34,19 @@
                 }
             }
         },
-        "main_total": {
+        "tables_total": {
             "dataType": "INTEGER",
             "description": "テーブルの個数",
-            "example": 10
+            "example": 1
         }
     },
     "commands": [
         {
+            "resultNameSpace": "",
             "commandName": "LIST_TABLES",
-            "additionalParameters": {}
+            "additionalParameters": {
+                "onePageMaxSize": 35
+            }
         }
     ]
 }

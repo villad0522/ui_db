@@ -31,9 +31,6 @@ export default async function (command, parameters) {
         case "TEST_FRAMEWORK":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _testFramework(parameters);
-        case "CLEAR_CACHE":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _clearCache(parameters);
         case "CREATE_COLUMN":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _createColumn(parameters);
@@ -202,27 +199,6 @@ async function _startUp(parameters) {
     await action("START_UP", parameters);   // 下層の関数を呼び出す
     //
     if (bugMode === 1) return;  // 意図的にバグを混入させる（ミューテーション解析）
-    return null;
-}
-
-//【サブ関数】パスを取得
-async function _getPath(parameters) {
-    return null;
-}
-
-//【サブ関数】デバッグモード判定
-async function _getDebugMode(parameters) {
-    return null;
-}
-
-//【サブ関数】SQLクエリ実行（読み書き）
-async function _runSql(parameters) {
-    return null;
-}
-
-//【サブ関数】インメモリキャッシュを削除
-async function _clearCache(parameters) {
-    await action("CLEAR_CACHE", parameters);   // 下層の関数を呼び出す
     return null;
 }
 

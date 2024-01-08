@@ -10,7 +10,7 @@ async function load() {
             cache: "no-store",
         }
     );
-    if ((200 <= response.status && response.status <= 299) || (response.status === 400)) {
+    if ((200 <= response.status && response.status <= 299) || (response.status === 400) || (response.status === 415)) {
         // 成功 または リクエストが正しくない
         const contentType = response.headers.get("content-type");
         console.log(contentType);
@@ -114,7 +114,7 @@ function renameButton() {
 // テーブルがクリックされたときに実行する関数
 function tableButton(i) {
     // テーブル名
-    let tableId = document.getElementsByName(`main${i}_id`)[0].value;
+    let tableId = document.getElementsByName(`tables${i}_id`)[0].value;
     //
     // 別のページに移動する
     tableId = encodeURIComponent(tableId);
@@ -140,7 +140,7 @@ async function submitButton() {
             body: new FormData(document.forms[0]),
         }
     );
-    if ((200 <= response.status && response.status <= 299) || (response.status === 400)) {
+    if ((200 <= response.status && response.status <= 299) || (response.status === 400) || (response.status === 415)) {
         // 成功 または リクエストが正しくない
         const contentType = response.headers.get("content-type");
         console.log(contentType);
@@ -180,7 +180,7 @@ async function submitButton() {
 function paginationButtonFirst(arrayName) {
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_main", 1);
+    searchParams.set("page_tables", 1);
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -189,10 +189,10 @@ function paginationButtonFirst(arrayName) {
 // ページネーションボタンの「Prev」がクリックされたときに実行する関数
 function paginationButtonPrev() {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("main_pagePrev")[0].value;
+    const pageNumber = document.getElementsByName("tables_pagePrev")[0].value;
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_main", pageNumber);
+    searchParams.set("page_tables", pageNumber);
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -201,10 +201,10 @@ function paginationButtonPrev() {
 // ページネーションボタンの「Next」がクリックされたときに実行する関数
 function paginationButtonNext() {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("main_pageNext")[0].value;
+    const pageNumber = document.getElementsByName("tables_pageNext")[0].value;
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_main", pageNumber);
+    searchParams.set("page_tables", pageNumber);
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -213,10 +213,10 @@ function paginationButtonNext() {
 // ページネーションボタンの「Last」がクリックされたときに実行する関数
 function paginationButtonLast() {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("main_pageLast")[0].value;
+    const pageNumber = document.getElementsByName("tables_pageLast")[0].value;
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_main", pageNumber);
+    searchParams.set("page_tables", pageNumber);
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }

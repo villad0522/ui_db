@@ -1,0 +1,22 @@
+{
+    "httpMethod": "POST",
+    "description": "キャッシュデータを削除します。",
+    "queryParameters": {},
+    "requestBody": {},
+    "response": {
+        "userMessage": {
+            "dataType": "TEXT",
+            "description": "完了メッセージ",
+            "example": "9層までのキャッシュデータを削除しました。"
+        }
+    },
+    "commands": [
+        {
+            "resultNameSpace": "",
+            "commandName": "CLEAR_CACHE",
+            "additionalParameters": {
+                "onePageMaxSize": 35
+            }
+        }
+    ]
+}

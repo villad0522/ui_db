@@ -93,10 +93,10 @@ function _convertResponseData({ endpointPath, endpointInfo, response, queryParam
         //
         // 配列ではない場合、何もしない
         if (!parentRule.isArray) continue;
-        if (!parentValue) {
-            throw `[${LAYER_CODE}層] 空のレスポンスデータを返そうとしました。本来は配列です。endpointPath=${endpointPath} key=${parentKey}`;
-        }
         if (!Array.isArray(parentValue)) {
+            console.error("\n");
+            console.error(JSON.stringify(response, null, 2));
+            console.error("\n");
             throw `[${LAYER_CODE}層] 想定外のレスポンスデータを返そうとしました。本来は配列です。endpointPath=${endpointPath} key=${parentKey}`;
         }
         if (parentRule.onePageMaxSize < parentValue.length) {
