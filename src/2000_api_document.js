@@ -1,12 +1,12 @@
 
 //###############################################################
-// 標準搭載されたAPI
+// API仕様書の提供
 //###############################################################
 
-import action from "./2950_api_info_cache.js"; // 下層から提供されているメイン関数
+import action from "./2700_data_check.js"; // 下層から提供されているメイン関数
 
 //【定数】このJavaScriptファイルの階層番号
-const LAYER_CODE = "2900";
+const LAYER_CODE = "2000";
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
 let bugMode = 0;
@@ -48,15 +48,100 @@ async function _runApi(parameters) {
         throw `[${LAYER_CODE}層] パラメーター「endpointPath」が文字列ではありません`;
     }
     const endpointPath = parameters.endpointPath;
-    return {
-        "main": [
-            {
-                "id": 56,
-                "name": "表の名前",
+    const isResponseFormData = parameters.isResponseFormData;
+    if (endpointPath === "/default/api_doc/detail") {
+        // APIの詳細な仕様を返す
+        if (isResponseFormData) {
+            throw `[${LAYER_CODE}層] API仕様書は、JSONのみで提供しています。`;
+        }
+        const infoJson = await action("GET_ENDPOINT_INFO", {
+            endpointPath: parameters?.queryParameters?.endpoint,
+            isRequestFormData: false,
+            isResponseFormData: false,
+        });
+        const infoForm = await action("GET_ENDPOINT_INFO", {
+            endpointPath: parameters?.queryParameters?.endpoint,
+            isRequestFormData: true,
+            isResponseFormData: true,
+        });
+        const newInfo = {
+            ...infoJson,
+            //-------------------------------------------------------
+            queryParameters: infoJson.queryParameters,
+            queryParametersExample: "?" + _getExampleUrlencoded(infoJson.queryParameters),
+            //-------------------------------------------------------
+            requestJson: {
+                ...infoJson.requestBody,
             },
-        ],
-        "main_total": 320,
-    };
+            requestJsonExample: _getExampleJson(infoJson.requestBody),
+            //-------------------------------------------------------
+            requestForm: {
+                ...infoForm.requestBody,
+            },
+            requestFormExample: _getExampleUrlencoded(infoForm.requestBody),
+            //-------------------------------------------------------
+            responseJson: {
+                ...infoJson.response,
+            },
+            responseJsonExample: _getExampleJson(infoJson.response),
+            //-------------------------------------------------------
+            responseForm: {
+                ...infoForm.response,
+            },
+            responseFormExample: _getExampleUrlencoded(infoForm.response),
+            //-------------------------------------------------------
+        };
+        delete newInfo.requestBody;
+        delete newInfo.response;
+        return newInfo;
+    }
+    else if (endpointPath === "/default/api_doc") {
+        // APIエンドポイントの一覧を返す
+        return await action("LIST_ENDPOINTS", parameters);
+    }
+    else {
+        // 通常動作
+        return await action("RUN_API", parameters);
+    }
+}
+
+function _getExampleJson(info) {
+    const exampleJson = {};
+    for (const parentKey in info) {
+        const parentInfo = info[parentKey];
+        if (parentInfo.isArray) {
+            exampleJson[parentKey] = [
+                {},
+            ];
+            for (const childKey in parentInfo.children) {
+                const childInfo = parentInfo.children[childKey];
+                if (childInfo.example === null || childInfo.example === undefined) {
+                    throw `[${LAYER_CODE}層] 記入例(example)が未定義です。key="${parentKey}[0].${childKey}"`;
+                }
+                exampleJson[parentKey][0][childKey] = childInfo.example;
+            }
+        }
+        else {
+            if (parentInfo.example === null || parentInfo.example === undefined) {
+                throw `[${LAYER_CODE}層] 記入例(example)が未定義です。key=${parentKey}`;
+            }
+            exampleJson[parentKey] = parentInfo.example;
+        }
+    }
+    return exampleJson;
+}
+
+function _getExampleUrlencoded(info) {
+    const rows = [];
+    for (const key in info) {
+        const paramInfo = info[key];
+        if (paramInfo.example === null || paramInfo.example === undefined) {
+            throw `[${LAYER_CODE}層] 記入例(example)が未定義です。key=${key}`;
+        }
+        const text = key + "=" + paramInfo.example;
+        rows.push(text);
+    }
+    return rows.join("\n&");
 }
 
 //###############################################################

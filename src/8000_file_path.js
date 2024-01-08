@@ -54,7 +54,7 @@ export default async function (command, parameters) {
 async function _startUp(parameters) {
     await action("START_UP", parameters);   // 下層の関数を呼び出す
     //
-    const frontendPath = path.join(getDirName(), "frontend");
+    const frontendPath = await _getPath({ directoryCode: "FRONTEND" });
     if (!fs.existsSync(frontendPath)) {
         fs.mkdirSync(frontendPath);   // フォルダが存在しなかったら、作成する
     }
@@ -106,6 +106,14 @@ async function _getPath(parameters) {
     }
     // コマンドごとに場合分け
     switch (parameters.directoryCode) {
+        case "FRONTEND":
+            if (bugMode === 3) return;  // 意図的にバグを混入させる（ミューテーション解析）
+            if (_isDevelop()) {
+                return path.join(getDirName(), "frontend"); // 開発環境の場合
+            }
+            else {
+                return path.join(getDirName(), "frontend"); // 本番環境の場合
+            }
         case "FRONTEND_CUSTOM":
             if (bugMode === 3) return;  // 意図的にバグを混入させる（ミューテーション解析）
             if (_isDevelop()) {

@@ -90,15 +90,15 @@ function _validateResponseData({ endpointPath, endpointInfo, response }) {
     // response を response2 に変換する
     const response2 = {};
     for (const parentKey in endpointInfo.response) {
-        const parentRule = endpointInfo.response[parentKey];
+        const parentInfo = endpointInfo.response[parentKey];
         const parentValue = response[parentKey];
-        if (!parentRule || typeof parentRule !== 'object') {
+        if (!parentInfo || typeof parentInfo !== 'object') {
             throw `[${LAYER_CODE}層] レスポンスデータの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}"`;
         }
-        if (parentRule.isArray) {
+        if (parentInfo.isArray) {
             // 配列の場合
             if (!Array.isArray(parentValue)) {
-                if (parentRule.isRequired === false && !parentValue) {
+                if (parentInfo.isRequired === false && !parentValue) {
                     continue; // 空欄の場合
                 }
                 else {
@@ -113,26 +113,29 @@ function _validateResponseData({ endpointPath, endpointInfo, response }) {
                     console.log(JSON.stringify(response, null, 2));
                     throw `[${LAYER_CODE}層] 想定外のレスポンスデータを返そうとしました。配列の要素はオブジェクトにしてください。endpointPath=${endpointPath} key=${parentKey}`;
                 }
-                if (!parentRule.children || typeof parentRule.children !== 'object') {
+                if (!parentInfo.children || typeof parentInfo.children !== 'object') {
                     throw `[${LAYER_CODE}層] レスポンスデータの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}.children"`;
                 }
                 response2[parentKey][i] = {};
-                for (const childKey in parentRule.children) {
+                for (const childKey in parentInfo.children) {
                     if (childKey === "flag") {
                         throw `[${LAYER_CODE}層] レスポンスデータのKeyには、文字列「flag」を使用できません。endpointPath=${endpointPath} key=${parentKey}`;
                     }
-                    const childRule = parentRule.children[childKey];
-                    if (!childRule || typeof childRule !== 'object') {
+                    const childInfo = parentInfo.children[childKey];
+                    if (!childInfo || typeof childInfo !== 'object') {
                         throw `[${LAYER_CODE}層] レスポンスデータの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
                     }
+                    if (childInfo.example === null || childInfo.example === undefined) {
+                        throw `[${LAYER_CODE}層] 仕様書にexampleが指定されていません。endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
+                    }
                     const childValue = parentValue[i][childKey];
-                    switch (childRule.dataType) {
+                    switch (childInfo.dataType) {
                         case "INTEGER":
                             if (typeof childValue === "number" && Number.isInteger(childValue)) {
                                 response2[parentKey][i][childKey] = childValue;
                             }
                             else {
-                                if (childRule.isRequired === false && !childValue) {
+                                if (childInfo.isRequired === false && !childValue) {
                                     // 空欄の場合
                                 }
                                 else {
@@ -146,7 +149,7 @@ function _validateResponseData({ endpointPath, endpointInfo, response }) {
                                 response2[parentKey][i][childKey] = childValue;
                             }
                             else {
-                                if (childRule.isRequired === false && !childValue) {
+                                if (childInfo.isRequired === false && !childValue) {
                                     // 空欄の場合
                                 }
                                 else {
@@ -160,7 +163,7 @@ function _validateResponseData({ endpointPath, endpointInfo, response }) {
                                 response2[parentKey][i][childKey] = childValue;
                             }
                             else {
-                                if (childRule.isRequired === false && !childValue) {
+                                if (childInfo.isRequired === false && !childValue) {
                                     // 空欄の場合
                                 }
                                 else {
@@ -174,7 +177,7 @@ function _validateResponseData({ endpointPath, endpointInfo, response }) {
                                 response2[parentKey][i][childKey] = childValue;
                             }
                             else {
-                                if (childRule.isRequired === false && !childValue) {
+                                if (childInfo.isRequired === false && !childValue) {
                                     // 空欄の場合
                                 }
                                 else {
@@ -184,20 +187,23 @@ function _validateResponseData({ endpointPath, endpointInfo, response }) {
                             }
                             break;
                         default:
-                            throw `[${LAYER_CODE}層] API通信で使用できないデータ型です。detaType=${childRule.dataType}, endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
+                            throw `[${LAYER_CODE}層] API通信で使用できないデータ型です。detaType=${childInfo.dataType}, endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
                     }
                 }
             }
         }
         else {
             // 配列ではない場合
-            switch (parentRule.dataType) {
+            if (parentInfo.example === null || parentInfo.example === undefined) {
+                throw `[${LAYER_CODE}層] 仕様書にexampleが指定されていません。endpointPath="${endpointPath}", key="${parentKey}"`;
+            }
+            switch (parentInfo.dataType) {
                 case "INTEGER":
                     if (typeof parentValue === "number" && Number.isInteger(parentValue)) {
                         response2[parentKey] = parentValue;
                     }
                     else {
-                        if (parentRule.isRequired === false && !parentValue) {
+                        if (parentInfo.isRequired === false && !parentValue) {
                             // 空欄の場合
                         }
                         else {
@@ -211,7 +217,7 @@ function _validateResponseData({ endpointPath, endpointInfo, response }) {
                         response2[parentKey] = parentValue;
                     }
                     else {
-                        if (parentRule.isRequired === false && !parentValue) {
+                        if (parentInfo.isRequired === false && !parentValue) {
                             // 空欄の場合
                         }
                         else {
@@ -225,7 +231,7 @@ function _validateResponseData({ endpointPath, endpointInfo, response }) {
                         response2[parentKey] = parentValue;
                     }
                     else {
-                        if (parentRule.isRequired === false && !parentValue) {
+                        if (parentInfo.isRequired === false && !parentValue) {
                             // 空欄の場合
                         }
                         else {
@@ -239,7 +245,7 @@ function _validateResponseData({ endpointPath, endpointInfo, response }) {
                         response2[parentKey] = parentValue;
                     }
                     else {
-                        if (parentRule.isRequired === false && !parentValue) {
+                        if (parentInfo.isRequired === false && !parentValue) {
                             // 空欄の場合
                         }
                         else {
@@ -249,7 +255,7 @@ function _validateResponseData({ endpointPath, endpointInfo, response }) {
                     }
                     break;
                 default:
-                    throw `[${LAYER_CODE}層] API通信で使用できないデータ型です。detaType=${childRule.dataType}, endpointPath="${endpointPath}", key="${parentKey}"`;
+                    throw `[${LAYER_CODE}層] API通信で使用できないデータ型です。detaType=${childInfo.dataType}, endpointPath="${endpointPath}", key="${parentKey}"`;
             }
         }
     }

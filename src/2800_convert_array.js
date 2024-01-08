@@ -90,14 +90,14 @@ function _convertResponseData({ endpointPath, endpointInfo, response }) {
     // response を response2 に変換する
     const response2 = {};
     for (const parentKey in endpointInfo.response) {
-        const parentRule = endpointInfo.response[parentKey];
-        if (!parentRule || typeof parentRule !== 'object') {
+        const parentInfo = endpointInfo.response[parentKey];
+        if (!parentInfo || typeof parentInfo !== 'object') {
             throw `[${LAYER_CODE}層] レスポンスの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}"`;
         }
         //
         const parentValue = response[parentKey];
         //
-        if (!parentRule.isArray) {
+        if (!parentInfo.isArray) {
             // 配列ではない場合
             response2[parentKey] = parentValue;
             continue;
@@ -109,10 +109,10 @@ function _convertResponseData({ endpointPath, endpointInfo, response }) {
         if (!Array.isArray(parentValue)) {
             throw `[${LAYER_CODE}層] 想定外のレスポンスデータを返そうとしました。本来は配列です。endpointPath=${endpointPath} key=${parentKey}`;
         }
-        if (!Number.isInteger(parentRule.onePageMaxSize)) {
+        if (!Number.isInteger(parentInfo.onePageMaxSize)) {
             throw `[${LAYER_CODE}層] １ページあたりの最大表示件数が未定義です。endpointPath="${endpointPath}", key="${parentKey}.onePageMaxSize"`;
         }
-        if (parentRule.onePageMaxSize < parentValue.length) {
+        if (parentInfo.onePageMaxSize < parentValue.length) {
             throw `[${LAYER_CODE}層] 配列がサイズオーバーです。endpointPath=${endpointPath} key=${parentKey} 現在の長さ=${parentValue.length} 上限=${rule.onePageMaxSize}`;
         }
         for (let i = 0; i < parentValue.length; i++) {
@@ -122,10 +122,10 @@ function _convertResponseData({ endpointPath, endpointInfo, response }) {
             }
             const flagKey = String(parentKey) + String(i) + "_flag";
             response2[flagKey] = true;
-            if (!parentRule.children || typeof parentRule.children !== 'object') {
+            if (!parentInfo.children || typeof parentInfo.children !== 'object') {
                 throw `[${LAYER_CODE}層] レスポンスデータの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}.children"`;
             }
-            for (const childKey in parentRule.children) {
+            for (const childKey in parentInfo.children) {
                 if (childKey === "flag") {
                     throw `[${LAYER_CODE}層] レスポンスデータのKeyには、文字列「flag」を使用できません。endpointPath=${endpointPath} key=${parentKey}`;
                 }
@@ -134,19 +134,19 @@ function _convertResponseData({ endpointPath, endpointInfo, response }) {
                 response2[newKey] = childValue;
             }
         }
-        for (let i = parentValue.length; i < parentRule.onePageMaxSize; i++) {
+        for (let i = parentValue.length; i < parentInfo.onePageMaxSize; i++) {
             const flagKey = String(parentKey) + String(i) + "_flag";
             response2[flagKey] = false;
-            if (!parentRule.children || typeof parentRule.children !== 'object') {
+            if (!parentInfo.children || typeof parentInfo.children !== 'object') {
                 throw `[${LAYER_CODE}層] レスポンスデータの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}.children"`;
             }
-            for (const childKey in parentRule.children) {
+            for (const childKey in parentInfo.children) {
                 const newKey = String(parentKey) + String(i) + "_" + String(childKey);
-                const childRule = parentRule.children[childKey];
-                if (!childRule || typeof childRule !== 'object') {
+                const childInfo = parentInfo.children[childKey];
+                if (!childInfo || typeof childInfo !== 'object') {
                     throw `[${LAYER_CODE}層] レスポンスデータの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
                 }
-                switch (childRule.dataType) {
+                switch (childInfo.dataType) {
                     case "INTEGER":
                         response2[newKey] = 0;
                         break;
@@ -160,7 +160,7 @@ function _convertResponseData({ endpointPath, endpointInfo, response }) {
                         response2[newKey] = false;
                         break;
                     default:
-                        throw `[${LAYER_CODE}層] API通信で使用できないデータ型です。detaType=${childRule.dataType}, endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
+                        throw `[${LAYER_CODE}層] API通信で使用できないデータ型です。detaType=${childInfo.dataType}, endpointPath="${endpointPath}", key="${parentKey}.children.${childKey}"`;
                 }
             }
         }
@@ -198,35 +198,36 @@ async function _getEndpointInfo(parameters) {
         response: {},
     };
     for (const parentKey in endpointInfo1.response) {
-        const parentRule = endpointInfo1.response[parentKey];
-        if (!parentRule || typeof parentRule !== 'object') {
+        const parentInfo = endpointInfo1.response[parentKey];
+        if (!parentInfo || typeof parentInfo !== 'object') {
             throw `[${LAYER_CODE}層] レスポンスの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}"`;
         }
-        if (!parentRule.isArray) {
+        if (!parentInfo.isArray) {
             // 配列ではない場合
-            endpointInfo2.response[parentKey] = parentRule;
+            endpointInfo2.response[parentKey] = parentInfo;
             continue;
         }
-        if (!Number.isInteger(parentRule.onePageMaxSize)) {
+        if (!Number.isInteger(parentInfo.onePageMaxSize)) {
             throw `[${LAYER_CODE}層] １ページあたりの最大表示件数が未定義です。endpointPath="${endpointPath}", key="${parentKey}.onePageMaxSize"`;
         }
-        if (!parentRule.title) {
+        if (!parentInfo.title) {
             throw `[${LAYER_CODE}層] 配列のタイトル（日本語）が未定義です。endpointPath="${endpointPath}", key="${parentKey}.title"`;
         }
         // 配列の場合
-        for (let i = 0; i < parentRule.onePageMaxSize; i++) {
+        for (let i = 0; i < parentInfo.onePageMaxSize; i++) {
             const flagKey = String(parentKey) + String(i) + "_flag";
             endpointInfo2.response[flagKey] = {
                 "dataType": "BOOL",
                 "isRequired": true,
-                "description": `「${parentRule.title}」を表示する際に、${i}番目の項目を表示するか否か。（true...表示する。false...表示しない。）この変数は、データの件数によって変動します。また、閲覧しているデータが同一である場合でも、ページをめくることで変動します。この理由は、データベースに保存されているデータの先頭から${i}番目ではなく、画面上に表示されている項目の先頭から${i}番目だからです。`,
+                "example": (i <= 2) ? true : false,
+                "description": `「${parentInfo.title}」を表示する際に、${i}番目の項目を表示するか否か。（true...表示する。false...表示しない。）この変数は、データの件数によって変動します。また、閲覧しているデータが同一である場合でも、ページをめくることで変動します。この理由は、データベースに保存されているデータの先頭から${i}番目ではなく、画面上に表示されている項目の先頭から${i}番目だからです。`,
             };
-            if (!parentRule.children || typeof parentRule.children !== 'object') {
+            if (!parentInfo.children || typeof parentInfo.children !== 'object') {
                 throw `[${LAYER_CODE}層] レスポンスデータの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}.children"`;
             }
-            for (const childKey in parentRule.children) {
+            for (const childKey in parentInfo.children) {
                 const newKey = String(parentKey) + String(i) + "_" + String(childKey);
-                endpointInfo2.response[newKey] = parentRule.children[childKey];
+                endpointInfo2.response[newKey] = parentInfo.children[childKey];
             }
         }
     }

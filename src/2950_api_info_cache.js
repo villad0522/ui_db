@@ -1,12 +1,12 @@
 
 //###############################################################
-// 標準搭載されたAPI
+// APIの情報を提供（データ型など）
 //###############################################################
 
-import action from "./5600_frontend_app.js"; // 下層から提供されているメイン関数
+import action from "./3000_api_info.js"; // 下層から提供されているメイン関数
 
 //【定数】このJavaScriptファイルの階層番号
-const LAYER_CODE = "3000";
+const LAYER_CODE = "2950";
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
 let bugMode = 0;
@@ -31,6 +31,9 @@ export default async function (command, parameters) {
         case "LIST_ENDPOINTS":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _listEndpoints(parameters);
+        case "CLEAR_CACHE":
+            // このJavaScriptファイルの中のサブ関数を呼び出す
+            return await _clearCache(parameters);
         case "TEST_FRAMEWORK":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _testFramework(parameters);
@@ -41,60 +44,46 @@ export default async function (command, parameters) {
     }
 }
 
-const endpoints = {
-    "/default/list_table": {
-        "queryParameters": {
-
-        },
-        "requestBody": {
-
-        },
-        "response": {
-            "main": {
-                "title": "テーブル一覧",
-                "isArray": true,
-                "onePageMaxSize": 35,
-                "children": {
-                    "id": {
-                        "dataType": "INTEGER",
-                        "description": "テーブルのID",
-                    },
-                    "name": {
-                        "dataType": "TEXT",
-                        "description": "テーブル名",
-                    },
-                }
-            },
-            "main_total": {
-                "dataType": "INTEGER",
-                "description": "テーブルの個数",
-            },
-        },
-        "commands": {
-
-        },
-    },
-};
+//【グローバル変数】キャッシュデータ
+const endpointInfo = {};
+let endpointList = null;
 
 //【サブ関数】エンドポイントの情報を取得
 async function _getEndpointInfo(parameters) {
-    if (!parameters?.endpointPath) {
-        throw `[${LAYER_CODE}層] パラメーター「endpointPath」がNULLです`;
+    const endpointPath = String(parameters?.endpointPath);
+    if (endpointInfo[endpointPath]) {
+        // キャッシュデータが残っていた場合
+        return endpointInfo[endpointPath];
     }
-    if (typeof parameters?.endpointPath !== "string" && !(parameters?.endpointPath instanceof String)) {
-        throw `[${LAYER_CODE}層] パラメーター「endpointPath」が文字列ではありません`;
+    else {
+        const data = await action("GET_ENDPOINT_INFO", parameters);   // 下層の関数を呼び出す
+        //
+        // 次回のためにデータを残しておく
+        endpointInfo[endpointPath] = data;
+        return data;
     }
-    const endpointPath = parameters.endpointPath;
-    const endpointInfo = endpoints[endpointPath];
-    if (!endpointInfo) {
-        throw `[${LAYER_CODE}層] エンドポイントが存在しません。endpointPath=${endpointPath}`;
-    }
-    return endpointInfo;
 }
 
 //【サブ関数】エンドポイントの一覧を取得
 async function _listEndpoints(parameters) {
-    return null;
+    if (endpointList) {
+        // キャッシュデータが残っていた場合
+        return endpointList;
+    }
+    else {
+        const data = await action("LIST_ENDPOINTS", parameters);   // 下層の関数を呼び出す
+        //
+        // 次回のためにデータを残しておく
+        endpointList = data;
+        return data;
+    }
+}
+
+//【サブ関数】インメモリキャッシュを削除
+async function _clearCache(parameters) {
+    endpointInfo = {};
+    endpointList = null;
+    await action("CLEAR_CACHE", parameters);   // 下層の関数を呼び出す
 }
 
 //###############################################################

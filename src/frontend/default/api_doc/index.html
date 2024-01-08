@@ -12,22 +12,23 @@
         <!-- bootstrapのドキュメントはこちら -->
         <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->
         <!--  -->
+        <link rel="stylesheet" href="./style.css" type="text/css">
+        <script src="script.js" defer></script>
     </head>
 
     <body style="background: #eee;">
+        <header style="position: sticky; top: 0; padding: 5px; width: max-content; box-sizing: border-box; background: #eee; z-index: 999;">
+            <a href="../" class="btn btn-outline-primary">
+                戻る
+            </a>
+        </header>
         <main class="container">
             <br>
+            <h3>APIエンドポイント一覧</h3>
             <br>
-            <h3>システム管理</h3>
-            <br>
-            <a href="/default/list_table/" class="btn btn-primary">
-                テーブル一覧
-            </a>
+            <div id="my_list"></div>
             <br>
             <br>
-            <a href="/default/api_doc/" class="btn btn-primary">
-                API仕様書
-            </a>
         </main>
     </body>
 

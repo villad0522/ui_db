@@ -1,26 +1,48 @@
 
 //###############################################################
-
 // 初期データを読み込む関数
 async function load() {
     // サーバーと通信する
     const response = await window.fetch(
-        "./json_data" + location.search,
+        "./form" + location.search,
         {
             method: "GET",
             cache: "no-store",
         }
     );
-    if (response.status === 500) {
+    if ((200 <= response.status && response.status <= 299) || (response.status === 400)) {
+        // 成功 または リクエストが正しくない
+        const contentType = response.headers.get("content-type");
+        console.log(contentType);
+        if (String(contentType).includes("text/plain")) {
+            alert(await response.text());
+        }
+        else if (String(contentType).includes("application/json")) {
+            const jsonData = await response.json();
+            if (jsonData.userMessage) {
+                alert(jsonData.userMessage);
+            }
+            if (jsonData.nextUrl) {
+                location.href = jsonData.nextUrl;
+            }
+        }
+        else if (String(contentType).includes("multipart/form-data")) {
+            const formData = await response.formData();
+            _setFormData(formData); // フォームデータを画面に反映させる
+        }
+        else if (String(contentType).includes("application/x-www-form-urlencoded")) {
+            const formData = await response.formData();
+            _setFormData(formData); // フォームデータを画面に反映させる
+        }
+    }
+    else if (response.status === 500) {
+        // サーバーサイドに起因するエラー
         alert(await response.text());
-        return;
     }
-    else if (response.status !== 200) {
+    else {
+        // その他
         alert(`${response.status}: ${response.statusText}`);
-        return;
     }
-    const formData = await response.formData();
-    _setFormData(formData); // フォームデータを画面に反映させる
 }
 
 // ページを読み込んだら、はじめに実行する
@@ -57,88 +79,6 @@ function _setFormData(formData) {
 }
 //
 //###############################################################
-// 「表の名前を変更」ボタンがクリックされたときに実行する関数
-function renameButton() {
-    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
-    window.location.href = "./rename.html" + window.location.search;
-}
-//
-//###############################################################
-// テーブルがクリックされたときに実行する関数
-function tableButton(i) {
-    // テーブル名
-    let tableId = document.getElementsByName(`main${i}_id`)[0].value;
-    //
-    // 別のページに移動する
-    tableId = encodeURIComponent(tableId);
-    window.location.href = `../list_record.html?table=${tableId}`;
-}
-//
-//###############################################################
-// コピーボタンがクリックされたときに実行する関数
-async function copyButton(number) {
-    // HTML要素のname属性
-    const elementName = "mainArrayId" + number;
-    //
-    // テーブル名
-    const tableName = document.getElementsByName(elementName)[0].value;
-    //
-    // サーバーと通信する
-    const response = await window.fetch(
-        "/copy_table/json_data",
-        {
-            method: "POST",
-            cache: "no-store",
-            body: {
-                tableName: tableName,
-            },
-        }
-    );
-    if (response.status === 500) {
-        alert(await response.text());
-        return;
-    }
-    else if (response.status !== 200) {
-        alert(`${response.status}: ${response.statusText}`);
-        return;
-    }
-    alert(await response.text());
-    location.reload();
-}
-//
-//###############################################################
-// 削除ボタンがクリックされたときに実行する関数
-async function deleteButton(number) {
-    // HTML要素のname属性
-    const elementName = "mainArrayId" + number;
-    //
-    // テーブル名
-    const tableName = document.getElementsByName(elementName)[0].value;
-    //
-    // サーバーと通信する
-    const response = await window.fetch(
-        "/delete_table/json_data",
-        {
-            method: "POST",
-            cache: "no-store",
-            body: {
-                tableName: tableName,
-            },
-        }
-    );
-    if (response.status === 500) {
-        alert(await response.text());
-        return;
-    }
-    else if (response.status !== 200) {
-        alert(`${response.status}: ${response.statusText}`);
-        return;
-    }
-    alert(await response.text());
-    location.reload();
-}
-//
-//###############################################################
 // 一か所でも編集されたかどうかを記録する変数
 let isEdit = false;
 //
@@ -164,10 +104,75 @@ function backButton() {
 }
 //
 //###############################################################
+// 「表の名前を変更」ボタンがクリックされたときに実行する関数
+function renameButton() {
+    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
+    window.location.href = "./rename.html" + window.location.search;
+}
+//
+//###############################################################
+// テーブルがクリックされたときに実行する関数
+function tableButton(i) {
+    // テーブル名
+    let tableId = document.getElementsByName(`main${i}_id`)[0].value;
+    //
+    // 別のページに移動する
+    tableId = encodeURIComponent(tableId);
+    window.location.href = `../list_record.html?table=${tableId}`;
+}
+//
+//###############################################################
 // 「キャンセル」ボタンがクリックされたときに実行する関数
 function cancelButton() {
     // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
     window.location.href = "./index.html" + window.location.search;
+}
+//
+//###############################################################
+// 「決定」ボタンがクリックされたときに実行する関数
+async function submitButton() {
+    // サーバーと通信する
+    const response = await window.fetch(
+        "./form" + location.search,
+        {
+            method: "POST",
+            cache: "no-store",
+            body: new FormData(document.forms[0]),
+        }
+    );
+    if ((200 <= response.status && response.status <= 299) || (response.status === 400)) {
+        // 成功 または リクエストが正しくない
+        const contentType = response.headers.get("content-type");
+        console.log(contentType);
+        if (String(contentType).includes("text/plain")) {
+            alert(await response.text());
+        }
+        else if (String(contentType).includes("application/json")) {
+            const jsonData = await response.json();
+            if (jsonData.userMessage) {
+                alert(jsonData.userMessage);
+            }
+            if (jsonData.nextUrl) {
+                location.href = jsonData.nextUrl;
+            }
+        }
+        else if (String(contentType).includes("multipart/form-data")) {
+            const formData = await response.formData();
+            _setFormData(formData); // フォームデータを画面に反映させる
+        }
+        else if (String(contentType).includes("application/x-www-form-urlencoded")) {
+            const formData = await response.formData();
+            _setFormData(formData); // フォームデータを画面に反映させる
+        }
+    }
+    else if (response.status === 500) {
+        // サーバーサイドに起因するエラー
+        alert(await response.text());
+    }
+    else {
+        // その他
+        alert(`${response.status}: ${response.statusText}`);
+    }
 }
 //
 //###############################################################

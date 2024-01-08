@@ -184,50 +184,59 @@ async function _getEndpointInfo(parameters) {
         endpointInfo.response[String(parentKey) + "_pageFirst_flag"] = {
             "dataType": "BOOL",
             "isRequired": true,
+            "example": true,
             "description": `「${parentRule.title}」を表示する際に「先頭ページにジャンプする」ボタンを表示するか否か。（true...ボタンを表示する。false...ボタンを表示しない。）この変数は、ページをめくることで変動します。例えば、先頭ページを表示しているときにはfalseになります。`,
         };
         //
         endpointInfo.response[String(parentKey) + "_pagePrev_flag"] = {
             "dataType": "BOOL",
             "isRequired": true,
+            "example": true,
             "description": `「${parentRule.title}」を表示する際に「１つ前のページに戻る」ボタンを表示するか否か。（true...ボタンを表示する。false...ボタンを表示しない。）この変数は、ページをめくることで変動します。例えば、先頭ページを表示しているときにはfalseになります。`,
         };
         endpointInfo.response[String(parentKey) + "_pagePrev"] = {
             "dataType": "INTEGER",
             "isRequired": true,
+            "example": 2,
             "description": `「${parentRule.title}」を表示する際の、１つ前のページのページ番号。例えば、５ページめを表示しているときは「4」です。`,
         };
         //
         endpointInfo.response[String(parentKey) + "_pageNow_flag"] = {
             "dataType": "BOOL",
             "isRequired": true,
+            "example": true,
             "description": `「${parentRule.title}」を表示する際に、現在のページ番号を表示するか否か。（true...表示する。false...表示しない。）全部で１ページしか存在しない場合はfalseになります。`,
         };
         endpointInfo.response[String(parentKey) + "_pageNow"] = {
             "dataType": "INTEGER",
             "isRequired": true,
+            "example": 3,
             "description": `「${parentRule.title}」を表示する際の、現在のページ番号。`,
         };
         //
         endpointInfo.response[String(parentKey) + "_pageNext_flag"] = {
             "dataType": "BOOL",
             "isRequired": true,
+            "example": true,
             "description": `「${parentRule.title}」を表示する際に「次のページに進む」ボタンを表示するか否か。（true...ボタンを表示する。false...ボタンを表示しない。）この変数は、ページをめくることで変動します。例えば、最終ページを表示しているときにはfalseになります。`,
         };
         endpointInfo.response[String(parentKey) + "_pageNext"] = {
             "dataType": "INTEGER",
             "isRequired": true,
+            "example": 4,
             "description": `「${parentRule.title}」を表示する際の、次のページのページ番号。例えば、５ページめを表示しているときは「6」です。`,
         };
         //
         endpointInfo.response[String(parentKey) + "_pageLast_flag"] = {
             "dataType": "BOOL",
             "isRequired": true,
+            "example": false,
             "description": `「${parentRule.title}」を表示する際に「最終ページにジャンプする」ボタンを表示するか否か。（true...ボタンを表示する。false...ボタンを表示しない。）この変数は、ページをめくることで変動します。例えば、最終ページを表示しているときにはfalseになります。`,
         };
         endpointInfo.response[String(parentKey) + "_pageLast"] = {
             "dataType": "INTEGER",
             "isRequired": true,
+            "example": 4,
             "description": `「${parentRule.title}」を表示する際の、最後のページのページ番号。`,
         };
     }
