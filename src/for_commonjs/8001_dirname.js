@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = getDirName;
 //【サブ関数】実行中のパスを取得する関数
 function getDirName() {
-    return __dirname;
+    return process.cwd();
 }
 
 // このファイルは、babelによるトランスパイルの直前に置き換えられます。

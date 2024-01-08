@@ -219,7 +219,7 @@ async function _getEndpointInfo(parameters) {
             endpointInfo2.response[flagKey] = {
                 "dataType": "BOOL",
                 "isRequired": true,
-                "example": (i <= 2) ? true : false,
+                "example": (i === 0) ? true : false,
                 "description": `「${parentInfo.title}」を表示する際に、${i}番目の項目を表示するか否か。（true...表示する。false...表示しない。）この変数は、データの件数によって変動します。また、閲覧しているデータが同一である場合でも、ページをめくることで変動します。この理由は、データベースに保存されているデータの先頭から${i}番目ではなく、画面上に表示されている項目の先頭から${i}番目だからです。`,
             };
             if (!parentInfo.children || typeof parentInfo.children !== 'object') {

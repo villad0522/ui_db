@@ -40,157 +40,24 @@ export async function main({ isDebug }) {
     app.use('/custom', express.static(customDirPath));
     app.use('/default', express.static(defaultDirPath));
     const customFilePath = path.join(customDirPath, "index.html");
-    const defaultFilePath = path.join(defaultDirPath, "index.html");
     //============================================================
     app.get('/', async (req, res) => {
         if (fs.existsSync(customFilePath)) {
-            // appフォルダの中に「index.html」が存在する場合
-            res.sendFile(customFilePath);   // 「./src/frontend/custom/index.html」を返す
+            // ./src/frontend/custom/index.html が存在する場合
+            res.redirect("/custom");
         }
         else {
-            // appフォルダの中に「index.html」が存在しない場合
-            res.sendFile(defaultFilePath);   // 代わりに「./src/frontend/default/index.html」を返す
-        }
-    });
-    //============================================================
-    app.get('*/json', async (req, res) => {
-        try {
-            // 処理本体を実行する
-            const responseData = await action(
-                "RUN_API",
-                {
-                    httpMethod: "GET",
-                    endpointPath: String(req.path).replace("/json", ""),
-                    requestBody: {},
-                    queryParameters: req.query,
-                    isRequestFormData: false,   // リクエストがFormData形式ならtrue、JSON形式ならfalse
-                    isResponseFormData: false,  // レスポンスがFormData形式ならtrue、JSON形式ならfalse
-                },
-            );
-            // Content-Typeヘッダを設定してレスポンスを送信
-            res.header('Content-Type', 'application/json');
-            res.send(responseData);
-        }
-        catch (err) {
-            console.error(String(err));
-            res.status(500).send(String(err));
-        }
-    });
-    //============================================================
-    app.get('*/form', async (req, res) => {
-        try {
-            // 処理本体を実行する
-            const responseData = await action(
-                "RUN_API",
-                {
-                    httpMethod: "GET",
-                    endpointPath: String(req.path).replace("/form", ""),
-                    requestBody: {},
-                    queryParameters: req.query,
-                    isRequestFormData: false,   // リクエストがFormData形式ならtrue、JSON形式ならfalse
-                    isResponseFormData: true,  // レスポンスがFormData形式ならtrue、JSON形式ならfalse
-                },
-            );
-            // FormData形式に変換
-            const formData = new URLSearchParams(responseData).toString();
-            // Content-Typeヘッダを設定してレスポンスを送信
-            res.header('Content-Type', 'application/x-www-form-urlencoded');
-            res.send(formData);
-        }
-        catch (err) {
-            console.error(String(err));
-            res.status(500).send(String(err));
-        }
-    });
-    //============================================================
-    app.post('*/json', async (req, res) => {
-        try {
-            // Content-Typeを抽出
-            const contentType = req.headers['content-type'];
-            if (String(contentType).includes("multipart/form-data")) {
-                isRequestFormData = true;
-            }
-            else if (String(contentType).includes("application/x-www-form-urlencoded")) {
-                isRequestFormData = true;
-            }
-            else if (String(contentType).includes("application/json")) {
-                isRequestFormData = false;
-            }
-            else {
-                console.error(`サポートしていないメディアタイプを受け取りました。content-type="${contentType}"`);
-                res.status(415).send(`サポートしていないメディアタイプを受け取りました。content-type="${contentType}"`);
-                return;
-            }
-            // 処理本体を実行する
-            const responseData = await action(
-                "RUN_API",
-                {
-                    httpMethod: "POST",
-                    endpointPath: String(req.path).replace("/json", ""),
-                    requestBody: req.body,
-                    queryParameters: req.query,
-                    isRequestFormData: isRequestFormData, // リクエストがFormData形式ならtrue、JSON形式ならfalse
-                    isResponseFormData: false,  // レスポンスがFormData形式ならtrue、JSON形式ならfalse
-                },
-            );
-            // Content-Typeヘッダを設定してレスポンスを送信
-            res.header('Content-Type', 'application/json');
-            res.send(responseData);
-        }
-        catch (err) {
-            console.error(String(err));
-            res.status(500).send(String(err));
-        }
-    });
-    //============================================================
-    app.post('*/form', async (req, res) => {
-        try {
-            // Content-Typeを抽出
-            const contentType = req.headers['content-type'];
-            let isRequestFormData;
-            if (String(contentType).includes("multipart/form-data")) {
-                isRequestFormData = true;
-            }
-            else if (String(contentType).includes("application/x-www-form-urlencoded")) {
-                isRequestFormData = true;
-            }
-            else if (String(contentType).includes("application/json")) {
-                isRequestFormData = false;
-            }
-            else {
-                console.error(`サポートしていないメディアタイプを受け取りました。content-type="${contentType}"`);
-                res.status(415).send(`サポートしていないメディアタイプを受け取りました。content-type="${contentType}"`);
-                return;
-            }
-            // 処理本体を実行する
-            const responseData = await action(
-                "RUN_API",
-                {
-                    httpMethod: "POST",
-                    endpointPath: String(req.path).replace("/form", ""),
-                    requestBody: req.body,
-                    queryParameters: req.query,
-                    isRequestFormData: isRequestFormData, // リクエストがFormData形式ならtrue、JSON形式ならfalse
-                    isResponseFormData: true,  // レスポンスがFormData形式ならtrue、JSON形式ならfalse
-                },
-            );
-            // FormData形式に変換
-            const formData = new URLSearchParams(responseData).toString();
-            // Content-Typeヘッダを設定してレスポンスを送信
-            res.header('Content-Type', 'application/x-www-form-urlencoded');
-            res.send(formData);
-        }
-        catch (err) {
-            console.error(String(err));
-            res.status(500).send(String(err));
+            // ./src/frontend/custom/index.html が存在しない場合
+            res.redirect("/default");
         }
     });
     //============================================================
     if (isDebug === false) {
-        opener(localUrl);
+        opener("http://" + addressInfo.address + ":" + addressInfo.port + "/default");
     }
 }
 
+//============================================================
 function _launchServer(app, hostname, startPort, maxPort) {
     return new Promise((resolve, reject) => {
         let port = startPort;
@@ -213,7 +80,140 @@ function _launchServer(app, hostname, startPort, maxPort) {
         })
     })
 }
-
+//============================================================
+app.get('*/json', async (req, res) => {
+    try {
+        // 処理本体を実行する
+        const responseData = await action(
+            "RUN_API",
+            {
+                httpMethod: "GET",
+                endpointPath: String(req.path).replace("/json", ""),
+                requestBody: {},
+                queryParameters: req.query,
+                isRequestFormData: false,   // リクエストがFormData形式ならtrue、JSON形式ならfalse
+                isResponseFormData: false,  // レスポンスがFormData形式ならtrue、JSON形式ならfalse
+            },
+        );
+        // Content-Typeヘッダを設定してレスポンスを送信
+        res.header('Content-Type', 'application/json');
+        res.send(responseData);
+    }
+    catch (err) {
+        console.error(String(err));
+        res.status(500).send(String(err));
+    }
+});
+//============================================================
+app.get('*/form', async (req, res) => {
+    try {
+        // 処理本体を実行する
+        const responseData = await action(
+            "RUN_API",
+            {
+                httpMethod: "GET",
+                endpointPath: String(req.path).replace("/form", ""),
+                requestBody: {},
+                queryParameters: req.query,
+                isRequestFormData: false,   // リクエストがFormData形式ならtrue、JSON形式ならfalse
+                isResponseFormData: true,  // レスポンスがFormData形式ならtrue、JSON形式ならfalse
+            },
+        );
+        // FormData形式に変換
+        const formData = new URLSearchParams(responseData).toString();
+        // Content-Typeヘッダを設定してレスポンスを送信
+        res.header('Content-Type', 'application/x-www-form-urlencoded');
+        res.send(formData);
+    }
+    catch (err) {
+        console.error(String(err));
+        res.status(500).send(String(err));
+    }
+});
+//============================================================
+app.post('*/json', async (req, res) => {
+    try {
+        // Content-Typeを抽出
+        const contentType = req.headers['content-type'];
+        if (String(contentType).includes("multipart/form-data")) {
+            isRequestFormData = true;
+        }
+        else if (String(contentType).includes("application/x-www-form-urlencoded")) {
+            isRequestFormData = true;
+        }
+        else if (String(contentType).includes("application/json")) {
+            isRequestFormData = false;
+        }
+        else {
+            console.error(`サポートしていないメディアタイプを受け取りました。content-type="${contentType}"`);
+            res.status(415).send(`サポートしていないメディアタイプを受け取りました。content-type="${contentType}"`);
+            return;
+        }
+        // 処理本体を実行する
+        const responseData = await action(
+            "RUN_API",
+            {
+                httpMethod: "POST",
+                endpointPath: String(req.path).replace("/json", ""),
+                requestBody: req.body,
+                queryParameters: req.query,
+                isRequestFormData: isRequestFormData, // リクエストがFormData形式ならtrue、JSON形式ならfalse
+                isResponseFormData: false,  // レスポンスがFormData形式ならtrue、JSON形式ならfalse
+            },
+        );
+        // Content-Typeヘッダを設定してレスポンスを送信
+        res.header('Content-Type', 'application/json');
+        res.send(responseData);
+    }
+    catch (err) {
+        console.error(String(err));
+        res.status(500).send(String(err));
+    }
+});
+//============================================================
+app.post('*/form', async (req, res) => {
+    try {
+        // Content-Typeを抽出
+        const contentType = req.headers['content-type'];
+        let isRequestFormData;
+        if (String(contentType).includes("multipart/form-data")) {
+            isRequestFormData = true;
+        }
+        else if (String(contentType).includes("application/x-www-form-urlencoded")) {
+            isRequestFormData = true;
+        }
+        else if (String(contentType).includes("application/json")) {
+            isRequestFormData = false;
+        }
+        else {
+            console.error(`サポートしていないメディアタイプを受け取りました。content-type="${contentType}"`);
+            res.status(415).send(`サポートしていないメディアタイプを受け取りました。content-type="${contentType}"`);
+            return;
+        }
+        // 処理本体を実行する
+        const responseData = await action(
+            "RUN_API",
+            {
+                httpMethod: "POST",
+                endpointPath: String(req.path).replace("/form", ""),
+                requestBody: req.body,
+                queryParameters: req.query,
+                isRequestFormData: isRequestFormData, // リクエストがFormData形式ならtrue、JSON形式ならfalse
+                isResponseFormData: true,  // レスポンスがFormData形式ならtrue、JSON形式ならfalse
+            },
+        );
+        // FormData形式に変換
+        const formData = new URLSearchParams(responseData).toString();
+        // Content-Typeヘッダを設定してレスポンスを送信
+        res.header('Content-Type', 'application/x-www-form-urlencoded');
+        res.send(formData);
+    }
+    catch (err) {
+        console.error(String(err));
+        res.status(500).send(String(err));
+    }
+});
+//============================================================
 // 終了時の処理
 // kill
 process.on('SIGTERM', async () => await endProcess());
@@ -245,3 +245,4 @@ function _closeServer(server) {
         });
     });
 }
+//============================================================

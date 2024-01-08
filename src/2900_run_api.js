@@ -31,10 +31,35 @@ export default async function (command, parameters) {
         case "TEST_FRAMEWORK":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _testFramework(parameters);
-        default:
-            // 下層のメイン関数を呼び出す
-            // （下層の機能をそのまま上層に提供する）
+        case "GET_ENDPOINT_INFO":
+            // 下層のメイン関数を呼び出す（下層の機能をそのまま上層に提供する）
             return await action(command, parameters);
+        case "LIST_ENDPOINTS":
+            // 下層のメイン関数を呼び出す（下層の機能をそのまま上層に提供する）
+            return await action(command, parameters);
+        case "START_UP":
+            // 下層のメイン関数を呼び出す（下層の機能をそのまま上層に提供する）
+            return await action(command, parameters);
+        case "CLOSE":
+            // 下層のメイン関数を呼び出す（下層の機能をそのまま上層に提供する）
+            return await action(command, parameters);
+        case "START_TRANSACTION":
+            // 下層のメイン関数を呼び出す（下層の機能をそのまま上層に提供する）
+            return await action(command, parameters);
+        case "END_TRANSACTION":
+            // 下層のメイン関数を呼び出す（下層の機能をそのまま上層に提供する）
+            return await action(command, parameters);
+        case "GET_PATH":
+            // 下層のメイン関数を呼び出す（下層の機能をそのまま上層に提供する）
+            return await action(command, parameters);
+        case "GET_LOCAL_IP":
+            // 下層のメイン関数を呼び出す（下層の機能をそのまま上層に提供する）
+            return await action(command, parameters);
+        case "GET_LOCAL_URL":
+            // 下層のメイン関数を呼び出す（下層の機能をそのまま上層に提供する）
+            return await action(command, parameters);
+        default:
+            throw `[${LAYER_CODE}層] サポートしていないコマンド「${command}」が呼び出されました。`;
     }
 }
 
@@ -48,15 +73,37 @@ async function _runApi(parameters) {
         throw `[${LAYER_CODE}層] パラメーター「endpointPath」が文字列ではありません`;
     }
     const endpointPath = parameters.endpointPath;
-    return {
-        "main": [
+    const endpointInfo = await action("GET_ENDPOINT_INFO", { endpointPath });
+    let allResults = {};
+    if (!Array.isArray(endpointInfo?.commands)) {
+        throw `[${LAYER_CODE}層] 配列「commands」が定義されていません。endpointPath="${endpointPath}"`;
+    }
+    for (const commandInfo of endpointInfo.commands) {
+        if (!commandInfo?.commandName) {
+            throw `[${LAYER_CODE}層] commands[?].commandName が定義されていません。endpointPath="${endpointPath}"`;
+        }
+        const result = await action(
+            commandInfo.commandName,
             {
-                "id": 56,
-                "name": "表の名前",
+                ...parameters.queryParameters,
+                ...parameters.requestBody,
+                ...commandInfo.additionalParameters,
             },
-        ],
-        "main_total": 320,
-    };
+        );
+        if (typeof result !== "object") {
+            throw `[${LAYER_CODE}層] コマンド「${commandInfo.commandName}」の実行結果がオブジェクト形式ではありません"`;
+        }
+        for (const key in result) {
+            if (allResults[key]) {
+                console.error(`[${LAYER_CODE}層] コマンド「${commandInfo.commandName}」の実行結果のうち、項目「${key}」が他のコマンドの実行結果と競合しています。`);
+            }
+        }
+        allResults = {
+            ...allResults,
+            result,
+        };
+    }
+    return allResults;
 }
 
 //###############################################################

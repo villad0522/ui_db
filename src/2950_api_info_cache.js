@@ -53,7 +53,8 @@ async function _getEndpointInfo(parameters) {
     const endpointPath = String(parameters?.endpointPath);
     if (endpointInfo[endpointPath]) {
         // キャッシュデータが残っていた場合
-        return endpointInfo[endpointPath];
+        // ディープコピーして返す
+        return structuredClone(endpointInfo[endpointPath]);
     }
     else {
         const data = await action("GET_ENDPOINT_INFO", parameters);   // 下層の関数を呼び出す
@@ -68,7 +69,8 @@ async function _getEndpointInfo(parameters) {
 async function _listEndpoints(parameters) {
     if (endpointList) {
         // キャッシュデータが残っていた場合
-        return endpointList;
+        // ディープコピーして返す
+        return structuredClone(endpointList);
     }
     else {
         const data = await action("LIST_ENDPOINTS", parameters);   // 下層の関数を呼び出す

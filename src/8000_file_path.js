@@ -45,28 +45,35 @@ export default async function (command, parameters) {
 }
 
 // 【前提条件】
-//  ・開発環境の場合は、コマンドライン引数の１番目に「--dev」を指定する。package.jsonのstartコマンドを参照してください。
-//  ・本番環境の場合は、コマンドライン引数に何も指定しない。
 //  ・開発環境のカレントディレクトリは、C://..../ui_db/
 //  ・本番環境のカレントディレクトリは、C://..../ui_db/build/
 
 //【サブ関数】プログラム起動
 async function _startUp(parameters) {
+    //
+    if (_isDevelop() === false) {
+        // 本番環境の場合
+        const exeFilePath = path.join(getDirName(), 'office_system.exe');
+        if (!fs.existsSync(exeFilePath)) {
+            throw `[${LAYER_CODE}層] カレントディレクトリが不正です。exeファイルと同じ場所から起動してください。`;
+        }
+    }
+    //
     await action("START_UP", parameters);   // 下層の関数を呼び出す
     //
     const frontendPath = await _getPath({ directoryCode: "FRONTEND" });
     if (!fs.existsSync(frontendPath)) {
-        fs.mkdirSync(frontendPath);   // フォルダが存在しなかったら、作成する
+        await _mkdir(frontendPath);   // フォルダが存在しなかったら、作成する
     }
     //
     const frontendCustomPath = await _getPath({ directoryCode: "FRONTEND_CUSTOM" });
     if (!fs.existsSync(frontendCustomPath)) {
-        fs.mkdirSync(frontendCustomPath);   // フォルダが存在しなかったら、作成する
+        await _mkdir(frontendCustomPath);   // フォルダが存在しなかったら、作成する
     }
     //
     const frontendDefaultPath = await _getPath({ directoryCode: "FRONTEND_DEFAULT" });
     if (!fs.existsSync(frontendDefaultPath)) {
-        fs.mkdirSync(frontendDefaultPath);   // フォルダが存在しなかったら、作成する
+        await _mkdir(frontendDefaultPath);   // フォルダが存在しなかったら、作成する
     }
     //
     const staticPath = await _getPath({ directoryCode: "STATIC_DATA" });
@@ -76,12 +83,12 @@ async function _startUp(parameters) {
     //
     const cachePath = await _getPath({ directoryCode: "CACHE" });
     if (!fs.existsSync(cachePath)) {
-        fs.mkdirSync(cachePath);   // フォルダが存在しなかったら、作成する
+        await _mkdir(cachePath);   // フォルダが存在しなかったら、作成する
     }
     //
     const saveDataPath = await _getPath({ directoryCode: "SAVEDATA" });
     if (!fs.existsSync(saveDataPath)) {
-        fs.mkdirSync(saveDataPath);   // フォルダが存在しなかったら、作成する
+        await _mkdir(saveDataPath);   // フォルダが存在しなかったら、作成する
     }
     //
     const documentPath = "C:\\Users\\Public\\Documents";
@@ -91,7 +98,16 @@ async function _startUp(parameters) {
     //
     const sharePath = await _getPath({ directoryCode: "SHARE" });
     if (!fs.existsSync(sharePath)) {
-        fs.mkdirSync(sharePath);   // フォルダが存在しなかったら、作成する
+        await _mkdir(sharePath);   // フォルダが存在しなかったら、作成する
+    }
+}
+
+async function _mkdir(path) {
+    try {
+        await fs.promises.mkdir(path);
+    }
+    catch (err) {
+        throw `[${LAYER_CODE}層] フォルダを作成できませんでした。${path}`;
     }
 }
 
@@ -164,14 +180,13 @@ async function _getPath(parameters) {
 
 //【サブ関数】開発環境か本番環境かを判別する関数
 function _isDevelop() {
-    // もしコマンドライン引数が存在したら
-    if (process.argv.length > 2) {
-        if (bugMode === 9) return false;  // 意図的にバグを混入させる（ミューテーション解析）
-        return true;    // 開発環境
-    }
-    else {
+    if (process.pkg) {
         if (bugMode === 10) return true;  // 意図的にバグを混入させる（ミューテーション解析）
         return false;   // 本番環境
+    }
+    else {
+        if (bugMode === 9) return false;  // 意図的にバグを混入させる（ミューテーション解析）
+        return true;    // 開発環境
     }
 }
 

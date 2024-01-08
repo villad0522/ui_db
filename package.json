@@ -5,15 +5,16 @@
   "bin": "./prebuild/0050_main.js",
   "type": "module",
   "scripts": {
-    "start": "node ./src/0050_main.js --dev",
-    "test": "node ./src/0000_test.js --dev",
-    "build": "npm run build:1 && npm run build:2 && npm run build:3 && npm run build:4 && npm run build:5 && npm run build:6",
+    "start": "node ./src/0050_main.js",
+    "test": "node ./src/0000_test.js",
+    "build": "npm run build:1 && npm run build:2 && npm run build:3 && npm run build:4 && npm run build:5 && npm run build:6 && npm run build:7",
     "build:1": "rimraf ./prebuild & rimraf ./build/office_system.exe & rimraf ./build/frontend & rimraf ./build/static_data/light & rimraf ./build/cache",
     "build:2": "node ./copy_files.mjs ./src/static_data/light ./build/static_data/light",
-    "build:3": "node ./copy_files.mjs ./src/for_commonjs ./prebuild",
-    "build:4": "babel ./src --config-file ./babel.config.json --out-dir ./prebuild",
-    "build:5": "pkg package.json",
-    "build:6": "rimraf ./prebuild"
+    "build:3": "node ./copy_files.mjs ./src/frontend/default ./build/frontend/default",
+    "build:4": "node ./copy_files.mjs ./src/for_commonjs ./prebuild",
+    "build:5": "babel ./src --config-file ./babel.config.json --out-dir ./prebuild",
+    "build:6": "pkg package.json",
+    "build:7": "rimraf ./prebuild"
   },
   "author": "",
   "license": "ISC",
