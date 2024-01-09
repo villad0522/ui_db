@@ -1,0 +1,13 @@
+/* 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される */
+.flag+* {
+    display: none;
+}
+
+.flag:checked+* {
+    display: block;
+}
+
+/* テーブル名を表示するinput要素 */
+.card-title>input {
+    font-weight: bold;
+}

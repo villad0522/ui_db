@@ -1,19 +1,19 @@
 {
     "httpMethod": "POST",
-    "description": "キャッシュデータを削除します。",
+    "description": "データベースに再接続します。",
     "queryParameters": {},
     "requestBody": {},
     "response": {
         "userMessage": {
             "dataType": "TEXT",
             "description": "完了メッセージ",
-            "example": "9層までのキャッシュデータを削除しました。"
+            "example": "再接続しました。"
         }
     },
     "commands": [
         {
             "resultNameSpace": "",
-            "commandName": "CLEAR_CACHE",
+            "commandName": "START_UP",
             "additionalParameters": {}
         }
     ]

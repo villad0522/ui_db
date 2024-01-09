@@ -3,7 +3,7 @@
 // バリデーションチェック（外部キー制約以外）（設定をいつでも変更可）
 //###############################################################
 
-import action from "./6800_disable_table.js"; // 下層から提供されているメイン関数
+import action from "./7000_sql_log.js"; // 下層から提供されているメイン関数
 
 //【定数】このJavaScriptファイルの階層番号
 const LAYER_CODE = "6700";
@@ -67,9 +67,6 @@ export default async function (command, parameters) {
         case "BACKUP_TABLE":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _backupTable(parameters);
-        case "CREATE_TABLE":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _createTable(parameters);
         case "LIST_BRANCHES":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _listBranches(parameters);
@@ -229,11 +226,6 @@ async function _rebuildDictionary(parameters) {
 
 //【サブ関数】テーブルを丸ごとバックアップ
 async function _backupTable(parameters) {
-    return null;
-}
-
-//【サブ関数】テーブルを作成
-async function _createTable(parameters) {
     return null;
 }
 

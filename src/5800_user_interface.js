@@ -67,9 +67,6 @@ export default async function (command, parameters) {
         case "BACKUP_TABLE":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _backupTable(parameters);
-        case "CREATE_TABLE":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _createTable(parameters);
         case "LIST_BRANCHES":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _listBranches(parameters);
@@ -253,10 +250,6 @@ async function _backupTable(parameters) {
     return null;
 }
 
-//【サブ関数】テーブルを作成
-async function _createTable(parameters) {
-    return null;
-}
 
 //【サブ関数】変更履歴の分岐先を取得
 async function _listBranches(parameters) {

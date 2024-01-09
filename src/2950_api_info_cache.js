@@ -61,7 +61,7 @@ async function _getEndpointInfo(parameters) {
         //
         // 次回のためにデータを残しておく
         endpointInfo[endpointPath] = data;
-        return data;
+        return structuredClone(data);
     }
 }
 
@@ -77,7 +77,7 @@ async function _listEndpoints(parameters) {
         //
         // 次回のためにデータを残しておく
         endpointList = data;
-        return data;
+        return structuredClone(data);
     }
 }
 

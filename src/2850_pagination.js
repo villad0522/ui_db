@@ -166,7 +166,8 @@ async function _getEndpointInfo(parameters) {
         throw `[${LAYER_CODE}層] パラメーター「endpointPath」が文字列ではありません`;
     }
     const endpointPath = parameters.endpointPath;
-    const endpointInfo = await action("GET_ENDPOINT_INFO", { endpointPath });
+    const endpointInfo1 = await action("GET_ENDPOINT_INFO", { endpointPath });
+    const endpointInfo = structuredClone(endpointInfo1);
     //
     for (const parentKey in endpointInfo.response) {
         // レスポンスの規格

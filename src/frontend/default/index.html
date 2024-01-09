@@ -12,7 +12,7 @@
         <!-- bootstrapのドキュメントはこちら -->
         <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->
         <!--  -->
-        <script src="./script.js" defer></script>
+        <script src="/default/my_fetch.js" type="module"></script>
     </head>
 
     <body style="background: #eee;">
@@ -21,7 +21,7 @@
             <br>
             <h3>システム管理</h3>
             <br>
-            <a href="/default/list_tables/" class="btn btn-primary">
+            <a href="/default/tables/" class="btn btn-primary">
                 テーブル一覧
             </a>
             <br>
@@ -31,8 +31,13 @@
             </a>
             <br>
             <br>
-            <button onclick="clearCache();" type="button" class="btn btn-outline-primary">
+            <button onclick="myFetch('./clear_cache/json');" type="button" class="btn btn-outline-primary">
                 キャッシュデータを削除
+            </button>
+            <br>
+            <br>
+            <button onclick="myFetch('./start_up/json');" type="button" class="btn btn-outline-primary">
+                データベースに再接続
             </button>
         </main>
     </body>

@@ -124,7 +124,7 @@ async function _startUp(parameters) {
             sql: `CREATE TABLE IF NOT EXISTS table_names (
                 "table_id" INTEGER PRIMARY KEY AUTOINCREMENT,
                 "table_name" TEXT UNIQUE NOT NULL,
-                "enable" INTEGER NOT NULL,
+                "enable" INTEGER NOT NULL DEFAULT 1,
                 "created_at" INTEGER NOT NULL,
                 "deleted_at" INTEGER
             );`,
@@ -218,7 +218,30 @@ async function _clearCache(parameters) {
 
 //【サブ関数】テーブルを作成
 async function _createTable(parameters) {
-    return null;
+    if (!parameters?.tableName) {
+        throw `[${LAYER_CODE}層] パラメーター「tableName」が空欄です`;
+    }
+    if (typeof parameters.tableName !== "string") {
+        throw `[${LAYER_CODE}層] パラメーター「tableName」が文字列ではありません`;
+    }
+    const tableName = parameters.tableName;
+    if (cacheData2[tableName]) {
+        throw `テーブル名「${tableName}」は重複しています。`;
+    }
+    await action("RUN_SQL_WRITE_ONLY", {
+        sql: `
+           INSERT INTO table_names (table_name, created_at) VALUES ( :tableName, :createdAt );
+        `,
+        params: {
+            ":tableName": parameters.tableName,
+            ":createdAt": new Date().getTime(),
+        },
+    });
+    await _reload();
+    return {
+        userMessage: `テーブル「${parameters.tableName}」を作成しました。`,
+        nextUrl: "../",
+    };
 }
 
 //【サブ関数】テーブルの一覧を取得
@@ -234,42 +257,111 @@ async function _listTables(parameters) {
     if (!(pageNumber >= 1)) {
         pageNumber = 1;
     }
-    if (parameters.isTrash) {
-        // 削除済みのテーブル
-    }
-    else {
-        // 削除されていないテーブル
-        const count = await action("RUN_SQL_READ_ONLY", {
-            sql: `
-                SELECT COUNT(*)
-                    FROM table_names
-                    WHERE enable = 1;
-            `,
-            params: {},
-        });
-        const matrix = await action("RUN_SQL_READ_ONLY", {
-            sql: `
-                SELECT table_id, table_name
-                    FROM table_names
-                    WHERE enable = 1
-                    ORDER BY created_at DESC
-                    LIMIT :limit OFFSET :offset;
-            `,
-            params: {
-                ":limit": onePageMaxSize,
-                ":offset": onePageMaxSize * (pageNumber - 1),
-            },
-        });
-        return {
-            "tables": matrix,
-            "tables_total": 1,
-        }
+    const [{ "COUNT(*)": count }] = await action("RUN_SQL_READ_ONLY", {
+        sql: `
+            SELECT COUNT(*)
+                FROM table_names
+                WHERE enable = :isEnable;
+        `,
+        params: {
+            // 現存するテーブル一覧を取得する場合は１
+            // 削除済みのテーブル一覧を取得する場合は０
+            ":isEnable": (parameters.isTrash) ? 0 : 1,
+        },
+    });
+    const matrix = await action("RUN_SQL_READ_ONLY", {
+        sql: `
+            SELECT
+                table_id AS id,
+                table_name AS name
+            FROM table_names
+                WHERE enable = :isEnable
+                ORDER BY created_at DESC
+                LIMIT :limit OFFSET :offset;
+        `,
+        params: {
+            // 現存するテーブル一覧を取得する場合は１
+            // 削除済みのテーブル一覧を取得する場合は０
+            ":isEnable": (parameters.isTrash) ? 0 : 1,
+            ":limit": onePageMaxSize,
+            ":offset": onePageMaxSize * (pageNumber - 1),
+        },
+    });
+    return {
+        "tables": matrix,
+        "tables_total": count,
     }
 }
 
 //【サブ関数】テーブル名を変更
 async function _updateTableName(parameters) {
-    return null;
+    if (!parameters?.tables) {
+        throw `[${LAYER_CODE}層] パラメーター「tables」が空欄です`;
+    }
+    if (!Array.isArray(parameters.tables)) {
+        throw `[${LAYER_CODE}層] パラメーター「tables」が配列ではありません`;
+    }
+    if (parameters.tables.length === 0) {
+        throw `[${LAYER_CODE}層] テーブルの名前を変更しようとしましたが、配列「tables」のサイズがゼロです。`;
+    }
+    //==========================================================
+    // テーブル名が重複していないか確認する
+    await _reload();
+    const obj = structuredClone(cacheData1);    // ディープコピー
+    // データの例
+    // obj = {
+    //     "2": "テーブル名１",
+    //     "8": "テーブル名２"
+    // };
+    for (const tableInfo of parameters.tables) {
+        if (typeof tableInfo !== "object") {
+            throw `[${LAYER_CODE}層] 配列「tables」の要素がオブジェクトではありません`;
+        }
+        if (!tableInfo.id) {
+            throw `[${LAYER_CODE}層] パラメーター tables[?].id が空欄です。`;
+        }
+        if (!tableInfo.name) {
+            throw `テーブル名が空欄です。`;
+        }
+        obj[tableInfo.id] = tableInfo.name;
+    }
+    // この時点で、連想配列「obj」には、全てのテーブル一覧が格納されている。
+    // データの例
+    // obj = {
+    //     "2": "テーブル名１",（変更後のテーブル名）
+    //     "8": "テーブル名２"
+    // };
+    for (const tableInfo of parameters.tables) {
+        const newObj = structuredClone(obj);    // ディープコピー
+        //
+        // 自分自身を除いた、他のテーブルと名前が被っていないか確認する
+        delete newObj[tableInfo.id];    //自分自身を除く
+        const tableNameArray = Object.values(newObj);
+        if (tableNameArray.includes(tableInfo.name)) {
+            throw `テーブル名「${tableInfo.name}」は重複しています。`;
+        }
+    }
+    // テーブル名が重複していないか確認する ここまで
+    //==========================================================
+    //
+    for (const tableInfo of parameters.tables) {
+        await action("RUN_SQL_WRITE_ONLY", {
+            sql: `
+                UPDATE table_names
+                    SET table_name = :tableName
+                    WHERE table_id = :tableId;
+            `,
+            params: {
+                ":tableId": tableInfo.id,
+                ":tableName": tableInfo.name
+            },
+        });
+    }
+    await _reload();
+    return {
+        userMessage: `テーブル名を更新しました。`,
+        nextUrl: "../",
+    };
 }
 
 //【サブ関数】テーブルを無効化

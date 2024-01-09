@@ -67,9 +67,6 @@ export default async function (command, parameters) {
         case "BACKUP_TABLE":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _backupTable(parameters);
-        case "CREATE_TABLE":
-            // このJavaScriptファイルの中のサブ関数を呼び出す
-            return await _createTable(parameters);
         case "LIST_BRANCHES":
             // このJavaScriptファイルの中のサブ関数を呼び出す
             return await _listBranches(parameters);
@@ -250,11 +247,6 @@ async function _rebuildDictionary(parameters) {
 
 //【サブ関数】テーブルを丸ごとバックアップ
 async function _backupTable(parameters) {
-    return null;
-}
-
-//【サブ関数】テーブルを作成
-async function _createTable(parameters) {
     return null;
 }
 

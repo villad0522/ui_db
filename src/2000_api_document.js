@@ -135,6 +135,9 @@ function _getExampleUrlencoded(info) {
     const rows = [];
     for (const key in info) {
         const paramInfo = info[key];
+        if (paramInfo.isArray) {
+            throw `[${LAYER_CODE}層] formDataに配列が含まれています。key=${key}`;
+        }
         if (paramInfo.example === null || paramInfo.example === undefined) {
             throw `[${LAYER_CODE}層] 記入例(example)が未定義です。key=${key}`;
         }

@@ -80,14 +80,20 @@ let isConnect = false;
 //【グローバル変数】デバッグモード
 let isDebug = false;
 
+//【グローバル変数】トランザクション処理中？
+let isTransaction = false;
+
 //【サブ関数】プログラム起動
 async function _startUp(parameters) {
-    await action("START_UP", parameters);   // 下層の関数を呼び出す
-    //
+    if (isTransaction === true) {
+        await db.run("COMMIT TRANSACTION;");
+    }
     if (isConnect === true) {
         await db.close();
         isConnect = false;
     }
+    //
+    await action("START_UP", parameters);   // 下層の関数を呼び出す
     //
     if (bugMode === 1) return;  // 意図的にバグを混入させる（ミューテーション解析）
     //
@@ -123,6 +129,9 @@ async function _startUp(parameters) {
     isConnect = true;
     db.configure('busyTimeout', 3000);  // 3 seconds
     await db.exec("PRAGMA foreign_keys = 1;"); // 外部キー制約を有効にする
+    if (isTransaction === true) {
+        await db.run("BEGIN TRANSACTION;");
+    }
 }
 
 //【サブ関数】デバッグモード判定
@@ -133,11 +142,13 @@ async function _getDebugMode(parameters) {
 //【サブ関数】トランザクション処理開始
 async function _startTransaction(parameters) {
     await db.run("BEGIN TRANSACTION;");
+    isTransaction = true;
 }
 
 //【サブ関数】トランザクション処理終了
 async function _endTransaction(parameters) {
     await db.run("COMMIT TRANSACTION;");
+    isTransaction = false;
 }
 
 //【サブ関数】SQLクエリ実行（読み取り専用）

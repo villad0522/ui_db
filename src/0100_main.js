@@ -93,10 +93,7 @@ async function _api(req, res) {
         if (req.method === "POST") {
             // Content-Typeを抽出
             const contentType = req.headers['content-type'];
-            if (String(contentType).includes("multipart/form-data")) {
-                isRequestFormData = true;
-            }
-            else if (String(contentType).includes("application/x-www-form-urlencoded")) {
+            if (String(contentType).includes("application/x-www-form-urlencoded")) {
                 isRequestFormData = true;
             }
             else if (String(contentType).includes("application/json")) {

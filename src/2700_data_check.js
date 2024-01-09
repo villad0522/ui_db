@@ -55,9 +55,20 @@ async function _runApi(parameters) {
     const endpointPath = parameters.endpointPath;
     const requestBody = parameters.requestBody;
     const isResponseFormData = parameters.isResponseFormData;
+    const isRequestFormData = parameters.isRequestFormData;
     //
     // エンドポイントの情報を取得する
-    const endpointInfo = await action("GET_ENDPOINT_INFO", { endpointPath, isResponseFormData });
+    const endpointInfo = await action("GET_ENDPOINT_INFO", { endpointPath, isRequestFormData, isResponseFormData });
+    //
+    if (!endpointInfo.httpMethod) {
+        throw `[${LAYER_CODE}層] エンドポイント「${endpointPath}」のHTTPメソッドが未定義です。`;
+    }
+    if (endpointInfo.httpMethod !== parameters.httpMethod) {
+        console.log("\n\n");
+        console.log(JSON.stringify(endpointInfo, null, 2));
+        console.log("\n\n");
+        throw `[${LAYER_CODE}層] HTTPメソッドが不正です。正：${endpointInfo.httpMethod}  誤：${parameters.httpMethod}`;
+    }
     //
     // リクエストボディをチェックする（可能なら変換も行う）
     // requestBody を requestBody2 に変換する
@@ -96,20 +107,15 @@ async function _runApi(parameters) {
             }
             catch (err) {
                 // 記入漏れや書式エラーが発生した場合
-                if (!isResponseFormData) throw err;
+                if (!isRequestFormData) throw err;
                 // FormData形式の場合
+                console.error(`リクエストボディの項目「${parentKey}」が不正な書式です。${err}  endpointPath="${endpointPath}"`);
                 return {
                     ...requestBody,
+                    userMessage: String(err),
                     [parentKey + "_error"]: String(err),
                 };
             }
-        }
-    }
-    for (const parentKey in requestBody) {
-        const rule = endpointInfo.requestBody[parentKey];
-        if (!rule) {
-            // もしレスポンスの規格が未定義だったら
-            throw `[${LAYER_CODE}層] 未定義のリクエストボディが渡されました。endpointPath="${endpointPath}", key="${parentKey}"`;
         }
     }
     //

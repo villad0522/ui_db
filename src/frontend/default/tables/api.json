@@ -9,13 +9,7 @@
             "example": 1
         }
     },
-    "requestBody": {
-        "main_total": {
-            "dataType": "INTEGER",
-            "description": "テーブルの個数",
-            "example": 10
-        }
-    },
+    "requestBody": {},
     "response": {
         "tables": {
             "title": "テーブル一覧",
@@ -24,7 +18,7 @@
             "children": {
                 "id": {
                     "dataType": "INTEGER",
-                    "description": "テーブルのID",
+                    "description": "テーブルID",
                     "example": 1
                 },
                 "name": {

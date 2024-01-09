@@ -5,7 +5,8 @@
 //###############################################################
 
 import fs from 'fs';
-import action from "./5800_user_interface.js"; // 下層から提供されているメイン関数
+//import action from "./5800_user_interface.js"; // 下層から提供されているメイン関数
+import action from "./7100_table_name.js"; // 下層から提供されているメイン関数
 
 //【定数】このJavaScriptファイルの階層番号
 const LAYER_CODE = "5600";
@@ -74,7 +75,9 @@ async function _startUp(parameters) {
         fs.mkdirSync(customDirPath);   // フォルダが存在しなかったら、作成する
     }
     //
-    return null;
+    return {
+        userMessage: "再接続しました",
+    };
 }
 
 //【サブ関数】前の状態に戻す
