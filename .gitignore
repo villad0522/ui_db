@@ -7,5 +7,9 @@ src/cache/
 src/frontend/custom/
 src/savedata/
 src/static_data/heavy/
+src2/cache/
+src2/frontend/custom/
+src2/savedata/
+src2/static_data/heavy/
 *.exe
 *.db

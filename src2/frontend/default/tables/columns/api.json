@@ -1,0 +1,52 @@
+{
+    "httpMethod": "GET",
+    "description": "カラムの一覧を取得します。",
+    "queryParameters": {
+        "table_id": {
+            "dataType": "INTEGER",
+            "description": "テーブルID",
+            "isRequired": true,
+            "example": 1
+        },
+        "page_main": {
+            "dataType": "INTEGER",
+            "description": "ページ番号。１ページに収まらなかった場合に活用します。このパラメータを2,3,4...と増やすことで、次のページを閲覧できます。",
+            "isRequired": false,
+            "example": 1
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "columns": {
+            "title": "カラム一覧",
+            "isArray": true,
+            "onePageMaxSize": 35,
+            "children": {
+                "id": {
+                    "dataType": "INTEGER",
+                    "description": "カラムID",
+                    "example": 1
+                },
+                "name": {
+                    "dataType": "TEXT",
+                    "description": "カラム名",
+                    "example": "id"
+                }
+            }
+        },
+        "columns_total": {
+            "dataType": "INTEGER",
+            "description": "カラムの個数",
+            "example": 1
+        }
+    },
+    "commands": [
+        {
+            "resultNameSpace": "",
+            "commandName": "LIST_COLUMNS",
+            "additionalParameters": {
+                "onePageMaxSize": 35
+            }
+        }
+    ]
+}

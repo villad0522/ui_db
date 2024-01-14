@@ -1,0 +1,37 @@
+[
+  {
+    "layerId": "01HM1S7MRXG1TPKCR514Y0SS5J",
+    "layerNameJP": "文字列検索",
+    "layerNameEN": "search_text"
+  },
+  {
+    "layerId": "01HM3NCVJV3R4D8G0CPFPD3348",
+    "layerNameJP": "カラム名の置き換え",
+    "layerNameEN": "columnName"
+  },
+  {
+    "layerId": "01HM1SCJ67H41MWK6BDG6MQE76",
+    "layerNameJP": "テーブル名の置き換え",
+    "layerNameEN": "tableName"
+  },
+  {
+    "layerId": "01HM1S4TRMCV7S59Y7PVYHHRTE",
+    "layerNameJP": "データ型",
+    "layerNameEN": "data_type"
+  },
+  {
+    "layerId": "01HM1S41BMZT31P1KCV0RZPTAH",
+    "layerNameJP": "データベース",
+    "layerNameEN": "connect_database"
+  },
+  {
+    "layerId": "01HM1EEGJ2YZ1EK6TMT9DC1W8W",
+    "layerNameJP": "ディレクトリ",
+    "layerNameEN": "directory"
+  },
+  {
+    "layerId": "01HM1EDZ35X8N5YDJCZ2D55P72",
+    "layerNameJP": "IPアドレス",
+    "layerNameEN": "ip_address"
+  }
+]
