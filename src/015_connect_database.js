@@ -3,10 +3,10 @@
 import {
   startUp,
   getPath,
-} from "./010_directory_test.js";
+} from "./016_directory_test.js";
 import {
   getLocalIp,
-} from "./012_ip_address_test.js";
+} from "./018_ip_address_test.js";
 
 import path from 'path';
 import sqlite3 from 'sqlite3'

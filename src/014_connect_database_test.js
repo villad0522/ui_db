@@ -8,7 +8,7 @@ import {
   createRecordsFromCsv_core,  // CSVファイルインポート
   getCsvProgress_core,  // インポートの進捗状況を取得する関数
   close_core,  // バックエンドプログラム終了
-} from "./009_connect_database.js";
+} from "./015_connect_database.js";
 
 
 //#######################################################################################

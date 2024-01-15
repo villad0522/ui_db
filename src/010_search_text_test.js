@@ -1,11 +1,58 @@
 import {
+  startUp_core,  // プログラム起動
   createRecordsFromCsv_core,  // CSVファイルインポート
   runSqlWriteOnly_core,  // SQLクエリ実行（書き込み専用）
   createRecord_core,  // レコードを作成
   updateRecord_core,  // レコードを上書き
-  startUp_core,  // プログラム起動
   delete_table_core,  // 不可逆的にテーブルを削除
-} from "./001_search_text.js";
+} from "./011_search_text.js";
+
+
+//#######################################################################################
+// 関数「startUp_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function startUp( localUrl, isDebug ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( (localUrl===null) || (localUrl===undefined) ){
+    // localUrlは空欄OK。
+  }
+  else if( typeof localUrl !== "string" ){
+    throw new Error(`localUrlが文字列ではありません。\nレイヤー : search_text\n関数 : startUp`);
+  }
+  if( typeof isDebug !== "boolean" ){
+    if( !isDebug ){
+      throw new Error(`isDebugがNULLです。\nレイヤー : search_text\n関数 : startUp`);
+    }
+    else{
+      throw new Error(`isDebugがブール値ではありません。\nレイヤー : search_text\n関数 : startUp`);
+    }
+  }
+  else if( isNaN(isDebug) ){
+    throw new Error(`isDebugがブール値ではありません。\nレイヤー : search_text\n関数 : startUp`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await startUp_core( localUrl, isDebug );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : search_text\n関数 : startUp`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
 
 
 //#######################################################################################
@@ -269,53 +316,6 @@ export async function updateRecord( tableId, recordId, recordData ){
       throw new Error(`resultが文字列ではありません。\nレイヤー : search_text\n関数 : updateRecord`);
     }
   }
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「startUp_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function startUp( localUrl, isDebug ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  if( (localUrl===null) || (localUrl===undefined) ){
-    // localUrlは空欄OK。
-  }
-  else if( typeof localUrl !== "string" ){
-    throw new Error(`localUrlが文字列ではありません。\nレイヤー : search_text\n関数 : startUp`);
-  }
-  if( typeof isDebug !== "boolean" ){
-    if( !isDebug ){
-      throw new Error(`isDebugがNULLです。\nレイヤー : search_text\n関数 : startUp`);
-    }
-    else{
-      throw new Error(`isDebugがブール値ではありません。\nレイヤー : search_text\n関数 : startUp`);
-    }
-  }
-  else if( isNaN(isDebug) ){
-    throw new Error(`isDebugがブール値ではありません。\nレイヤー : search_text\n関数 : startUp`);
-  }
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await startUp_core( localUrl, isDebug );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : search_text\n関数 : startUp`);
-    }
-    else{
-      throw error;
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
   //
   //--------------------------------------------------------------------------
   return result;

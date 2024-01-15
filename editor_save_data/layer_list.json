@@ -1,18 +1,33 @@
 [
   {
-    "layerId": "01HM1S7MRXG1TPKCR514Y0SS5J",
-    "layerNameJP": "文字列検索",
-    "layerNameEN": "search_text"
+    "layerId": "01HM5T8G9WJWNKEMEGBYP29CKA",
+    "layerNameJP": "結合して一覧表示",
+    "layerNameEN": "rich_get"
+  },
+  {
+    "layerId": "01HM63PB1G602AZ8FNS545P6DY",
+    "layerNameJP": "リレーション",
+    "layerNameEN": "relation"
+  },
+  {
+    "layerId": "01HM5YDWDRQGWAF3EKKWMW7985",
+    "layerNameJP": "予約語フィルター",
+    "layerNameEN": "reserved_word"
   },
   {
     "layerId": "01HM3NCVJV3R4D8G0CPFPD3348",
     "layerNameJP": "カラム名の置き換え",
-    "layerNameEN": "columnName"
+    "layerNameEN": "column_name"
   },
   {
     "layerId": "01HM1SCJ67H41MWK6BDG6MQE76",
     "layerNameJP": "テーブル名の置き換え",
-    "layerNameEN": "tableName"
+    "layerNameEN": "table_name"
+  },
+  {
+    "layerId": "01HM1S7MRXG1TPKCR514Y0SS5J",
+    "layerNameJP": "文字列検索",
+    "layerNameEN": "search_text"
   },
   {
     "layerId": "01HM1S4TRMCV7S59Y7PVYHHRTE",

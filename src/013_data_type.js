@@ -10,13 +10,13 @@ import {
   createRecordsFromCsv,
   getCsvProgress,
   close,
-} from "./008_connect_database_test.js";
+} from "./014_connect_database_test.js";
 import {
   getLocalIp,
-} from "./012_ip_address_test.js";
+} from "./018_ip_address_test.js";
 import {
   getPath,
-} from "./010_directory_test.js";
+} from "./016_directory_test.js";
 
 // テーブルに保存できるデータ型の一覧
 // ・INTEGER (SQLiteでサポート)

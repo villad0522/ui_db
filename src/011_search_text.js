@@ -2,63 +2,33 @@
 //
 import {
   startUp,
-  runSqlReadOnly,
-  runSqlWriteOnly,
   clearCache,
   createColumn,
   listColumns,
-  disableColumn,
-  enableColumn,
-  updateColumnName,
-} from "./002_columnName_test.js";
-import {
-  getLocalIp,
-} from "./012_ip_address_test.js";
-import {
-  getPath,
-} from "./010_directory_test.js";
-import {
-  getDebugMode,
-  startTransaction,
-  endTransaction,
-  createRecordsFromCsv,
-  getCsvProgress,
-  close,
-} from "./008_connect_database_test.js";
-import {
   createRecord,
   updateRecord,
   checkField,
   checkRecord,
-} from "./006_data_type_test.js";
-import {
   createTable,
   deleteTable,
-  disableTable,
-  enableTable,
-  updateTableName,
-  listTables,
-} from "./004_tableName_test.js";
+} from "./012_data_type_test.js";
+import {
+  getLocalIp,
+} from "./018_ip_address_test.js";
+import {
+  getPath,
+} from "./016_directory_test.js";
+import {
+  getDebugMode,
+  startTransaction,
+  endTransaction,
+  runSqlReadOnly,
+  runSqlWriteOnly,
+  createRecordsFromCsv,
+  getCsvProgress,
+  close,
+} from "./014_connect_database_test.js";
 
-// CSVファイルインポート
-export async function createRecordsFromCsv_core( tableId, filePath, columnSize ){
-  throw "この関数は未実装です。";
-}
-
-// SQLクエリ実行（書き込み専用）
-export async function runSqlWriteOnly_core( sql, params ){
-  throw "この関数は未実装です。";
-}
-
-// レコードを作成
-export async function createRecord_core( tableId, recordData ){
-  throw "この関数は未実装です。";
-}
-
-// レコードを上書き
-export async function updateRecord_core( tableId, recordId, recordData ){
-  throw "この関数は未実装です。";
-}
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
@@ -81,6 +51,27 @@ export async function startUp_core( localUrl, isDebug ){
   catch (err) {
     throw `システム管理用テーブルの作成に失敗しました。\n${String(err)}`;
   }
+}
+
+
+// CSVファイルインポート
+export async function createRecordsFromCsv_core( tableId, filePath, columnSize ){
+  throw "この関数は未実装です。";
+}
+
+// SQLクエリ実行（書き込み専用）
+export async function runSqlWriteOnly_core( sql, params ){
+  throw "この関数は未実装です。";
+}
+
+// レコードを作成
+export async function createRecord_core( tableId, recordData ){
+  throw "この関数は未実装です。";
+}
+
+// レコードを上書き
+export async function updateRecord_core( tableId, recordId, recordData ){
+  throw "この関数は未実装です。";
 }
 
 // 不可逆的にテーブルを削除

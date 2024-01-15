@@ -2,38 +2,42 @@
 //
 import {
   startUp,
-  clearCache,
-  createColumn,
-  listColumns,
+  runSqlWriteOnly,
+  createRecordsFromCsv,
   createRecord,
   updateRecord,
-  checkField,
-  checkRecord,
-  createTable,
-  deleteTable,
-} from "./006_data_type_test.js";
+  delete_table,
+} from "./010_search_text_test.js";
 import {
   getLocalIp,
-} from "./012_ip_address_test.js";
+} from "./018_ip_address_test.js";
 import {
   getPath,
-} from "./010_directory_test.js";
+} from "./016_directory_test.js";
 import {
   getDebugMode,
   startTransaction,
   endTransaction,
   runSqlReadOnly,
-  runSqlWriteOnly,
-  createRecordsFromCsv,
   getCsvProgress,
   close,
-} from "./008_connect_database_test.js";
+} from "./014_connect_database_test.js";
+import {
+  clearCache,
+  createColumn,
+  listColumns,
+  checkField,
+  checkRecord,
+  createTable,
+  deleteTable,
+} from "./012_data_type_test.js";
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
     await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
-    try {
-        // テーブルを作成する（テーブルの存在を保存するため）
+    //
+    // テーブルを作成する（テーブルの存在を保存するため）
+    try{
         await runSqlWriteOnly(
             `CREATE TABLE IF NOT EXISTS table_names (
                 "table_number" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,9 +50,8 @@ export async function startUp_core( localUrl, isDebug ){
         );
     }
     catch (err) {
-        throw `システム管理用テーブルの作成に失敗しました。${String(err)}`;
+      throw `システム管理用テーブルの作成に失敗しました。${String(err)}`;
     }
-    //
     await _reload();    // メモリに再読み込み
 }
 
@@ -205,8 +208,8 @@ export async function updateTableName_core( tables ){
     //     "t2": "テーブル名１",
     //     "t8": "テーブル名２"
     // };
-    for (const tableInfo of tables) {
-        obj[tableInfo.id] = tableInfo.name;
+    for (const { id, name } of tables) {
+        obj[id] = name;
     }
     // この時点で、連想配列「obj」には、全てのテーブル一覧が格納されている。
     // データの例
@@ -214,28 +217,28 @@ export async function updateTableName_core( tables ){
     //     "2": "テーブル名１",（変更後のテーブル名）
     //     "8": "テーブル名２"
     // };
-    for (const tableInfo of tables) {
+    for (const { id, name } of tables) {
         const newObj = structuredClone(obj);    // ディープコピー
         //
         // 自分自身を除いた、他のテーブルと名前が被っていないか確認する
-        delete newObj[tableInfo.id];    //自分自身を除く
+        delete newObj[id];    //自分自身を除く
         const tableNameArray = Object.values(newObj);
-        if (tableNameArray.includes(tableInfo.name)) {
-            throw `テーブル名「${tableInfo.name}」は重複しています。`;
+        if (tableNameArray.includes(name)) {
+            throw `テーブル名「${name}」は重複しています。`;
         }
     }
     // テーブル名が重複していないか確認する ここまで
     //==========================================================
     //
-    for (const tableInfo of tables) {
+    for (const { id, name } of tables) {
         await runSqlWriteOnly(
             `UPDATE table_names
                 SET table_name = :tableName
                 WHERE table_number = :tableNumber
                     AND is_system_table = 0;`,
             {
-                ":tableName": tableInfo.name,
-                ":tableNumber": tableInfo.id.replace("t",""),
+                ":tableName": name,
+                ":tableNumber": id.replace("t",""),
             },
         );
     }
@@ -249,37 +252,36 @@ export async function listTables_core( pageNumber_tables, onePageMaxSize, isTras
     if (!(pageNumber >= 1)) {
         pageNumber = 1;
     }
-    const [{ "COUNT(*)": count }] = await action("RUN_SQL_READ_ONLY", {
-        sql: `
-            SELECT COUNT(*)
-                FROM table_names
-                WHERE enable = :isEnable;
-        `,
-        params: {
+    const [{ "COUNT(*)": count }] = await runSqlReadOnly(
+        `SELECT COUNT(*)
+            FROM table_names
+            WHERE enable = :isEnable;`,
+        {
             // 現存するテーブル一覧を取得する場合は１
             // 削除済みのテーブル一覧を取得する場合は０
             ":isEnable": isTrash ? 0 : 1,
         },
-    });
-    const matrix = await action("RUN_SQL_READ_ONLY", {
-        sql: `
-            SELECT
-                "t" || table_number AS id,
-                table_name AS name
-            FROM table_names
-                WHERE enable = :isEnable
-                    AND is_system_table = 0
-                ORDER BY created_at DESC
-                LIMIT :limit OFFSET :offset;
-        `,
-        params: {
+    );
+    // 「sqlite_master」と結合させることで、実際に存在するテーブルのみに絞り込む
+    const matrix = await runSqlReadOnly(
+        `SELECT
+            ( "t" || table_names.table_number ) AS id,
+            table_names.table_name AS name
+        FROM table_names
+        INNER JOIN sqlite_master
+            ON ( "t" || table_names.table_number ) = sqlite_master.name
+        WHERE table_names.enable = :isEnable
+            AND table_names.is_system_table = 0
+        ORDER BY table_names.created_at DESC
+        LIMIT :limit OFFSET :offset;`,
+        {
             // 現存するテーブル一覧を取得する場合は１
             // 削除済みのテーブル一覧を取得する場合は０
             ":isEnable": isTrash ? 0 : 1,
             ":limit": onePageMaxSize,
             ":offset": onePageMaxSize * (pageNumber - 1),
         },
-    });
+    );
     return {
         "tables": matrix,
         "tables_total": count,

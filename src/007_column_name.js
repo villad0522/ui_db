@@ -11,29 +11,32 @@ import {
   enableTable,
   updateTableName,
   listTables,
-} from "./004_tableName_test.js";
+} from "./008_table_name_test.js";
 import {
   getLocalIp,
-} from "./012_ip_address_test.js";
+} from "./018_ip_address_test.js";
 import {
   getPath,
-} from "./010_directory_test.js";
+} from "./016_directory_test.js";
 import {
   getDebugMode,
   startTransaction,
   endTransaction,
-  createRecordsFromCsv,
   getCsvProgress,
   close,
-} from "./008_connect_database_test.js";
+} from "./014_connect_database_test.js";
+import {
+  createRecordsFromCsv,
+  createRecord,
+  updateRecord,
+  delete_table,
+} from "./010_search_text_test.js";
 import {
   createColumn,
   listColumns,
-  createRecord,
-  updateRecord,
   checkField,
   checkRecord,
-} from "./006_data_type_test.js";
+} from "./012_data_type_test.js";
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
@@ -41,7 +44,7 @@ export async function startUp_core( localUrl, isDebug ){
     try {
       // テーブルを作成する（テーブルの存在を保存するため）
       await runSqlWriteOnly(
-        `CREATE TABLE IF NOT EXISTS column_names (
+        `CREATE TABLE IF NOT EXISTS column_names(
             "column_id" TEXT PRIMARY KEY,
             "column_name" TEXT NOT NULL,
             "table_id" TEXT NOT NULL,
@@ -53,7 +56,6 @@ export async function startUp_core( localUrl, isDebug ){
     catch (err) {
       throw `システム管理用テーブルの作成に失敗しました。${String(err)}`;
     }
-    //
     await _reload();    // メモリに再読み込み
 }
 
@@ -102,10 +104,8 @@ export async function createColumn_core( tableId, columnName, dataType ){
     const columns = await runSqlReadOnly(
       `SELECT * FROM column_names
         WHERE enable = 1
-          AND columnName = :columnName
-          AND table_id = :tableId;`,
+          AND columnName = :columnName;`,
       {
-          ":tableId": tableId,
           ":columnName": columnName,
       },
     );
@@ -188,52 +188,95 @@ export async function updateColumnName_core( columns ){
     for (const { id, name } of columns) {
         obj[id] = name;
     }
-    // この時点で、連想配列「obj」には、全てのテーブル一覧が格納されている。
+    // この時点で、連想配列「obj」には、全てのカラム一覧が格納されている。
     // データの例
     // obj = {
-    //     "2": "テーブル名１",（変更後のテーブル名）
-    //     "8": "テーブル名２"
+    //     "c2": "カラム名１",（変更後のカラム名）
+    //     "c8": "カラム名２"
     // };
-    for (const tableInfo of tables) {
+    for (const { id, name } of columns) {
         const newObj = structuredClone(obj);    // ディープコピー
         //
-        // 自分自身を除いた、他のテーブルと名前が被っていないか確認する
-        delete newObj[tableInfo.id];    //自分自身を除く
-        const tableNameArray = Object.values(newObj);
-        if (tableNameArray.includes(tableInfo.name)) {
-            throw `テーブル名「${tableInfo.name}」は重複しています。`;
+        // 自分自身を除いた、他のカラムと名前が被っていないか確認する
+        delete newObj[id];    //自分自身を除く
+        const columnNameArray = Object.values(newObj);
+        if (columnNameArray.includes(name)) {
+            throw `カラム名「${name}」は重複しています。`;
         }
     }
-    // テーブル名が重複していないか確認する ここまで
+    // ここまでカラム名が重複していないか確認する処理
     //==========================================================
     //
-    for (const tableInfo of tables) {
+    for (const { id, name } of columns) {
         await runSqlWriteOnly(
-            `UPDATE table_names
-                SET table_name = :tableName
-                WHERE table_number = :tableNumber
+            `UPDATE column_names
+                SET column_name = :columnName
+                WHERE column_id = :columnId
                     AND is_system_table = 0;`,
             {
-                ":tableName": tableInfo.name,
-                ":tableNumber": tableInfo.id.replace("t",""),
+                ":columnName": name,
+                ":columnId": id,
             },
         );
     }
     await _reload();    // メモリに再読み込み
-    return "テーブル名を変更しました";
+    return "カラム名を変更しました";
 }
 
 // カラムの一覧を取得
 export async function listColumns_core( pageNumber_columns, onePageMaxSize, isTrash ){
-  throw "この関数は未実装です。";
+    const pageNumber = pageNumber_columns;
+    if (!(pageNumber >= 1)) {
+        pageNumber = 1;
+    }
+    const [{ "COUNT(*)": count }] = await runSqlReadOnly(
+        `SELECT COUNT(*)
+            FROM column_names
+            WHERE enable = :isEnable;`,
+        {
+            // 現存するテーブル一覧を取得する場合は１
+            // 削除済みのテーブル一覧を取得する場合は０
+            ":isEnable": isTrash ? 0 : 1,
+        },
+    );
+    const matrix = await runSqlReadOnly(
+        `SELECT
+            column_id AS id,
+            column_name AS name
+        FROM column_names
+            WHERE enable = :isEnable
+            ORDER BY created_at DESC
+            LIMIT :limit OFFSET :offset;`,
+        {
+            // 現存するテーブル一覧を取得する場合は１
+            // 削除済みのテーブル一覧を取得する場合は０
+            ":isEnable": isTrash ? 0 : 1,
+            ":limit": onePageMaxSize,
+            ":offset": onePageMaxSize * (pageNumber - 1),
+        },
+    );
+    return {
+        "columns": matrix,
+        "columns_total": count,
+    }
 }
 
 // SQLクエリ実行（読み取り専用）
 export async function runSqlReadOnly_core( sql, params ){
-  throw "この関数は未実装です。";
+    //入力パラメータに含まれるカラム名をIDに置き換える
+    for( const columnId in cacheData1 ){
+        const columnName = cacheData1[columnId];
+        sql = sql.replaceAll( columnName, columnId );
+    }
+    return await runSqlReadOnly( sql, params );
 }
 
 // SQLクエリ実行（書き込み専用）
 export async function runSqlWriteOnly_core( sql, params ){
-  throw "この関数は未実装です。";
+    //入力パラメータに含まれるカラム名をIDに置き換える
+    for( const columnId in cacheData1 ){
+        const columnName = cacheData1[columnId];
+        sql = sql.replaceAll( columnName, columnId );
+    }
+    return await runSqlReadOnly( sql, params );
 }
