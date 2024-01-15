@@ -54,7 +54,7 @@ export async function startUp( localUrl, isDebug ){
 //#######################################################################################
 // 関数「createColumn_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function createColumn( tableId, columnName, dataType, parentTableId, semantics ){
+export async function createColumn( tableId, columnName, dataType, parentTableId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
@@ -87,18 +87,12 @@ export async function createColumn( tableId, columnName, dataType, parentTableId
   else if( typeof parentTableId !== "string" ){
     throw new Error(`parentTableIdが文字列ではありません。\nレイヤー : relation\n関数 : createColumn`);
   }
-  if( (semantics===null) || (semantics===undefined) ){
-    // semanticsは空欄OK。
-  }
-  else if( typeof semantics !== "string" ){
-    throw new Error(`semanticsが文字列ではありません。\nレイヤー : relation\n関数 : createColumn`);
-  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await createColumn_core( tableId, columnName, dataType, parentTableId, semantics );
+    result = await createColumn_core( tableId, columnName, dataType, parentTableId );
   }
   catch(error){
     if( typeof error === "string" ){

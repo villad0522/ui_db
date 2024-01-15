@@ -2,7 +2,7 @@ import {
   startUp_core,  // プログラム起動
   clearCache_core,  // インメモリキャッシュを削除する
   createColumn_core,  // カラムを作成
-  listColumns_core,  // カラムの一覧を取得
+  listDataTypes_core,  // データ型の一覧を取得
   createRecord_core,  // レコードを作成
   updateRecord_core,  // レコードを上書き
   checkField_core,  // フィールドを検証
@@ -92,7 +92,7 @@ export async function clearCache(  ){
 //#######################################################################################
 // 関数「createColumn_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function createColumn( tableId, dataType ){
+export async function createColumn( tableId, columnId, dataType ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
@@ -101,6 +101,14 @@ export async function createColumn( tableId, dataType ){
     }
     else{
       throw new Error(`tableIdが文字列ではありません。\nレイヤー : data_type\n関数 : createColumn`);
+    }
+  }
+  if( typeof columnId !== "string" ){
+    if( !columnId ){
+      throw new Error(`columnIdがNULLです。\nレイヤー : data_type\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`columnIdが文字列ではありません。\nレイヤー : data_type\n関数 : createColumn`);
     }
   }
   if( typeof dataType !== "string" ){
@@ -116,7 +124,7 @@ export async function createColumn( tableId, dataType ){
   // メイン処理を実行
   let result;
   try{
-    result = await createColumn_core( tableId, dataType );
+    result = await createColumn_core( tableId, columnId, dataType );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -160,21 +168,29 @@ export async function createColumn( tableId, dataType ){
 
 
 //#######################################################################################
-// 関数「listColumns_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「listDataTypes_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function listColumns(  ){
+export async function listDataTypes( tableId ){
   //--------------------------------------------------------------------------
   // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : data_type\n関数 : listDataTypes`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : data_type\n関数 : listDataTypes`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await listColumns_core(  );
+    result = await listDataTypes_core( tableId );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : data_type\n関数 : listColumns`);
+      throw new Error(`${error}\nレイヤー : data_type\n関数 : listDataTypes`);
     }
     else{
       throw error;
@@ -183,37 +199,27 @@ export async function listColumns(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( !Array.isArray(result) ){
+  if( typeof result !== "object" ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : data_type\n関数 : listColumns`);
+      throw new Error(`resultがNULLです。\nレイヤー : data_type\n関数 : listDataTypes`);
     }
     else{
-      throw new Error(`resultが配列ではありません。\nレイヤー : data_type\n関数 : listColumns`);
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : data_type\n関数 : listDataTypes`);
     }
   }
-  for( let i=0; i<result.length; i++ ){
-    if( typeof result[i] !== "object" ){
+  else if( typeof result[Symbol.iterator] !== "function" ){
+    throw new Error(`resultが反復可能オブジェクトではありません。\nレイヤー : data_type\n関数 : listDataTypes`);
+  }
+  for( const i in result ){
+    if( typeof i !== "string" ){
+      throw new Error(`resultのキーが文字列ではありません。\nレイヤー : data_type\n関数 : listDataTypes`);
+    }
+    if( typeof result[i] !== "string" ){
       if( !result[i] ){
-        throw new Error(`result[${i}]がNULLです。\nレイヤー : data_type\n関数 : listColumns`);
+        throw new Error(`result["${i}"]がNULLです。\nレイヤー : data_type\n関数 : listDataTypes`);
       }
       else{
-        throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : data_type\n関数 : listColumns`);
-      }
-    }
-    else if( typeof result[i][Symbol.iterator] !== "function" ){
-      throw new Error(`result[${i}]が反復可能オブジェクトではありません。\nレイヤー : data_type\n関数 : listColumns`);
-    }
-    for( const j in result[i] ){
-      if( typeof j !== "string" ){
-        throw new Error(`result[${i}]のキーが文字列ではありません。\nレイヤー : data_type\n関数 : listColumns`);
-      }
-      if( typeof result[i][j] !== "string" ){
-        if( !result[i][j] ){
-          throw new Error(`result[${i}]["${j}"]がNULLです。\nレイヤー : data_type\n関数 : listColumns`);
-        }
-        else{
-          throw new Error(`result[${i}]["${j}"]が文字列ではありません。\nレイヤー : data_type\n関数 : listColumns`);
-        }
+        throw new Error(`result["${i}"]が文字列ではありません。\nレイヤー : data_type\n関数 : listDataTypes`);
       }
     }
   }

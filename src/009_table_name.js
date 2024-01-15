@@ -25,7 +25,7 @@ import {
 import {
   clearCache,
   createColumn,
-  listColumns,
+  listDataTypes,
   checkField,
   checkRecord,
   createTable,
@@ -37,21 +37,15 @@ export async function startUp_core( localUrl, isDebug ){
     await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
     //
     // テーブルを作成する（テーブルの存在を保存するため）
-    try{
-        await runSqlWriteOnly(
-            `CREATE TABLE IF NOT EXISTS table_names (
-                "table_number" INTEGER PRIMARY KEY AUTOINCREMENT,
-                "table_name" TEXT NOT NULL,
-                "enable" INTEGER NOT NULL DEFAULT 1,
-                "is_system_table" INTEGER NOT NULL DEFAULT 0,
-                "created_at" INTEGER NOT NULL
-            );`,
-            {},
-        );
-    }
-    catch (err) {
-      throw `システム管理用テーブルの作成に失敗しました。${String(err)}`;
-    }
+    await runSqlWriteOnly(
+        `CREATE TABLE IF NOT EXISTS table_names (
+            "table_number" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "table_name" TEXT NOT NULL,
+            "enable" INTEGER NOT NULL DEFAULT 1,
+            "created_at" INTEGER NOT NULL
+        );`,
+        {},
+    );
     await _reload();    // メモリに再読み込み
 }
 
@@ -61,31 +55,21 @@ let cacheData1 = {
     // "t2": "テーブル名１",
     // "t8": "テーブル名２"
 };
-let cacheData2 = {
-    // データの例
-    // "テーブル名１": "t2",
-    // "テーブル名２": "t8"
-};
 
 //【サブ関数】メモリに再読み込み
 async function _reload() {
-    let matrix = [];
-    try {
-        matrix = await runSqlReadOnly(
-            `SELECT * FROM table_names WHERE enable = 1;`,
-            {},
-        );
-    }
-    catch (err) {
-        throw `テーブル「table_names」の読み込みに失敗しました。${String(err)}`;
-    }
+    const matrix = await runSqlReadOnly(
+        `SELECT
+            table_number AS tableNumber,
+            table_name AS tableName
+        FROM table_names
+        WHERE enable = 1;`,
+        {},
+    );
     cacheData1 = {};
-    cacheData2 = {};
-    for (const record of matrix) {
-        const tableName = record["table_name"];
-        const tableNumber = Number(record["table_number"]);
-        cacheData1["t" + tableNumber] = tableName;
-        cacheData2[tableName] = "t" + tableNumber;
+    for (const { tableNumber, tableName } of matrix) {
+        const tableId = "t" + String(tableNumber);
+        cacheData1[tableId] = tableName;
     }
 }
 
@@ -96,16 +80,25 @@ export async function clearCache_core(  ){
 }
 
 // テーブルを作成
-export async function createTable_core( tableName, isSystemTable ){
-    if (cacheData2[tableName]) {
+export async function createTable_core( tableName ){
+    // テーブル名が重複していないかチェックする
+    const tables = await runSqlReadOnly(
+        `SELECT *
+        FROM table_names
+        WHERE enable = 1
+          AND table_name = :tableName;`,
+      {
+          ":tableName": tableName,
+      },
+    );
+    if (tables.length>0) {
         throw `テーブル名「${tableName}」は重複しています。`;
     }
     const timestamp = new Date().getTime();
     await runSqlWriteOnly(
-        `INSERT INTO table_names (table_name, is_system_table, created_at)
-            VALUES ( :tableName, :isSystemTable, :createdAt );`,
+        `INSERT INTO table_names (table_name, created_at)
+            VALUES ( :tableName, :createdAt );`,
         {
-            ":isSystemTable": isSystemTable,
             ":tableName": tableName,
             ":createdAt": timestamp,
         },
@@ -169,20 +162,21 @@ export async function disableTable_core( tableId ){
 // テーブルを再度有効化
 export async function enableTable_core( tableId ){
     const tables = await runSqlReadOnly(
-        `SELECT *
-            FROM table_names AS t1
-            INNER JOIN table_names AS t2
-                ON t1.table_name = t2.table_name
-            WHERE t2.table_number = :tableNumber
-                AND t1.table_number <> :tableNumber
-                AND t1.enable = 1
-            LIMIT 1;`,
+        `SELECT
+            t2.table_name AS tableName
+        FROM table_names AS t1
+        INNER JOIN table_names AS t2
+            ON t1.table_name = t2.table_name
+            AND t1.table_number <> t2.table_number
+        WHERE t1.table_number = :tableNumber
+            AND t2.enable = 1
+        LIMIT 1;`,
         {
             ":tableNumber": tableId.replace("t",""),
         },
     );
     if(tables.length>=1){
-        const tableName = tables[0]["table_name"];
+        const tableName = tables[0]["tableName"];
         throw `テーブル名「${tableName}」は重複しています。`;
     }
     await runSqlWriteOnly(
@@ -214,8 +208,8 @@ export async function updateTableName_core( tables ){
     // この時点で、連想配列「obj」には、全てのテーブル一覧が格納されている。
     // データの例
     // obj = {
-    //     "2": "テーブル名１",（変更後のテーブル名）
-    //     "8": "テーブル名２"
+    //     "t2": "変更後のテーブル名１",
+    //     "t8": "テーブル名２"
     // };
     for (const { id, name } of tables) {
         const newObj = structuredClone(obj);    // ディープコピー
@@ -227,28 +221,32 @@ export async function updateTableName_core( tables ){
             throw `テーブル名「${name}」は重複しています。`;
         }
     }
-    // テーブル名が重複していないか確認する ここまで
-    //==========================================================
     //
+    //==========================================================
+    // テーブル名を変更する
     for (const { id, name } of tables) {
+        let tableNumber = id.replace("t","");
+        if(isNaN(tableNumber)){
+            throw "指定されたテーブルIDは無効です。";
+        }
+        tableNumber = Number(tableNumber);
         await runSqlWriteOnly(
             `UPDATE table_names
                 SET table_name = :tableName
-                WHERE table_number = :tableNumber
-                    AND is_system_table = 0;`,
+                WHERE table_number = :tableNumber;`,
             {
                 ":tableName": name,
-                ":tableNumber": id.replace("t",""),
+                ":tableNumber": tableNumber,
             },
         );
     }
+    //==========================================================
     await _reload();    // メモリに再読み込み
     return "テーブル名を変更しました";
 }
 
 // テーブルの一覧を取得
-export async function listTables_core( pageNumber_tables, onePageMaxSize, isTrash ){
-    const pageNumber = pageNumber_tables;
+export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
     if (!(pageNumber >= 1)) {
         pageNumber = 1;
     }
@@ -271,7 +269,6 @@ export async function listTables_core( pageNumber_tables, onePageMaxSize, isTras
         INNER JOIN sqlite_master
             ON ( "t" || table_names.table_number ) = sqlite_master.name
         WHERE table_names.enable = :isEnable
-            AND table_names.is_system_table = 0
         ORDER BY table_names.created_at DESC
         LIMIT :limit OFFSET :offset;`,
         {
@@ -284,7 +281,7 @@ export async function listTables_core( pageNumber_tables, onePageMaxSize, isTras
     );
     return {
         "tables": matrix,
-        "tables_total": count,
+        "total": count,
     }
 }
 

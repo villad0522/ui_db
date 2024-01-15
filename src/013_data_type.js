@@ -30,55 +30,48 @@ import {
 export async function startUp_core( localUrl, isDebug ){
     await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
     //
-    try {
-        // テーブルを作成する（データ型を保存するため）
-        await runSqlWriteOnly(
-            `CREATE TABLE IF NOT EXISTS data_types (
-                "column_number" INTEGER PRIMARY KEY AUTO_INCREMENT,
-                "table_id" INTEGER NOT NULL,
-                "data_type" TEXT NOT NULL,
-                "created_at" INTEGER NOT NULL
-            );`,
-            {},
-        );
-    }
-    catch (err) {
-        throw `システム管理用テーブルの作成に失敗しました。\n${String(err)}`;
-    }
+    // テーブルを作成する（データ型を保存するため）
+    await runSqlWriteOnly(
+        `CREATE TABLE IF NOT EXISTS data_types (
+            "column_id" TEXT PRIMARY KEY,
+            "table_id" TEXT NOT NULL,
+            "data_type" TEXT NOT NULL
+        );`,
+        {},
+    );
     await _reload();    // メモリに再読み込み
 }
 
 //【グローバル変数】データ型を保存するキャッシュ
 const cacheData = {
     // データの例
-    // "t2": {
-    //     "c5": "TEXT",
-    //     "c22": "INTEGER",
-    //     "c13": "BOOL"
-    // },
-    // "t8": {
-    //     "c25": "INTEGER",
-    //     "c3": "TEXT",
-    //     "c9": "FILE"
-    // }
+    //  "t1":{
+    //    "c5": "TEXT",
+    //    "c22": "INTEGER",
+    //    "c13": "BOOL"
+    //  },
+    //  "t2":{
+    //    "c1": "TEXT",
+    //    "c9": "INTEGER",
+    //    "c78": "BOOL"
+    //  }
 };
 
 //【サブ関数】メモリに再読み込み
 async function _reload() {
-    let matrix = [];
     const columns = await runSqlReadOnly(
         `SELECT
-            column_number AS columnNumber,
+            column_id AS columnId,
+            table_id AS tableId,
             data_type AS dataType
         FROM data_types;`,
         {},
     );
-    //
-    for( const { columnNumber, dataType } of columns ){
+    for( const { columnId, tableId, dataType } of columns ){
         if(!cacheData[tableId]){
             cacheData[tableId] = {};
         }
-        cacheData[tableId]["c"+columnNumber] = dataType;
+        cacheData[tableId][columnId] = dataType;
     }
 }
 
@@ -88,7 +81,13 @@ export async function clearCache_core(  ){
 }
 
 // カラムを作成
-export async function createColumn_core( tableId, dataType ){
+export async function createColumn_core( tableId, columnId, dataType ){
+    if( !String(tableId).startsWith("t") ){
+        throw `テーブルIDに無効な文字列「${tableId}」が指定されました。`;
+    }
+    if( !String(columnId).startsWith("c") ){
+        throw `カラムIDに無効な文字列「${columnId}」が指定されました。`;
+    }
     let sqlDataType = "";
     switch(dataType){
         case "INTEGER":
@@ -109,56 +108,33 @@ export async function createColumn_core( tableId, dataType ){
         default:
             throw `データ型「${dataType}」はサポートされていません。`;
     }
-    const timestamp = new Date().getTime();
-    await runSqlWriteOnly(
-        `INSERT INTO data_types (table_id, data_type, created_at)
-            VALUES ( :tableId, :dataType, :createdAt );`,
-        {
-            ":tableId": tableId,
-            ":dataType": dataType,
-            ":createdAt": timestamp,
-        },
-    );
-    const columns = await runSqlReadOnly(
-        `SELECT column_number FROM data_types
-            WHERE table_id = :tableId
-                AND data_type = :dataType
-                AND created_at = :createdAt
-            ORDER BY column_number DESC
-            LIMIT 1;`,
-        {
-            ":tableId": tableId,
-            ":dataType": dataType,
-            ":createdAt": timestamp,
-        },
-    );
-    if(columns.length===0){
-        throw "追加したはずのカラムが見つかりません。";
-    }
-    const columnNumber = columns[0]["column_number"];
-    if(isNaN(columnNumber)){
-        throw "新しく発行されたカラムIDが見つかりません。";
-    }
-    const columnId = "c" + columnNumber;
     await runSqlWriteOnly(
         `ALTER TABLE ${tableId} ADD COLUMN ${columnId} ${sqlDataType};`,
+        {},
+    );
+    await runSqlWriteOnly(
+        `INSERT INTO data_types ( column_id, table_id, data_type )
+            VALUES ( :columnId, :tableId, :dataType );`,
         {
+            ":columnId": columnId,
             ":tableId": tableId,
             ":dataType": dataType,
-            ":createdAt": timestamp,
         },
     );
     await _reload();    // メモリに再読み込み
-    return {
-        columnId: columnId,
-        message: "カラムを追加しました。",
-    };
+    return "カラムを追加しました。";
 }
 
-// カラムの一覧を取得
-export async function listColumns_core(  ){
-    return cacheData;
+// データ型の一覧を取得
+export async function listDataTypes_core( tableId ){
+    return cacheData[tableId];
 }
+// 戻り値の例
+//  {
+//    "c5": "TEXT",
+//    "c22": "INTEGER",
+//    "c13": "BOOL"
+//  }
 
 // レコードを作成
 export async function createRecord_core( tableId, recordData ){
@@ -283,6 +259,12 @@ export async function updateRecord_core( tableId, recordId, recordData ){
 
 // フィールドを検証
 export async function checkField_core( tableId, columnId, value ){
+    if( !String(tableId).startsWith("t") ){
+        throw `テーブルIDに無効な文字列「${tableId}」が指定されました。`;
+    }
+    if( !String(columnId).startsWith("c") ){
+        throw `カラムIDに無効な文字列「${columnId}」が指定されました。`;
+    }
     if( (value===null) || (value===undefined) ){
         return {
             isOK: true,

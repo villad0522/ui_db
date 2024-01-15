@@ -4,7 +4,7 @@ import {
   startUp,
   clearCache,
   createColumn,
-  listColumns,
+  listDataTypes,
   createRecord,
   updateRecord,
   checkField,

@@ -6,10 +6,11 @@ import {
   runSqlWriteOnly,
   clearCache,
   createColumn,
-  listColumns,
   disableColumn,
   enableColumn,
   updateColumnName,
+  listColumns,
+  getTableId,
 } from "./006_column_name_test.js";
 import {
   getLocalIp,
@@ -31,6 +32,7 @@ import {
   delete_table,
 } from "./010_search_text_test.js";
 import {
+  listDataTypes,
   checkField,
   checkRecord,
 } from "./012_data_type_test.js";

@@ -33,7 +33,7 @@ import {
 } from "./010_search_text_test.js";
 import {
   createColumn,
-  listColumns,
+  listDataTypes,
   checkField,
   checkRecord,
 } from "./012_data_type_test.js";
@@ -41,55 +41,40 @@ import {
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
     await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
-    try {
-      // テーブルを作成する（テーブルの存在を保存するため）
-      await runSqlWriteOnly(
-        `CREATE TABLE IF NOT EXISTS column_names(
-            "column_id" TEXT PRIMARY KEY,
-            "column_name" TEXT NOT NULL,
-            "table_id" TEXT NOT NULL,
-            "enable" INTEGER NOT NULL DEFAULT 1
-        );`,
-        {},
-      );
-    }
-    catch (err) {
-      throw `システム管理用テーブルの作成に失敗しました。${String(err)}`;
-    }
+    // テーブルを作成する（テーブルの存在を保存するため）
+    await runSqlWriteOnly(
+    `CREATE TABLE IF NOT EXISTS column_names(
+        "column_number" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "column_name" TEXT NOT NULL,
+        "table_id" TEXT NOT NULL,
+        "enable" INTEGER NOT NULL DEFAULT 1
+    );`,
+    {},
+    );
     await _reload();    // メモリに再読み込み
 }
 
 //【グローバル変数】カラム名を保存するキャッシュ
 let cacheData1 = {
     // データの例
-    // "c2": "カラム名１",
-    // "c8": "カラム名２"
-};
-let cacheData2 = {
-    // データの例
-    // "カラム名１": "c2",
-    // "カラム名２": "c8"
+    // "c2": "t1_カラム名１",
+    // "c8": "t1_カラム名２"
 };
 
 //【サブ関数】メモリに再読み込み
 async function _reload() {
-    let matrix = [];
-    try {
-        matrix = await runSqlReadOnly(
-            `SELECT * FROM column_names WHERE enable = 1;`,
-            {},
-        );
-    }
-    catch (err) {
-        throw `テーブル「column_names」の読み込みに失敗しました。${String(err)}`;
-    }
+    const matrix = await runSqlReadOnly(
+        `SELECT
+            column_name AS columnName
+            column_number AS columnNumber
+        FROM column_names
+        WHERE enable = 1;`,
+        {},
+    );
     cacheData1 = {};
-    cacheData2 = {};
-    for (const record of matrix) {
-        const columnName = record["column_name"];
-        const columnId = record["column_id"];
+    for (const { columnName, columnNumber } of matrix) {
+        const columnId = "c" + String(columnNumber);
         cacheData1[columnId] = columnName;
-        cacheData2[columnName] = columnId;
     }
 }
 
@@ -101,42 +86,90 @@ export async function clearCache_core(  ){
 
 // カラムを作成
 export async function createColumn_core( tableId, columnName, dataType ){
+    //
+    // カラム名がデータベース全体で重複しないように、先頭にテーブルIDとアンダーバーをつける
+    //   例： 氏名 => t1_氏名
+    let columnName2;
+    if( columnName.startsWith( tableId + "_" ) ){
+        columnName2 = columnName;   // 既に加えられている場合
+    }
+    else{
+        columnName2 = tableId + "_" + columnName;
+    }
+    //
+    // カラム名が "データベース全体で" 重複していないかチェックする
     const columns = await runSqlReadOnly(
-      `SELECT * FROM column_names
+        `SELECT *
+        FROM column_names
         WHERE enable = 1
-          AND columnName = :columnName;`,
+          AND column_name = :columnName;`,
       {
-          ":columnName": columnName,
+          ":columnName": columnName2,
       },
     );
     if (columns.length>=1) {
-      throw `カラム名「${columnName}」は重複しています。`;
+      throw `カラム名「${columnName2}」は重複しています。`;
     }
-    const { columnId, message } = await createColumn( tableId, dataType );   // 下層の関数を呼び出す
+    //
+    // カラムの存在を登録する
+    const timestamp = new Date().getTime();
     await runSqlWriteOnly(
-      `INSERT INTO column_names ( column_id, column_name, table_id )
-          VALUES ( :columnId, :columnName, :tableId );`,
-      {
-          ":columnId": columnId,
-          ":columnName": columnName,
-          ":tableId": tableId,
-      },
+        `INSERT INTO column_names (column_name, table_id, created_at)
+            VALUES ( :columnName, :tableId, :createdAt );`,
+        {
+            ":columnName": columnName2, // 表示される名前（変更不可）
+            ":tableId": tableId,        // 所属しているテーブル
+            ":createdAt": timestamp,    // 作成日時
+        },
     );
+    //
+    // カラムIDを決定する
+    const columns = await runSqlReadOnly(
+        `SELECT column_number AS columnNumber
+        FROM column_names
+            WHERE column_name = :columnName
+                AND table_id = :tableId
+                AND created_at = :createdAt
+            ORDER BY table_number DESC
+            LIMIT 1;`,
+        {
+            ":columnName": columnName2, // 表示される名前（変更不可）
+            ":tableId": tableId,        // 所属しているテーブル
+            ":createdAt": timestamp,    // 作成日時
+        },
+    );
+    if(columns.length===0){
+        throw "登録したはずのカラムが見つかりません。";
+    }
+    const columnNumber = columns[0]["columnNumber"];
+    if(isNaN(columnNumber)){
+        throw "新しく発行されたカラムIDが見つかりません。";
+    }
+    const columnId = "c" + String(columnNumber);
+    //
+    // カラムを実際に作成する
+    await createColumn( tableId, columnId, dataType );   // 下層の関数を呼び出す
+    //
     await _reload();    // メモリに再読み込み
     return {
         columnId: columnId,
-        message: `カラム「${columnName}」を作成しました。`,
+        message: `カラム「${columnName2}」を作成しました。`,
     };
 }
 
 // カラムを無効化
 export async function disableColumn_core( columnId ){
+    let columnNumber = columnId.replace("c","");
+    if(isNaN(columnNumber)){
+        throw "指定されたカラムIDは無効です。";
+    }
+    columnNumber = Number(columnNumber);
     await runSqlWriteOnly(
         `UPDATE column_names
             SET enable = 0
-            WHERE column_id = :columnId;`,
+            WHERE column_number = :columnNumber;`,
         {
-            ":columnId": columnId,
+            ":columnNumber": columnNumber,
         },
     );
     await _reload();    // メモリに再読み込み
@@ -145,29 +178,39 @@ export async function disableColumn_core( columnId ){
 
 // カラムを再度有効化
 export async function enableColumn_core( columnId ){
+    let columnNumber = columnId.replace("c","");
+    if(isNaN(columnNumber)){
+        throw "指定されたカラムIDは無効です。";
+    }
+    columnNumber = Number(columnNumber);
+    //
+    // columnNumberと同じ名前のカラムが既に存在していないかチェックする
     const columns = await runSqlReadOnly(
-        `SELECT *
-            FROM column_names AS t1
-            INNER JOIN column_names AS t2
-                ON t1.column_name = t2.column_name
-            WHERE t2.column_id = :columnId
-                AND t1.column_id <> :column_id
-                AND t1.enable = 1
-            LIMIT 1;`,
+        `SELECT
+            column_name AS columnName
+        FROM column_names AS t1
+        INNER JOIN column_names AS t2
+            ON t1.column_name = t2.column_name
+            AND t1.column_number <> t2.column_number
+        WHERE t1.column_number = :columnNumber
+            AND t2.enable = 1
+        LIMIT 1;`,
         {
-            ":columnId": columnId,
+            ":columnNumber": columnNumber,
         },
     );
     if(columns.length>=1){
-        const columnName = columns[0]["column_name"];
-        throw `テーブル名「${columnName}」は重複しています。`;
+        const columnName = columns[0]["columnName"];
+        throw `カラム名「${columnName}」は重複しています。`;
     }
+    //
+    // カラムを再度有効化する
     await runSqlWriteOnly(
         `UPDATE column_names
             SET enable = 1
-            WHERE column_id = :columnId;`,
+            WHERE column_number = :columnNumber;`,
         {
-            ":columnId": columnId,
+            ":columnNumber": columnNumber,
         },
     );
     await _reload();    // メモリに再読み込み
@@ -177,24 +220,39 @@ export async function enableColumn_core( columnId ){
 // カラム名を変更
 export async function updateColumnName_core( columns ){
     //==========================================================
+    // テーブルIDを調べる
+    if(columns.length===0){
+        throw "配列「columns」が空です。";
+    }
+    const tableId = await getTableId( columns[0].id );
+    //
+    //==========================================================
+    // カラム名の先頭にテーブルIDを付け加える（「t2」など）
+    const columns2  = {};
+    for (const { id, name } of columns) {
+        if( name.startsWith( tableId + "_" ) ){
+            columns2[id] = name;   // 既に加えられている場合
+        }
+        else{
+            columns2[id] = tableId + "_" + name;
+        }
+    }
+    //
+    //==========================================================
     // カラム名が重複していないか確認する
     await _reload();
-    const obj = structuredClone(cacheData1);    // ディープコピー
-    // データの例
-    // obj = {
-    //     "c2": "カラム名１",
-    //     "c8": "カラム名２"
-    // };
-    for (const { id, name } of columns) {
-        obj[id] = name;
-    }
+    const obj = {
+        ...structuredClone(cacheData1),    // ディープコピー
+        ...columns2,
+    };
     // この時点で、連想配列「obj」には、全てのカラム一覧が格納されている。
     // データの例
     // obj = {
-    //     "c2": "カラム名１",（変更後のカラム名）
-    //     "c8": "カラム名２"
+    //      "c2": "t1_変更後のカラム名１",
+    //      "c8": "t1_カラム名２"
     // };
-    for (const { id, name } of columns) {
+    for (const id in columns2 ) {
+        const name = columns2[id];
         const newObj = structuredClone(obj);    // ディープコピー
         //
         // 自分自身を除いた、他のカラムと名前が被っていないか確認する
@@ -204,32 +262,36 @@ export async function updateColumnName_core( columns ){
             throw `カラム名「${name}」は重複しています。`;
         }
     }
-    // ここまでカラム名が重複していないか確認する処理
-    //==========================================================
     //
-    for (const { id, name } of columns) {
+    //==========================================================
+    // カラム名を変更する
+    for (const id in columns2 ) {
+        let columnNumber = id.replace("c","");
+        if(isNaN(columnNumber)){
+            throw "指定されたカラムIDは無効です。";
+        }
+        columnNumber = Number(columnNumber);
         await runSqlWriteOnly(
             `UPDATE column_names
                 SET column_name = :columnName
-                WHERE column_id = :columnId
-                    AND is_system_table = 0;`,
+                WHERE column_number = :columnNumber;`,
             {
-                ":columnName": name,
-                ":columnId": id,
+                ":columnName": columns2[id],
+                ":columnNumber": columnNumber,
             },
         );
     }
+    //==========================================================
     await _reload();    // メモリに再読み込み
     return "カラム名を変更しました";
 }
 
 // カラムの一覧を取得
-export async function listColumns_core( pageNumber_columns, onePageMaxSize, isTrash ){
-    const pageNumber = pageNumber_columns;
-    if (!(pageNumber >= 1)) {
+export async function listColumns_core( tableId, pageNumber, onePageMaxSize, isTrash ){
+    if (pageNumber <= 0) {
         pageNumber = 1;
     }
-    const [{ "COUNT(*)": count }] = await runSqlReadOnly(
+    const [{ "COUNT(*)": total }] = await runSqlReadOnly(
         `SELECT COUNT(*)
             FROM column_names
             WHERE enable = :isEnable;`,
@@ -239,25 +301,35 @@ export async function listColumns_core( pageNumber_columns, onePageMaxSize, isTr
             ":isEnable": isTrash ? 0 : 1,
         },
     );
-    const matrix = await runSqlReadOnly(
+    let offset = onePageMaxSize * (pageNumber - 1);
+    if( offset >= total ){
+        offset = total;
+    }
+    const columns = await runSqlReadOnly(
         `SELECT
-            column_id AS id,
+            ( "c" || column_number ) AS id,
             column_name AS name
         FROM column_names
-            WHERE enable = :isEnable
-            ORDER BY created_at DESC
-            LIMIT :limit OFFSET :offset;`,
+        WHERE table_id = :tableId
+            AND enable = :isEnable
+        ORDER BY created_at DESC
+        LIMIT :limit OFFSET :offset;`,
         {
+            ":tableId": tableId,
             // 現存するテーブル一覧を取得する場合は１
             // 削除済みのテーブル一覧を取得する場合は０
             ":isEnable": isTrash ? 0 : 1,
             ":limit": onePageMaxSize,
-            ":offset": onePageMaxSize * (pageNumber - 1),
+            ":offset": offset,
         },
     );
+    const dataTypes = await listDataTypes( tableId );
+    for (const { id, name } of columns) {
+        columns.dataType = dataTypes[id];
+    }
     return {
-        "columns": matrix,
-        "columns_total": count,
+        "columns": columns,
+        "total": total,
     }
 }
 
@@ -279,4 +351,26 @@ export async function runSqlWriteOnly_core( sql, params ){
         sql = sql.replaceAll( columnName, columnId );
     }
     return await runSqlReadOnly( sql, params );
+}
+
+// カラムIDからテーブルIDを調べる
+export async function getTableId_core( columnId ){
+    let columnNumber = columnId.replace("c","");
+    if(isNaN(columnNumber)){
+        throw "指定されたカラムIDは無効です。";
+    }
+    columnNumber = Number(columnNumber);
+    const columns = await runSqlReadOnly(
+        `SELECT table_id AS tableId
+        FROM column_names
+        WHERE column_number = :columnNumber
+        LIMIT 1;`,
+        {
+            ":columnNumber": columnNumber,
+        },
+    );
+    if(columns.length===0){
+        throw "指定されたカラムIDは存在しません。";
+    }
+    return columns[0]["tableId"];
 }

@@ -21,9 +21,10 @@ import {
   runSqlReadOnly,
   runSqlWriteOnly,
   clearCache,
-  listColumns,
   disableColumn,
   enableColumn,
+  listColumns,
+  getTableId,
 } from "./006_column_name_test.js";
 import {
   createRecordsFromCsv,
@@ -32,6 +33,7 @@ import {
   delete_table,
 } from "./010_search_text_test.js";
 import {
+  listDataTypes,
   checkField,
   checkRecord,
 } from "./012_data_type_test.js";

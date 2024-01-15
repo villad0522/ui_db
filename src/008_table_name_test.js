@@ -92,7 +92,7 @@ export async function clearCache(  ){
 //#######################################################################################
 // 関数「createTable_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function createTable( tableName, isSystemTable ){
+export async function createTable( tableName ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableName !== "string" ){
@@ -103,23 +103,12 @@ export async function createTable( tableName, isSystemTable ){
       throw new Error(`tableNameが文字列ではありません。\nレイヤー : table_name\n関数 : createTable`);
     }
   }
-  if( typeof isSystemTable !== "boolean" ){
-    if( !isSystemTable ){
-      throw new Error(`isSystemTableがNULLです。\nレイヤー : table_name\n関数 : createTable`);
-    }
-    else{
-      throw new Error(`isSystemTableがブール値ではありません。\nレイヤー : table_name\n関数 : createTable`);
-    }
-  }
-  else if( isNaN(isSystemTable) ){
-    throw new Error(`isSystemTableがブール値ではありません。\nレイヤー : table_name\n関数 : createTable`);
-  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await createTable_core( tableName, isSystemTable );
+    result = await createTable_core( tableName );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -375,19 +364,19 @@ export async function updateTableName( tables ){
 //#######################################################################################
 // 関数「listTables_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function listTables( pageNumber_tables, onePageMaxSize, isTrash ){
+export async function listTables( pageNumber, onePageMaxSize, isTrash ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( typeof pageNumber_tables !== "number" ){
-    if( !pageNumber_tables ){
-      throw new Error(`pageNumber_tablesがNULLです。\nレイヤー : table_name\n関数 : listTables`);
+  if( typeof pageNumber !== "number" ){
+    if( !pageNumber ){
+      throw new Error(`pageNumberがNULLです。\nレイヤー : table_name\n関数 : listTables`);
     }
     else{
-      throw new Error(`pageNumber_tablesが数値ではありません。\nレイヤー : table_name\n関数 : listTables`);
+      throw new Error(`pageNumberが数値ではありません。\nレイヤー : table_name\n関数 : listTables`);
     }
   }
-  else if( isNaN(pageNumber_tables) ){
-    throw new Error(`pageNumber_tablesが数値ではありません。\nレイヤー : table_name\n関数 : listTables`);
+  else if( isNaN(pageNumber) ){
+    throw new Error(`pageNumberが数値ではありません。\nレイヤー : table_name\n関数 : listTables`);
   }
   if( typeof onePageMaxSize !== "number" ){
     if( !onePageMaxSize ){
@@ -416,7 +405,7 @@ export async function listTables( pageNumber_tables, onePageMaxSize, isTrash ){
   // メイン処理を実行
   let result;
   try{
-    result = await listTables_core( pageNumber_tables, onePageMaxSize, isTrash );
+    result = await listTables_core( pageNumber, onePageMaxSize, isTrash );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -471,16 +460,16 @@ export async function listTables( pageNumber_tables, onePageMaxSize, isTrash ){
       }
     }
   }
-  if( typeof result.tables_total !== "number" ){
-    if( !result.tables_total ){
-      throw new Error(`result.tables_totalがNULLです。\nレイヤー : table_name\n関数 : listTables`);
+  if( typeof result.total !== "number" ){
+    if( !result.total ){
+      throw new Error(`result.totalがNULLです。\nレイヤー : table_name\n関数 : listTables`);
     }
     else{
-      throw new Error(`result.tables_totalが数値ではありません。\nレイヤー : table_name\n関数 : listTables`);
+      throw new Error(`result.totalが数値ではありません。\nレイヤー : table_name\n関数 : listTables`);
     }
   }
-  else if( isNaN(result.tables_total) ){
-    throw new Error(`result.tables_totalが数値ではありません。\nレイヤー : table_name\n関数 : listTables`);
+  else if( isNaN(result.total) ){
+    throw new Error(`result.totalが数値ではありません。\nレイヤー : table_name\n関数 : listTables`);
   }
   //
   //--------------------------------------------------------------------------

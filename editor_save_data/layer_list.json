@@ -10,6 +10,11 @@
     "layerNameEN": "relation"
   },
   {
+    "layerId": "01HM7EY8CJGHQ1YBC7NCFA5BH3",
+    "layerNameJP": "レコードの見出し",
+    "layerNameEN": "record_title"
+  },
+  {
     "layerId": "01HM5YDWDRQGWAF3EKKWMW7985",
     "layerNameJP": "予約語フィルター",
     "layerNameEN": "reserved_word"
