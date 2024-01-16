@@ -2,53 +2,62 @@
 //
 import {
   startUp,
+  clearCache,
   createColumn,
+  deleteTable,
+  disableTable,
+  enableTable,
+  disableColumn,
+  enableColumn,
+  listColumns,
 } from "./002_relation_test.js";
 import {
   getLocalIp,
-} from "./018_ip_address_test.js";
+} from "./022_ip_address_test.js";
 import {
   getPath,
-} from "./016_directory_test.js";
+} from "./020_directory_test.js";
 import {
   getDebugMode,
   startTransaction,
   endTransaction,
   getCsvProgress,
   close,
-} from "./014_connect_database_test.js";
+} from "./018_connect_database_test.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
-  clearCache,
-  disableColumn,
-  enableColumn,
-  listColumns,
   getTableId,
-} from "./006_column_name_test.js";
+  checkColumnEnabled,
+} from "./008_column_name_test.js";
 import {
   createRecordsFromCsv,
   createRecord,
   updateRecord,
   delete_table,
-} from "./010_search_text_test.js";
+} from "./012_search_text_test.js";
+import {
+  getPrimaryKey,
+} from "./016_layerName_test.js";
 import {
   listDataTypes,
   checkField,
   checkRecord,
-} from "./012_data_type_test.js";
+} from "./014_data_type_test.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
-} from "./004_reserved_word_test.js";
+} from "./006_reserved_word_test.js";
 import {
-  deleteTable,
-  disableTable,
-  enableTable,
   listTables,
-} from "./008_table_name_test.js";
+  setTitleColumn,
+  getTitleColumn,
+} from "./004_record_title_test.js";
+import {
+  checkTableEnabled,
+} from "./010_table_name_test.js";
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){

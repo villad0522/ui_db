@@ -40,6 +40,11 @@
     "layerNameEN": "data_type"
   },
   {
+    "layerId": "01HM81BRJJHDFRR9PX4TWMV7Q0",
+    "layerNameJP": "プライマリキー",
+    "layerNameEN": "layerName"
+  },
+  {
     "layerId": "01HM1S41BMZT31P1KCV0RZPTAH",
     "layerNameJP": "データベース",
     "layerNameEN": "connect_database"

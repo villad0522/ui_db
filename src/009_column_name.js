@@ -11,45 +11,50 @@ import {
   enableTable,
   updateTableName,
   listTables,
-} from "./008_table_name_test.js";
+  checkTableEnabled,
+} from "./010_table_name_test.js";
 import {
   getLocalIp,
-} from "./018_ip_address_test.js";
+} from "./022_ip_address_test.js";
 import {
   getPath,
-} from "./016_directory_test.js";
+} from "./020_directory_test.js";
 import {
   getDebugMode,
   startTransaction,
   endTransaction,
   getCsvProgress,
   close,
-} from "./014_connect_database_test.js";
+} from "./018_connect_database_test.js";
 import {
   createRecordsFromCsv,
   createRecord,
   updateRecord,
   delete_table,
-} from "./010_search_text_test.js";
+} from "./012_search_text_test.js";
+import {
+  getPrimaryKey,
+} from "./016_layerName_test.js";
 import {
   createColumn,
   listDataTypes,
   checkField,
   checkRecord,
-} from "./012_data_type_test.js";
+} from "./014_data_type_test.js";
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
     await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
-    // テーブルを作成する（テーブルの存在を保存するため）
+    //
+    // テーブルを作成する（カラムの存在を保存するため）
     await runSqlWriteOnly(
-    `CREATE TABLE IF NOT EXISTS column_names(
-        "column_number" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "column_name" TEXT NOT NULL,
-        "table_id" TEXT NOT NULL,
-        "enable" INTEGER NOT NULL DEFAULT 1
-    );`,
-    {},
+        `CREATE TABLE IF NOT EXISTS column_names(
+            "column_number" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "column_name" TEXT NOT NULL,
+            "table_id" TEXT NOT NULL,
+            "enable" INTEGER NOT NULL DEFAULT 1
+        );`,
+        {},
     );
     await _reload();    // メモリに再読み込み
 }
@@ -286,7 +291,7 @@ export async function updateColumnName_core( columns ){
     return "カラム名を変更しました";
 }
 
-// カラムの一覧を取得
+// カラムの一覧を取得(重)
 export async function listColumns_core( tableId, pageNumber, onePageMaxSize, isTrash ){
     if (pageNumber <= 0) {
         pageNumber = 1;
@@ -323,7 +328,7 @@ export async function listColumns_core( tableId, pageNumber, onePageMaxSize, isT
             ":offset": offset,
         },
     );
-    const dataTypes = await listDataTypes( tableId );
+    const dataTypes = await listDataTypes( tableId );  // 下層の関数を実行する
     for (const { id, name } of columns) {
         columns.dataType = dataTypes[id];
     }
@@ -340,7 +345,7 @@ export async function runSqlReadOnly_core( sql, params ){
         const columnName = cacheData1[columnId];
         sql = sql.replaceAll( columnName, columnId );
     }
-    return await runSqlReadOnly( sql, params );
+    return await runSqlReadOnly( sql, params );  // 下層の関数を実行する
 }
 
 // SQLクエリ実行（書き込み専用）
@@ -350,7 +355,7 @@ export async function runSqlWriteOnly_core( sql, params ){
         const columnName = cacheData1[columnId];
         sql = sql.replaceAll( columnName, columnId );
     }
-    return await runSqlReadOnly( sql, params );
+    return await runSqlReadOnly( sql, params );  // 下層の関数を実行する
 }
 
 // カラムIDからテーブルIDを調べる
@@ -373,4 +378,22 @@ export async function getTableId_core( columnId ){
         throw "指定されたカラムIDは存在しません。";
     }
     return columns[0]["tableId"];
+}
+
+// 不可逆的にテーブルを削除
+export async function deleteTable_core( tableId ){
+    await runSqlWriteOnly(
+        `DELETE FROM column_names
+            WHERE table_id = :tableId;`,
+        {
+            ":tableId": tableId,
+        },
+    );
+    await _reload();    // メモリに再読み込み
+    return await deleteTable( tableId );  // 下層の関数を実行する
+}
+
+// カラムが有効なのか判定
+export async function checkColumnEnabled_core( columnId ){
+    return cacheData1[columnId] ? true : false;
 }

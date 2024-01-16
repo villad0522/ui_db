@@ -7,13 +7,13 @@ import {
   createRecord,
   updateRecord,
   delete_table,
-} from "./010_search_text_test.js";
+} from "./012_search_text_test.js";
 import {
   getLocalIp,
-} from "./018_ip_address_test.js";
+} from "./022_ip_address_test.js";
 import {
   getPath,
-} from "./016_directory_test.js";
+} from "./020_directory_test.js";
 import {
   getDebugMode,
   startTransaction,
@@ -21,7 +21,10 @@ import {
   runSqlReadOnly,
   getCsvProgress,
   close,
-} from "./014_connect_database_test.js";
+} from "./018_connect_database_test.js";
+import {
+  getPrimaryKey,
+} from "./016_layerName_test.js";
 import {
   clearCache,
   createColumn,
@@ -30,7 +33,7 @@ import {
   checkRecord,
   createTable,
   deleteTable,
-} from "./012_data_type_test.js";
+} from "./014_data_type_test.js";
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
@@ -107,7 +110,6 @@ export async function createTable_core( tableName ){
         `SELECT table_number FROM table_names
             WHERE table_name = :tableName
                 AND created_at = :createdAt
-            ORDER BY table_number DESC
             LIMIT 1;`,
         {
             ":tableName": tableName,
@@ -134,14 +136,13 @@ export async function createTable_core( tableName ){
 export async function deleteTable_core( tableId ){
     await runSqlWriteOnly(
         `DELETE FROM table_names
-            WHERE table_number = :tableNumber
-                AND is_system_table = 0;`,
+            WHERE table_number = :tableNumber;`,
         {
             ":tableNumber": tableId.replace("t",""),
         },
     );
     await _reload();    // メモリに再読み込み
-    return await deleteTable( tableId );
+    return await deleteTable( tableId );  // 下層の関数を実行する
 }
 
 // テーブルを無効化
@@ -149,8 +150,7 @@ export async function disableTable_core( tableId ){
     await runSqlWriteOnly(
         `UPDATE table_names
             SET enable = 0
-            WHERE table_number = :tableNumber
-                AND is_system_table = 0;`,
+            WHERE table_number = :tableNumber;`,
         {
             ":tableNumber": tableId.replace("t",""),
         },
@@ -245,12 +245,13 @@ export async function updateTableName_core( tables ){
     return "テーブル名を変更しました";
 }
 
-// テーブルの一覧を取得
+
+// テーブルの一覧を取得(重)
 export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
     if (!(pageNumber >= 1)) {
         pageNumber = 1;
     }
-    const [{ "COUNT(*)": count }] = await runSqlReadOnly(
+    const [{ "COUNT(*)": total }] = await runSqlReadOnly(
         `SELECT COUNT(*)
             FROM table_names
             WHERE enable = :isEnable;`,
@@ -260,6 +261,10 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
             ":isEnable": isTrash ? 0 : 1,
         },
     );
+    let offset = onePageMaxSize * (pageNumber - 1);
+    if( offset >= total ){
+        offset = total;
+    }
     // 「sqlite_master」と結合させることで、実際に存在するテーブルのみに絞り込む
     const matrix = await runSqlReadOnly(
         `SELECT
@@ -276,14 +281,15 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
             // 削除済みのテーブル一覧を取得する場合は０
             ":isEnable": isTrash ? 0 : 1,
             ":limit": onePageMaxSize,
-            ":offset": onePageMaxSize * (pageNumber - 1),
+            ":offset": offset,
         },
     );
     return {
         "tables": matrix,
-        "total": count,
+        "total": total,
     }
 }
+
 
 // SQLクエリ実行（読み取り専用）
 export async function runSqlReadOnly_core( sql, params ){
@@ -292,8 +298,9 @@ export async function runSqlReadOnly_core( sql, params ){
         const tableName = cacheData1[tableId];
         sql = sql.replaceAll( tableName, tableId );
     }
-    return await runSqlReadOnly( sql, params );
+    return await runSqlReadOnly( sql, params );  // 下層の関数を実行する
 }
+
 
 // SQLクエリ実行（書き込み専用）
 export async function runSqlWriteOnly_core( sql, params ){
@@ -302,5 +309,11 @@ export async function runSqlWriteOnly_core( sql, params ){
         const tableName = cacheData1[tableId];
         sql = sql.replaceAll( tableName, tableId );
     }
-    return await runSqlWriteOnly( sql, params );
+    return await runSqlWriteOnly( sql, params );  // 下層の関数を実行する
+}
+
+
+// テーブルが有効なのか判定
+export async function checkTableEnabled_core( tableId ){
+    return cacheData1[tableId] ? true : false;
 }

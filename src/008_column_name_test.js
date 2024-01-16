@@ -5,11 +5,13 @@ import {
   disableColumn_core,  // カラムを無効化
   enableColumn_core,  // カラムを再度有効化
   updateColumnName_core,  // カラム名を変更
-  listColumns_core,  // カラムの一覧を取得
+  listColumns_core,  // カラムの一覧を取得(重)
   runSqlReadOnly_core,  // SQLクエリ実行（読み取り専用）
   runSqlWriteOnly_core,  // SQLクエリ実行（書き込み専用）
   getTableId_core,  // カラムIDからテーブルIDを調べる
-} from "./007_column_name.js";
+  deleteTable_core,  // 不可逆的にテーブルを削除
+  checkColumnEnabled_core,  // カラムが有効なのか判定
+} from "./009_column_name.js";
 
 
 //#######################################################################################
@@ -630,6 +632,101 @@ export async function getTableId( columnId ){
     else{
       throw new Error(`resultが文字列ではありません。\nレイヤー : column_name\n関数 : getTableId`);
     }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「deleteTable_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function deleteTable( tableId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : column_name\n関数 : deleteTable`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : column_name\n関数 : deleteTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await deleteTable_core( tableId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : column_name\n関数 : deleteTable`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : column_name\n関数 : deleteTable`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : column_name\n関数 : deleteTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「checkColumnEnabled_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function checkColumnEnabled( columnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof columnId !== "string" ){
+    if( !columnId ){
+      throw new Error(`columnIdがNULLです。\nレイヤー : column_name\n関数 : checkColumnEnabled`);
+    }
+    else{
+      throw new Error(`columnIdが文字列ではありません。\nレイヤー : column_name\n関数 : checkColumnEnabled`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await checkColumnEnabled_core( columnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : column_name\n関数 : checkColumnEnabled`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "boolean" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : column_name\n関数 : checkColumnEnabled`);
+    }
+    else{
+      throw new Error(`resultがブール値ではありません。\nレイヤー : column_name\n関数 : checkColumnEnabled`);
+    }
+  }
+  else if( isNaN(result) ){
+    throw new Error(`resultがブール値ではありません。\nレイヤー : column_name\n関数 : checkColumnEnabled`);
   }
   //
   //--------------------------------------------------------------------------

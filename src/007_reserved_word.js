@@ -6,44 +6,49 @@ import {
   runSqlWriteOnly,
   clearCache,
   createColumn,
+  deleteTable,
   disableColumn,
   enableColumn,
   updateColumnName,
   listColumns,
   getTableId,
-} from "./006_column_name_test.js";
+  checkColumnEnabled,
+} from "./008_column_name_test.js";
 import {
   getLocalIp,
-} from "./018_ip_address_test.js";
+} from "./022_ip_address_test.js";
 import {
   getPath,
-} from "./016_directory_test.js";
+} from "./020_directory_test.js";
 import {
   getDebugMode,
   startTransaction,
   endTransaction,
   getCsvProgress,
   close,
-} from "./014_connect_database_test.js";
+} from "./018_connect_database_test.js";
 import {
   createRecordsFromCsv,
   createRecord,
   updateRecord,
   delete_table,
-} from "./010_search_text_test.js";
+} from "./012_search_text_test.js";
+import {
+  getPrimaryKey,
+} from "./016_layerName_test.js";
 import {
   listDataTypes,
   checkField,
   checkRecord,
-} from "./012_data_type_test.js";
+} from "./014_data_type_test.js";
 import {
   createTable,
-  deleteTable,
   disableTable,
   enableTable,
   updateTableName,
   listTables,
-} from "./008_table_name_test.js";
+  checkTableEnabled,
+} from "./010_table_name_test.js";
 
 // カラムを作成
 export async function createColumn_core( tableId, columnName, dataType ){

@@ -6,10 +6,11 @@ import {
   disableTable_core,  // テーブルを無効化
   enableTable_core,  // テーブルを再度有効化
   updateTableName_core,  // テーブル名を変更
-  listTables_core,  // テーブルの一覧を取得
+  listTables_core,  // テーブルの一覧を取得(重)
   runSqlReadOnly_core,  // SQLクエリ実行（読み取り専用）
   runSqlWriteOnly_core,  // SQLクエリ実行（書き込み専用）
-} from "./009_table_name.js";
+  checkTableEnabled_core,  // テーブルが有効なのか判定
+} from "./011_table_name.js";
 
 
 //#######################################################################################
@@ -599,6 +600,55 @@ export async function runSqlWriteOnly( sql, params ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「checkTableEnabled_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function checkTableEnabled( tableId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : table_name\n関数 : checkTableEnabled`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : table_name\n関数 : checkTableEnabled`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await checkTableEnabled_core( tableId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : table_name\n関数 : checkTableEnabled`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "boolean" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : table_name\n関数 : checkTableEnabled`);
+    }
+    else{
+      throw new Error(`resultがブール値ではありません。\nレイヤー : table_name\n関数 : checkTableEnabled`);
+    }
+  }
+  else if( isNaN(result) ){
+    throw new Error(`resultがブール値ではありません。\nレイヤー : table_name\n関数 : checkTableEnabled`);
+  }
   //
   //--------------------------------------------------------------------------
   return result;

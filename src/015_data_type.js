@@ -10,13 +10,16 @@ import {
   createRecordsFromCsv,
   getCsvProgress,
   close,
-} from "./014_connect_database_test.js";
+} from "./018_connect_database_test.js";
 import {
   getLocalIp,
-} from "./018_ip_address_test.js";
+} from "./022_ip_address_test.js";
 import {
   getPath,
-} from "./016_directory_test.js";
+} from "./020_directory_test.js";
+import {
+  getPrimaryKey,
+} from "./016_layerName_test.js";
 
 // テーブルに保存できるデータ型の一覧
 // ・INTEGER (SQLiteでサポート)
@@ -138,8 +141,9 @@ export async function listDataTypes_core( tableId ){
 
 // レコードを作成
 export async function createRecord_core( tableId, recordData ){
-    if( recordData["record_id"] ){
-        throw "カラム「record_id」は指定できません。";
+    const primaryKey = await getPrimaryKey( tableId );
+    if( recordData[primaryKey] ){
+        throw "レコードを追加する際に、プライマリキーは指定できません。";
     }
     //
     // 「tableId」が本当に存在するのか確認（インジェクション攻撃対策）
@@ -183,9 +187,8 @@ export async function createRecord_core( tableId, recordData ){
         }
     );
     const records = await runSqlReadOnly(
-        `SELECT record_id FROM ${tableId}
+        `SELECT ${primaryKey} FROM ${tableId}
             WHERE created_at = :createdAt
-            ORDER BY record_id DESC
             LIMIT 1;`,
         {
             ":createdAt": timestamp,
@@ -194,7 +197,7 @@ export async function createRecord_core( tableId, recordData ){
     if(records.length===0){
         throw "追加したはずのレコードが見つかりません。";
     }
-    const recordId = records[0]["record_id"];
+    const recordId = records[0][primaryKey];
     if(!recordId){
         throw "新しく発行されたレコードIDが見つかりません。";
     }
@@ -206,8 +209,9 @@ export async function createRecord_core( tableId, recordData ){
 
 // レコードを上書き
 export async function updateRecord_core( tableId, recordId, recordData ){
-    if( recordData["record_id"] ){
-        throw "カラム「record_id」は上書き禁止です。";
+    const primaryKey = await getPrimaryKey( tableId );
+    if( recordData[primaryKey] ){
+        throw "プライマリキーは上書き禁止です。";
     }
     //
     // 「tableId」が本当に存在するのか確認（インジェクション攻撃対策）
@@ -217,7 +221,7 @@ export async function updateRecord_core( tableId, recordId, recordData ){
     }
     //
     const records = await runSqlReadOnly(
-        `SELECT * FROM ${tableId} WHERE record_id = :recordId LIMIT 1;`,
+        `SELECT * FROM ${tableId} WHERE ${primaryKey} = :recordId LIMIT 1;`,
         {
             ":recordId": recordId,
         },
@@ -246,7 +250,7 @@ export async function updateRecord_core( tableId, recordId, recordData ){
     await runSqlWriteOnly(
         `UPDATE ${tableId}
             SET ${words.join(", ")}, updated_at=:updatedAt
-            WHERE record_id = :recordId;`,
+            WHERE ${primaryKey} = :recordId;`,
         {
             ...newRecordData,
             ":recordId": recordId,
@@ -344,10 +348,11 @@ export async function checkRecord_core( tableId, recordData ){
 
 // テーブルを作成
 export async function createTable_core( tableId ){
+    const primaryKey = await getPrimaryKey( tableId );
     // テーブルを作成する
     await runSqlWriteOnly(
         `CREATE TABLE IF NOT EXISTS ${tableId} (
-            "record_id" INTEGER PRIMARY KEY NOT NULL,
+            "${primaryKey}" INTEGER PRIMARY KEY NOT NULL,
             "created_at" INTEGER NOT NULL,
             "updated_at" INTEGER NOT NULL
         );`,

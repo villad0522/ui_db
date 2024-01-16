@@ -11,13 +11,13 @@ import {
   checkRecord,
   createTable,
   deleteTable,
-} from "./012_data_type_test.js";
+} from "./014_data_type_test.js";
 import {
   getLocalIp,
-} from "./018_ip_address_test.js";
+} from "./022_ip_address_test.js";
 import {
   getPath,
-} from "./016_directory_test.js";
+} from "./020_directory_test.js";
 import {
   getDebugMode,
   startTransaction,
@@ -27,7 +27,10 @@ import {
   createRecordsFromCsv,
   getCsvProgress,
   close,
-} from "./014_connect_database_test.js";
+} from "./018_connect_database_test.js";
+import {
+  getPrimaryKey,
+} from "./016_layerName_test.js";
 
 
 // プログラム起動

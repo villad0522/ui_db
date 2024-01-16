@@ -1,1 +1,100 @@
-[{"functionNameJP":"プログラム起動","functionNameEN":"startUp","parametersName":["localUrl","isDebug"],"parametersDataType":["string_nullable","boolean"],"returnValue":"void","functionId":"01HM63PB1RAAE32JJ8BF6H7EN9","beforeCode":"\n","innerCode":"\n  await startUp( localUrl, isDebug );   // 下層の関数を呼び出す\n  //\n  // テーブルを作成する（リレーションを保存するため）\n  await reserveWord(\"relations\"); // 予約語に登録\n  await runSqlWriteOnly(\n    `CREATE TABLE IF NOT EXISTS relations (\n      child_column_id TEXT PRIMARY KEY,\n      child_table_id TEXT NOT NULL,\n      parent_table_id TEXT NOT NULL\n    );`,\n    {},\n  );\n  //\n  // テーブルを作成する（タイトルキーを保存するため）\n  await reserveWord(\"titles\"); // 予約語に登録\n  await runSqlWriteOnly(\n    `CREATE TABLE IF NOT EXISTS titles (\n      table_id TEXT PRIMARY KEY,\n      title_column_id TEXT NOT NULL\n    );`,\n    {},\n  );\n  await _reload();    // メモリに再読み込み\n","afterCode":""},{"functionNameJP":"カラムを作成","functionNameEN":"createColumn","parametersName":["tableId","columnName","dataType","parentTableId"],"parametersDataType":["string","string","string","string_nullable"],"returnValue":{"message":"string","columnId":"string"},"functionId":"01HM6455ZHTM4YA8SYX6PY2FTG","beforeCode":"\n\n","innerCode":"\n  if( dataType !== \"POINTER\" && !parentTableId ){\n    // 外部キーではない場合\n    return await createColumn( tableId, columnName, dataType );\n  }\n  // 外部キーの場合\n  if( dataType !== \"POINTER\" ){\n    throw `外部キーを作成する際は、dataTypeに\"POINTER\"を指定したうえで、parentTableIdも指定してください。`;\n  }\n  if( !parentTableId ){\n    throw `外部キーを作成する際は、dataTypeに\"POINTER\"を指定したうえで、parentTableIdも指定してください。`;\n  }\n  const result = await createColumn( tableId, columnName, \"INTEGER\" );\n  await runSqlWriteOnly(\n    `INSERT INTO relations( child_column_id, child_table_id, parent_table_id )\n        VALUES ( :childColumnId, :childTableId, :parentTableId );`,\n    {\n        \":childColumnId\": result.columnId,\n        \":childTableId\": tableId,\n        \":parentTableId\": parentTableId\n    },\n  );\n  await _reload();    // メモリに再読み込み\n  return result;\n","afterCode":"\n"}]
+[
+    {
+        "functionNameJP": "プログラム起動",
+        "functionNameEN": "startUp",
+        "parametersName": [
+            "localUrl",
+            "isDebug"
+        ],
+        "parametersDataType": [
+            "string_nullable",
+            "boolean"
+        ],
+        "returnValue": "void",
+        "functionId": "01HM63PB1RAAE32JJ8BF6H7EN9",
+        "beforeCode": "\n",
+        "innerCode": "\n  await startUp( localUrl, isDebug );   // 下層の関数を呼び出す\n  //\n  // テーブルを作成する（リレーションを保存するため）\n  await reserveWord(\"relations\"); // 予約語に登録\n  await runSqlWriteOnly(\n    `CREATE TABLE IF NOT EXISTS relations (\n      child_column_id TEXT PRIMARY KEY,\n      child_table_id TEXT NOT NULL,\n      parent_table_id TEXT NOT NULL\n    );`,\n    {},\n  );\n  await _reload();    // メモリに再読み込み\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "カラムを作成",
+        "functionNameEN": "createColumn",
+        "parametersName": [
+            "tableId",
+            "columnName",
+            "dataType",
+            "parentTableId"
+        ],
+        "parametersDataType": [
+            "string",
+            "string",
+            "string",
+            "string_nullable"
+        ],
+        "returnValue": {
+            "message": "string",
+            "columnId": "string"
+        },
+        "functionId": "01HM6455ZHTM4YA8SYX6PY2FTG",
+        "beforeCode": "\n\nlet cacheData1 = {\n  // 代入例\n  //  \"c23\": \"t4\",\n  //  \"c98\": \"t6\",\n  // 参照元のカラム名 : 参照先のテーブル名\n  //    childColumnId : parentTableId\n};\n\nlet cacheData2 = {\n  // 代入例\n  //  \"t4\": \"c23\",\n  //  \"t6\": \"c98\",\n  // 参照先のテーブル名 : 参照元のカラム名\n  //      parentTableId : childColumnId\n};\n\n\n//【サブ関数】メモリに再読み込み\nasync function _reload() {\n  const matrix = await runSqlReadOnly(\n    `SELECT\n      child_column_id AS childColumnId,\n      child_table_id AS childTableId,\n      parent_table_id AS parentTableId\n    FROM relations;`,\n    {},\n  );\n  cacheData1 = {};\n  cacheData2 = {};\n  for( const { childColumnId, childTableId, parentTableId } of matrix ){\n    cacheData1[childColumnId] = parentTableId;\n    cacheData2[parentTableId] = childColumnId;\n  }\n}\n\n\n",
+        "innerCode": "\n  if( dataType !== \"POINTER\" && !parentTableId ){\n    // 外部キーではない場合\n    return await createColumn( tableId, columnName, dataType );\n  }\n  // 外部キーの場合\n  if( dataType !== \"POINTER\" ){\n    throw `外部キーを作成する際は、dataTypeに\"POINTER\"を指定したうえで、parentTableIdも指定してください。`;\n  }\n  if( !parentTableId ){\n    throw `外部キーを作成する際は、dataTypeに\"POINTER\"を指定したうえで、parentTableIdも指定してください。`;\n  }\n  const result = await createColumn( tableId, columnName, \"INTEGER\" );\n  await runSqlWriteOnly(\n    `INSERT INTO relations( child_column_id, child_table_id, parent_table_id )\n        VALUES ( :childColumnId, :childTableId, :parentTableId );`,\n    {\n        \":childColumnId\": result.columnId,\n        \":childTableId\": tableId,\n        \":parentTableId\": parentTableId\n    },\n  );\n  await _reload();    // メモリに再読み込み\n  return result;\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "カラムの一覧を取得(重)",
+        "functionNameEN": "listColumns",
+        "parametersName": [
+            "tableId",
+            "pageNumber",
+            "onePageMaxSize",
+            "isTrash"
+        ],
+        "parametersDataType": [
+            "string",
+            "number",
+            "number",
+            "boolean"
+        ],
+        "returnValue": {
+            "columns": [
+                {
+                    "id": "string",
+                    "name": "string",
+                    "type": "string",
+                    "parentTableId": "string_nullable"
+                }
+            ],
+            "total": "number"
+        },
+        "functionId": "01HM80XXA6WXJKF50TYC30QZZN",
+        "beforeCode": "\n\n\n",
+        "innerCode": "\n  // 下層の関数を実行する\n  const { columns, total } = await listColumns( tableId, pageNumber, onePageMaxSize, isTrash );\n  //\n  // 参照先が有効なカラムだけに絞り込む\n  const columns2 = Array(columns).filter( ({id}) => {\n    if( await checkTableEnabled(parentTableId) === false ){\n      return false; // もし参照先が無効なテーブルだったら\n    }\n    else if( await checkTableEnabled(childTableId) === false ){\n      return false; // もし参照元が無効なテーブルだったら\n    }\n    else if( await checkColumnEnabled(childColumnId) === false ){\n      return false; // もし参照元が無効なカラムだったら\n    }\n    return true;\n  });\n  //\n  // 下層から得たカラムの一覧に、「parentTableId」を付け加えて上層に提供する\n  for (const { id } of columns2) {\n    columns2.parentTableId = cacheData1( id );\n  }\n  return {\n    \"columns\": columns2,\n    \"total\": total,\n  }\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "インメモリキャッシュを削除する",
+        "functionNameEN": "clearCache",
+        "parametersName": [],
+        "parametersDataType": [],
+        "returnValue": "void",
+        "functionId": "01HM821K3XXGS308J37QP2FB07",
+        "beforeCode": "\n\n\n",
+        "innerCode": "\n    await _reload();    // メモリに再読み込み\n    return await clearCache();   // 下層の関数を呼び出す\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "不可逆的にテーブルを削除",
+        "functionNameEN": "deleteTable",
+        "parametersName": [
+            "tableId"
+        ],
+        "parametersDataType": [
+            "string"
+        ],
+        "returnValue": "string",
+        "functionId": "01HM825DB2KVRGJSWPCD5PBNWK",
+        "beforeCode": "\n\n\n",
+        "innerCode": "\n  // 参照先を失った外部キーは、「relations」のデータを消すことで\n  // ただの整数型に変化する\n  await runSqlWriteOnly(\n    `DELETE FROM relations\n        WHERE child_table_id = :childTableId;`,\n    {\n      \":childTableId\": tableId,\n    },\n  );\n  await runSqlWriteOnly(\n    `DELETE FROM relations\n        WHERE parent_table_id = :parentTableId;`,\n    {\n      \":parentTableId\": tableId,\n    },\n  );\n  await _reload();    // メモリに再読み込み\n  return await deleteTable( tableId );  // 下層の関数を実行する\n",
+        "afterCode": ""
+    }
+]
