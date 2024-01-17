@@ -10,7 +10,8 @@ import {
   runSqlReadOnly_core,  // SQLクエリ実行（読み取り専用）
   runSqlWriteOnly_core,  // SQLクエリ実行（書き込み専用）
   checkTableEnabled_core,  // テーブルが有効なのか判定
-} from "./011_table_name.js";
+  getTableName_core,  // IDからテーブル名を取得
+} from "./017_table_name.js";
 
 
 //#######################################################################################
@@ -648,6 +649,52 @@ export async function checkTableEnabled( tableId ){
   }
   else if( isNaN(result) ){
     throw new Error(`resultがブール値ではありません。\nレイヤー : table_name\n関数 : checkTableEnabled`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「getTableName_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function getTableName( tableId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : table_name\n関数 : getTableName`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : table_name\n関数 : getTableName`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await getTableName_core( tableId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : table_name\n関数 : getTableName`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : table_name\n関数 : getTableName`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : table_name\n関数 : getTableName`);
+    }
   }
   //
   //--------------------------------------------------------------------------

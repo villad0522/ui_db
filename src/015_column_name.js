@@ -12,35 +12,36 @@ import {
   updateTableName,
   listTables,
   checkTableEnabled,
-} from "./010_table_name_test.js";
+  getTableName,
+} from "./016_table_name_test.js";
 import {
   getLocalIp,
-} from "./022_ip_address_test.js";
+} from "./028_ip_address_test.js";
 import {
   getPath,
-} from "./020_directory_test.js";
+} from "./026_directory_test.js";
 import {
   getDebugMode,
   startTransaction,
   endTransaction,
   getCsvProgress,
   close,
-} from "./018_connect_database_test.js";
+} from "./024_connect_database_test.js";
 import {
   createRecordsFromCsv,
   createRecord,
   updateRecord,
   delete_table,
-} from "./012_search_text_test.js";
+} from "./018_search_text_test.js";
 import {
   getPrimaryKey,
-} from "./016_layerName_test.js";
+} from "./022_layerName_test.js";
 import {
   createColumn,
   listDataTypes,
   checkField,
   checkRecord,
-} from "./014_data_type_test.js";
+} from "./020_data_type_test.js";
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
@@ -65,21 +66,42 @@ let cacheData1 = {
     // "c2": "t1_カラム名１",
     // "c8": "t1_カラム名２"
 };
+let cacheData2 = {
+    //    "t56": [
+    //        {
+    //            "id": "c34",
+    //            "name": "氏名",
+    //            "dataType": "TEXT",
+    //        }
+    //    ]
+};
 
 //【サブ関数】メモリに再読み込み
 async function _reload() {
     const matrix = await runSqlReadOnly(
         `SELECT
-            column_name AS columnName
-            column_number AS columnNumber
+            column_number AS columnNumber,
+            column_name AS columnName,
+            table_id AS tableId
         FROM column_names
-        WHERE enable = 1;`,
+        WHERE enable = 1
+        ORDER BY created_at DESC;`,
         {},
     );
+    const dataTypes = await listDataTypes( tableId );  // 下層の関数を実行する
     cacheData1 = {};
-    for (const { columnName, columnNumber } of matrix) {
+    cacheData2 = {};
+    for (const { columnNumber, columnName, tableId } of matrix) {
         const columnId = "c" + String(columnNumber);
         cacheData1[columnId] = columnName;
+        if(!cacheData2[tableId]){
+            cacheData2[tableId] = [];
+        }
+        cacheData2[tableId].push({
+            "id": columnId,
+            "name": columnName,
+            "dataType": dataTypes[columnId],
+        });
     }
 }
 
@@ -291,8 +313,8 @@ export async function updateColumnName_core( columns ){
     return "カラム名を変更しました";
 }
 
-// カラムの一覧を取得(重)
-export async function listColumns_core( tableId, pageNumber, onePageMaxSize, isTrash ){
+// カラムの一覧を取得(GUI)
+export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSize, isTrash ){
     if (pageNumber <= 0) {
         pageNumber = 1;
     }
@@ -396,4 +418,17 @@ export async function deleteTable_core( tableId ){
 // カラムが有効なのか判定
 export async function checkColumnEnabled_core( columnId ){
     return cacheData1[columnId] ? true : false;
+}
+
+// カラムの一覧を取得（高速）
+export async function listColumnsAll_core( tableId ){
+    if(!cacheData2[tableId]){
+        throw "指定されたテーブルIDは存在しません。";
+    }
+    return structuredClone( cacheData2[tableId] );
+}
+
+// IDからカラム名を取得
+export async function getColumnName_core( columnId ){
+  return cacheData1[columnId];
 }

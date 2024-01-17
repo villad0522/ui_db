@@ -1,14 +1,12 @@
 import {
   startUp_core,  // プログラム起動
   createColumn_core,  // カラムを作成
-  listColumns_core,  // カラムの一覧を取得(重)
+  listColumnsForGUI_core,  // カラムの一覧を取得(GUI)
   clearCache_core,  // インメモリキャッシュを削除する
   deleteTable_core,  // 不可逆的にテーブルを削除
-  disableTable_core,  // テーブルを無効化
-  enableTable_core,  // テーブルを再度有効化
-  disableColumn_core,  // カラムを無効化
-  enableColumn_core,  // カラムを再度有効化
-} from "./003_relation.js";
+  listColumnsAll_core,  // カラムの一覧を取得
+  getParentTableId_core,  // 参照先のテーブルIDを取得する
+} from "./009_relation.js";
 
 
 //#######################################################################################
@@ -143,62 +141,62 @@ export async function createColumn( tableId, columnName, dataType, parentTableId
 
 
 //#######################################################################################
-// 関数「listColumns_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「listColumnsForGUI_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function listColumns( tableId, pageNumber, onePageMaxSize, isTrash ){
+export async function listColumnsForGUI( tableId, pageNumber, onePageMaxSize, isTrash ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
   }
   if( typeof pageNumber !== "number" ){
     if( !pageNumber ){
-      throw new Error(`pageNumberがNULLです。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`pageNumberがNULLです。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`pageNumberが数値ではありません。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`pageNumberが数値ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
   }
   else if( isNaN(pageNumber) ){
-    throw new Error(`pageNumberが数値ではありません。\nレイヤー : relation\n関数 : listColumns`);
+    throw new Error(`pageNumberが数値ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
   }
   if( typeof onePageMaxSize !== "number" ){
     if( !onePageMaxSize ){
-      throw new Error(`onePageMaxSizeがNULLです。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`onePageMaxSizeがNULLです。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
   }
   else if( isNaN(onePageMaxSize) ){
-    throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : relation\n関数 : listColumns`);
+    throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
   }
   if( typeof isTrash !== "boolean" ){
     if( !isTrash ){
-      throw new Error(`isTrashがNULLです。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`isTrashがNULLです。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`isTrashがブール値ではありません。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`isTrashがブール値ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
   }
   else if( isNaN(isTrash) ){
-    throw new Error(`isTrashがブール値ではありません。\nレイヤー : relation\n関数 : listColumns`);
+    throw new Error(`isTrashがブール値ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
   }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await listColumns_core( tableId, pageNumber, onePageMaxSize, isTrash );
+    result = await listColumnsForGUI_core( tableId, pageNumber, onePageMaxSize, isTrash );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`${error}\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
     else{
       throw error;
@@ -209,70 +207,70 @@ export async function listColumns( tableId, pageNumber, onePageMaxSize, isTrash 
   // 戻り値を検証
   if( typeof result !== "object" ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`resultがNULLです。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`resultがオブジェクトではありません。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
   }
   if( !Array.isArray(result.columns) ){
     if( !result.columns ){
-      throw new Error(`result.columnsがNULLです。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`result.columnsがNULLです。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`result.columnsが配列ではありません。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`result.columnsが配列ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
   }
   for( let i=0; i<result.columns.length; i++ ){
     if( typeof result.columns[i] !== "object" ){
       if( !result.columns[i] ){
-        throw new Error(`result.columns[${i}]がNULLです。\nレイヤー : relation\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}]がNULLです。\nレイヤー : relation\n関数 : listColumnsForGUI`);
       }
       else{
-        throw new Error(`result.columns[${i}]がオブジェクトではありません。\nレイヤー : relation\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}]がオブジェクトではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
       }
     }
     if( typeof result.columns[i].id !== "string" ){
       if( !result.columns[i].id ){
-        throw new Error(`result.columns[${i}].idがNULLです。\nレイヤー : relation\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}].idがNULLです。\nレイヤー : relation\n関数 : listColumnsForGUI`);
       }
       else{
-        throw new Error(`result.columns[${i}].idが文字列ではありません。\nレイヤー : relation\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}].idが文字列ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
       }
     }
     if( typeof result.columns[i].name !== "string" ){
       if( !result.columns[i].name ){
-        throw new Error(`result.columns[${i}].nameがNULLです。\nレイヤー : relation\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}].nameがNULLです。\nレイヤー : relation\n関数 : listColumnsForGUI`);
       }
       else{
-        throw new Error(`result.columns[${i}].nameが文字列ではありません。\nレイヤー : relation\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}].nameが文字列ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
       }
     }
-    if( typeof result.columns[i].type !== "string" ){
-      if( !result.columns[i].type ){
-        throw new Error(`result.columns[${i}].typeがNULLです。\nレイヤー : relation\n関数 : listColumns`);
+    if( typeof result.columns[i].dataType !== "string" ){
+      if( !result.columns[i].dataType ){
+        throw new Error(`result.columns[${i}].dataTypeがNULLです。\nレイヤー : relation\n関数 : listColumnsForGUI`);
       }
       else{
-        throw new Error(`result.columns[${i}].typeが文字列ではありません。\nレイヤー : relation\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}].dataTypeが文字列ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
       }
     }
     if( (result.columns[i].parentTableId===null) || (result.columns[i].parentTableId===undefined) ){
       // result.columns[i].parentTableIdは空欄OK。
     }
     else if( typeof result.columns[i].parentTableId !== "string" ){
-      throw new Error(`result.columns[${i}].parentTableIdが文字列ではありません。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`result.columns[${i}].parentTableIdが文字列ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
   }
   if( typeof result.total !== "number" ){
     if( !result.total ){
-      throw new Error(`result.totalがNULLです。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`result.totalがNULLです。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`result.totalが数値ではありません。\nレイヤー : relation\n関数 : listColumns`);
+      throw new Error(`result.totalが数値ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
   }
   else if( isNaN(result.total) ){
-    throw new Error(`result.totalが数値ではありません。\nレイヤー : relation\n関数 : listColumns`);
+    throw new Error(`result.totalが数値ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
   }
   //
   //--------------------------------------------------------------------------
@@ -357,17 +355,17 @@ export async function deleteTable( tableId ){
 
 
 //#######################################################################################
-// 関数「disableTable_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「listColumnsAll_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function disableTable( tableId ){
+export async function listColumnsAll( tableId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : relation\n関数 : disableTable`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : relation\n関数 : listColumnsAll`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : relation\n関数 : disableTable`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : relation\n関数 : listColumnsAll`);
     }
   }
   //
@@ -375,11 +373,11 @@ export async function disableTable( tableId ){
   // メイン処理を実行
   let result;
   try{
-    result = await disableTable_core( tableId );
+    result = await listColumnsAll_core( tableId );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : relation\n関数 : disableTable`);
+      throw new Error(`${error}\nレイヤー : relation\n関数 : listColumnsAll`);
     }
     else{
       throw error;
@@ -388,12 +386,52 @@ export async function disableTable( tableId ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( typeof result !== "string" ){
+  if( !Array.isArray(result) ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : relation\n関数 : disableTable`);
+      throw new Error(`resultがNULLです。\nレイヤー : relation\n関数 : listColumnsAll`);
     }
     else{
-      throw new Error(`resultが文字列ではありません。\nレイヤー : relation\n関数 : disableTable`);
+      throw new Error(`resultが配列ではありません。\nレイヤー : relation\n関数 : listColumnsAll`);
+    }
+  }
+  for( let i=0; i<result.length; i++ ){
+    if( typeof result[i] !== "object" ){
+      if( !result[i] ){
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : relation\n関数 : listColumnsAll`);
+      }
+      else{
+        throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : relation\n関数 : listColumnsAll`);
+      }
+    }
+    if( typeof result[i].id !== "string" ){
+      if( !result[i].id ){
+        throw new Error(`result[${i}].idがNULLです。\nレイヤー : relation\n関数 : listColumnsAll`);
+      }
+      else{
+        throw new Error(`result[${i}].idが文字列ではありません。\nレイヤー : relation\n関数 : listColumnsAll`);
+      }
+    }
+    if( typeof result[i].name !== "string" ){
+      if( !result[i].name ){
+        throw new Error(`result[${i}].nameがNULLです。\nレイヤー : relation\n関数 : listColumnsAll`);
+      }
+      else{
+        throw new Error(`result[${i}].nameが文字列ではありません。\nレイヤー : relation\n関数 : listColumnsAll`);
+      }
+    }
+    if( typeof result[i].dataType !== "string" ){
+      if( !result[i].dataType ){
+        throw new Error(`result[${i}].dataTypeがNULLです。\nレイヤー : relation\n関数 : listColumnsAll`);
+      }
+      else{
+        throw new Error(`result[${i}].dataTypeが文字列ではありません。\nレイヤー : relation\n関数 : listColumnsAll`);
+      }
+    }
+    if( (result[i].parentTableId===null) || (result[i].parentTableId===undefined) ){
+      // result[i].parentTableIdは空欄OK。
+    }
+    else if( typeof result[i].parentTableId !== "string" ){
+      throw new Error(`result[${i}].parentTableIdが文字列ではありません。\nレイヤー : relation\n関数 : listColumnsAll`);
     }
   }
   //
@@ -403,63 +441,17 @@ export async function disableTable( tableId ){
 
 
 //#######################################################################################
-// 関数「enableTable_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「getParentTableId_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function enableTable( tableId ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  if( typeof tableId !== "string" ){
-    if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : relation\n関数 : enableTable`);
-    }
-    else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : relation\n関数 : enableTable`);
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await enableTable_core( tableId );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : relation\n関数 : enableTable`);
-    }
-    else{
-      throw error;
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
-  if( typeof result !== "string" ){
-    if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : relation\n関数 : enableTable`);
-    }
-    else{
-      throw new Error(`resultが文字列ではありません。\nレイヤー : relation\n関数 : enableTable`);
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「disableColumn_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function disableColumn( columnId ){
+export async function getParentTableId( columnId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof columnId !== "string" ){
     if( !columnId ){
-      throw new Error(`columnIdがNULLです。\nレイヤー : relation\n関数 : disableColumn`);
+      throw new Error(`columnIdがNULLです。\nレイヤー : relation\n関数 : getParentTableId`);
     }
     else{
-      throw new Error(`columnIdが文字列ではありません。\nレイヤー : relation\n関数 : disableColumn`);
+      throw new Error(`columnIdが文字列ではありません。\nレイヤー : relation\n関数 : getParentTableId`);
     }
   }
   //
@@ -467,11 +459,11 @@ export async function disableColumn( columnId ){
   // メイン処理を実行
   let result;
   try{
-    result = await disableColumn_core( columnId );
+    result = await getParentTableId_core( columnId );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : relation\n関数 : disableColumn`);
+      throw new Error(`${error}\nレイヤー : relation\n関数 : getParentTableId`);
     }
     else{
       throw error;
@@ -482,56 +474,10 @@ export async function disableColumn( columnId ){
   // 戻り値を検証
   if( typeof result !== "string" ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : relation\n関数 : disableColumn`);
+      throw new Error(`resultがNULLです。\nレイヤー : relation\n関数 : getParentTableId`);
     }
     else{
-      throw new Error(`resultが文字列ではありません。\nレイヤー : relation\n関数 : disableColumn`);
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「enableColumn_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function enableColumn( columnId ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  if( typeof columnId !== "string" ){
-    if( !columnId ){
-      throw new Error(`columnIdがNULLです。\nレイヤー : relation\n関数 : enableColumn`);
-    }
-    else{
-      throw new Error(`columnIdが文字列ではありません。\nレイヤー : relation\n関数 : enableColumn`);
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await enableColumn_core( columnId );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : relation\n関数 : enableColumn`);
-    }
-    else{
-      throw error;
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
-  if( typeof result !== "string" ){
-    if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : relation\n関数 : enableColumn`);
-    }
-    else{
-      throw new Error(`resultが文字列ではありません。\nレイヤー : relation\n関数 : enableColumn`);
+      throw new Error(`resultが文字列ではありません。\nレイヤー : relation\n関数 : getParentTableId`);
     }
   }
   //

@@ -1,8 +1,23 @@
 [
   {
     "layerId": "01HM5T8G9WJWNKEMEGBYP29CKA",
-    "layerNameJP": "結合して一覧表示",
-    "layerNameEN": "rich_get"
+    "layerNameJP": "SQL生成",
+    "layerNameEN": "generate_sql"
+  },
+  {
+    "layerId": "01HMAS7MHDED8D0C8PHDPPM5KX",
+    "layerNameJP": "SQL生成(重複あり)",
+    "layerNameEN": "generate_sql1"
+  },
+  {
+    "layerId": "01HMAS7KDPMHS7CY0SZYT1SEMP",
+    "layerNameJP": "SQL生成(重複無し)",
+    "layerNameEN": "generate_sql2"
+  },
+  {
+    "layerId": "01HMAT7HTHJBTN3MQQ3G6924CE",
+    "layerNameJP": "並び替え",
+    "layerNameEN": "sort"
   },
   {
     "layerId": "01HM63PB1G602AZ8FNS545P6DY",

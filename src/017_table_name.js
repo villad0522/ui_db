@@ -7,13 +7,13 @@ import {
   createRecord,
   updateRecord,
   delete_table,
-} from "./012_search_text_test.js";
+} from "./018_search_text_test.js";
 import {
   getLocalIp,
-} from "./022_ip_address_test.js";
+} from "./028_ip_address_test.js";
 import {
   getPath,
-} from "./020_directory_test.js";
+} from "./026_directory_test.js";
 import {
   getDebugMode,
   startTransaction,
@@ -21,10 +21,10 @@ import {
   runSqlReadOnly,
   getCsvProgress,
   close,
-} from "./018_connect_database_test.js";
+} from "./024_connect_database_test.js";
 import {
   getPrimaryKey,
-} from "./016_layerName_test.js";
+} from "./022_layerName_test.js";
 import {
   clearCache,
   createColumn,
@@ -33,7 +33,7 @@ import {
   checkRecord,
   createTable,
   deleteTable,
-} from "./014_data_type_test.js";
+} from "./020_data_type_test.js";
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
@@ -316,4 +316,9 @@ export async function runSqlWriteOnly_core( sql, params ){
 // テーブルが有効なのか判定
 export async function checkTableEnabled_core( tableId ){
     return cacheData1[tableId] ? true : false;
+}
+
+// IDからテーブル名を取得
+export async function getTableName_core( tableId ){
+  return cacheData1[tableId];
 }

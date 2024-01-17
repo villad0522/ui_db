@@ -6,56 +6,59 @@ import {
   deleteTable,
   listTables,
   setTitleColumn,
-  getTitleColumn,
-} from "./004_record_title_test.js";
+  getTitleColumnId,
+} from "./010_record_title_test.js";
 import {
   getLocalIp,
-} from "./022_ip_address_test.js";
+} from "./028_ip_address_test.js";
 import {
   getPath,
-} from "./020_directory_test.js";
+} from "./026_directory_test.js";
 import {
   getDebugMode,
   startTransaction,
   endTransaction,
   getCsvProgress,
   close,
-} from "./018_connect_database_test.js";
+} from "./024_connect_database_test.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
   disableColumn,
   enableColumn,
-  listColumns,
+  listColumnsForGUI,
   getTableId,
   checkColumnEnabled,
-} from "./008_column_name_test.js";
+  listColumnsAll,
+  getColumnName,
+} from "./014_column_name_test.js";
 import {
   createRecordsFromCsv,
   createRecord,
   updateRecord,
   delete_table,
-} from "./012_search_text_test.js";
+} from "./018_search_text_test.js";
 import {
   getPrimaryKey,
-} from "./016_layerName_test.js";
+} from "./022_layerName_test.js";
 import {
   createColumn,
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
-} from "./006_reserved_word_test.js";
+} from "./012_reserved_word_test.js";
 import {
   listDataTypes,
   checkField,
   checkRecord,
-} from "./014_data_type_test.js";
+} from "./020_data_type_test.js";
 import {
   disableTable,
   enableTable,
   checkTableEnabled,
-} from "./010_table_name_test.js";
+  getTableName,
+} from "./016_table_name_test.js";
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
@@ -77,6 +80,7 @@ export async function startUp_core( localUrl, isDebug ){
 let cacheData1 = {
   // 代入例
   //  "c23": "t4",
+  //  "c56": "t6",
   //  "c98": "t6",
   // 参照元のカラム名 : 参照先のテーブル名
   //    childColumnId : parentTableId
@@ -84,10 +88,10 @@ let cacheData1 = {
 
 let cacheData2 = {
   // 代入例
-  //  "t4": "c23",
-  //  "t6": "c98",
-  // 参照先のテーブル名 : 参照元のカラム名
-  //      parentTableId : childColumnId
+  //  "t4": [ "c23" ],
+  //  "t6": [ "c56", "c98" ]
+  // 参照先のテーブル名 : 参照元のカラム名の配列
+  //      parentTableId : [ childColumnId ]
 };
 
 
@@ -104,8 +108,11 @@ async function _reload() {
   cacheData1 = {};
   cacheData2 = {};
   for( const { childColumnId, childTableId, parentTableId } of matrix ){
+    if(!cacheData2[parentTableId]){
+      cacheData2[parentTableId] = [];
+    }
     cacheData1[childColumnId] = parentTableId;
-    cacheData2[parentTableId] = childColumnId;
+    cacheData2[parentTableId].push( childColumnId );
   }
 }
 
@@ -138,21 +145,15 @@ export async function createColumn_core( tableId, columnName, dataType, parentTa
 }
 
 
-// カラムの一覧を取得(重)
-export async function listColumns_core( tableId, pageNumber, onePageMaxSize, isTrash ){
+// カラムの一覧を取得(GUI)
+export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSize, isTrash ){
   // 下層の関数を実行する
-  const { columns, total } = await listColumns( tableId, pageNumber, onePageMaxSize, isTrash );
+  const { columns, total } = await listColumnsForGUI( tableId, pageNumber, onePageMaxSize, isTrash );
   //
-  // 
+  // 参照先が有効なカラムだけに絞り込む
   const columns2 = Array(columns).filter( ({id}) => {
     if( await checkTableEnabled(parentTableId) === false ){
       return false; // もし参照先が無効なテーブルだったら
-    }
-    else if( await checkTableEnabled(childTableId) === false ){
-      return false; // もし参照元が無効なテーブルだったら
-    }
-    else if( await checkColumnEnabled(childColumnId) === false ){
-      return false; // もし参照元が無効なカラムだったら
     }
     return true;
   });
@@ -197,30 +198,28 @@ export async function deleteTable_core( tableId ){
   return await deleteTable( tableId );  // 下層の関数を実行する
 }
 
-// テーブルを無効化
-export async function disableTable_core( tableId ){
-  const result = await disableTable( tableId );  // 下層の関数を実行する
-  await _reload();    // メモリに再読み込み
-  return result;
+
+// カラムの一覧を取得
+export async function listColumnsAll_core( tableId ){
+  // 下層の関数を実行する
+  const columns = await listColumnsAll( tableId );
+  //
+  // 参照先が有効なカラムだけに絞り込む
+  const columns2 = Array(columns).filter( ({id}) => {
+    if( await checkTableEnabled(parentTableId) === false ){
+      return false; // もし参照先が無効なテーブルだったら
+    }
+    return true;
+  });
+  //
+  // 下層から得たカラムの一覧に、「parentTableId」を付け加えて上層に提供する
+  for (const { id } of columns2) {
+    columns2.parentTableId = cacheData1( id );
+  }
+  return columns2;
 }
 
-// テーブルを再度有効化
-export async function enableTable_core( tableId ){
-  const result = await enableTable( tableId );  // 下層の関数を実行する
-  await _reload();    // メモリに再読み込み
-  return result;
-}
-
-// カラムを無効化
-export async function disableColumn_core( columnId ){
-  const result = await disableColumn( columnId );  // 下層の関数を実行する
-  await _reload();    // メモリに再読み込み
-  return result;
-}
-
-// カラムを再度有効化
-export async function enableColumn_core( columnId ){
-  const result = await enableColumn( columnId );  // 下層の関数を実行する
-  await _reload();    // メモリに再読み込み
-  return result;
+// 参照先のテーブルIDを取得する
+export async function getParentTableId_core( columnId ){
+  return cacheData1[columnId];
 }

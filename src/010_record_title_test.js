@@ -1,11 +1,11 @@
 import {
   startUp_core,  // プログラム起動
   setTitleColumn_core,  // 見出しの役割を果たすカラムを登録する
-  getTitleColumn_core,  // 見出しの役割を果たすカラムを取得する
+  getTitleColumnId_core,  // 見出しの役割を果たすカラムを取得する
   listTables_core,  // テーブルの一覧を取得(重)
   deleteTable_core,  // 不可逆的にテーブルを削除
   clearCache_core,  // インメモリキャッシュを削除する
-} from "./005_record_title.js";
+} from "./011_record_title.js";
 
 
 //#######################################################################################
@@ -94,17 +94,17 @@ export async function setTitleColumn( columnId ){
 
 
 //#######################################################################################
-// 関数「getTitleColumn_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「getTitleColumnId_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function getTitleColumn( tableId ){
+export async function getTitleColumnId( tableId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : record_title\n関数 : getTitleColumn`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : record_title\n関数 : getTitleColumnId`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : record_title\n関数 : getTitleColumn`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : record_title\n関数 : getTitleColumnId`);
     }
   }
   //
@@ -112,11 +112,11 @@ export async function getTitleColumn( tableId ){
   // メイン処理を実行
   let result;
   try{
-    result = await getTitleColumn_core( tableId );
+    result = await getTitleColumnId_core( tableId );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : record_title\n関数 : getTitleColumn`);
+      throw new Error(`${error}\nレイヤー : record_title\n関数 : getTitleColumnId`);
     }
     else{
       throw error;
@@ -129,7 +129,7 @@ export async function getTitleColumn( tableId ){
     // resultは空欄OK。
   }
   else if( typeof result !== "string" ){
-    throw new Error(`resultが文字列ではありません。\nレイヤー : record_title\n関数 : getTitleColumn`);
+    throw new Error(`resultが文字列ではありません。\nレイヤー : record_title\n関数 : getTitleColumnId`);
   }
   //
   //--------------------------------------------------------------------------

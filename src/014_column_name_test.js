@@ -5,13 +5,15 @@ import {
   disableColumn_core,  // カラムを無効化
   enableColumn_core,  // カラムを再度有効化
   updateColumnName_core,  // カラム名を変更
-  listColumns_core,  // カラムの一覧を取得(重)
+  listColumnsForGUI_core,  // カラムの一覧を取得(GUI)
   runSqlReadOnly_core,  // SQLクエリ実行（読み取り専用）
   runSqlWriteOnly_core,  // SQLクエリ実行（書き込み専用）
   getTableId_core,  // カラムIDからテーブルIDを調べる
   deleteTable_core,  // 不可逆的にテーブルを削除
   checkColumnEnabled_core,  // カラムが有効なのか判定
-} from "./009_column_name.js";
+  listColumnsAll_core,  // カラムの一覧を取得（高速）
+  getColumnName_core,  // IDからカラム名を取得
+} from "./015_column_name.js";
 
 
 //#######################################################################################
@@ -334,62 +336,62 @@ export async function updateColumnName( columns ){
 
 
 //#######################################################################################
-// 関数「listColumns_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「listColumnsForGUI_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function listColumns( tableId, pageNumber, onePageMaxSize, isTrash ){
+export async function listColumnsForGUI( tableId, pageNumber, onePageMaxSize, isTrash ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
   }
   if( typeof pageNumber !== "number" ){
     if( !pageNumber ){
-      throw new Error(`pageNumberがNULLです。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`pageNumberがNULLです。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`pageNumberが数値ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`pageNumberが数値ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
   }
   else if( isNaN(pageNumber) ){
-    throw new Error(`pageNumberが数値ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+    throw new Error(`pageNumberが数値ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
   }
   if( typeof onePageMaxSize !== "number" ){
     if( !onePageMaxSize ){
-      throw new Error(`onePageMaxSizeがNULLです。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`onePageMaxSizeがNULLです。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
   }
   else if( isNaN(onePageMaxSize) ){
-    throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+    throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
   }
   if( typeof isTrash !== "boolean" ){
     if( !isTrash ){
-      throw new Error(`isTrashがNULLです。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`isTrashがNULLです。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`isTrashがブール値ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`isTrashがブール値ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
   }
   else if( isNaN(isTrash) ){
-    throw new Error(`isTrashがブール値ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+    throw new Error(`isTrashがブール値ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
   }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await listColumns_core( tableId, pageNumber, onePageMaxSize, isTrash );
+    result = await listColumnsForGUI_core( tableId, pageNumber, onePageMaxSize, isTrash );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`${error}\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
     else{
       throw error;
@@ -400,64 +402,64 @@ export async function listColumns( tableId, pageNumber, onePageMaxSize, isTrash 
   // 戻り値を検証
   if( typeof result !== "object" ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`resultがNULLです。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`resultがオブジェクトではありません。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
   }
   if( !Array.isArray(result.columns) ){
     if( !result.columns ){
-      throw new Error(`result.columnsがNULLです。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`result.columnsがNULLです。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`result.columnsが配列ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`result.columnsが配列ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
   }
   for( let i=0; i<result.columns.length; i++ ){
     if( typeof result.columns[i] !== "object" ){
       if( !result.columns[i] ){
-        throw new Error(`result.columns[${i}]がNULLです。\nレイヤー : column_name\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}]がNULLです。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
       }
       else{
-        throw new Error(`result.columns[${i}]がオブジェクトではありません。\nレイヤー : column_name\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}]がオブジェクトではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
       }
     }
     if( typeof result.columns[i].id !== "string" ){
       if( !result.columns[i].id ){
-        throw new Error(`result.columns[${i}].idがNULLです。\nレイヤー : column_name\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}].idがNULLです。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
       }
       else{
-        throw new Error(`result.columns[${i}].idが文字列ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}].idが文字列ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
       }
     }
     if( typeof result.columns[i].name !== "string" ){
       if( !result.columns[i].name ){
-        throw new Error(`result.columns[${i}].nameがNULLです。\nレイヤー : column_name\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}].nameがNULLです。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
       }
       else{
-        throw new Error(`result.columns[${i}].nameが文字列ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}].nameが文字列ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
       }
     }
-    if( typeof result.columns[i].type !== "string" ){
-      if( !result.columns[i].type ){
-        throw new Error(`result.columns[${i}].typeがNULLです。\nレイヤー : column_name\n関数 : listColumns`);
+    if( typeof result.columns[i].dataType !== "string" ){
+      if( !result.columns[i].dataType ){
+        throw new Error(`result.columns[${i}].dataTypeがNULLです。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
       }
       else{
-        throw new Error(`result.columns[${i}].typeが文字列ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+        throw new Error(`result.columns[${i}].dataTypeが文字列ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
       }
     }
   }
   if( typeof result.total !== "number" ){
     if( !result.total ){
-      throw new Error(`result.totalがNULLです。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`result.totalがNULLです。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
     else{
-      throw new Error(`result.totalが数値ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+      throw new Error(`result.totalが数値ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
     }
   }
   else if( isNaN(result.total) ){
-    throw new Error(`result.totalが数値ではありません。\nレイヤー : column_name\n関数 : listColumns`);
+    throw new Error(`result.totalが数値ではありません。\nレイヤー : column_name\n関数 : listColumnsForGUI`);
   }
   //
   //--------------------------------------------------------------------------
@@ -727,6 +729,132 @@ export async function checkColumnEnabled( columnId ){
   }
   else if( isNaN(result) ){
     throw new Error(`resultがブール値ではありません。\nレイヤー : column_name\n関数 : checkColumnEnabled`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「listColumnsAll_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function listColumnsAll( tableId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : column_name\n関数 : listColumnsAll`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : column_name\n関数 : listColumnsAll`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await listColumnsAll_core( tableId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : column_name\n関数 : listColumnsAll`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( !Array.isArray(result) ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : column_name\n関数 : listColumnsAll`);
+    }
+    else{
+      throw new Error(`resultが配列ではありません。\nレイヤー : column_name\n関数 : listColumnsAll`);
+    }
+  }
+  for( let i=0; i<result.length; i++ ){
+    if( typeof result[i] !== "object" ){
+      if( !result[i] ){
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : column_name\n関数 : listColumnsAll`);
+      }
+      else{
+        throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : column_name\n関数 : listColumnsAll`);
+      }
+    }
+    if( typeof result[i].id !== "string" ){
+      if( !result[i].id ){
+        throw new Error(`result[${i}].idがNULLです。\nレイヤー : column_name\n関数 : listColumnsAll`);
+      }
+      else{
+        throw new Error(`result[${i}].idが文字列ではありません。\nレイヤー : column_name\n関数 : listColumnsAll`);
+      }
+    }
+    if( typeof result[i].name !== "string" ){
+      if( !result[i].name ){
+        throw new Error(`result[${i}].nameがNULLです。\nレイヤー : column_name\n関数 : listColumnsAll`);
+      }
+      else{
+        throw new Error(`result[${i}].nameが文字列ではありません。\nレイヤー : column_name\n関数 : listColumnsAll`);
+      }
+    }
+    if( typeof result[i].dataType !== "string" ){
+      if( !result[i].dataType ){
+        throw new Error(`result[${i}].dataTypeがNULLです。\nレイヤー : column_name\n関数 : listColumnsAll`);
+      }
+      else{
+        throw new Error(`result[${i}].dataTypeが文字列ではありません。\nレイヤー : column_name\n関数 : listColumnsAll`);
+      }
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「getColumnName_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function getColumnName( columnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof columnId !== "string" ){
+    if( !columnId ){
+      throw new Error(`columnIdがNULLです。\nレイヤー : column_name\n関数 : getColumnName`);
+    }
+    else{
+      throw new Error(`columnIdが文字列ではありません。\nレイヤー : column_name\n関数 : getColumnName`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await getColumnName_core( columnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : column_name\n関数 : getColumnName`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : column_name\n関数 : getColumnName`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : column_name\n関数 : getColumnName`);
+    }
   }
   //
   //--------------------------------------------------------------------------
