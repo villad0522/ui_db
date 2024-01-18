@@ -15,6 +15,16 @@
     "layerNameEN": "generate_sql2"
   },
   {
+    "layerId": "01HMDZC2FN34HJ3D82KD6KSXER",
+    "layerNameJP": "SQL用のデータ構築",
+    "layerNameEN": "convert_sql_data"
+  },
+  {
+    "layerId": "01HMDAAP2ZQ0AMRMA5E2CE4XWC",
+    "layerNameJP": "カラムパス",
+    "layerNameEN": "columnPath"
+  },
+  {
     "layerId": "01HMAT7HTHJBTN3MQQ3G6924CE",
     "layerNameJP": "並び替え",
     "layerNameEN": "sort"

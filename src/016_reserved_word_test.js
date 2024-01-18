@@ -4,7 +4,7 @@ import {
   createTable_core,  // テーブルを作成
   updateTableName_core,  // テーブル名を変更
   reserveWord_core,  // 予約語を追加
-} from "./013_reserved_word.js";
+} from "./017_reserved_word.js";
 
 
 //#######################################################################################

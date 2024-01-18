@@ -9,7 +9,7 @@ import {
   checkRecord_core,  // レコードを検証
   createTable_core,  // テーブルを作成
   deleteTable_core,  // 不可逆的にテーブルを削除
-} from "./021_data_type.js";
+} from "./025_data_type.js";
 
 
 //#######################################################################################

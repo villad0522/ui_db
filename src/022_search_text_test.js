@@ -5,7 +5,7 @@ import {
   createRecord_core,  // レコードを作成
   updateRecord_core,  // レコードを上書き
   delete_table_core,  // 不可逆的にテーブルを削除
-} from "./019_search_text.js";
+} from "./023_search_text.js";
 
 
 //#######################################################################################

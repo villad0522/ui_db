@@ -6,7 +6,7 @@ import {
   deleteTable_core,  // 不可逆的にテーブルを削除
   listColumnsAll_core,  // カラムの一覧を取得
   getParentTableId_core,  // 参照先のテーブルIDを取得する
-} from "./009_relation.js";
+} from "./013_relation.js";
 
 
 //#######################################################################################

@@ -5,7 +5,7 @@ import {
   listTables_core,  // テーブルの一覧を取得(重)
   deleteTable_core,  // 不可逆的にテーブルを削除
   clearCache_core,  // インメモリキャッシュを削除する
-} from "./011_record_title.js";
+} from "./015_record_title.js";
 
 
 //#######################################################################################

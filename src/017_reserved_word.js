@@ -15,34 +15,34 @@ import {
   checkColumnEnabled,
   listColumnsAll,
   getColumnName,
-} from "./014_column_name_test.js";
+} from "./018_column_name_test.js";
 import {
   getLocalIp,
-} from "./028_ip_address_test.js";
+} from "./032_ip_address_test.js";
 import {
   getPath,
-} from "./026_directory_test.js";
+} from "./030_directory_test.js";
 import {
   getDebugMode,
   startTransaction,
   endTransaction,
   getCsvProgress,
   close,
-} from "./024_connect_database_test.js";
+} from "./028_connect_database_test.js";
 import {
   createRecordsFromCsv,
   createRecord,
   updateRecord,
   delete_table,
-} from "./018_search_text_test.js";
+} from "./022_search_text_test.js";
 import {
   getPrimaryKey,
-} from "./022_layerName_test.js";
+} from "./026_layerName_test.js";
 import {
   listDataTypes,
   checkField,
   checkRecord,
-} from "./020_data_type_test.js";
+} from "./024_data_type_test.js";
 import {
   createTable,
   disableTable,
@@ -51,7 +51,7 @@ import {
   listTables,
   checkTableEnabled,
   getTableName,
-} from "./016_table_name_test.js";
+} from "./020_table_name_test.js";
 
 // カラムを作成
 export async function createColumn_core( tableId, columnName, dataType ){

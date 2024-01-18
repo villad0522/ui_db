@@ -10,13 +10,13 @@ import {
   createRecordsFromCsv,
   getCsvProgress,
   close,
-} from "./024_connect_database_test.js";
+} from "./028_connect_database_test.js";
 import {
   getLocalIp,
-} from "./028_ip_address_test.js";
+} from "./032_ip_address_test.js";
 import {
   getPath,
-} from "./026_directory_test.js";
+} from "./030_directory_test.js";
 
 // プライマリキーを取得する関数
 export async function getPrimaryKey_core( tableId ){

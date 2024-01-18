@@ -13,7 +13,7 @@ import {
   checkColumnEnabled_core,  // カラムが有効なのか判定
   listColumnsAll_core,  // カラムの一覧を取得（高速）
   getColumnName_core,  // IDからカラム名を取得
-} from "./015_column_name.js";
+} from "./019_column_name.js";
 
 
 //#######################################################################################

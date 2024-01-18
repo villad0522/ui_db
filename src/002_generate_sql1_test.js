@@ -6,7 +6,7 @@ import {
 //#######################################################################################
 // 関数「generateSQLwithDuplication_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function generateSQLwithDuplication( tableId, parentColumnLists, childColumnLists, conditions ){
+export async function generateSQLwithDuplication( tableId, selectData, joinData, whereData ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
@@ -17,79 +17,162 @@ export async function generateSQLwithDuplication( tableId, parentColumnLists, ch
       throw new Error(`tableIdが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
     }
   }
-  if( typeof parentColumnLists !== "object" ){
-    if( !parentColumnLists ){
-      throw new Error(`parentColumnListsがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+  if( !Array.isArray(selectData) ){
+    if( !selectData ){
+      throw new Error(`selectDataがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
     }
     else{
-      throw new Error(`parentColumnListsがオブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      throw new Error(`selectDataが配列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
     }
   }
-  else if( typeof parentColumnLists[Symbol.iterator] !== "function" ){
-    throw new Error(`parentColumnListsが反復可能オブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
-  }
-  for( const i in parentColumnLists ){
-    if( typeof i !== "string" ){
-      throw new Error(`parentColumnListsのキーが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+  for( let i=0; i<selectData.length; i++ ){
+    if( typeof selectData[i] !== "object" ){
+      if( !selectData[i] ){
+        throw new Error(`selectData[${i}]がNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`selectData[${i}]がオブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof selectData[i].type !== "string" ){
+      if( !selectData[i].type ){
+        throw new Error(`selectData[${i}].typeがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`selectData[${i}].typeが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof selectData[i].joinId !== "string" ){
+      if( !selectData[i].joinId ){
+        throw new Error(`selectData[${i}].joinIdがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`selectData[${i}].joinIdが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof selectData[i].columnName !== "string" ){
+      if( !selectData[i].columnName ){
+        throw new Error(`selectData[${i}].columnNameがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`selectData[${i}].columnNameが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof selectData[i].as !== "string" ){
+      if( !selectData[i].as ){
+        throw new Error(`selectData[${i}].asがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`selectData[${i}].asが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
     }
   }
-  if( typeof childColumnLists !== "object" ){
-    if( !childColumnLists ){
-      throw new Error(`childColumnListsがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+  if( !Array.isArray(joinData) ){
+    if( !joinData ){
+      throw new Error(`joinDataがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
     }
     else{
-      throw new Error(`childColumnListsがオブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      throw new Error(`joinDataが配列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
     }
   }
-  else if( typeof childColumnLists[Symbol.iterator] !== "function" ){
-    throw new Error(`childColumnListsが反復可能オブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
-  }
-  for( const i in childColumnLists ){
-    if( typeof i !== "string" ){
-      throw new Error(`childColumnListsのキーが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+  for( let i=0; i<joinData.length; i++ ){
+    if( typeof joinData[i] !== "object" ){
+      if( !joinData[i] ){
+        throw new Error(`joinData[${i}]がNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`joinData[${i}]がオブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof joinData[i].fromJoinId !== "string" ){
+      if( !joinData[i].fromJoinId ){
+        throw new Error(`joinData[${i}].fromJoinIdがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`joinData[${i}].fromJoinIdが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof joinData[i].fromColumnName !== "string" ){
+      if( !joinData[i].fromColumnName ){
+        throw new Error(`joinData[${i}].fromColumnNameがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`joinData[${i}].fromColumnNameが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof joinData[i].toJoinId !== "string" ){
+      if( !joinData[i].toJoinId ){
+        throw new Error(`joinData[${i}].toJoinIdがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`joinData[${i}].toJoinIdが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof joinData[i].toTableName !== "string" ){
+      if( !joinData[i].toTableName ){
+        throw new Error(`joinData[${i}].toTableNameがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`joinData[${i}].toTableNameが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof joinData[i].toColumnName !== "string" ){
+      if( !joinData[i].toColumnName ){
+        throw new Error(`joinData[${i}].toColumnNameがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`joinData[${i}].toColumnNameが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
     }
   }
-  if( typeof conditions !== "object" ){
-    if( !conditions ){
-      throw new Error(`conditionsがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+  if( !Array.isArray(whereData) ){
+    if( !whereData ){
+      throw new Error(`whereDataがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
     }
     else{
-      throw new Error(`conditionsがオブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      throw new Error(`whereDataが配列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
     }
   }
-  else if( typeof conditions[Symbol.iterator] !== "function" ){
-    throw new Error(`conditionsが反復可能オブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
-  }
-  for( const i in conditions ){
-    if( typeof i !== "string" ){
-      throw new Error(`conditionsのキーが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
-    }
-    if( typeof conditions[i] !== "object" ){
-      if( !conditions[i] ){
-        throw new Error(`conditions["${i}"]がNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+  for( let i=0; i<whereData.length; i++ ){
+    if( typeof whereData[i] !== "object" ){
+      if( !whereData[i] ){
+        throw new Error(`whereData[${i}]がNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
       else{
-        throw new Error(`conditions["${i}"]がオブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+        throw new Error(`whereData[${i}]がオブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
-    if( typeof conditions[i].type !== "string" ){
-      if( !conditions[i].type ){
-        throw new Error(`conditions["${i}"].typeがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+    if( typeof whereData[i].type !== "string" ){
+      if( !whereData[i].type ){
+        throw new Error(`whereData[${i}].typeがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
       else{
-        throw new Error(`conditions["${i}"].typeが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+        throw new Error(`whereData[${i}].typeが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
-    if( typeof conditions[i].value !== "number" ){
-      if( !conditions[i].value ){
-        throw new Error(`conditions["${i}"].valueがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+    if( typeof whereData[i].joinId !== "string" ){
+      if( !whereData[i].joinId ){
+        throw new Error(`whereData[${i}].joinIdがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
       else{
-        throw new Error(`conditions["${i}"].valueが数値ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+        throw new Error(`whereData[${i}].joinIdが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
-    else if( isNaN(conditions[i].value) ){
-      throw new Error(`conditions["${i}"].valueが数値ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+    if( typeof whereData[i].columnName !== "string" ){
+      if( !whereData[i].columnName ){
+        throw new Error(`whereData[${i}].columnNameがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`whereData[${i}].columnNameが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof whereData[i].as !== "string" ){
+      if( !whereData[i].as ){
+        throw new Error(`whereData[${i}].asがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`whereData[${i}].asが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
     }
   }
   //
@@ -97,7 +180,7 @@ export async function generateSQLwithDuplication( tableId, parentColumnLists, ch
   // メイン処理を実行
   let result;
   try{
-    result = await generateSQLwithDuplication_core( tableId, parentColumnLists, childColumnLists, conditions );
+    result = await generateSQLwithDuplication_core( tableId, selectData, joinData, whereData );
   }
   catch(error){
     if( typeof error === "string" ){
