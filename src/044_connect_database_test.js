@@ -47,7 +47,9 @@ export async function test044() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
-    await startUp("localhost:3000", true);
+    await startUp("http://localhost:3000/", true);
+    await close();
+    await startUp("http://localhost:3000/", true);
     //
     // CSVファイルに書き込むデータ
     const data = [
@@ -98,5 +100,6 @@ async function _test(){
     await runSqlWriteOnly(`
         DROP TABLE IF EXISTS t99999;
     `,{});
+    await close();
 
 }

@@ -1,6 +1,6 @@
 import {
   getPrimaryKey_core,  // プライマリキーを取得する関数
-} from "./043_layerName.js";
+} from "./043_primary_key.js";
 
 
 //#######################################################################################
@@ -11,10 +11,10 @@ export async function getPrimaryKey( tableId ){
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : layerName\n関数 : getPrimaryKey`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : primary_key\n関数 : getPrimaryKey`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : layerName\n関数 : getPrimaryKey`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : primary_key\n関数 : getPrimaryKey`);
     }
   }
   //
@@ -26,7 +26,7 @@ export async function getPrimaryKey( tableId ){
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : layerName\n関数 : getPrimaryKey`);
+      throw new Error(`${error}\nレイヤー : primary_key\n関数 : getPrimaryKey`);
     }
     else{
       throw error;
@@ -37,10 +37,10 @@ export async function getPrimaryKey( tableId ){
   // 戻り値を検証
   if( typeof result !== "string" ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : layerName\n関数 : getPrimaryKey`);
+      throw new Error(`resultがNULLです。\nレイヤー : primary_key\n関数 : getPrimaryKey`);
     }
     else{
-      throw new Error(`resultが文字列ではありません。\nレイヤー : layerName\n関数 : getPrimaryKey`);
+      throw new Error(`resultが文字列ではありません。\nレイヤー : primary_key\n関数 : getPrimaryKey`);
     }
   }
   //

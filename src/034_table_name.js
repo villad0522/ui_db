@@ -24,7 +24,7 @@ import {
 } from "./045_connect_database_validate.js";
 import {
   getPrimaryKey,
-} from "./042_layerName_validate.js";
+} from "./042_primary_key_validate.js";
 import {
   clearCache,
   createColumn,

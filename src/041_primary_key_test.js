@@ -19,8 +19,8 @@ import {
 } from "./048_directory_validate.js";
 import {
   getPrimaryKey,  // プライマリキーを取得する関数
-} from "./042_layerName_validate.js";
-import { setBugMode } from "./043_layerName.js";
+} from "./042_primary_key_validate.js";
+import { setBugMode } from "./043_primary_key.js";
 
 
 export async function test041() {
@@ -37,12 +37,12 @@ export async function test041() {
         }
         // 意図的に埋め込んだバグを検出できなかった場合
         setBugMode(0);    // 意図的なバグの発生を止める
-        console.log(`レイヤー「layerName」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
+        console.log(`レイヤー「primary_key」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
         return;
     }
     // 意図的に埋め込んだ全てのバグを、正常に検出できた
     setBugMode(0);    // 意図的なバグの発生を止める
-    console.log(`レイヤー「layerName」からバグは見つかりませんでした。また、意図的に${ i }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
+    console.log(`レイヤー「primary_key」からバグは見つかりませんでした。また、意図的に${ i }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
     return;
 }
 
@@ -50,4 +50,9 @@ export async function test041() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+    const primaryKey = await getPrimaryKey("t999");
+    if(primaryKey!=="t999_id"){
+        throw "想定外のプライマリキーです。";
+    }
+
 }

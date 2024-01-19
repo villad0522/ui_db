@@ -30,6 +30,10 @@ export function setBugMode( mode ){
 }
 
 
+
+
+
+
 // プライマリキーを取得する関数
 export async function getPrimaryKey_core( tableId ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）

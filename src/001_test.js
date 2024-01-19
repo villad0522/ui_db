@@ -2,7 +2,7 @@
 import { test050 } from "./050_ip_address_test.js";
 import { test047 } from "./047_directory_test.js";
 import { test044 } from "./044_connect_database_test.js";
-import { test041 } from "./041_layerName_test.js";
+import { test041 } from "./041_primary_key_test.js";
 import { test038 } from "./038_data_type_test.js";
 import { test035 } from "./035_search_text_test.js";
 import { test032 } from "./032_table_name_test.js";

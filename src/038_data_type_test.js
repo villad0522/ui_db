@@ -18,7 +18,7 @@ import {
 } from "./048_directory_validate.js";
 import {
   getPrimaryKey,
-} from "./042_layerName_validate.js";
+} from "./042_primary_key_validate.js";
 import {
   startUp,  // プログラム起動
   clearCache,  // インメモリキャッシュを削除する

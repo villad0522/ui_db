@@ -19,7 +19,7 @@ import {
 } from "./048_directory_validate.js";
 import {
   getPrimaryKey,
-} from "./042_layerName_validate.js";
+} from "./042_primary_key_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
