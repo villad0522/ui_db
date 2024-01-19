@@ -101,6 +101,7 @@ export function setBugMode( mode ){
 
 // SQLクエリを生成
 export async function generateSQL_core( tableId, displayColumns, conditions, sortOrder ){
+  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   // displayColumns の例
   //   [
   //     {
@@ -140,7 +141,7 @@ export async function generateSQL_core( tableId, displayColumns, conditions, sor
   //     }
   //   ]
   for( const { path } of displayColumns ){
-    if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     // パスの文法をチェックする
     await checkPath( path );
   }
@@ -157,12 +158,12 @@ export async function generateSQL_core( tableId, displayColumns, conditions, sor
   const orderData = await getOrderData( displayColumns, sortOrder, joinIdMap );
   //
   if( isDuplication === true ){
-    if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
     // 重複しているテーブルを結合する場合、「テーブル名 AS 別名」と記入する必要がある。
     return await generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData );
   }
   else{
-    if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
     // テーブルが重複していない場合
     return await generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData );
     //return await generateSQLwithoutDuplication( tableId, selectData, joinData, whereData, orderData );

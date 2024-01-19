@@ -50,6 +50,7 @@ export function setBugMode( mode ){
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
+  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
     await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
     //
     // テーブルを作成する（テーブルの存在を保存するため）
@@ -91,12 +92,14 @@ async function _reload() {
 
 // インメモリキャッシュを削除する
 export async function clearCache_core(  ){
+  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     await _reload();    // メモリに再読み込み
     return await clearCache();   // 下層の関数を呼び出す
 }
 
 // テーブルを作成
 export async function createTable_core( tableName ){
+  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
     // テーブル名が重複していないかチェックする
     const tables1 = await runSqlReadOnly(
         `SELECT *
@@ -147,6 +150,7 @@ export async function createTable_core( tableName ){
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
+  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
     await runSqlWriteOnly(
         `DELETE FROM table_names
             WHERE table_number = :tableNumber;`,
@@ -160,6 +164,7 @@ export async function deleteTable_core( tableId ){
 
 // テーブルを無効化
 export async function disableTable_core( tableId ){
+  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
     await runSqlWriteOnly(
         `UPDATE table_names
             SET enable = 0
@@ -174,6 +179,7 @@ export async function disableTable_core( tableId ){
 
 // テーブルを再度有効化
 export async function enableTable_core( tableId ){
+  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
     const tables = await runSqlReadOnly(
         `SELECT
             t2.table_name AS tableName
@@ -189,7 +195,7 @@ export async function enableTable_core( tableId ){
         },
     );
     if(tables.length>=1){
-        if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
         const tableName = tables[0]["tableName"];
         throw `テーブル名「${tableName}」は重複しています。`;
     }
@@ -207,6 +213,7 @@ export async function enableTable_core( tableId ){
 
 // テーブル名を変更
 export async function updateTableName_core( tables ){
+  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     //==========================================================
     // テーブル名が重複していないか確認する
     await _reload();
@@ -217,7 +224,7 @@ export async function updateTableName_core( tables ){
     //     "t8": "テーブル名２"
     // };
     for (const { id, name } of tables) {
-        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
         obj[id] = name;
     }
     // この時点で、連想配列「obj」には、全てのテーブル一覧が格納されている。
@@ -227,7 +234,7 @@ export async function updateTableName_core( tables ){
     //     "t8": "テーブル名２"
     // };
     for (const { id, name } of tables) {
-        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
         const newObj = structuredClone(obj);    // ディープコピー
         //
         // 自分自身を除いた、他のテーブルと名前が被っていないか確認する
@@ -241,7 +248,7 @@ export async function updateTableName_core( tables ){
     //==========================================================
     // テーブル名を変更する
     for (const { id, name } of tables) {
-        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
         let tableNumber = id.replace("t","");
         if(isNaN(tableNumber)){
             throw "指定されたテーブルIDは無効です。";
@@ -265,8 +272,9 @@ export async function updateTableName_core( tables ){
 
 // テーブルの一覧を取得(重)
 export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
+  if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
     if (!(pageNumber >= 1)) {
-        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
         pageNumber = 1;
     }
     const [{ "COUNT(*)": total }] = await runSqlReadOnly(
@@ -281,7 +289,7 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
     );
     let offset = onePageMaxSize * (pageNumber - 1);
     if( offset >= total ){
-        if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
         offset = total;
     }
     // 「sqlite_master」と結合させることで、実際に存在するテーブルのみに絞り込む
@@ -312,9 +320,10 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
 
 // SQLクエリ実行（読み取り専用）
 export async function runSqlReadOnly_core( sql, params ){
+  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
     //入力パラメータに含まれるテーブル名をIDに置き換える
     for( const tableId in cacheData1 ){
-        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
         const tableName = cacheData1[tableId];
         sql = sql.replaceAll( tableName, tableId );
     }
@@ -324,9 +333,10 @@ export async function runSqlReadOnly_core( sql, params ){
 
 // SQLクエリ実行（書き込み専用）
 export async function runSqlWriteOnly_core( sql, params ){
+  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     //入力パラメータに含まれるテーブル名をIDに置き換える
     for( const tableId in cacheData1 ){
-        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
         const tableName = cacheData1[tableId];
         sql = sql.replaceAll( tableName, tableId );
     }
@@ -336,10 +346,12 @@ export async function runSqlWriteOnly_core( sql, params ){
 
 // テーブルが有効なのか判定
 export async function checkTableEnabled_core( tableId ){
+  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
     return cacheData1[tableId] ? true : false;
 }
 
 // IDからテーブル名を取得
 export async function getTableName_core( tableId ){
+  if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData1[tableId];
 }

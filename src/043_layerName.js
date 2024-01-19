@@ -32,6 +32,7 @@ export function setBugMode( mode ){
 
 // プライマリキーを取得する関数
 export async function getPrimaryKey_core( tableId ){
+  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
     if( !String(tableId).startsWith("t") ){
         throw `テーブルIDに無効な文字列「${tableId}」が指定されました。`;
     }

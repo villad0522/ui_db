@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import {
   getPath,
 } from "./048_directory_validate.js";
@@ -22,7 +24,7 @@ export async function test044() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 13; i++ ) {
+    for ( i = 1; i <= 24; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -45,4 +47,55 @@ export async function test044() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+    //
+    // CSVファイルに書き込むデータ
+    const data = [
+        ['John Doe', 25, 'New York'],
+        ['Jane Smith', 30, 'San Francisco'],
+        ['Bob Johnson', 22, 'Los Angeles']
+    ];
+    const csvText = data.map(row => row.join(',')).join('\n');
+    //
+    // CSVファイルのパス
+    const cachePath = await getPath("CACHE");
+    const csvFilePath = path.join(cachePath, 'test.csv');
+    //
+    // CSVファイルを作成してデータを書き込む
+    await fs.promises.writeFile(csvFilePath, csvText, 'utf8');
+    //
+    // テーブルを作り直す
+    await runSqlWriteOnly(`DROP TABLE IF EXISTS t99999;`,{});
+    await runSqlWriteOnly(`
+        CREATE TABLE t99999 (
+            "name" TEXT,
+            "age" INTEGER,
+            "city" TEXT
+        );
+    `,{});
+    //
+    // CSVファイルからデータベースに読み込む
+    await createRecordsFromCsv( "t99999", csvFilePath, 3 );
+    //
+    // わざと再接続
+    await startUp("localhost:3000", true);
+    //
+    // テーブルから読み出す
+    const matrix = await runSqlReadOnly(`SELECT * FROM t99999`,{});
+    if (matrix.length !== data.length) {
+        console.log(matrix);
+        throw `インポートしたはずの件数と合致しません`;
+    }
+    if (matrix[0]["name"] !== data[0][0]) {
+        console.log(matrix);
+        throw `インポートしたはずの内容と合致しません`;
+    }
+    //
+    // CSVファイルを削除
+    await fs.promises.rm(csvFilePath);
+    //
+    // テスト用のテーブルを削除
+    await runSqlWriteOnly(`
+        DROP TABLE IF EXISTS t99999;
+    `,{});
+
 }

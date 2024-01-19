@@ -94,5 +94,6 @@ export function setBugMode( mode ){
 
 // SQLクエリを生成
 export async function generateSQLwithoutDuplication_core( tableId, selectData, joinData, whereData, orderData ){
+  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   throw "この関数は未実装です。";
 }

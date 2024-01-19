@@ -102,16 +102,14 @@ export async function checkTableDuplication( tableId, joinIdMap ){
       throw new Error(`tableIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : checkTableDuplication`);
     }
   }
-  if( typeof joinIdMap !== "object" ){
-    if( !joinIdMap ){
-      throw new Error(`joinIdMapがNULLです。\nレイヤー : convert_sql_data\n関数 : checkTableDuplication`);
-    }
-    else{
-      throw new Error(`joinIdMapがオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : checkTableDuplication`);
-    }
+  if( joinIdMap===null || joinIdMap===undefined ){
+    throw new Error(`joinIdMapがNULLです。\nレイヤー : convert_sql_data\n関数 : checkTableDuplication`);
   }
-  else if( typeof joinIdMap[Symbol.iterator] !== "function" ){
-    throw new Error(`joinIdMapが反復可能オブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : checkTableDuplication`);
+  else if( typeof joinIdMap !== "object" ){
+    throw new Error(`joinIdMapがオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : checkTableDuplication`);
+  }
+  else if( joinIdMap.constructor !== Object ){
+    throw new Error(`joinIdMapが辞書型ではありません。\nレイヤー : convert_sql_data\n関数 : checkTableDuplication`);
   }
   for( const i in joinIdMap ){
     if( typeof i !== "string" ){
@@ -217,16 +215,14 @@ export async function getSelectData( displayColumns, joinIdMap ){
       }
     }
   }
-  if( typeof joinIdMap !== "object" ){
-    if( !joinIdMap ){
-      throw new Error(`joinIdMapがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
-    }
-    else{
-      throw new Error(`joinIdMapがオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
-    }
+  if( joinIdMap===null || joinIdMap===undefined ){
+    throw new Error(`joinIdMapがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
   }
-  else if( typeof joinIdMap[Symbol.iterator] !== "function" ){
-    throw new Error(`joinIdMapが反復可能オブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+  else if( typeof joinIdMap !== "object" ){
+    throw new Error(`joinIdMapがオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+  }
+  else if( joinIdMap.constructor !== Object ){
+    throw new Error(`joinIdMapが辞書型ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
   }
   for( const i in joinIdMap ){
     if( typeof i !== "string" ){
@@ -321,16 +317,14 @@ export async function getSelectData( displayColumns, joinIdMap ){
 export async function getJoinData( joinIdMap ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( typeof joinIdMap !== "object" ){
-    if( !joinIdMap ){
-      throw new Error(`joinIdMapがNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinData`);
-    }
-    else{
-      throw new Error(`joinIdMapがオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getJoinData`);
-    }
+  if( joinIdMap===null || joinIdMap===undefined ){
+    throw new Error(`joinIdMapがNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinData`);
   }
-  else if( typeof joinIdMap[Symbol.iterator] !== "function" ){
-    throw new Error(`joinIdMapが反復可能オブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getJoinData`);
+  else if( typeof joinIdMap !== "object" ){
+    throw new Error(`joinIdMapがオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getJoinData`);
+  }
+  else if( joinIdMap.constructor !== Object ){
+    throw new Error(`joinIdMapが辞書型ではありません。\nレイヤー : convert_sql_data\n関数 : getJoinData`);
   }
   for( const i in joinIdMap ){
     if( typeof i !== "string" ){
@@ -528,16 +522,14 @@ export async function getWhereData( displayColumns, conditions, joinIdMap ){
       throw new Error(`conditions[${i}].valueが数値ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
     }
   }
-  if( typeof joinIdMap !== "object" ){
-    if( !joinIdMap ){
-      throw new Error(`joinIdMapがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
-    }
-    else{
-      throw new Error(`joinIdMapがオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
-    }
+  if( joinIdMap===null || joinIdMap===undefined ){
+    throw new Error(`joinIdMapがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
   }
-  else if( typeof joinIdMap[Symbol.iterator] !== "function" ){
-    throw new Error(`joinIdMapが反復可能オブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+  else if( typeof joinIdMap !== "object" ){
+    throw new Error(`joinIdMapがオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+  }
+  else if( joinIdMap.constructor !== Object ){
+    throw new Error(`joinIdMapが辞書型ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
   }
   for( const i in joinIdMap ){
     if( typeof i !== "string" ){
@@ -727,16 +719,14 @@ export async function getOrderData( displayColumns, sortOrder, joinIdMap ){
       throw new Error(`sortOrder[${i}].isAscendingがブール値ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
     }
   }
-  if( typeof joinIdMap !== "object" ){
-    if( !joinIdMap ){
-      throw new Error(`joinIdMapがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
-    }
-    else{
-      throw new Error(`joinIdMapがオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
-    }
+  if( joinIdMap===null || joinIdMap===undefined ){
+    throw new Error(`joinIdMapがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
   }
-  else if( typeof joinIdMap[Symbol.iterator] !== "function" ){
-    throw new Error(`joinIdMapが反復可能オブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+  else if( typeof joinIdMap !== "object" ){
+    throw new Error(`joinIdMapがオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+  }
+  else if( joinIdMap.constructor !== Object ){
+    throw new Error(`joinIdMapが辞書型ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
   }
   for( const i in joinIdMap ){
     if( typeof i !== "string" ){

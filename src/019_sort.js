@@ -78,6 +78,7 @@ export function setBugMode( mode ){
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
+  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
   try {
     // テーブルを作成する（ソート番号を保存するため）

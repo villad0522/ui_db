@@ -200,16 +200,14 @@ export async function listDataTypes( tableId ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( typeof result !== "object" ){
-    if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : data_type\n関数 : listDataTypes`);
-    }
-    else{
-      throw new Error(`resultがオブジェクトではありません。\nレイヤー : data_type\n関数 : listDataTypes`);
-    }
+  if( result===null || result===undefined ){
+    throw new Error(`resultがNULLです。\nレイヤー : data_type\n関数 : listDataTypes`);
   }
-  else if( typeof result[Symbol.iterator] !== "function" ){
-    throw new Error(`resultが反復可能オブジェクトではありません。\nレイヤー : data_type\n関数 : listDataTypes`);
+  else if( typeof result !== "object" ){
+    throw new Error(`resultがオブジェクトではありません。\nレイヤー : data_type\n関数 : listDataTypes`);
+  }
+  else if( result.constructor !== Object ){
+    throw new Error(`resultが辞書型ではありません。\nレイヤー : data_type\n関数 : listDataTypes`);
   }
   for( const i in result ){
     if( typeof i !== "string" ){
@@ -244,16 +242,14 @@ export async function createRecord( tableId, recordData ){
       throw new Error(`tableIdが文字列ではありません。\nレイヤー : data_type\n関数 : createRecord`);
     }
   }
-  if( typeof recordData !== "object" ){
-    if( !recordData ){
-      throw new Error(`recordDataがNULLです。\nレイヤー : data_type\n関数 : createRecord`);
-    }
-    else{
-      throw new Error(`recordDataがオブジェクトではありません。\nレイヤー : data_type\n関数 : createRecord`);
-    }
+  if( recordData===null || recordData===undefined ){
+    throw new Error(`recordDataがNULLです。\nレイヤー : data_type\n関数 : createRecord`);
   }
-  else if( typeof recordData[Symbol.iterator] !== "function" ){
-    throw new Error(`recordDataが反復可能オブジェクトではありません。\nレイヤー : data_type\n関数 : createRecord`);
+  else if( typeof recordData !== "object" ){
+    throw new Error(`recordDataがオブジェクトではありません。\nレイヤー : data_type\n関数 : createRecord`);
+  }
+  else if( recordData.constructor !== Object ){
+    throw new Error(`recordDataが辞書型ではありません。\nレイヤー : data_type\n関数 : createRecord`);
   }
   for( const i in recordData ){
     if( typeof i !== "string" ){
@@ -330,16 +326,14 @@ export async function updateRecord( tableId, recordId, recordData ){
       throw new Error(`recordIdが文字列ではありません。\nレイヤー : data_type\n関数 : updateRecord`);
     }
   }
-  if( typeof recordData !== "object" ){
-    if( !recordData ){
-      throw new Error(`recordDataがNULLです。\nレイヤー : data_type\n関数 : updateRecord`);
-    }
-    else{
-      throw new Error(`recordDataがオブジェクトではありません。\nレイヤー : data_type\n関数 : updateRecord`);
-    }
+  if( recordData===null || recordData===undefined ){
+    throw new Error(`recordDataがNULLです。\nレイヤー : data_type\n関数 : updateRecord`);
   }
-  else if( typeof recordData[Symbol.iterator] !== "function" ){
-    throw new Error(`recordDataが反復可能オブジェクトではありません。\nレイヤー : data_type\n関数 : updateRecord`);
+  else if( typeof recordData !== "object" ){
+    throw new Error(`recordDataがオブジェクトではありません。\nレイヤー : data_type\n関数 : updateRecord`);
+  }
+  else if( recordData.constructor !== Object ){
+    throw new Error(`recordDataが辞書型ではありません。\nレイヤー : data_type\n関数 : updateRecord`);
   }
   for( const i in recordData ){
     if( typeof i !== "string" ){
@@ -465,16 +459,14 @@ export async function checkRecord( tableId, recordData ){
       throw new Error(`tableIdが文字列ではありません。\nレイヤー : data_type\n関数 : checkRecord`);
     }
   }
-  if( typeof recordData !== "object" ){
-    if( !recordData ){
-      throw new Error(`recordDataがNULLです。\nレイヤー : data_type\n関数 : checkRecord`);
-    }
-    else{
-      throw new Error(`recordDataがオブジェクトではありません。\nレイヤー : data_type\n関数 : checkRecord`);
-    }
+  if( recordData===null || recordData===undefined ){
+    throw new Error(`recordDataがNULLです。\nレイヤー : data_type\n関数 : checkRecord`);
   }
-  else if( typeof recordData[Symbol.iterator] !== "function" ){
-    throw new Error(`recordDataが反復可能オブジェクトではありません。\nレイヤー : data_type\n関数 : checkRecord`);
+  else if( typeof recordData !== "object" ){
+    throw new Error(`recordDataがオブジェクトではありません。\nレイヤー : data_type\n関数 : checkRecord`);
+  }
+  else if( recordData.constructor !== Object ){
+    throw new Error(`recordDataが辞書型ではありません。\nレイヤー : data_type\n関数 : checkRecord`);
   }
   for( const i in recordData ){
     if( typeof i !== "string" ){

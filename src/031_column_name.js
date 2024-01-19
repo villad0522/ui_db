@@ -58,6 +58,7 @@ export function setBugMode( mode ){
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
+  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
     await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
     //
     // テーブルを作成する（カラムの存在を保存するため）
@@ -120,22 +121,24 @@ async function _reload() {
 
 // インメモリキャッシュを削除する
 export async function clearCache_core(  ){
+  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     await _reload();    // メモリに再読み込み
     return await clearCache();   // 下層の関数を呼び出す
 }
 
 // カラムを作成
 export async function createColumn_core( tableId, columnName, dataType ){
+  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
     //
     // カラム名がデータベース全体で重複しないように、先頭にテーブルIDとアンダーバーをつける
     //   例： 氏名 => t1_氏名
     let columnName2;
     if( columnName.startsWith( tableId + "_" ) ){
-        if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
         columnName2 = columnName;   // 既に加えられている場合
     }
     else{
-        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
         columnName2 = tableId + "_" + columnName;
     }
     //
@@ -201,6 +204,7 @@ export async function createColumn_core( tableId, columnName, dataType ){
 
 // カラムを無効化
 export async function disableColumn_core( columnId ){
+  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
     let columnNumber = columnId.replace("c","");
     if(isNaN(columnNumber)){
         throw "指定されたカラムIDは無効です。";
@@ -220,6 +224,7 @@ export async function disableColumn_core( columnId ){
 
 // カラムを再度有効化
 export async function enableColumn_core( columnId ){
+  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
     let columnNumber = columnId.replace("c","");
     if(isNaN(columnNumber)){
         throw "指定されたカラムIDは無効です。";
@@ -242,7 +247,7 @@ export async function enableColumn_core( columnId ){
         },
     );
     if(columns.length>=1){
-        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
         const columnName = columns[0]["columnName"];
         throw `カラム名「${columnName}」は重複しています。`;
     }
@@ -262,6 +267,7 @@ export async function enableColumn_core( columnId ){
 
 // カラム名を変更
 export async function updateColumnName_core( columns ){
+  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
     //==========================================================
     // テーブルIDを調べる
     if(columns.length===0){
@@ -273,13 +279,13 @@ export async function updateColumnName_core( columns ){
     // カラム名の先頭にテーブルIDを付け加える（「t2」など）
     const columns2  = {};
     for (const { id, name } of columns) {
-        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
         if( name.startsWith( tableId + "_" ) ){
-            if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
             columns2[id] = name;   // 既に加えられている場合
         }
         else{
-            if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
             columns2[id] = tableId + "_" + name;
         }
     }
@@ -298,7 +304,7 @@ export async function updateColumnName_core( columns ){
     //      "c8": "t1_カラム名２"
     // };
     for (const id in columns2 ) {
-        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
         const name = columns2[id];
         const newObj = structuredClone(obj);    // ディープコピー
         //
@@ -313,7 +319,7 @@ export async function updateColumnName_core( columns ){
     //==========================================================
     // カラム名を変更する
     for (const id in columns2 ) {
-        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
         let columnNumber = id.replace("c","");
         if(isNaN(columnNumber)){
             throw "指定されたカラムIDは無効です。";
@@ -336,8 +342,9 @@ export async function updateColumnName_core( columns ){
 
 // カラムの一覧を取得(GUI)
 export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSize, isTrash ){
+  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
     if (pageNumber <= 0) {
-        if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
         pageNumber = 1;
     }
     const [{ "COUNT(*)": total }] = await runSqlReadOnly(
@@ -352,7 +359,7 @@ export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSiz
     );
     let offset = onePageMaxSize * (pageNumber - 1);
     if( offset >= total ){
-        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
         offset = total;
     }
     const columns = await runSqlReadOnly(
@@ -375,7 +382,7 @@ export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSiz
     );
     const dataTypes = await listDataTypes( tableId );  // 下層の関数を実行する
     for (const { id, name } of columns) {
-        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
         columns.dataType = dataTypes[id];
     }
     return {
@@ -386,9 +393,10 @@ export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSiz
 
 // SQLクエリ実行（読み取り専用）
 export async function runSqlReadOnly_core( sql, params ){
+  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
     //入力パラメータに含まれるカラム名をIDに置き換える
     for( const columnId in cacheData1 ){
-        if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
         const columnName = cacheData1[columnId];
         sql = sql.replaceAll( columnName, columnId );
     }
@@ -397,9 +405,10 @@ export async function runSqlReadOnly_core( sql, params ){
 
 // SQLクエリ実行（書き込み専用）
 export async function runSqlWriteOnly_core( sql, params ){
+  if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
     //入力パラメータに含まれるカラム名をIDに置き換える
     for( const columnId in cacheData1 ){
-        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
         const columnName = cacheData1[columnId];
         sql = sql.replaceAll( columnName, columnId );
     }
@@ -408,6 +417,7 @@ export async function runSqlWriteOnly_core( sql, params ){
 
 // カラムIDからテーブルIDを調べる
 export async function getTableId_core( columnId ){
+  if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
     let columnNumber = columnId.replace("c","");
     if(isNaN(columnNumber)){
         throw "指定されたカラムIDは無効です。";
@@ -430,6 +440,7 @@ export async function getTableId_core( columnId ){
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
+  if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
     await runSqlWriteOnly(
         `DELETE FROM column_names
             WHERE table_id = :tableId;`,
@@ -443,11 +454,13 @@ export async function deleteTable_core( tableId ){
 
 // カラムが有効なのか判定
 export async function checkColumnEnabled_core( columnId ){
+  if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
     return cacheData1[columnId] ? true : false;
 }
 
 // カラムの一覧を取得（高速）
 export async function listColumnsAll_core( tableId ){
+  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
     if(!cacheData2[tableId]){
         throw "指定されたテーブルIDは存在しません。";
     }
@@ -456,5 +469,6 @@ export async function listColumnsAll_core( tableId ){
 
 // IDからカラム名を取得
 export async function getColumnName_core( columnId ){
+  if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData1[columnId];
 }

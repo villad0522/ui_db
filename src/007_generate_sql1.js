@@ -97,36 +97,37 @@ export function setBugMode( mode ){
 
 // SQLクエリを生成
 export async function generateSQLwithDuplication_core( tableId, selectData, joinData, whereData, orderData ){
+  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   const primaryKey = await getPrimaryKey( tableId );
   //
   let sql = "";
   //===================================================================================
   sql += `SELECT\n`;
   for( const { type, joinId, columnName, as } of selectData ){
-    if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     switch(type){
       case "RAW":
-        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
         sql += `  ${joinId}.${columnName} AS '${as}'\n`;
         break;
       case "SUM":
-        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
         sql += `  SUM(${joinId}.${columnName}) AS '${as}'\n`;
         break;
       case "MAX":
-        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
         sql += `  MAX(${joinId}.${columnName}) AS '${as}'\n`;
         break;
       case "MIN":
-        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
         sql += `  MIN(${joinId}.${columnName}) AS '${as}'\n`;
         break;
       case "AVG":
-        if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
         sql += `  AVG(${joinId}.${columnName}) AS '${as}'\n`;
         break;
       case "COUNT":
-        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
         sql += `  COUNT(${joinId}.${columnName}) AS '${as}'\n`;
         break;
       default:
@@ -140,7 +141,7 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
   sql += `    ON ( main.${primaryKey} = sort_main.record_id ) AND ( sort_main.table_id = '${tableId}' )\n`;
   //
   for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnName } of joinData ){
-    if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
     sql += `  \n`;
     sql += `  LEFT OUTER JOIN ${toTableName} AS ${toJoinId}\n`;
     sql += `    ON ${fromJoinId}.${fromColumnName} = ${toJoinId}.${toColumnName}\n`;
@@ -153,31 +154,31 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
   const parameters = {};
   const whereList = [];
   for( const { displayColumnId, type, joinId, columnName, value } of whereData ){
-    if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
     parameters[":"+displayColumnId] = value;
     switch(type.trim()){
       case "=":
-        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
         whereList.push(`( ${joinId}.${columnName} = :${displayColumnId} )`);
         break;
       case "!=":
-        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
         whereList.push(`( ${joinId}.${columnName} != :${displayColumnId} )`);
         break;
       case ">":
-        if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
         whereList.push(`( ${joinId}.${columnName} > :${displayColumnId} )`);
         break;
       case "<":
-        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
         whereList.push(`( ${joinId}.${columnName} < :${displayColumnId} )`);
         break;
       case ">=":
-        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
         whereList.push(`( ${joinId}.${columnName} >= :${displayColumnId} )`);
         break;
       case "<=":
-        if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
         whereList.push(`( ${joinId}.${columnName} <= :${displayColumnId} )`);
         break;
       default:
@@ -193,18 +194,18 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
   //===================================================================================
   const orderByList = [];
   for( const { joinId, columnName, isAscending } of orderData ){
-    if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     if(isAscending){
-      if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
       orderByList.push(`${joinId}.${columnName} ASC`);
     }
     else{
-      if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
       orderByList.push(`${joinId}.${columnName} DESC`);
     }
   }
   for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnName } of joinData ){
-    if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
     orderByList.push(`sort_${toJoinId}.sort_number ASC`);
   }
   sql += `ORDER BY ${orderByList.join(",\n  ")}\n`;

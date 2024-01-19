@@ -88,6 +88,7 @@ export function setBugMode( mode ){
 
 // カラムパスの長さを取得する
 export async function getPathLength_core( pathText ){
+  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   // （例）  main.c2 > c53 > c1   長さ3
   // （例）  c2 > c53 > c1 > main   長さ4
   const pathArray = String(pathText).split(">");
@@ -97,15 +98,16 @@ export async function getPathLength_core( pathText ){
 
 // パスを途中まで切り取る関数
 export async function slicePath_core( pathText, length ){
+  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
   let pathArray = String(pathText).split(">");
   pathArray = pathArray.map( text => text.trim() );
   if( pathArray[0].startsWith("main.") ){
-    if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
     // 先頭がメインテーブルの場合、先頭から途中まで切り取る。
     return pathArray.slice(0, length).join(" > ");
   }
   else if( pathArray[pathArray.length-1] === "main" ){
-    if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
     // 末尾がメインテーブルの場合、途中から末尾まで切り取る。
     const startIndex = pathArray.length - length;
     return pathArray.slice(startIndex).join(" > ");
@@ -118,18 +120,19 @@ export async function slicePath_core( pathText, length ){
 
 // パスの文法をチェックする関数
 export async function checkPath_core( pathText ){
+  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
   let pathArray = String(pathText).split(">");
   pathArray = pathArray.map( text => text.trim() );
   if(pathArray.length===0){
     throw "カラムパスの長さが足りません";
   }
   if( pathArray[0].startsWith("main.") ){
-    if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
     // 先頭がメインテーブルの場合
     pathArray = pathArray[0].replace( "main.", "" );
   }
   else if( pathArray.pop() === "main" ){
-    if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
     // 末尾がメインテーブルの場合
     if(pathArray.length===0){
       throw "カラムパスの長さが足りません";
@@ -140,7 +143,7 @@ export async function checkPath_core( pathText ){
   }
   // この時点で、pathArrayの中身は全てカラムIDの形式（例：c55）になっているはず。
   for( let columnId of pathArray ){
-    if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     if( !columnId.startsWith("c") ){
       throw "カラムパスの文法が不正です。カラムIDの先頭に「c」が見つかりません。";
     }
@@ -153,15 +156,16 @@ export async function checkPath_core( pathText ){
 
 // パスをカラムIDに変換
 export async function pathToColumnId_core( pathText ){
+  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
   let pathArray = String(pathText).split(">");
   pathArray = pathArray.map( text => text.trim() );
   if( pathArray[0].startsWith("main.") ){
-    if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
     // 先頭がメインテーブルの場合
     return pathArray.pop().replace( "main.", "" );
   }
   else if( pathArray[pathArray.length-1] === "main" ){
-    if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
     // 末尾がメインテーブルの場合
     return pathArray[0];
   }

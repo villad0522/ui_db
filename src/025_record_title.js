@@ -71,6 +71,7 @@ export function setBugMode( mode ){
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
+  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
   //
   // テーブルを作成する（見出しの役割を果たすカラムを登録するため）
@@ -104,6 +105,7 @@ async function _reload() {
 
 // 見出しの役割を果たすカラムを登録する
 export async function setTitleColumn_core( columnId ){
+  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
   await runSqlWriteOnly(
     `INSERT INTO title_columns ( table_id, title_column_id )
         VALUES ( :tableId, :titleColumnId );`,
@@ -117,16 +119,18 @@ export async function setTitleColumn_core( columnId ){
 
 // 見出しの役割を果たすカラムを取得する
 export async function getTitleColumnId_core( tableId ){
+  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData[tableId];
 }
 
 // テーブルの一覧を取得(重)
 export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
+  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
   // 下層の関数を実行する
   const { tables, total } = await listTables( pageNumber, onePageMaxSize, isTrash );
   // 下層から得たテーブルの一覧に、「titleColumnId」を付け加えて上層に提供する
   for (const { id } of tables) {
-    if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
     tables.titleColumnId = cacheData[id];
   }
   return {
@@ -137,6 +141,7 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
+  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
     await runSqlWriteOnly(
         `DELETE FROM title_columns
             WHERE table_id = :tableId;`,
@@ -150,6 +155,7 @@ export async function deleteTable_core( tableId ){
 
 // インメモリキャッシュを削除する
 export async function clearCache_core(  ){
+  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
     await _reload();    // メモリに再読み込み
     return await clearCache();   // 下層の関数を呼び出す
 }

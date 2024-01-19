@@ -48,6 +48,7 @@ export function setBugMode( mode ){
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
+  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
   try {
     // テーブルを作成する（検索のため）
@@ -72,26 +73,31 @@ export async function startUp_core( localUrl, isDebug ){
 
 // CSVファイルインポート
 export async function createRecordsFromCsv_core( tableId, filePath, columnSize ){
+  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
   throw "この関数は未実装です。";
 }
 
 // SQLクエリ実行（書き込み専用）
 export async function runSqlWriteOnly_core( sql, params ){
+  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
   throw "この関数は未実装です。";
 }
 
 // レコードを作成
 export async function createRecord_core( tableId, recordData ){
+  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
   throw "この関数は未実装です。";
 }
 
 // レコードを上書き
 export async function updateRecord_core( tableId, recordId, recordData ){
+  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
   throw "この関数は未実装です。";
 }
 
 // 不可逆的にテーブルを削除
 export async function delete_table_core( tableId ){
+  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
   await runSqlWriteOnly(
     `DELETE FROM data_types
       WHERE table_id = :tableId;`,

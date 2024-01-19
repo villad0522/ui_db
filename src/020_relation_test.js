@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import {
   listTables,
   setTitleColumn,
@@ -68,7 +70,7 @@ export async function test020() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 11; i++ ) {
+    for ( i = 1; i <= 19; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

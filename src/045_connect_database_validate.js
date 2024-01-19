@@ -173,16 +173,14 @@ export async function runSqlReadOnly( sql, params ){
       throw new Error(`sqlが文字列ではありません。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
     }
   }
-  if( typeof params !== "object" ){
-    if( !params ){
-      throw new Error(`paramsがNULLです。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
-    }
-    else{
-      throw new Error(`paramsがオブジェクトではありません。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
-    }
+  if( params===null || params===undefined ){
+    throw new Error(`paramsがNULLです。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
   }
-  else if( typeof params[Symbol.iterator] !== "function" ){
-    throw new Error(`paramsが反復可能オブジェクトではありません。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
+  else if( typeof params !== "object" ){
+    throw new Error(`paramsがオブジェクトではありません。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
+  }
+  else if( params.constructor !== Object ){
+    throw new Error(`paramsが辞書型ではありません。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
   }
   for( const i in params ){
     if( typeof i !== "string" ){
@@ -216,15 +214,19 @@ export async function runSqlReadOnly( sql, params ){
     }
   }
   for( let i=0; i<result.length; i++ ){
-    if( !Array.isArray(result[i]) ){
-      if( !result[i] ){
-        throw new Error(`result[${i}]がNULLです。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
-      }
-      else{
-        throw new Error(`result[${i}]が配列ではありません。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
-      }
+    if( result[i]===null || result[i]===undefined ){
+      throw new Error(`result[${i}]がNULLです。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
     }
-    for( let j=0; i<result[i].length; i++ ){
+    else if( typeof result[i] !== "object" ){
+      throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
+    }
+    else if( result[i].constructor !== Object ){
+      throw new Error(`result[${i}]が辞書型ではありません。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
+    }
+    for( const j in result[i] ){
+      if( typeof j !== "string" ){
+        throw new Error(`result[${i}]のキーが文字列ではありません。\nレイヤー : connect_database\n関数 : runSqlReadOnly`);
+      }
     }
   }
   //
@@ -247,16 +249,14 @@ export async function runSqlWriteOnly( sql, params ){
       throw new Error(`sqlが文字列ではありません。\nレイヤー : connect_database\n関数 : runSqlWriteOnly`);
     }
   }
-  if( typeof params !== "object" ){
-    if( !params ){
-      throw new Error(`paramsがNULLです。\nレイヤー : connect_database\n関数 : runSqlWriteOnly`);
-    }
-    else{
-      throw new Error(`paramsがオブジェクトではありません。\nレイヤー : connect_database\n関数 : runSqlWriteOnly`);
-    }
+  if( params===null || params===undefined ){
+    throw new Error(`paramsがNULLです。\nレイヤー : connect_database\n関数 : runSqlWriteOnly`);
   }
-  else if( typeof params[Symbol.iterator] !== "function" ){
-    throw new Error(`paramsが反復可能オブジェクトではありません。\nレイヤー : connect_database\n関数 : runSqlWriteOnly`);
+  else if( typeof params !== "object" ){
+    throw new Error(`paramsがオブジェクトではありません。\nレイヤー : connect_database\n関数 : runSqlWriteOnly`);
+  }
+  else if( params.constructor !== Object ){
+    throw new Error(`paramsが辞書型ではありません。\nレイヤー : connect_database\n関数 : runSqlWriteOnly`);
   }
   for( const i in params ){
     if( typeof i !== "string" ){

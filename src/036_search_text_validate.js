@@ -134,16 +134,14 @@ export async function runSqlWriteOnly( sql, params ){
       throw new Error(`sqlが文字列ではありません。\nレイヤー : search_text\n関数 : runSqlWriteOnly`);
     }
   }
-  if( typeof params !== "object" ){
-    if( !params ){
-      throw new Error(`paramsがNULLです。\nレイヤー : search_text\n関数 : runSqlWriteOnly`);
-    }
-    else{
-      throw new Error(`paramsがオブジェクトではありません。\nレイヤー : search_text\n関数 : runSqlWriteOnly`);
-    }
+  if( params===null || params===undefined ){
+    throw new Error(`paramsがNULLです。\nレイヤー : search_text\n関数 : runSqlWriteOnly`);
   }
-  else if( typeof params[Symbol.iterator] !== "function" ){
-    throw new Error(`paramsが反復可能オブジェクトではありません。\nレイヤー : search_text\n関数 : runSqlWriteOnly`);
+  else if( typeof params !== "object" ){
+    throw new Error(`paramsがオブジェクトではありません。\nレイヤー : search_text\n関数 : runSqlWriteOnly`);
+  }
+  else if( params.constructor !== Object ){
+    throw new Error(`paramsが辞書型ではありません。\nレイヤー : search_text\n関数 : runSqlWriteOnly`);
   }
   for( const i in params ){
     if( typeof i !== "string" ){
@@ -188,16 +186,14 @@ export async function createRecord( tableId, recordData ){
       throw new Error(`tableIdが文字列ではありません。\nレイヤー : search_text\n関数 : createRecord`);
     }
   }
-  if( typeof recordData !== "object" ){
-    if( !recordData ){
-      throw new Error(`recordDataがNULLです。\nレイヤー : search_text\n関数 : createRecord`);
-    }
-    else{
-      throw new Error(`recordDataがオブジェクトではありません。\nレイヤー : search_text\n関数 : createRecord`);
-    }
+  if( recordData===null || recordData===undefined ){
+    throw new Error(`recordDataがNULLです。\nレイヤー : search_text\n関数 : createRecord`);
   }
-  else if( typeof recordData[Symbol.iterator] !== "function" ){
-    throw new Error(`recordDataが反復可能オブジェクトではありません。\nレイヤー : search_text\n関数 : createRecord`);
+  else if( typeof recordData !== "object" ){
+    throw new Error(`recordDataがオブジェクトではありません。\nレイヤー : search_text\n関数 : createRecord`);
+  }
+  else if( recordData.constructor !== Object ){
+    throw new Error(`recordDataが辞書型ではありません。\nレイヤー : search_text\n関数 : createRecord`);
   }
   for( const i in recordData ){
     if( typeof i !== "string" ){
@@ -274,16 +270,14 @@ export async function updateRecord( tableId, recordId, recordData ){
       throw new Error(`recordIdが文字列ではありません。\nレイヤー : search_text\n関数 : updateRecord`);
     }
   }
-  if( typeof recordData !== "object" ){
-    if( !recordData ){
-      throw new Error(`recordDataがNULLです。\nレイヤー : search_text\n関数 : updateRecord`);
-    }
-    else{
-      throw new Error(`recordDataがオブジェクトではありません。\nレイヤー : search_text\n関数 : updateRecord`);
-    }
+  if( recordData===null || recordData===undefined ){
+    throw new Error(`recordDataがNULLです。\nレイヤー : search_text\n関数 : updateRecord`);
   }
-  else if( typeof recordData[Symbol.iterator] !== "function" ){
-    throw new Error(`recordDataが反復可能オブジェクトではありません。\nレイヤー : search_text\n関数 : updateRecord`);
+  else if( typeof recordData !== "object" ){
+    throw new Error(`recordDataがオブジェクトではありません。\nレイヤー : search_text\n関数 : updateRecord`);
+  }
+  else if( recordData.constructor !== Object ){
+    throw new Error(`recordDataが辞書型ではありません。\nレイヤー : search_text\n関数 : updateRecord`);
   }
   for( const i in recordData ){
     if( typeof i !== "string" ){
