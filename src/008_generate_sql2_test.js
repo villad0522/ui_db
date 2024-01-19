@@ -78,22 +78,16 @@ import {
   getOrderData,
 } from "./012_convert_sql_data_validate.js";
 import {
-  generateSQLwithoutDuplication,
+  generateSQLwithoutDuplication,  // SQLクエリを生成
 } from "./009_generate_sql2_validate.js";
-import {
-  generateSQLwithDuplication,
-} from "./006_generate_sql1_validate.js";
-import {
-  generateSQL,  // SQLクエリを生成
-} from "./003_generate_sql_validate.js";
-import { setBugMode } from "./004_generate_sql.js";
+import { setBugMode } from "./010_generate_sql2.js";
 
 
-export async function test002() {
+export async function test008() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 3; i++ ) {
+    for ( i = 1; i <= 0; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -103,12 +97,12 @@ export async function test002() {
         }
         // 意図的に埋め込んだバグを検出できなかった場合
         setBugMode(0);    // 意図的なバグの発生を止める
-        console.log(`レイヤー「generate_sql」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
+        console.log(`レイヤー「generate_sql2」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
         return;
     }
     // 意図的に埋め込んだ全てのバグを、正常に検出できた
     setBugMode(0);    // 意図的なバグの発生を止める
-    console.log(`レイヤー「generate_sql」からバグは見つかりませんでした。また、意図的に${ i }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
+    console.log(`レイヤー「generate_sql2」からバグは見つかりませんでした。また、意図的に${ i }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
     return;
 }
 
@@ -116,5 +110,4 @@ export async function test002() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
-
 }

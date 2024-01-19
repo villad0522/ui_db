@@ -1,6 +1,14 @@
 import {
-  startUp,
-} from "./018_sort_validate.js";
+  runSqlReadOnly,
+  runSqlWriteOnly,
+  disableColumn,
+  enableColumn,
+  listColumnsForGUI,
+  getTableId,
+  checkColumnEnabled,
+  listColumnsAll,
+  getColumnName,
+} from "./030_column_name_validate.js";
 import {
   getLocalIp,
 } from "./051_ip_address_validate.js";
@@ -15,15 +23,6 @@ import {
   close,
 } from "./045_connect_database_validate.js";
 import {
-  runSqlReadOnly,
-  runSqlWriteOnly,
-  disableColumn,
-  enableColumn,
-  getTableId,
-  checkColumnEnabled,
-  getColumnName,
-} from "./030_column_name_validate.js";
-import {
   createRecordsFromCsv,
   createRecord,
   updateRecord,
@@ -33,25 +32,18 @@ import {
   getPrimaryKey,
 } from "./042_layerName_validate.js";
 import {
-  clearCache,
   createColumn,
-  deleteTable,
-  getDataType,
-  listColumnsForGUI,
-  listColumnsAll,
-  getParentTableId,
-} from "./021_relation_validate.js";
-import {
-  listDataTypes,
-  checkField,
-  checkRecord,
-} from "./039_data_type_validate.js";
-import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
 } from "./027_reserved_word_validate.js";
+import {
+  listDataTypes,
+  checkField,
+  checkRecord,
+  getDataType,
+} from "./039_data_type_validate.js";
 import {
   disableTable,
   enableTable,
@@ -59,41 +51,21 @@ import {
   getTableName,
 } from "./033_table_name_validate.js";
 import {
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
+  startUp,  // プログラム起動
+  setTitleColumn,  // 見出しの役割を果たすカラムを登録する
+  getTitleColumnId,  // 見出しの役割を果たすカラムを取得する
+  listTables,  // テーブルの一覧を取得(重)
+  deleteTable,  // 不可逆的にテーブルを削除
+  clearCache,  // インメモリキャッシュを削除する
 } from "./024_record_title_validate.js";
-import {
-  getPathLength,
-  slicePath,
-  checkPath,
-  pathToColumnId,
-} from "./015_columnPath_validate.js";
-import {
-  getJoinIdMap,
-  checkTableDuplication,
-  getSelectData,
-  getJoinData,
-  getWhereData,
-  getOrderData,
-} from "./012_convert_sql_data_validate.js";
-import {
-  generateSQLwithoutDuplication,
-} from "./009_generate_sql2_validate.js";
-import {
-  generateSQLwithDuplication,
-} from "./006_generate_sql1_validate.js";
-import {
-  generateSQL,  // SQLクエリを生成
-} from "./003_generate_sql_validate.js";
-import { setBugMode } from "./004_generate_sql.js";
+import { setBugMode } from "./025_record_title.js";
 
 
-export async function test002() {
+export async function test023() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 3; i++ ) {
+    for ( i = 1; i <= 1; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -103,12 +75,12 @@ export async function test002() {
         }
         // 意図的に埋め込んだバグを検出できなかった場合
         setBugMode(0);    // 意図的なバグの発生を止める
-        console.log(`レイヤー「generate_sql」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
+        console.log(`レイヤー「record_title」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
         return;
     }
     // 意図的に埋め込んだ全てのバグを、正常に検出できた
     setBugMode(0);    // 意図的なバグの発生を止める
-    console.log(`レイヤー「generate_sql」からバグは見つかりませんでした。また、意図的に${ i }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
+    console.log(`レイヤー「record_title」からバグは見つかりませんでした。また、意図的に${ i }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
     return;
 }
 
@@ -116,5 +88,4 @@ export async function test002() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
-
 }

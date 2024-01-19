@@ -1,12 +1,12 @@
 {
   "name": "office_system",
   "version": "1.0.0",
-  "main": "./src/001_main.js",
-  "bin": "./prebuild/001_main.js",
+  "main": "./src/0_main.js",
+  "bin": "./prebuild/0_main.js",
   "type": "module",
   "scripts": {
-    "start": "node ./src/001_main.js",
-    "test": "node ./src/000_main_test.js",
+    "start": "node ./src/0_main.js",
+    "test": "node ./src/001_test.js",
     "build": "npm run build:1 && npm run build:2 && npm run build:3 && npm run build:4 && npm run build:5 && npm run build:6 && npm run build:7",
     "build:1": "rimraf ./prebuild & rimraf ./build/office_system.exe & rimraf ./build/frontend & rimraf ./build/static_data/light & rimraf ./build/cache",
     "build:2": "node ./copy_files.mjs ./src/static_data/light ./build/static_data/light",
