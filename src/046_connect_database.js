@@ -107,6 +107,9 @@ export async function getDebugMode_core(  ){
 // トランザクション処理開始
 export async function startTransaction_core(  ){
   if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(!db){
+    throw "データベースオブジェクト(db)がNULLです。";
+  }
   if(isTransaction===false){
     if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
     isTransaction = true;
@@ -117,6 +120,9 @@ export async function startTransaction_core(  ){
 // トランザクション処理終了
 export async function endTransaction_core(  ){
   if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(!db){
+    throw "データベースオブジェクト(db)がNULLです。";
+  }
   if(isTransaction===true){
     if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
     isTransaction = false;
@@ -127,6 +133,9 @@ export async function endTransaction_core(  ){
 // SQLクエリ実行（読み取り専用）
 export async function runSqlReadOnly_core( sql, params ){
   if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(!db){
+    throw "データベースオブジェクト(db)がNULLです。";
+  }
   if (!params) {
     if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
     // パラメータなし
@@ -152,7 +161,10 @@ export async function runSqlReadOnly_core( sql, params ){
 // SQLクエリ実行（書き込み専用）
 export async function runSqlWriteOnly_core( sql, params ){
   if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
-  if (Object.keys(params).length===0) {
+  if(!db){
+    throw "データベースオブジェクト(db)がNULLです。";
+  }
+  if (!params) {
     if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     // パラメータなし
     try {
@@ -181,6 +193,9 @@ let progressCSV = 0;
 // CSVファイルインポート
 export async function createRecordsFromCsv_core( tableId, filePath, columnSize ){
   if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(!db){
+    throw "データベースオブジェクト(db)がNULLです。";
+  }
   // CSVファイルを読み込む
   const fileStream = fs.createReadStream(filePath);
   const headers = [];

@@ -47,6 +47,7 @@ export async function test044() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+    await startUp("localhost:3000", true);
     //
     // CSVファイルに書き込むデータ
     const data = [
