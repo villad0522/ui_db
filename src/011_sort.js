@@ -5,6 +5,7 @@ import {
   clearCache,
   createColumn,
   deleteTable,
+  getDataType,
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,

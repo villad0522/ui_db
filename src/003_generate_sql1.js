@@ -38,6 +38,7 @@ import {
   clearCache,
   createColumn,
   deleteTable,
+  getDataType,
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
@@ -83,77 +84,104 @@ import {
 } from "./004_generate_sql2_test.js";
 
 // SQLクエリを生成
-export async function generateSQLwithDuplication_core( tableId, selectData, joinData, whereData ){
-
-
-
-
+export async function generateSQLwithDuplication_core( tableId, selectData, joinData, whereData, orderData ){
+  const primaryKey = await getPrimaryKey( tableId );
   //
   let sql = "";
+  //===================================================================================
   sql += `SELECT\n`;
-  sql += await _selectCommand({ columns });
-  sql += `  sort_numbers.sort_number AS sort_number\n`;
-  sql += `FROM ${tableId} AS main_table\n`;
-  sql += `  LEFT OUTER JOIN sort_numbers\n`;
-  sql += `    ON ( main_table.record_id = sort_numbers.record_id\n`;
-  sql += `          AND sort_numbers.table_id = '${tableId}' )\n`;
-  sql += await _joinCommand({ columns });
-  sql += `  WHERE ${await _whereCommand({ columns })}\n`
-  sql += `  LIMIT ${limit};\n`;
-  //
-  // ダブルクォーテーションを、バッククォートに置き換える
-  sql = sql.replace(/"/g, '`');
-  //
-  console.log( sql );
-}
-
-
-async function _selectCommand({ columns }){
-  // 重複しているテーブルを結合する場合
-  //   「テーブルの別名.カラム名」と記入する必要がある。
-  let sql = "";
-  for( const { id, name, dataType, parentTableId } of columns ){
-    sql += `  main_table.${name} AS ${name},\n`;
-    if( !parentTableId ){
-      // 通常のカラムの場合
-      sql += `  main_table.${name} AS ${name}_text,\n`;
-      continue;
+  for( const { type, joinId, columnName, as } of selectData ){
+    switch(type){
+      case "RAW":
+        sql += `  ${joinId}.${columnName} AS '${as}'\n`;
+        break;
+      case "SUM":
+        sql += `  SUM(${joinId}.${columnName}) AS '${as}'\n`;
+        break;
+      case "MAX":
+        sql += `  MAX(${joinId}.${columnName}) AS '${as}'\n`;
+        break;
+      case "MIN":
+        sql += `  MIN(${joinId}.${columnName}) AS '${as}'\n`;
+        break;
+      case "AVG":
+        sql += `  AVG(${joinId}.${columnName}) AS '${as}'\n`;
+        break;
+      case "COUNT":
+        sql += `  COUNT(${joinId}.${columnName}) AS '${as}'\n`;
+        break;
+      default:
+        throw `サポートされていない集合関数が指定されました。type=${type}`;
     }
-    // 外部キーの場合
+  }
+  sql += `\n`;
+  //===================================================================================
+  sql += `FROM ${tableId} AS main\n`;
+  sql += `  LEFT OUTER JOIN sort_numbers AS sort_main\n`;
+  sql += `    ON ( main.${primaryKey} = sort_main.record_id ) AND ( sort_main.table_id = '${tableId}' )\n`;
+  //
+  for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnName } of joinData ){
+    sql += `  \n`;
+    sql += `  LEFT OUTER JOIN ${toTableName} AS ${toJoinId}\n`;
+    sql += `    ON ${fromJoinId}.${fromColumnName} = ${toJoinId}.${toColumnName}\n`;
     //
-    const parentTitleColumnId = await getTitleColumn( parentTableId );
-    if( !parentTitleColumnId ){
-      // 親テーブルにタイトルキーが設定されていない場合
-      sql += `  main_table.${name} AS ${name}_text,\n`;
-      continue;
-    }
-    const parentTitleColumnName = getColumnName( parentTitleColumnId );
-    const columnNumber = id.replace("c","");
-    sql += `  v${columnNumber}.${parentTitleColumnName} AS ${name}_text,\n`;
+    sql += `  LEFT OUTER JOIN sort_numbers AS sort_${toJoinId}\n`;
+    sql += `    ON ( ${toJoinId}.${toColumnName} = sort_${toJoinId}.record_id ) AND ( sort_${toJoinId}.table_id = '${toTableName}' )\n`;
   }
-  return sql;
-}
-
-
-async function _joinCommand({ columns }){
-  let sql = "";
-  for( const { id, name, parentTableId } of columns ){
-    if( !parentTableId ){
-      // 通常のカラムの場合
-      continue;
+  sql += `\n`;
+  //===================================================================================
+  const parameters = {};
+  const whereList = [];
+  for( const { displayColumnId, type, joinId, columnName, value } of whereData ){
+    parameters[":"+displayColumnId] = value;
+    switch(type.trim()){
+      case "=":
+        whereList.push(`( ${joinId}.${columnName} = :${displayColumnId} )`);
+        break;
+      case "!=":
+        whereList.push(`( ${joinId}.${columnName} != :${displayColumnId} )`);
+        break;
+      case ">":
+        whereList.push(`( ${joinId}.${columnName} > :${displayColumnId} )`);
+        break;
+      case "<":
+        whereList.push(`( ${joinId}.${columnName} < :${displayColumnId} )`);
+        break;
+      case ">=":
+        whereList.push(`( ${joinId}.${columnName} >= :${displayColumnId} )`);
+        break;
+      case "<=":
+        whereList.push(`( ${joinId}.${columnName} <= :${displayColumnId} )`);
+        break;
+      default:
+        throw `サポートされていない条件演算子が指定されました。type=${type}`;
     }
-    // 外部キーの場合
-    const parentTableName = await getTableName( parentTableId );
-    const parentPrimaryKey = await getPrimaryKey( parentTableId );
-    const columnNumber = id.replace("c","");
-    sql += `  LEFT OUTER JOIN ${parentTableName} AS v${columnNumber}\n`;
-    sql += `    ON ( main_table.${name} = v${columnNumber}.${parentPrimaryKey} )\n`;
+    parameterCount++;
   }
-  return sql;
+  sql += `WHERE ${whereList.join("\n  AND ")}\n`;
+  sql += `\n`;
+  //===================================================================================
+  sql += `GROUP BY main.${primaryKey}\n`;
+  sql += `\n`;
+  //===================================================================================
+  const orderByList = [];
+  for( const { joinId, columnName, isAscending } of orderData ){
+    if(isAscending){
+      orderByList.push(`${joinId}.${columnName} ASC`);
+    }
+    else{
+      orderByList.push(`${joinId}.${columnName} DESC`);
+    }
+  }
+  for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnName } of joinData ){
+    orderByList.push(`sort_${toJoinId}.sort_number ASC`);
+  }
+  sql += `ORDER BY ${orderByList.join(",\n  ")}\n`;
+  sql += `\n`;
+  //===================================================================================
+  //
+  return {
+    sql: sql,
+    parameters: {},
+  };
 }
-
-
-async function _whereCommand({ columns }){
-
-}
-

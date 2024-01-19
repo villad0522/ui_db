@@ -587,6 +587,14 @@ export async function getWhereData( displayColumns, conditions, joinIdMap ){
         throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
+    if( typeof result[i].displayColumnId !== "string" ){
+      if( !result[i].displayColumnId ){
+        throw new Error(`result[${i}].displayColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+      }
+      else{
+        throw new Error(`result[${i}].displayColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+      }
+    }
     if( typeof result[i].type !== "string" ){
       if( !result[i].type ){
         throw new Error(`result[${i}].typeがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);

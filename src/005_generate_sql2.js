@@ -38,6 +38,7 @@ import {
   clearCache,
   createColumn,
   deleteTable,
+  getDataType,
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
@@ -80,6 +81,6 @@ import {
 } from "./006_convert_sql_data_test.js";
 
 // SQLクエリを生成
-export async function generateSQLwithoutDuplication_core( tableId, countTableIdList ){
+export async function generateSQLwithoutDuplication_core( tableId, selectData, joinData, whereData, orderData ){
   throw "この関数は未実装です。";
 }

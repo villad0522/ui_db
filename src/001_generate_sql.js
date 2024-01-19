@@ -38,6 +38,7 @@ import {
   clearCache,
   createColumn,
   deleteTable,
+  getDataType,
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
@@ -98,7 +99,7 @@ export async function generateSQL_core( tableId, displayColumns, conditions, sor
   //     },
   //     {
   //       displayColumnId: "d66",
-  //       type: "COUNT",           // RAW, MAX, SUM, COUNT のいずれか
+  //       type: "COUNT",           // 集合関数。RAW, SUM、MAX、MIN、AVG、COUNT のいずれか。関数を使用しない場合はRAWを代入する。
   //       path: "c89 > c67 > main",
   //       as: "○○の件数",
   //     },
@@ -144,11 +145,12 @@ export async function generateSQL_core( tableId, displayColumns, conditions, sor
   //
   if( isDuplication === true ){
     // 重複しているテーブルを結合する場合、「テーブル名 AS 別名」と記入する必要がある。
-    return await generateSQLwithDuplication( tableId, countTableIdList );
+    return await generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData );
   }
   else{
     // テーブルが重複していない場合
-    return await generateSQLwithoutDuplication( tableId, countTableIdList );
+    return await generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData );
+    return await generateSQLwithoutDuplication( tableId, selectData, joinData, whereData, orderData );
   }
 }
 

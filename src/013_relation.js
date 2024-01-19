@@ -52,6 +52,7 @@ import {
   listDataTypes,
   checkField,
   checkRecord,
+  getDataType,
 } from "./024_data_type_test.js";
 import {
   disableTable,
@@ -151,16 +152,26 @@ export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSiz
   const { columns, total } = await listColumnsForGUI( tableId, pageNumber, onePageMaxSize, isTrash );
   //
   // 参照先が有効なカラムだけに絞り込む
-  const columns2 = Array(columns).filter( ({id}) => {
-    if( await checkTableEnabled(parentTableId) === false ){
-      return false; // もし参照先が無効なテーブルだったら
+  const columns2 = Array(columns).filter( ({ id, name, dataType }) => {
+    const parentTableId = cacheData1[id];
+    if(!parentTableId){
+      // もし外部キーではなかったら、一覧に残す
+      return true;
     }
+    if( await checkTableEnabled(parentTableId) === false ){
+      // もし参照先が無効なテーブルだったら、一覧から取り除く
+      return false;
+    }
+      // もし参照先が無効なテーブルだったら、一覧に残す
     return true;
   });
   //
   // 下層から得たカラムの一覧に、「parentTableId」を付け加えて上層に提供する
-  for (const { id } of columns2) {
-    columns2.parentTableId = cacheData1( id );
+  for (const { id, name, dataType } of columns2) {
+    columns2.parentTableId = cacheData1( id ) ?? null;
+    if(cacheData1[id]){
+      columns2.dataType = "POINTER";
+    }
   }
   return {
     "columns": columns2,
@@ -205,16 +216,26 @@ export async function listColumnsAll_core( tableId ){
   const columns = await listColumnsAll( tableId );
   //
   // 参照先が有効なカラムだけに絞り込む
-  const columns2 = Array(columns).filter( ({id}) => {
-    if( await checkTableEnabled(parentTableId) === false ){
-      return false; // もし参照先が無効なテーブルだったら
+  const columns2 = Array(columns).filter( ({ id, name, dataType }) => {
+    const parentTableId = cacheData1[id];
+    if(!parentTableId){
+      // もし外部キーではなかったら、一覧に残す
+      return true;
     }
+    if( await checkTableEnabled(parentTableId) === false ){
+      // もし参照先が無効なテーブルだったら、一覧から取り除く
+      return false;
+    }
+      // もし参照先が無効なテーブルだったら、一覧に残す
     return true;
   });
   //
   // 下層から得たカラムの一覧に、「parentTableId」を付け加えて上層に提供する
-  for (const { id } of columns2) {
-    columns2.parentTableId = cacheData1( id );
+  for (const { id, name, dataType } of columns2) {
+    columns2.parentTableId = cacheData1( id ) ?? null;
+    if(cacheData1[id]){
+      columns2.dataType = "POINTER";
+    }
   }
   return columns2;
 }
@@ -222,4 +243,16 @@ export async function listColumnsAll_core( tableId ){
 // 参照先のテーブルIDを取得する
 export async function getParentTableId_core( columnId ){
   return cacheData1[columnId];
+}
+
+
+
+// データ型を取得
+export async function getDataType_core( columnId ){
+  if(cacheData1[columnId]){
+    return "POINTER";
+  }
+  else{
+    return await getDataType( columnId );
+  }
 }

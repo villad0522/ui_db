@@ -46,7 +46,7 @@ export async function startUp_core( localUrl, isDebug ){
 }
 
 //【グローバル変数】データ型を保存するキャッシュ
-const cacheData = {
+let cacheData = {
     // データの例
     //  "t1":{
     //    "c5": "TEXT",
@@ -59,6 +59,15 @@ const cacheData = {
     //    "c78": "BOOL"
     //  }
 };
+let cacheData2 = {
+    // データの例
+    //    "c5": "TEXT",
+    //    "c22": "INTEGER",
+    //    "c13": "BOOL"
+    //    "c1": "TEXT",
+    //    "c9": "INTEGER",
+    //    "c78": "BOOL"
+};
 
 //【サブ関数】メモリに再読み込み
 async function _reload() {
@@ -70,11 +79,14 @@ async function _reload() {
         FROM data_types;`,
         {},
     );
+    cacheData = {};
+    cacheData2 = {};
     for( const { columnId, tableId, dataType } of columns ){
         if(!cacheData[tableId]){
             cacheData[tableId] = {};
         }
         cacheData[tableId][columnId] = dataType;
+        cacheData2[columnId] = dataType;
     }
 }
 
@@ -377,4 +389,11 @@ export async function deleteTable_core( tableId ){
     );
     await _reload();    // メモリに再読み込み
     return "テーブルを削除しました。";
+}
+
+
+
+// データ型を取得
+export async function getDataType_core( columnId ){
+    return cacheData2[columnId];
 }

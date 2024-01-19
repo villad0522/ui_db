@@ -38,6 +38,7 @@ import {
   clearCache,
   createColumn,
   deleteTable,
+  getDataType,
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
@@ -176,7 +177,7 @@ export async function getSelectData_core( displayColumns, joinIdMap ){
   // 戻り値の例
   //  [
   //    {
-  //      type: "COUNT",    // RAW, MAX, SUM, COUNT のいずれか
+  //      type: "COUNT",    // RAW, SUM、MAX、MIN、AVG、COUNT のいずれか
   //      joinId: "j2",
   //      columnName: "実際の列の名前",
   //      as: "表示する際の列の名前"
@@ -255,6 +256,7 @@ export async function getWhereData_core( displayColumns, conditions, joinIdMap )
       joinId = "main";
     }
     whereData.push({
+      displayColumnId: displayColumnId,
       joinId: joinId,
       columnName: await pathToColumnId( path ),
       type: type,
@@ -265,6 +267,7 @@ export async function getWhereData_core( displayColumns, conditions, joinIdMap )
   // 戻り値の例
   //  [
   //    {
+  //      displayColumnId: "d3",
   //      joinId: "j2",
   //      columnName: "カラム名",
   //      type: "=",

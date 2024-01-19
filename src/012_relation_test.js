@@ -6,6 +6,7 @@ import {
   deleteTable_core,  // 不可逆的にテーブルを削除
   listColumnsAll_core,  // カラムの一覧を取得
   getParentTableId_core,  // 参照先のテーブルIDを取得する
+  getDataType_core,  // データ型を取得
 } from "./013_relation.js";
 
 
@@ -478,6 +479,52 @@ export async function getParentTableId( columnId ){
     }
     else{
       throw new Error(`resultが文字列ではありません。\nレイヤー : relation\n関数 : getParentTableId`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「getDataType_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function getDataType( columnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof columnId !== "string" ){
+    if( !columnId ){
+      throw new Error(`columnIdがNULLです。\nレイヤー : relation\n関数 : getDataType`);
+    }
+    else{
+      throw new Error(`columnIdが文字列ではありません。\nレイヤー : relation\n関数 : getDataType`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await getDataType_core( columnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : relation\n関数 : getDataType`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : relation\n関数 : getDataType`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : relation\n関数 : getDataType`);
     }
   }
   //

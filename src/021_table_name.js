@@ -33,6 +33,7 @@ import {
   checkRecord,
   createTable,
   deleteTable,
+  getDataType,
 } from "./024_data_type_test.js";
 
 // プログラム起動

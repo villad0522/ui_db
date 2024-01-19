@@ -6,7 +6,7 @@ import {
 //#######################################################################################
 // 関数「generateSQLwithDuplication_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function generateSQLwithDuplication( tableId, selectData, joinData, whereData ){
+export async function generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
@@ -142,6 +142,14 @@ export async function generateSQLwithDuplication( tableId, selectData, joinData,
         throw new Error(`whereData[${i}]がオブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
+    if( typeof whereData[i].displayColumnId !== "string" ){
+      if( !whereData[i].displayColumnId ){
+        throw new Error(`whereData[${i}].displayColumnIdがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`whereData[${i}].displayColumnIdが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
     if( typeof whereData[i].type !== "string" ){
       if( !whereData[i].type ){
         throw new Error(`whereData[${i}].typeがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
@@ -175,12 +183,62 @@ export async function generateSQLwithDuplication( tableId, selectData, joinData,
       }
     }
   }
+  if( !Array.isArray(orderData) ){
+    if( !orderData ){
+      throw new Error(`orderDataがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+    }
+    else{
+      throw new Error(`orderDataが配列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+    }
+  }
+  for( let i=0; i<orderData.length; i++ ){
+    if( typeof orderData[i] !== "object" ){
+      if( !orderData[i] ){
+        throw new Error(`orderData[${i}]がNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`orderData[${i}]がオブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof orderData[i].type !== "string" ){
+      if( !orderData[i].type ){
+        throw new Error(`orderData[${i}].typeがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`orderData[${i}].typeが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof orderData[i].joinId !== "string" ){
+      if( !orderData[i].joinId ){
+        throw new Error(`orderData[${i}].joinIdがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`orderData[${i}].joinIdが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof orderData[i].columnName !== "string" ){
+      if( !orderData[i].columnName ){
+        throw new Error(`orderData[${i}].columnNameがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`orderData[${i}].columnNameが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+    if( typeof orderData[i].as !== "string" ){
+      if( !orderData[i].as ){
+        throw new Error(`orderData[${i}].asがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+      else{
+        throw new Error(`orderData[${i}].asが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      }
+    }
+  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await generateSQLwithDuplication_core( tableId, selectData, joinData, whereData );
+    result = await generateSQLwithDuplication_core( tableId, selectData, joinData, whereData, orderData );
   }
   catch(error){
     if( typeof error === "string" ){
