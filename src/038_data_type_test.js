@@ -54,7 +54,7 @@ export async function test038() {
     }
     // 意図的に埋め込んだ全てのバグを、正常に検出できた
     setBugMode(0);    // 意図的なバグの発生を止める
-    console.log(`レイヤー「data_type」からバグは見つかりませんでした。また、意図的に${ i }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
+    console.log(`レイヤー「data_type」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
     return;
 }
 
@@ -62,4 +62,9 @@ export async function test038() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+    await startUp("http://localhost:3000/", true);
+    await createTable("t67");
+    await createColumn( "t67", "c9", "REAL" );
+    await close();
+
 }

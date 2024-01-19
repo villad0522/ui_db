@@ -33,6 +33,11 @@ export function setBugMode( mode ){
 }
 
 
+
+
+
+
+
 // テーブルに保存できるデータ型の一覧
 // ・INTEGER (SQLiteでサポート)
 // ・REAL (SQLiteでサポート)

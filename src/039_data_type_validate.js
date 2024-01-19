@@ -138,28 +138,12 @@ export async function createColumn( tableId, columnId, dataType ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( typeof result !== "object" ){
+  if( typeof result !== "string" ){
     if( !result ){
       throw new Error(`resultがNULLです。\nレイヤー : data_type\n関数 : createColumn`);
     }
     else{
-      throw new Error(`resultがオブジェクトではありません。\nレイヤー : data_type\n関数 : createColumn`);
-    }
-  }
-  if( typeof result.columnId !== "string" ){
-    if( !result.columnId ){
-      throw new Error(`result.columnIdがNULLです。\nレイヤー : data_type\n関数 : createColumn`);
-    }
-    else{
-      throw new Error(`result.columnIdが文字列ではありません。\nレイヤー : data_type\n関数 : createColumn`);
-    }
-  }
-  if( typeof result.message !== "string" ){
-    if( !result.message ){
-      throw new Error(`result.messageがNULLです。\nレイヤー : data_type\n関数 : createColumn`);
-    }
-    else{
-      throw new Error(`result.messageが文字列ではありません。\nレイヤー : data_type\n関数 : createColumn`);
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_type\n関数 : createColumn`);
     }
   }
   //
