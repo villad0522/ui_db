@@ -73,4 +73,34 @@ export async function test032() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+    await startUp("http://localhost:3000/", true);
+    await createTable("クラス一覧");
+    const {tableId} = await createTable("名簿");
+    await createColumn( tableId, "c1", "INTEGER" );
+    await createColumn( tableId, "c2", "REAL" );
+    await createColumn( tableId, "c3", "TEXT" );
+    await createColumn( tableId, "c4", "BOOL" );
+    await checkTableEnabled( tableId );
+    await disableTable( tableId );
+    await enableTable( tableId );
+    await checkTableEnabled( tableId );
+    await clearCache();
+    await updateTableName({
+        "id": tables,
+        "name": "変更後のテーブル名",
+    });
+    const { tables } = await listTables( 1, 100, false );
+    if(tables.length!==2){
+        throw "テーブルの個数が想定外です";
+    }
+    const matrix = await runSqlReadOnly(`SELECT * FROM 変更後のテーブル名`,{});
+    await runSqlWriteOnly(`SELECT * FROM 変更後のテーブル名`,{});
+    await listDataTypes( tableId );
+    const tableName = await getTableName( tableId );
+    if(tableName!=="変更後のテーブル名"){
+        throw "想定外のテーブル名です";
+    }
+    await deleteTable(tableId);
+    await close();
+
 }

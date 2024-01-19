@@ -48,7 +48,12 @@ export async function test044() {
 async function _test(){
     
     await startUp("http://localhost:3000/", true);
+    await getDebugMode();
+    await startTransaction();
+    await endTransaction();
     await close();
+    //
+    //
     await startUp("http://localhost:3000/", true);
     //
     // CSVファイルに書き込むデータ

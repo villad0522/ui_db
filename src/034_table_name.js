@@ -48,6 +48,10 @@ export function setBugMode( mode ){
 }
 
 
+
+
+
+
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）

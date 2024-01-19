@@ -266,12 +266,12 @@ export async function createRecord( tableId, recordData ){
       throw new Error(`resultがオブジェクトではありません。\nレイヤー : data_type\n関数 : createRecord`);
     }
   }
-  if( typeof result.columnId !== "string" ){
-    if( !result.columnId ){
-      throw new Error(`result.columnIdがNULLです。\nレイヤー : data_type\n関数 : createRecord`);
+  if( typeof result.recordId !== "string" ){
+    if( !result.recordId ){
+      throw new Error(`result.recordIdがNULLです。\nレイヤー : data_type\n関数 : createRecord`);
     }
     else{
-      throw new Error(`result.columnIdが文字列ではありません。\nレイヤー : data_type\n関数 : createRecord`);
+      throw new Error(`result.recordIdが文字列ではありません。\nレイヤー : data_type\n関数 : createRecord`);
     }
   }
   if( typeof result.message !== "string" ){
