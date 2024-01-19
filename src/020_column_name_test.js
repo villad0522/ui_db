@@ -1,4 +1,5 @@
 import {
+  setBugMode,
   startUp_core,  // プログラム起動
   clearCache_core,  // インメモリキャッシュを削除する
   createColumn_core,  // カラムを作成
@@ -14,6 +15,41 @@ import {
   listColumnsAll_core,  // カラムの一覧を取得（高速）
   getColumnName_core,  // IDからカラム名を取得
 } from "./021_column_name.js";
+
+
+    
+//#######################################################################################
+// テストを実行する関数
+
+async function _test(){
+    
+}
+
+export async function test020() {
+    setBugMode(0);    // バグを混入させない（通常動作）
+    await _test();  // テストを実行（意図的にバグを混入させない）
+    let i;
+    for ( i = 1; i <= 13; i++ ) {
+        setBugMode(i);      // 意図的にバグを混入させる
+        try {
+            await _test();  // 意図的にバグを混入させてテストを実行
+        }
+        catch (err) {
+            continue;   // 意図的に埋め込んだバグを正常に検出できた場合
+        }
+        // 意図的に埋め込んだバグを検出できなかった場合
+        setBugMode(0);    // 意図的なバグの発生を止める
+        return {
+            userMessage: `レイヤー「column_name」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。`,
+        };
+    }
+    // 意図的に埋め込んだ全てのバグを、正常に検出できた
+    setBugMode(0);    // 意図的なバグの発生を止める
+    return {
+        userMessage: `レイヤー「column_name」からバグは見つかりませんでした。また、意図的に${ i }件のバグを発生させたところ、全てのバグを検知できました。`,
+    };
+}
+
 
 
 //#######################################################################################

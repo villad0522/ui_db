@@ -13,12 +13,15 @@ import {
   checkColumnEnabled,
   listColumnsAll,
   getColumnName,
+  test020,
 } from "./020_column_name_test.js";
 import {
   getLocalIp,
+  test034,
 } from "./034_ip_address_test.js";
 import {
   getPath,
+  test032,
 } from "./032_directory_test.js";
 import {
   getDebugMode,
@@ -26,15 +29,18 @@ import {
   endTransaction,
   getCsvProgress,
   close,
+  test030,
 } from "./030_connect_database_test.js";
 import {
   createRecordsFromCsv,
   createRecord,
   updateRecord,
   delete_table,
+  test024,
 } from "./024_search_text_test.js";
 import {
   getPrimaryKey,
+  test028,
 } from "./028_layerName_test.js";
 import {
   createColumn,
@@ -42,12 +48,14 @@ import {
   updateTableName,
   updateColumnName,
   reserveWord,
+  test018,
 } from "./018_reserved_word_test.js";
 import {
   listDataTypes,
   checkField,
   checkRecord,
   getDataType,
+  test026,
 } from "./026_data_type_test.js";
 import {
   disableTable,
@@ -55,7 +63,20 @@ import {
   listTables,
   checkTableEnabled,
   getTableName,
+  test022,
 } from "./022_table_name_test.js";
+
+
+//【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
+let bugMode = 0;
+//           0 : バグを混入させない（通常動作）
+//     1,2,3.. : 意図的にバグを混入させる
+
+
+export function setBugMode( mode ){
+    bugMode = mode;
+}
+
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
@@ -114,6 +135,7 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
   const { tables, total } = await listTables( pageNumber, onePageMaxSize, isTrash );
   // 下層から得たテーブルの一覧に、「titleColumnId」を付け加えて上層に提供する
   for (const { id } of tables) {
+    if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
     tables.titleColumnId = cacheData[id];
   }
   return {

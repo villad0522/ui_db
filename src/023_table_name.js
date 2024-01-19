@@ -7,12 +7,15 @@ import {
   createRecord,
   updateRecord,
   delete_table,
+  test024,
 } from "./024_search_text_test.js";
 import {
   getLocalIp,
+  test034,
 } from "./034_ip_address_test.js";
 import {
   getPath,
+  test032,
 } from "./032_directory_test.js";
 import {
   getDebugMode,
@@ -21,9 +24,11 @@ import {
   runSqlReadOnly,
   getCsvProgress,
   close,
+  test030,
 } from "./030_connect_database_test.js";
 import {
   getPrimaryKey,
+  test028,
 } from "./028_layerName_test.js";
 import {
   clearCache,
@@ -34,7 +39,20 @@ import {
   createTable,
   deleteTable,
   getDataType,
+  test026,
 } from "./026_data_type_test.js";
+
+
+//【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
+let bugMode = 0;
+//           0 : バグを混入させない（通常動作）
+//     1,2,3.. : 意図的にバグを混入させる
+
+
+export function setBugMode( mode ){
+    bugMode = mode;
+}
+
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
@@ -177,6 +195,7 @@ export async function enableTable_core( tableId ){
         },
     );
     if(tables.length>=1){
+        if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
         const tableName = tables[0]["tableName"];
         throw `テーブル名「${tableName}」は重複しています。`;
     }
@@ -204,6 +223,7 @@ export async function updateTableName_core( tables ){
     //     "t8": "テーブル名２"
     // };
     for (const { id, name } of tables) {
+        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
         obj[id] = name;
     }
     // この時点で、連想配列「obj」には、全てのテーブル一覧が格納されている。
@@ -213,6 +233,7 @@ export async function updateTableName_core( tables ){
     //     "t8": "テーブル名２"
     // };
     for (const { id, name } of tables) {
+        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
         const newObj = structuredClone(obj);    // ディープコピー
         //
         // 自分自身を除いた、他のテーブルと名前が被っていないか確認する
@@ -226,6 +247,7 @@ export async function updateTableName_core( tables ){
     //==========================================================
     // テーブル名を変更する
     for (const { id, name } of tables) {
+        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
         let tableNumber = id.replace("t","");
         if(isNaN(tableNumber)){
             throw "指定されたテーブルIDは無効です。";
@@ -250,6 +272,7 @@ export async function updateTableName_core( tables ){
 // テーブルの一覧を取得(重)
 export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
     if (!(pageNumber >= 1)) {
+        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
         pageNumber = 1;
     }
     const [{ "COUNT(*)": total }] = await runSqlReadOnly(
@@ -264,6 +287,7 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
     );
     let offset = onePageMaxSize * (pageNumber - 1);
     if( offset >= total ){
+        if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
         offset = total;
     }
     // 「sqlite_master」と結合させることで、実際に存在するテーブルのみに絞り込む
@@ -296,6 +320,7 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
 export async function runSqlReadOnly_core( sql, params ){
     //入力パラメータに含まれるテーブル名をIDに置き換える
     for( const tableId in cacheData1 ){
+        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
         const tableName = cacheData1[tableId];
         sql = sql.replaceAll( tableName, tableId );
     }
@@ -307,6 +332,7 @@ export async function runSqlReadOnly_core( sql, params ){
 export async function runSqlWriteOnly_core( sql, params ){
     //入力パラメータに含まれるテーブル名をIDに置き換える
     for( const tableId in cacheData1 ){
+        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
         const tableName = cacheData1[tableId];
         sql = sql.replaceAll( tableName, tableId );
     }

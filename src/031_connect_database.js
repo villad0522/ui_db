@@ -3,10 +3,24 @@
 import {
   startUp,
   getPath,
+  test032,
 } from "./032_directory_test.js";
 import {
   getLocalIp,
+  test034,
 } from "./034_ip_address_test.js";
+
+
+//【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
+let bugMode = 0;
+//           0 : バグを混入させない（通常動作）
+//     1,2,3.. : 意図的にバグを混入させる
+
+
+export function setBugMode( mode ){
+    bugMode = mode;
+}
+
 
 import path from 'path';
 import sqlite3 from 'sqlite3'
@@ -33,9 +47,11 @@ let isTransaction = false;
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
   if (isTransaction === true) {
+    if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
     await db.run("COMMIT TRANSACTION;");
   }
   if (isConnect === true) {
+    if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     await db.close();
     isConnect = false;
   }
@@ -53,8 +69,10 @@ export async function startUp_core( localUrl, isDebug ){
   //
   let filePath;
   if (isDebug) {
+    if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
     // デバッグモードの場合
     if (fs.existsSync(mainFilePath)) {
+      if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
       // メインデータを汚さないようにコピーする
       await fs.promises.copyFile(mainFilePath, practiceFilePath);
     }
@@ -62,6 +80,7 @@ export async function startUp_core( localUrl, isDebug ){
     filePath = practiceFilePath;
   }
   else {
+    if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
     // 通常動作の場合、メインデータを直接操作する
     filePath = mainFilePath;
   }
@@ -75,6 +94,7 @@ export async function startUp_core( localUrl, isDebug ){
   db.configure('busyTimeout', 3000);  // 3 seconds
   await db.exec("PRAGMA foreign_keys = 1;"); // 外部キー制約を有効にする
   if (isTransaction === true) {
+    if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
     await db.run("BEGIN TRANSACTION;");
   }
 }
@@ -99,6 +119,7 @@ export async function endTransaction_core(  ){
 // SQLクエリ実行（読み取り専用）
 export async function runSqlReadOnly_core( sql, params ){
   if (!params) {
+    if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
     // パラメータなし
     try {
       return await db.all(sql);
@@ -108,6 +129,7 @@ export async function runSqlReadOnly_core( sql, params ){
     }
   }
   else {
+    if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     // パラメータあり
     try {
       return await db.all(sql, params);
@@ -121,6 +143,7 @@ export async function runSqlReadOnly_core( sql, params ){
 // SQLクエリ実行（書き込み専用）
 export async function runSqlWriteOnly_core( sql, params ){
   if (!params) {
+    if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
     // パラメータなし
     try {
       return await db.run(sql);
@@ -130,6 +153,7 @@ export async function runSqlWriteOnly_core( sql, params ){
     }
   }
   else {
+    if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
     // パラメータあり
     try {
       return await db.run(sql, params);
@@ -150,6 +174,7 @@ export async function createRecordsFromCsv_core( tableId, filePath, columnSize )
   const fileStream = fs.createReadStream(filePath);
   const headers = [];
   for (let i = 0; i < columnSize; i++) {
+      if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
       headers.push(":" + String(i));
   }
   // 配列「headers」には :0, :1, :2... が格納されているはず
@@ -178,6 +203,7 @@ export async function createRecordsFromCsv_core( tableId, filePath, columnSize )
       }
       allCount++;
       if (allCount % 10000 === 0) {
+        if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
         progressCSV = Math.floor(allCount / csvSize * 100);
         console.log(`${progressCSV}%`);
         //
@@ -204,6 +230,7 @@ export async function getCsvProgress_core(  ){
 // バックエンドプログラム終了
 export async function close_core(  ){
   if (isConnect === true) {
+    if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
     await db.close();
     isConnect = false;
   }

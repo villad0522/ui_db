@@ -10,16 +10,32 @@ import {
   createRecordsFromCsv,
   getCsvProgress,
   close,
+  test030,
 } from "./030_connect_database_test.js";
 import {
   getLocalIp,
+  test034,
 } from "./034_ip_address_test.js";
 import {
   getPath,
+  test032,
 } from "./032_directory_test.js";
 import {
   getPrimaryKey,
+  test028,
 } from "./028_layerName_test.js";
+
+
+//【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
+let bugMode = 0;
+//           0 : バグを混入させない（通常動作）
+//     1,2,3.. : 意図的にバグを混入させる
+
+
+export function setBugMode( mode ){
+    bugMode = mode;
+}
+
 
 // テーブルに保存できるデータ型の一覧
 // ・INTEGER (SQLiteでサポート)
@@ -176,6 +192,7 @@ export async function createRecord_core( tableId, recordData ){
     //
     // 配列「columnIdList」が本当に存在するカラムなのかを確認（インジェクション攻撃対策）
     for( const columnId of columnIdList ){
+        if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
         if( !dataTypes[columnId] ){
             throw "指定されたカラムは存在しません。";
         }
@@ -184,6 +201,7 @@ export async function createRecord_core( tableId, recordData ){
     // キーの先頭に「:」を追加する
     const newRecordData = {};
     for( const columnId in recordData ){
+        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
         newRecordData[":"+columnId] = recordData[columnId];
     }
     //
@@ -250,6 +268,7 @@ export async function updateRecord_core( tableId, recordId, recordData ){
     //
     const words = [];
     for( const columnId in recordData ){
+        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
         // 配列「columnId」が本当に存在するカラムなのかを確認（インジェクション攻撃対策）
         if( !dataTypes[columnId] ){
             throw "指定されたカラムは存在しません。";
@@ -282,6 +301,7 @@ export async function checkField_core( tableId, columnId, value ){
         throw `カラムIDに無効な文字列「${columnId}」が指定されました。`;
     }
     if( (value===null) || (value===undefined) ){
+        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
         return {
             isOK: true,
             message: "空欄です。",
@@ -294,6 +314,7 @@ export async function checkField_core( tableId, columnId, value ){
     switch( dataType ){
         case "INTEGER":
             if( typeof value !== "number" || isNaN(value) ){
+                if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "数値ではありません。",
@@ -305,6 +326,7 @@ export async function checkField_core( tableId, columnId, value ){
             break;
         case "REAL":
             if( typeof value !== "number" || isNaN(value) ){
+                if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "数値ではありません。",
@@ -313,6 +335,7 @@ export async function checkField_core( tableId, columnId, value ){
             break;
         case "TEXT":
             if( typeof value !== "string" ){
+                if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "文字列ではありません。",
@@ -320,6 +343,7 @@ export async function checkField_core( tableId, columnId, value ){
             }
         case "BOOL":
             if( typeof value !== "boolean" ){
+                if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "ブール値ではありません。",
@@ -328,6 +352,7 @@ export async function checkField_core( tableId, columnId, value ){
             break;
         case "FILE":
             if (!value instanceof Uint8Array) {
+                if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "サポートされているファイル形式（Uint8Array）ではありません。",
@@ -344,8 +369,10 @@ export async function checkField_core( tableId, columnId, value ){
 // レコードを検証
 export async function checkRecord_core( tableId, recordData ){
     for( const columnId in recordData){
+        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
         const {isOK,message} = await checkField( tableId, columnId, recordData[columnId] );
         if(isOK===false){
+            if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
             return {
                 isOK: false,
                 message: message,

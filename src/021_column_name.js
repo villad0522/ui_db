@@ -13,12 +13,15 @@ import {
   listTables,
   checkTableEnabled,
   getTableName,
+  test022,
 } from "./022_table_name_test.js";
 import {
   getLocalIp,
+  test034,
 } from "./034_ip_address_test.js";
 import {
   getPath,
+  test032,
 } from "./032_directory_test.js";
 import {
   getDebugMode,
@@ -26,15 +29,18 @@ import {
   endTransaction,
   getCsvProgress,
   close,
+  test030,
 } from "./030_connect_database_test.js";
 import {
   createRecordsFromCsv,
   createRecord,
   updateRecord,
   delete_table,
+  test024,
 } from "./024_search_text_test.js";
 import {
   getPrimaryKey,
+  test028,
 } from "./028_layerName_test.js";
 import {
   createColumn,
@@ -42,7 +48,20 @@ import {
   checkField,
   checkRecord,
   getDataType,
+  test026,
 } from "./026_data_type_test.js";
+
+
+//【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
+let bugMode = 0;
+//           0 : バグを混入させない（通常動作）
+//     1,2,3.. : 意図的にバグを混入させる
+
+
+export function setBugMode( mode ){
+    bugMode = mode;
+}
+
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
@@ -119,9 +138,11 @@ export async function createColumn_core( tableId, columnName, dataType ){
     //   例： 氏名 => t1_氏名
     let columnName2;
     if( columnName.startsWith( tableId + "_" ) ){
+        if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
         columnName2 = columnName;   // 既に加えられている場合
     }
     else{
+        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
         columnName2 = tableId + "_" + columnName;
     }
     //
@@ -228,6 +249,7 @@ export async function enableColumn_core( columnId ){
         },
     );
     if(columns.length>=1){
+        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
         const columnName = columns[0]["columnName"];
         throw `カラム名「${columnName}」は重複しています。`;
     }
@@ -258,10 +280,13 @@ export async function updateColumnName_core( columns ){
     // カラム名の先頭にテーブルIDを付け加える（「t2」など）
     const columns2  = {};
     for (const { id, name } of columns) {
+        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
         if( name.startsWith( tableId + "_" ) ){
+            if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
             columns2[id] = name;   // 既に加えられている場合
         }
         else{
+            if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
             columns2[id] = tableId + "_" + name;
         }
     }
@@ -280,6 +305,7 @@ export async function updateColumnName_core( columns ){
     //      "c8": "t1_カラム名２"
     // };
     for (const id in columns2 ) {
+        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
         const name = columns2[id];
         const newObj = structuredClone(obj);    // ディープコピー
         //
@@ -294,6 +320,7 @@ export async function updateColumnName_core( columns ){
     //==========================================================
     // カラム名を変更する
     for (const id in columns2 ) {
+        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
         let columnNumber = id.replace("c","");
         if(isNaN(columnNumber)){
             throw "指定されたカラムIDは無効です。";
@@ -317,6 +344,7 @@ export async function updateColumnName_core( columns ){
 // カラムの一覧を取得(GUI)
 export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSize, isTrash ){
     if (pageNumber <= 0) {
+        if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
         pageNumber = 1;
     }
     const [{ "COUNT(*)": total }] = await runSqlReadOnly(
@@ -331,6 +359,7 @@ export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSiz
     );
     let offset = onePageMaxSize * (pageNumber - 1);
     if( offset >= total ){
+        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
         offset = total;
     }
     const columns = await runSqlReadOnly(
@@ -353,6 +382,7 @@ export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSiz
     );
     const dataTypes = await listDataTypes( tableId );  // 下層の関数を実行する
     for (const { id, name } of columns) {
+        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
         columns.dataType = dataTypes[id];
     }
     return {
@@ -365,6 +395,7 @@ export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSiz
 export async function runSqlReadOnly_core( sql, params ){
     //入力パラメータに含まれるカラム名をIDに置き換える
     for( const columnId in cacheData1 ){
+        if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
         const columnName = cacheData1[columnId];
         sql = sql.replaceAll( columnName, columnId );
     }
@@ -375,6 +406,7 @@ export async function runSqlReadOnly_core( sql, params ){
 export async function runSqlWriteOnly_core( sql, params ){
     //入力パラメータに含まれるカラム名をIDに置き換える
     for( const columnId in cacheData1 ){
+        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
         const columnName = cacheData1[columnId];
         sql = sql.replaceAll( columnName, columnId );
     }

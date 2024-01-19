@@ -12,12 +12,15 @@ import {
   createTable,
   deleteTable,
   getDataType,
+  test026,
 } from "./026_data_type_test.js";
 import {
   getLocalIp,
+  test034,
 } from "./034_ip_address_test.js";
 import {
   getPath,
+  test032,
 } from "./032_directory_test.js";
 import {
   getDebugMode,
@@ -28,10 +31,24 @@ import {
   createRecordsFromCsv,
   getCsvProgress,
   close,
+  test030,
 } from "./030_connect_database_test.js";
 import {
   getPrimaryKey,
+  test028,
 } from "./028_layerName_test.js";
+
+
+//【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
+let bugMode = 0;
+//           0 : バグを混入させない（通常動作）
+//     1,2,3.. : 意図的にバグを混入させる
+
+
+export function setBugMode( mode ){
+    bugMode = mode;
+}
+
 
 
 // プログラム起動

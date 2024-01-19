@@ -2,12 +2,15 @@
 //
 import {
   startUp,
+  test012,
 } from "./012_sort_test.js";
 import {
   getLocalIp,
+  test034,
 } from "./034_ip_address_test.js";
 import {
   getPath,
+  test032,
 } from "./032_directory_test.js";
 import {
   getDebugMode,
@@ -15,6 +18,7 @@ import {
   endTransaction,
   getCsvProgress,
   close,
+  test030,
 } from "./030_connect_database_test.js";
 import {
   runSqlReadOnly,
@@ -24,15 +28,18 @@ import {
   getTableId,
   checkColumnEnabled,
   getColumnName,
+  test020,
 } from "./020_column_name_test.js";
 import {
   createRecordsFromCsv,
   createRecord,
   updateRecord,
   delete_table,
+  test024,
 } from "./024_search_text_test.js";
 import {
   getPrimaryKey,
+  test028,
 } from "./028_layerName_test.js";
 import {
   clearCache,
@@ -42,35 +49,53 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
+  test014,
 } from "./014_relation_test.js";
 import {
   listDataTypes,
   checkField,
   checkRecord,
+  test026,
 } from "./026_data_type_test.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
+  test018,
 } from "./018_reserved_word_test.js";
 import {
   disableTable,
   enableTable,
   checkTableEnabled,
   getTableName,
+  test022,
 } from "./022_table_name_test.js";
 import {
   listTables,
   setTitleColumn,
   getTitleColumnId,
+  test016,
 } from "./016_record_title_test.js";
 import {
   getPathLength,
   slicePath,
   checkPath,
   pathToColumnId,
+  test010,
 } from "./010_columnPath_test.js";
+
+
+//【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
+let bugMode = 0;
+//           0 : バグを混入させない（通常動作）
+//     1,2,3.. : 意図的にバグを混入させる
+
+
+export function setBugMode( mode ){
+    bugMode = mode;
+}
+
 
 
 // joinIdを決定
@@ -84,17 +109,23 @@ export async function getJoinIdMap_core( displayColumns ){
   //
   const foreignKeys = new Set();
   for( const { displayColumnId, type, path, as } of displayColumns ){
+    if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
     const pathLength = await getPathLength( path );
     if( type==="RAW" ){
+      if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
       if(pathLength>=2){
+        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
         for( let i = 1; i < pathLength; i++ ){
+          if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
           const path2 = await slicePath( path, i );
           foreignKeys.add(path2);
         }
       }
     }
     else{
+      if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
       for( let i = 2; i < pathLength; i++ ){
+        if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
         const path2 = await slicePath( path, i );
         foreignKeys.add(path2);
       }
@@ -111,6 +142,7 @@ export async function getJoinIdMap_core( displayColumns ){
   // ];
   const joinMap = {};
   for( let i=0; i<array.length; i++ ){
+    if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
     joinMap[array[i]] =  "j" + i;
   }
   // 例
@@ -131,14 +163,17 @@ export async function checkTableDuplication_core( tableId, joinIdMap ){
   const tables = new Set();
   tables.add(tableId);
   for( const path in joinIdMap ){
+    if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     const columnId = await pathToColumnId( path );
     const parentTableId = await getParentTableId( columnId );
     if( !parentTableId ){
+      if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
       // 通常のカラムの場合
       continue;
     }
     // 外部キーの場合
     if( tables.has(parentTableId) ){
+      if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
       // 重複あり
       return true;
     }
@@ -155,14 +190,17 @@ export async function checkTableDuplication_core( tableId, joinIdMap ){
 export async function getSelectData_core( displayColumns, joinIdMap ){
   const selectData = [];
   for( const { type, path, as } of displayColumns ){
+    if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
     const pathLength = await getPathLength( path );
     let joinId;
     if( pathLength >= 2 ){
+      if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
       const path2 = await slicePath( path, pathLength-1 );
       joinId = joinIdMap[path2];
       if(!joinId) throw "表別名(joinId)が未定義です";
     }
     else{
+      if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
       joinId = "main";
     }
     const columnId = await pathToColumnId( path );
@@ -191,14 +229,17 @@ export async function getSelectData_core( displayColumns, joinIdMap ){
 export async function getJoinData_core( joinIdMap ){
   const joinData = [];
   for( const path in joinIdMap ){
+    if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
     const pathLength = await getPathLength( path );
     let fromJoinId;
     if( pathLength >= 2 ){
+      if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
       const path2 = await slicePath( path, pathLength-1 );
       fromJoinId = joinIdMap[path2];
       if(!fromJoinId) throw "表別名(fromJoinId)が未定義です";
     }
     else{
+      if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
       fromJoinId = "main";
     }
     const toJoinId = joinIdMap[path];
@@ -239,20 +280,24 @@ export async function getWhereData_core( displayColumns, conditions, joinIdMap )
     //  "d99": "c45 > c56 > main",
   };
   for( const { displayColumnId, type, path, as } of displayColumns ){
+    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     pathMap[displayColumnId] = path;
   }
   //-------------------------------------------------------
   const whereData = [];
   for( const { displayColumnId, type, value } of conditions ){
+    if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
     const path = pathMap[displayColumnId];
     const pathLength = await getPathLength( path );
     let joinId;
     if( pathLength >= 2 ){
+      if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
       const path2 = await slicePath( path, pathLength-1 );
       joinId = joinIdMap[path2];
       if(!joinId) throw "表別名(joinId)が未定義です";
     }
     else{
+      if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
       joinId = "main";
     }
     whereData.push({
@@ -287,20 +332,24 @@ export async function getOrderData_core( displayColumns, sortOrder, joinIdMap ){
     //  "d99": "c45 > c56 > main",
   };
   for( const { displayColumnId, type, path, as } of displayColumns ){
+    if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
     pathMap[displayColumnId] = path;
   }
   //-------------------------------------------------------
   const orderData = [];
   for( const { displayColumnId, isAscending } of sortOrder ){
+    if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
     const path = pathMap[displayColumnId];
     const pathLength = await getPathLength( path );
     let joinId;
     if( pathLength >= 2 ){
+      if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
       const path2 = await slicePath( path, pathLength-1 );
       joinId = joinIdMap[path2];
       if(!joinId) throw "表別名(joinId)が未定義です";
     }
     else{
+      if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
       joinId = "main";
     }
     orderData.push({
