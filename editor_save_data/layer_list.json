@@ -1,5 +1,10 @@
 [
   {
+    "layerId": "01HMK8T5KJMT7KBEVASQCSQGTN",
+    "layerNameJP": "新しいレイヤー",
+    "layerNameEN": "layerName"
+  },
+  {
     "layerId": "01HMK3QQV40SHFD77XNVCA8P2Y",
     "layerNameJP": "レコードの見出し(上)",
     "layerNameEN": "record_title_1"
