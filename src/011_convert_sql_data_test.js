@@ -13,6 +13,7 @@ import {
   getDebugMode,
   startTransaction,
   endTransaction,
+  createRecordsFromCsv,
   getCsvProgress,
   close,
 } from "./045_connect_database_validate.js";
@@ -25,12 +26,6 @@ import {
   checkColumnEnabled,
   getColumnName,
 } from "./030_column_name_validate.js";
-import {
-  createRecordsFromCsv,
-  createRecord,
-  updateRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
 import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
@@ -47,8 +42,13 @@ import {
   listDataTypes,
   checkField,
   checkRecord,
-  deleteRecord,
 } from "./039_data_type_validate.js";
+import {
+  createRecord,
+  updateRecord,
+  deleteRecord,
+  delete_table,
+} from "./036_search_text_validate.js";
 import {
   createTable,
   updateTableName,

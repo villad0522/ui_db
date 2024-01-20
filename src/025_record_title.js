@@ -24,15 +24,10 @@ import {
   getDebugMode,
   startTransaction,
   endTransaction,
+  createRecordsFromCsv,
   getCsvProgress,
   close,
 } from "./045_connect_database_validate.js";
-import {
-  createRecordsFromCsv,
-  createRecord,
-  updateRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
 import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
@@ -48,8 +43,13 @@ import {
   checkField,
   checkRecord,
   getDataType,
-  deleteRecord,
 } from "./039_data_type_validate.js";
+import {
+  createRecord,
+  updateRecord,
+  deleteRecord,
+  delete_table,
+} from "./036_search_text_validate.js";
 import {
   disableTable,
   enableTable,
@@ -130,9 +130,10 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
   // 下層の関数を実行する
   const { tables, total } = await listTables( pageNumber, onePageMaxSize, isTrash );
   // 下層から得たテーブルの一覧に、「titleColumnId」を付け加えて上層に提供する
-  for (const { id } of tables) {
+  for( let i=0; i<tables.length; i++ ){
     if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-    tables.titleColumnId = cacheData[id];
+    const tableId = tables[0].id;
+    tables[0].titleColumnId = cacheData[tableId];
   }
   return {
     "tables": tables,

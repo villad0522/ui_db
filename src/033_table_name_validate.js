@@ -534,15 +534,19 @@ export async function runSqlReadOnly( sql, params ){
     }
   }
   for( let i=0; i<result.length; i++ ){
-    if( !Array.isArray(result[i]) ){
-      if( !result[i] ){
-        throw new Error(`result[${i}]がNULLです。\nレイヤー : table_name\n関数 : runSqlReadOnly`);
-      }
-      else{
-        throw new Error(`result[${i}]が配列ではありません。\nレイヤー : table_name\n関数 : runSqlReadOnly`);
-      }
+    if( result[i]===null || result[i]===undefined ){
+      throw new Error(`result[${i}]がNULLです。\nレイヤー : table_name\n関数 : runSqlReadOnly`);
     }
-    for( let j=0; i<result[i].length; i++ ){
+    else if( typeof result[i] !== "object" ){
+      throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : table_name\n関数 : runSqlReadOnly`);
+    }
+    else if( result[i].constructor !== Object ){
+      throw new Error(`result[${i}]が辞書型ではありません。\nレイヤー : table_name\n関数 : runSqlReadOnly`);
+    }
+    for( const j in result[i] ){
+      if( typeof j !== "string" ){
+        throw new Error(`result[${i}]のキーが文字列ではありません。\nレイヤー : table_name\n関数 : runSqlReadOnly`);
+      }
     }
   }
   //

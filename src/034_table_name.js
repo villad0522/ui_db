@@ -2,10 +2,9 @@
 //
 import {
   startUp,
-  runSqlWriteOnly,
-  createRecordsFromCsv,
   createRecord,
   updateRecord,
+  deleteRecord,
   delete_table,
 } from "./036_search_text_validate.js";
 import {
@@ -19,6 +18,8 @@ import {
   startTransaction,
   endTransaction,
   runSqlReadOnly,
+  runSqlWriteOnly,
+  createRecordsFromCsv,
   getCsvProgress,
   close,
 } from "./045_connect_database_validate.js";
@@ -34,7 +35,6 @@ import {
   createTable,
   deleteTable,
   getDataType,
-  deleteRecord,
 } from "./039_data_type_validate.js";
 
 
@@ -140,7 +140,7 @@ export async function createTable_core( tableName ){
     if(tables2.length===0){
         throw "追加したはずのテーブルが見つかりません。";
     }
-    const tableNumber = tables[0]["table_number"];
+    const tableNumber = tables2[0]["table_number"];
     if(isNaN(tableNumber)){
         throw "新しく発行されたテーブルIDが見つかりません。";
     }

@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  createRecordsFromCsv,
   createRecord,
   updateRecord,
+  deleteRecord,
   delete_table,
 } from "./036_search_text_validate.js";
 import {
@@ -16,6 +16,7 @@ import {
   getDebugMode,
   startTransaction,
   endTransaction,
+  createRecordsFromCsv,
   getCsvProgress,
   close,
 } from "./045_connect_database_validate.js";
@@ -28,7 +29,6 @@ import {
   checkField,
   checkRecord,
   getDataType,
-  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   startUp,  // プログラム起動

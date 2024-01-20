@@ -13,6 +13,7 @@ import {
   getDebugMode,
   startTransaction,
   endTransaction,
+  createRecordsFromCsv,
   getCsvProgress,
   close,
 } from "./045_connect_database_validate.js";
@@ -25,12 +26,6 @@ import {
   checkColumnEnabled,
   getColumnName,
 } from "./030_column_name_validate.js";
-import {
-  createRecordsFromCsv,
-  createRecord,
-  updateRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
 import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
@@ -47,8 +42,13 @@ import {
   listDataTypes,
   checkField,
   checkRecord,
-  deleteRecord,
 } from "./039_data_type_validate.js";
+import {
+  createRecord,
+  updateRecord,
+  deleteRecord,
+  delete_table,
+} from "./036_search_text_validate.js";
 import {
   createTable,
   updateTableName,
@@ -187,30 +187,36 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
     }
     parameterCount++;
   }
-  sql += `WHERE ${whereList.join("\n  AND ")}\n`;
-  sql += `\n`;
+  if( whereList.length > 0 ){
+    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+    sql += `WHERE ${whereList.join("\n  AND ")}\n`;
+    sql += `\n`;
+  }
   //===================================================================================
   sql += `GROUP BY main.${primaryKey}\n`;
   sql += `\n`;
   //===================================================================================
   const orderByList = [];
   for( const { joinId, columnName, isAscending } of orderData ){
-    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
     if(isAscending){
-      if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
       orderByList.push(`${joinId}.${columnName} ASC`);
     }
     else{
-      if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
       orderByList.push(`${joinId}.${columnName} DESC`);
     }
   }
   for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnName } of joinData ){
-    if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
     orderByList.push(`sort_${toJoinId}.sort_number ASC`);
   }
-  sql += `ORDER BY ${orderByList.join(",\n  ")}\n`;
-  sql += `\n`;
+  if( orderByList.length > 0 ){
+    if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+    sql += `ORDER BY ${orderByList.join(",\n  ")}\n`;
+    sql += `\n`;
+  }
   //===================================================================================
   //
   return {

@@ -18,6 +18,7 @@ import {
   getDebugMode,
   startTransaction,
   endTransaction,
+  createRecordsFromCsv,
   getCsvProgress,
   close,
 } from "./045_connect_database_validate.js";
@@ -33,12 +34,6 @@ import {
   getColumnName,
 } from "./030_column_name_validate.js";
 import {
-  createRecordsFromCsv,
-  createRecord,
-  updateRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
-import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
 import {
@@ -53,8 +48,13 @@ import {
   checkField,
   checkRecord,
   getDataType,
-  deleteRecord,
 } from "./039_data_type_validate.js";
+import {
+  createRecord,
+  updateRecord,
+  deleteRecord,
+  delete_table,
+} from "./036_search_text_validate.js";
 import {
   disableTable,
   enableTable,
@@ -172,30 +172,35 @@ export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSiz
   const { columns, total } = await listColumnsForGUI( tableId, pageNumber, onePageMaxSize, isTrash );
   //
   // 参照先が有効なカラムだけに絞り込む
-  const columns2 = Array(columns).filter( async ({ id, name, dataType }) => {
-    const parentTableId = cacheData1[id];
-    if(!parentTableId){
-      if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+  const columns2 = [];
+  for (const columnData of columns ) {
+    if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+    const parentTableId = cacheData1[columnData.id];
+    if(!parentTableId){ 
+      if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
       // もし外部キーではなかったら、一覧に残す
-      return true;
+      columns2.push(columnData);
+      continue;
     }
     const isEnabled = await checkTableEnabled(parentTableId);
     if( isEnabled === false ){
-      if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
       // もし参照先が無効なテーブルだったら、一覧から取り除く
-      return false;
+      continue;
     }
-      // もし参照先が無効なテーブルだったら、一覧に残す
-    return true;
-  });
+    // もし参照先が無効なテーブルだったら、一覧に残す
+    columns2.push(columnData);
+    continue;
+  }
   //
   // 下層から得たカラムの一覧に、「parentTableId」を付け加えて上層に提供する
-  for (const { id, name, dataType } of columns2) {
-    if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-    columns2.parentTableId = cacheData1( id ) ?? null;
-    if(cacheData1[id]){
-      if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-      columns2.dataType = "POINTER";
+  for (let i = 0; i < columns2.length; i++ ) {
+    if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+    const columnId = columns2[i].id;
+    columns2[i].parentTableId = cacheData1[ columnId ] ?? null;
+    if(cacheData1[columnId]){
+      if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+      columns2[i].dataType = "POINTER";
     }
   }
   return {
@@ -207,7 +212,7 @@ export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSiz
 
 // インメモリキャッシュを削除する
 export async function clearCache_core(  ){
-  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
     await _reload();    // メモリに再読み込み
     return await clearCache();   // 下層の関数を呼び出す
 }
@@ -215,7 +220,7 @@ export async function clearCache_core(  ){
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
-  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
   // 参照先を失った外部キーは、「relations」のデータを消すことで
   // ただの整数型に変化する
   await runSqlWriteOnly(
@@ -239,35 +244,40 @@ export async function deleteTable_core( tableId ){
 
 // カラムの一覧を取得
 export async function listColumnsAll_core( tableId ){
-  if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
   // 下層の関数を実行する
-  const columns = await listColumnsAll( tableId );
+  const columns = structuredClone( await listColumnsAll( tableId ) );
   //
   // 参照先が有効なカラムだけに絞り込む
-  const columns2 = Array(columns).filter( async ({ id, name, dataType }) => {
-    const parentTableId = cacheData1[id];
+  const columns2 = [];
+  for (const columnData of columns ) {
+    if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+    const parentTableId = cacheData1[columnData.id];
     if(!parentTableId){ 
-      if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
       // もし外部キーではなかったら、一覧に残す
-      return true;
+      columns2.push(columnData);
+      continue;
     }
     const isEnabled = await checkTableEnabled(parentTableId);
     if( isEnabled === false ){
-      if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
       // もし参照先が無効なテーブルだったら、一覧から取り除く
-      return false;
+      continue;
     }
-      // もし参照先が無効なテーブルだったら、一覧に残す
-    return true; 
-  });
+    // もし参照先が無効なテーブルだったら、一覧に残す
+    columns2.push(columnData);
+    continue;
+  }
   //
   // 下層から得たカラムの一覧に、「parentTableId」を付け加えて上層に提供する
-  for (const { id, name, dataType } of columns2) {
-    if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
-    columns2.parentTableId = cacheData1( id ) ?? null;
-    if(cacheData1[id]){
-      if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
-      columns2.dataType = "POINTER";
+  for (let i = 0; i < columns2.length; i++ ) {
+    if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+    const columnId = columns2[i].id;
+    columns2[i].parentTableId = cacheData1[ columnId ] ?? null;
+    if(cacheData1[columnId]){
+      if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+      columns2[i].dataType = "POINTER";
     }
   }
   return columns2;
@@ -275,7 +285,7 @@ export async function listColumnsAll_core( tableId ){
 
 // 参照先のテーブルIDを取得する
 export async function getParentTableId_core( columnId ){
-  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData1[columnId];
 }
 
@@ -283,13 +293,13 @@ export async function getParentTableId_core( columnId ){
 
 // データ型を取得
 export async function getDataType_core( columnId ){
-  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
   if(cacheData1[columnId]){
-    if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
     return "POINTER";
   }
   else{
-    if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
     return await getDataType( columnId );
   }
 }

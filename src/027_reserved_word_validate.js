@@ -160,7 +160,7 @@ export async function updateColumnName( columns ){
 //#######################################################################################
 // 関数「createTable_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function createTable( tableName, isSystemTable ){
+export async function createTable( tableName ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableName !== "string" ){
@@ -171,23 +171,12 @@ export async function createTable( tableName, isSystemTable ){
       throw new Error(`tableNameが文字列ではありません。\nレイヤー : reserved_word\n関数 : createTable`);
     }
   }
-  if( typeof isSystemTable !== "boolean" ){
-    if( !isSystemTable ){
-      throw new Error(`isSystemTableがNULLです。\nレイヤー : reserved_word\n関数 : createTable`);
-    }
-    else{
-      throw new Error(`isSystemTableがブール値ではありません。\nレイヤー : reserved_word\n関数 : createTable`);
-    }
-  }
-  else if( isNaN(isSystemTable) ){
-    throw new Error(`isSystemTableがブール値ではありません。\nレイヤー : reserved_word\n関数 : createTable`);
-  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await createTable_core( tableName, isSystemTable );
+    result = await createTable_core( tableName );
   }
   catch(error){
     if( typeof error === "string" ){

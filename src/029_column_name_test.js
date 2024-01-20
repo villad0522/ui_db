@@ -19,15 +19,10 @@ import {
   getDebugMode,
   startTransaction,
   endTransaction,
+  createRecordsFromCsv,
   getCsvProgress,
   close,
 } from "./045_connect_database_validate.js";
-import {
-  createRecordsFromCsv,
-  createRecord,
-  updateRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
 import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
@@ -36,8 +31,13 @@ import {
   checkField,
   checkRecord,
   getDataType,
-  deleteRecord,
 } from "./039_data_type_validate.js";
+import {
+  createRecord,
+  updateRecord,
+  deleteRecord,
+  delete_table,
+} from "./036_search_text_validate.js";
 import {
   startUp,  // プログラム起動
   clearCache,  // インメモリキャッシュを削除する
@@ -84,4 +84,5 @@ export async function test029() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+
 }

@@ -13,6 +13,7 @@ import {
   getDebugMode,
   startTransaction,
   endTransaction,
+  createRecordsFromCsv,
   getCsvProgress,
   close,
 } from "./045_connect_database_validate.js";
@@ -25,12 +26,6 @@ import {
   checkColumnEnabled,
   getColumnName,
 } from "./030_column_name_validate.js";
-import {
-  createRecordsFromCsv,
-  createRecord,
-  updateRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
 import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
@@ -47,8 +42,13 @@ import {
   listDataTypes,
   checkField,
   checkRecord,
-  deleteRecord,
 } from "./039_data_type_validate.js";
+import {
+  createRecord,
+  updateRecord,
+  deleteRecord,
+  delete_table,
+} from "./036_search_text_validate.js";
 import {
   createTable,
   updateTableName,
@@ -119,6 +119,30 @@ export async function test002() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
-  aa
+  await startUp("http://localhost:3000/", true);
+  //
+  const { tableId: tableId1 } = await createTable("学年");
+  await createColumn( tableId1, "学年", "INTEGER", null );
+  //
+  const { tableId: tableId2 } = await createTable("名簿");
+  await createColumn( tableId2, "氏名", "TEXT", null );
+  const { columnId } = await createColumn( tableId2, "学年", "POINTER", tableId1 );
+  //
+  const { sql } = await generateSQL(
+    tableId2,
+    [
+      {
+        displayColumnId: "d1",
+        type: "RAW",
+        path: `main.${columnId}`,
+        as: "氏名",
+      },
+    ],
+    [],
+    []
+  );
+  const matrix = await runSqlReadOnly(sql,{});
+  console.log(matrix);
+  await close();
 
 }

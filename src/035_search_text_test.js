@@ -9,7 +9,6 @@ import {
   createTable,
   deleteTable,
   getDataType,
-  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   getLocalIp,
@@ -22,6 +21,8 @@ import {
   startTransaction,
   endTransaction,
   runSqlReadOnly,
+  runSqlWriteOnly,
+  createRecordsFromCsv,
   getCsvProgress,
   close,
 } from "./045_connect_database_validate.js";
@@ -30,11 +31,10 @@ import {
 } from "./042_primary_key_validate.js";
 import {
   startUp,  // プログラム起動
-  createRecordsFromCsv,  // CSVファイルインポート
-  runSqlWriteOnly,  // SQLクエリ実行（書き込み専用）
   createRecord,  // レコードを作成
   updateRecord,  // レコードを上書き
   delete_table,  // 不可逆的にテーブルを削除
+  deleteRecord,  // レコードを削除
 } from "./036_search_text_validate.js";
 import { setBugMode } from "./037_search_text.js";
 
@@ -43,7 +43,7 @@ export async function test035() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 6; i++ ) {
+    for ( i = 1; i <= 5; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

@@ -26,15 +26,10 @@ import {
   getDebugMode,
   startTransaction,
   endTransaction,
+  createRecordsFromCsv,
   getCsvProgress,
   close,
 } from "./045_connect_database_validate.js";
-import {
-  createRecordsFromCsv,
-  createRecord,
-  updateRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
 import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
@@ -43,8 +38,13 @@ import {
   checkField,
   checkRecord,
   getDataType,
-  deleteRecord,
 } from "./039_data_type_validate.js";
+import {
+  createRecord,
+  updateRecord,
+  deleteRecord,
+  delete_table,
+} from "./036_search_text_validate.js";
 import {
   createTable,
   disableTable,
@@ -65,6 +65,8 @@ let bugMode = 0;
 export function setBugMode( mode ){
     bugMode = mode;
 }
+
+
 
 
 // カラムを作成
@@ -97,7 +99,7 @@ export async function updateColumnName_core( columns ){
 }
 
 // テーブルを作成
-export async function createTable_core( tableName, isSystemTable ){
+export async function createTable_core( tableName ){
   if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
   if ( tableName.includes(' ') || tableName.includes('　') ) {
     throw `空白文字は使用できません。`;
@@ -106,7 +108,7 @@ export async function createTable_core( tableName, isSystemTable ){
   if( reservedWords.includes(name2) ){
     throw `テーブル名「${tableName}」は、予約語のため使用できません。`;
   }
-  return await createTable( tableName, isSystemTable );
+  return await createTable( tableName );
 }
 
 // テーブル名を変更

@@ -24,15 +24,10 @@ import {
   getDebugMode,
   startTransaction,
   endTransaction,
+  createRecordsFromCsv,
   getCsvProgress,
   close,
 } from "./045_connect_database_validate.js";
-import {
-  createRecordsFromCsv,
-  createRecord,
-  updateRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
 import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
@@ -42,8 +37,13 @@ import {
   checkField,
   checkRecord,
   getDataType,
-  deleteRecord,
 } from "./039_data_type_validate.js";
+import {
+  createRecord,
+  updateRecord,
+  deleteRecord,
+  delete_table,
+} from "./036_search_text_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
@@ -68,7 +68,8 @@ export async function startUp_core( localUrl, isDebug ){
             "column_number" INTEGER PRIMARY KEY AUTOINCREMENT,
             "column_name" TEXT NOT NULL,
             "table_id" TEXT NOT NULL,
-            "enable" INTEGER NOT NULL DEFAULT 1
+            "enable" INTEGER NOT NULL DEFAULT 1,
+            "created_at" INTEGER NOT NULL
         );`,
         {},
     );
@@ -103,7 +104,6 @@ async function _reload() {
         ORDER BY created_at DESC;`,
         {},
     );
-    const dataTypes = await listDataTypes( tableId );  // 下層の関数を実行する
     cacheData1 = {};
     cacheData2 = {};
     for (const { columnNumber, columnName, tableId } of matrix) {
@@ -115,7 +115,7 @@ async function _reload() {
         cacheData2[tableId].push({
             "id": columnId,
             "name": columnName,
-            "dataType": dataTypes[columnId],
+            "dataType": await getDataType(columnId),
         });
     }
 }
@@ -176,7 +176,6 @@ export async function createColumn_core( tableId, columnName, dataType ){
             WHERE column_name = :columnName
                 AND table_id = :tableId
                 AND created_at = :createdAt
-            ORDER BY table_number DESC
             LIMIT 1;`,
         {
             ":columnName": columnName2, // 表示される名前（変更不可）
@@ -381,10 +380,10 @@ export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSiz
             ":offset": offset,
         },
     );
-    const dataTypes = await listDataTypes( tableId );  // 下層の関数を実行する
-    for (const { id, name } of columns) {
+    for ( let i=0; i<columns.length; i++ ) {
         if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
-        columns.dataType = dataTypes[id];
+        const columnId = columns[i].id;
+        columns[i].dataType = await getDataType(columnId);
     }
     return {
         "columns": columns,

@@ -54,12 +54,12 @@ export async function startUp_core( localUrl, isDebug ){
   try {
     // テーブルを作成する（検索のため）
     await runSqlWriteOnly(
-      `CREATE TABLE IF NOT EXISTS is_search_text_latest (
-        "table_id" TEXT NOT NULL,
-        "column_id" TEXT NOT NULL,
-        "record_id" TEXT NOT NULL,
-        "original_text" TEXT NOT NULL,
-        "romanAlphabet" TEXT NOT NULL
+      `CREATE TABLE IF NOT EXISTS search_text (
+        table_id TEXT NOT NULL,
+        column_id TEXT NOT NULL,
+        record_id TEXT NOT NULL,
+        original_text TEXT NOT NULL,
+        roman_alphabet TEXT NOT NULL
       );`,
       {},
     );
@@ -69,40 +69,42 @@ export async function startUp_core( localUrl, isDebug ){
   }
 }
 
-
-// CSVファイルインポート
-export async function createRecordsFromCsv_core( tableId, filePath, columnSize ){
-  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-  throw "この関数は未実装です。";
-}
-
-// SQLクエリ実行（書き込み専用）
-export async function runSqlWriteOnly_core( sql, params ){
-  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
-  throw "この関数は未実装です。";
-}
-
 // レコードを作成
 export async function createRecord_core( tableId, recordData ){
-  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-  throw "この関数は未実装です。";
+  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+  return await createRecord( tableId, recordData ); // 下層の関数を呼び出す
 }
 
 // レコードを上書き
-export async function updateRecord_core( tableId, recordId, recordData ){
-  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-  throw "この関数は未実装です。";
+export async function updateRecord_core( tableId, records ){
+  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+  await runSqlWriteOnly(
+    `DELETE FROM search_text
+    WHERE table_id = :tableId
+      AND record_id = :recordId;`,
+    {
+      ":tableId": tableId,
+      ":recordId": recordId,
+    },
+  );
+  return await updateRecord( tableId, records );  // 下層の関数を呼び出す
 }
 
 // 不可逆的にテーブルを削除
 export async function delete_table_core( tableId ){
-  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
   await runSqlWriteOnly(
-    `DELETE FROM data_types
+    `DELETE FROM search_text
       WHERE table_id = :tableId;`,
     {
       ":tableId": tableId,
     },
   );
   return await delete_table( tableId );  // 下層の関数を呼び出す
+}
+
+// レコードを削除
+export async function deleteRecord_core( tableId, records ){
+  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+  return await deleteRecord( tableId, records );  // 下層の関数を呼び出す
 }

@@ -20,6 +20,7 @@ import {
   getDebugMode,
   startTransaction,
   endTransaction,
+  createRecordsFromCsv,
   getCsvProgress,
   close,
 } from "./045_connect_database_validate.js";
@@ -33,20 +34,19 @@ import {
   getColumnName,
 } from "./030_column_name_validate.js";
 import {
-  createRecordsFromCsv,
-  createRecord,
-  updateRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
-import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
 import {
   listDataTypes,
   checkField,
   checkRecord,
-  deleteRecord,
 } from "./039_data_type_validate.js";
+import {
+  createRecord,
+  updateRecord,
+  deleteRecord,
+  delete_table,
+} from "./036_search_text_validate.js";
 import {
   createTable,
   updateTableName,
@@ -77,6 +77,8 @@ export function setBugMode( mode ){
 }
 
 
+
+
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -103,5 +105,5 @@ export async function startUp_core( localUrl, isDebug ){
 
 //【サブ関数】メモリに再読み込み
 async function _reload() {
-  throw "この関数は未実装です。";
+  //throw "この関数は未実装です。";
 }
