@@ -1,8 +1,13 @@
 [
   {
+    "layerId": "01HMKK8S7PGCR0QNGHBVKVWPXB",
+    "layerNameJP": "API情報",
+    "layerNameEN": "api_info"
+  },
+  {
     "layerId": "01HMK8T5KJMT7KBEVASQCSQGTN",
-    "layerNameJP": "新しいレイヤー",
-    "layerNameEN": "layerName"
+    "layerNameJP": "フロントエンドファイル",
+    "layerNameEN": "frontend_files"
   },
   {
     "layerId": "01HMK3QQV40SHFD77XNVCA8P2Y",

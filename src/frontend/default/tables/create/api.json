@@ -1,0 +1,32 @@
+{
+    "httpMethod": "POST",
+    "description": "テーブルを作成します。",
+    "queryParameters": {},
+    "requestBody": {
+        "tableName": {
+            "dataType": "TEXT",
+            "description": "新しく作成するテーブルの名前",
+            "isRequired": true,
+            "example": "商品一覧"
+        }
+    },
+    "response": {
+        "userMessage": {
+            "dataType": "TEXT",
+            "description": "完了メッセージ",
+            "example": "再接続しました。"
+        },
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "../"
+        }
+    },
+    "commands": [
+        {
+            "resultNameSpace": "",
+            "commandName": "CREATE_TABLE",
+            "additionalParameters": {}
+        }
+    ]
+}

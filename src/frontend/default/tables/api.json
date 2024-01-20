@@ -1,0 +1,46 @@
+{
+    "httpMethod": "GET",
+    "description": "テーブルの一覧を取得します。",
+    "queryParameters": {
+        "page_main": {
+            "dataType": "INTEGER",
+            "description": "ページ番号。テーブル一覧のページに一度に表示しきれなかった場合に、活用します。このパラメータを2,3,4...と増やすことで、次のページを閲覧できます。",
+            "isRequired": false,
+            "example": 1
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "tables": {
+            "title": "テーブル一覧",
+            "isArray": true,
+            "onePageMaxSize": 35,
+            "children": {
+                "id": {
+                    "dataType": "INTEGER",
+                    "description": "テーブルID",
+                    "example": 1
+                },
+                "name": {
+                    "dataType": "TEXT",
+                    "description": "テーブル名",
+                    "example": "売上表"
+                }
+            }
+        },
+        "tables_total": {
+            "dataType": "INTEGER",
+            "description": "テーブルの個数",
+            "example": 1
+        }
+    },
+    "commands": [
+        {
+            "resultNameSpace": "",
+            "commandName": "LIST_TABLES",
+            "additionalParameters": {
+                "onePageMaxSize": 35
+            }
+        }
+    ]
+}

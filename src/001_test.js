@@ -1,23 +1,24 @@
 
-import { test056 } from "./056_ip_address_test.js";
-import { test053 } from "./053_directory_test.js";
-import { test050 } from "./050_connect_database_test.js";
-import { test047 } from "./047_primary_key_test.js";
-import { test044 } from "./044_data_type_test.js";
-import { test041 } from "./041_table_name_test.js";
-import { test038 } from "./038_column_name_test.js";
-import { test035 } from "./035_reserved_word_test.js";
-import { test032 } from "./032_record_title_2_test.js";
-import { test029 } from "./029_relation_test.js";
-import { test026 } from "./026_search_text_test.js";
-import { test023 } from "./023_sort_test.js";
-import { test020 } from "./020_columnPath_test.js";
-import { test017 } from "./017_convert_sql_data_test.js";
-import { test014 } from "./014_generate_sql2_test.js";
-import { test011 } from "./011_generate_sql1_test.js";
-import { test008 } from "./008_generate_sql_test.js";
-import { test005 } from "./005_record_title_1_test.js";
-import { test002 } from "./002_layerName_test.js";
+import { test059 } from "./059_ip_address_test.js";
+import { test056 } from "./056_directory_test.js";
+import { test053 } from "./053_connect_database_test.js";
+import { test050 } from "./050_primary_key_test.js";
+import { test047 } from "./047_data_type_test.js";
+import { test044 } from "./044_table_name_test.js";
+import { test041 } from "./041_column_name_test.js";
+import { test038 } from "./038_reserved_word_test.js";
+import { test035 } from "./035_record_title_2_test.js";
+import { test032 } from "./032_relation_test.js";
+import { test029 } from "./029_search_text_test.js";
+import { test026 } from "./026_sort_test.js";
+import { test023 } from "./023_columnPath_test.js";
+import { test020 } from "./020_convert_sql_data_test.js";
+import { test017 } from "./017_generate_sql2_test.js";
+import { test014 } from "./014_generate_sql1_test.js";
+import { test011 } from "./011_generate_sql_test.js";
+import { test008 } from "./008_record_title_1_test.js";
+import { test005 } from "./005_frontend_files_test.js";
+import { test002 } from "./002_api_info_test.js";
 
 
 async function test() {
@@ -25,6 +26,7 @@ async function test() {
     if( process.argv.length < 3 ){
       // testNumberが指定されていない場合
       console.log("全てのレイヤーの動作テストを行います。");
+      await test059();
       await test056();
       await test053();
       await test050();
@@ -51,6 +53,9 @@ async function test() {
     const testNumber = Number(process.argv[2]);
     console.log(`テストコード${ testNumber }を実行します。`);
     switch( testNumber ){
+      case 59:
+        await test059();
+        break;
       case 56:
         await test056();
         break;
