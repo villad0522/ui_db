@@ -9,6 +9,7 @@ import {
   disableColumn,
   enableColumn,
   delete_table,
+  autoCorrect,
 } from "./021_search_text_validate.js";
 import {
   getLocalIp,

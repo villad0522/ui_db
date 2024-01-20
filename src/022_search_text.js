@@ -75,13 +75,58 @@ export function setBugMode( mode ){
 
 
 
-
+// カタカナ変換ライブラリ
 import Kuroshiro from "kuroshiro";
-// 形態素解析器
 import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
-
 const kuroshiro = new Kuroshiro();
 
+// 形態素解析ライブラリ
+import kuromoji from 'kuromoji';
+const defaultBuilder = kuromoji.builder({ dicPath: 'node_modules/kuromoji/dict' });
+
+let tokenizer;
+
+// 形態素解析器を初期化する関数
+function _buildTokenizer() {
+  return new Promise((resolve, reject) => {
+    defaultBuilder.build((err, tokenizer) => {
+      if (err) {
+        reject(err);
+      }
+      else{
+        resolve(tokenizer);
+      }
+    });
+  });
+}
+
+// 文字列から名刺を抽出して、カタカナに変換する関数
+async function _convertKeywords( originalText ) {
+  if(!isNaN(originalText)){
+    // 数値に変換可能な場合
+    return [
+      String(Number(originalText)),
+    ];
+  }
+  if( originalText.length <= 5 ){
+    // ５文字以下の場合
+    return [
+      await kuroshiro.convert(originalText, { to: "katakana" }),
+    ];
+  }
+  const tokens = tokenizer.tokenize(originalText);
+  const keywords = new Set();
+  for( const token of tokens ){
+    if( token.pos !== "名詞" ) continue;
+    if( token.reading ){
+      keywords.add(token.reading);
+    }
+    else if( token.surface_form ){
+      keywords.add(token.surface_form);
+    }
+  }
+  return Array.from(keywords);
+}
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
@@ -94,9 +139,11 @@ export async function startUp_core( localUrl, isDebug ){
       `CREATE TABLE IF NOT EXISTS search_text (
         table_id TEXT NOT NULL,
         column_id TEXT NOT NULL,
-        record_id TEXT NOT NULL,
+        record_id INTEGER NOT NULL,
         original_text TEXT NOT NULL,
-        roman_alphabet TEXT NOT NULL
+        keyword TEXT NOT NULL,
+        is_enable_column INTEGER NOT NULL DEFAULT 1,
+        is_enable_table INTEGER NOT NULL DEFAULT 1
       );`,
       {},
     );
@@ -104,6 +151,7 @@ export async function startUp_core( localUrl, isDebug ){
   catch (err) {
     throw `システム管理用テーブルの作成に失敗しました。\n${String(err)}`;
   }
+  tokenizer = await _buildTokenizer();
   await kuroshiro.init(new KuromojiAnalyzer());
 }
 
@@ -125,12 +173,22 @@ async function _saveKeyword({ tableId, recordId, recordData }){
   //
   // カラムごとに繰り返す
   for( const columnData of columns ){
-    switch(columnData.dataType){
+    const value = recordData[columnData.id];
+    if (!value && value !== 0) {
+      continue;
+    }
+    let originalText = String(value);
+    let keywords = [];
+    switch (columnData.dataType) {
       case "INTEGER":
+        keywords = [String(value)];
         break;    // 文字列検索に登録する（処理を続行する）
       case "REAL":
+        keywords = [String(value)];
         break;    // 文字列検索に登録する（処理を続行する）
       case "TEXT":
+        // 形態素解析を行う
+        keywords = await _convertKeywords(originalText);
         break;    // 文字列検索に登録する（処理を続行する）
       case "BOOL":
         continue; // 文字列検索に登録しない
@@ -139,46 +197,32 @@ async function _saveKeyword({ tableId, recordId, recordData }){
       default:
         throw `データ型「${columnData.dataType}」はサポートされていません。`;
     }
-    const value = recordData[columnData.id];
-    if (!value && value !== 0) {
-      continue;
+    for( const keyword of keywords ){
+      // 検索ワードを登録する
+      await runSqlWriteOnly(
+        `INSERT INTO search_text (
+          table_id,
+          column_id,
+          record_id,
+          original_text,
+          keyword
+        ) VALUES (
+          :tableId,
+          :columnId,
+          :recordId,
+          :originalText,
+          :keyword
+        );`,
+        {
+          ":tableId": tableId,
+          ":columnId": columnData.id,
+          ":recordId": recordId,
+          ":originalText": originalText,
+          ":keyword": keyword
+        },
+      );
     }
-    const originalText = String(value);
     //
-    // 文字列をローマ字に変換する
-    const romanAlphabet = await kuroshiro.convert(
-      originalText,
-      {
-        to: "hiragana",
-        mode: "spaced",
-      }
-    );
-    const words = romanAlphabet.split(" ");
-    console.log(words);
-    //
-    // 検索ワードを登録する
-    await runSqlWriteOnly(
-      `INSERT INTO search_text (
-        table_id,
-        column_id,
-        record_id,
-        original_text,
-        roman_alphabet
-      ) VALUES (
-        :tableId,
-        :columnId,
-        :recordId,
-        :originalText,
-        :romanAlphabet
-      );`,
-      {
-        ":tableId": tableId,
-        ":columnId": columnData.id,
-        ":recordId": recordId,
-        ":originalText": originalText,
-        ":romanAlphabet": romanAlphabet
-      },
-    );
   }
 }
 
@@ -288,7 +332,15 @@ export async function deleteRecord_core( tableId, records ){
 // テーブルを無効化
 export async function disableTable_core( tableId ){
   if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
-  throw "この関数は未実装です。";
+  await runSqlWriteOnly(
+    `UPDATE search_text
+      SET is_enable_table = 0
+      WHERE table_id = :tableId;`,
+    {
+      ":tableId": tableId,
+    },
+  );
+  return await disableTable( tableId );  // 下層の関数を呼び出す
 }
 
 
@@ -296,7 +348,15 @@ export async function disableTable_core( tableId ){
 // テーブルを再度有効化
 export async function enableTable_core( tableId ){
   if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
-  throw "この関数は未実装です。";
+  await runSqlWriteOnly(
+    `UPDATE search_text
+      SET is_enable_table = 1
+      WHERE table_id = :tableId;`,
+    {
+      ":tableId": tableId,
+    },
+  );
+  return await enableTable( tableId );  // 下層の関数を呼び出す
 }
 
 
@@ -304,7 +364,15 @@ export async function enableTable_core( tableId ){
 // カラムを無効化
 export async function disableColumn_core( columnId ){
   if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
-  throw "この関数は未実装です。";
+  await runSqlWriteOnly(
+    `UPDATE search_text
+      SET is_enable_column = 0
+      WHERE column_id = :columnId;`,
+    {
+      ":columnId": columnId,
+    },
+  );
+  return await disableColumn( columnId );  // 下層の関数を呼び出す
 }
 
 
@@ -312,5 +380,64 @@ export async function disableColumn_core( columnId ){
 // カラムを再度有効化
 export async function enableColumn_core( columnId ){
   if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
-  throw "この関数は未実装です。";
+  await runSqlWriteOnly(
+    `UPDATE search_text
+      SET is_enable_column = 1
+      WHERE column_id = :columnId;`,
+    {
+      ":columnId": columnId,
+    },
+  );
+  return await enableColumn( columnId );  // 下層の関数を呼び出す
+}
+
+
+
+// 予測変換
+export async function autoCorrect_core( tableId, columnId, inputText, conditions ){
+  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 文字列から名刺を抽出して、カタカナに変換する
+  const inputWords = await _convertKeywords( inputText );
+  console.log(inputWords.join(", "));
+  //
+  let sql = `
+    SELECT original_text AS originalText
+      FROM search_text
+      WHERE table_id = :tableId
+        AND column_id = :columnId
+        AND is_enable_table = 1
+        AND is_enable_column = 1`;
+  //
+  const statements = {};
+  const searchList = [];
+  for( let i=0; i<inputWords.length; i++ ){
+    if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+    searchList.push(`keyword LIKE :word${i}`);
+    searchList.push(`original_text LIKE :word${i}`);
+    statements[`:word${i}`] = "%" + inputWords[i] + "%";
+  }
+  if( searchList.length > 0 ){
+    if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+    sql += `\n        AND (
+          ${searchList.join(`\n          OR `)}
+        )`;
+  }
+  //
+  for( const columnId in conditions ){
+    if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+    sql += `\n        AND ${columnId} = :${columnId}`;
+    statements[`:${columnId}`] = conditions[columnId];
+  }
+  sql += `\n      GROUP BY original_text;`;
+  const matrix = await runSqlReadOnly( sql, {
+    ...statements,
+    ":tableId": tableId,
+    ":columnId": columnId,
+  });
+  const suggestions = new Set();
+  for( const { originalText } of matrix ){
+    if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+    suggestions.add(originalText);
+  }
+  return Array.from(suggestions);
 }

@@ -8,6 +8,7 @@ import {
   enableTable_core,  // テーブルを再度有効化
   disableColumn_core,  // カラムを無効化
   enableColumn_core,  // カラムを再度有効化
+  autoCorrect_core,  // 予測変換
 } from "./022_search_text.js";
 
 
@@ -499,6 +500,92 @@ export async function enableColumn( columnId ){
     }
     else{
       throw new Error(`resultが文字列ではありません。\nレイヤー : search_text\n関数 : enableColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「autoCorrect_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function autoCorrect( tableId, columnId, inputText, conditions ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : search_text\n関数 : autoCorrect`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : search_text\n関数 : autoCorrect`);
+    }
+  }
+  if( typeof columnId !== "string" ){
+    if( !columnId ){
+      throw new Error(`columnIdがNULLです。\nレイヤー : search_text\n関数 : autoCorrect`);
+    }
+    else{
+      throw new Error(`columnIdが文字列ではありません。\nレイヤー : search_text\n関数 : autoCorrect`);
+    }
+  }
+  if( typeof inputText !== "string" ){
+    if( !inputText ){
+      throw new Error(`inputTextがNULLです。\nレイヤー : search_text\n関数 : autoCorrect`);
+    }
+    else{
+      throw new Error(`inputTextが文字列ではありません。\nレイヤー : search_text\n関数 : autoCorrect`);
+    }
+  }
+  if( conditions===null || conditions===undefined ){
+    throw new Error(`conditionsがNULLです。\nレイヤー : search_text\n関数 : autoCorrect`);
+  }
+  else if( typeof conditions !== "object" ){
+    throw new Error(`conditionsがオブジェクトではありません。\nレイヤー : search_text\n関数 : autoCorrect`);
+  }
+  else if( conditions.constructor !== Object ){
+    throw new Error(`conditionsが辞書型ではありません。\nレイヤー : search_text\n関数 : autoCorrect`);
+  }
+  for( const i in conditions ){
+    if( typeof i !== "string" ){
+      throw new Error(`conditionsのキーが文字列ではありません。\nレイヤー : search_text\n関数 : autoCorrect`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await autoCorrect_core( tableId, columnId, inputText, conditions );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : search_text\n関数 : autoCorrect`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( !Array.isArray(result) ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : search_text\n関数 : autoCorrect`);
+    }
+    else{
+      throw new Error(`resultが配列ではありません。\nレイヤー : search_text\n関数 : autoCorrect`);
+    }
+  }
+  for( let i=0; i<result.length; i++ ){
+    if( typeof result[i] !== "string" ){
+      if( !result[i] ){
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : search_text\n関数 : autoCorrect`);
+      }
+      else{
+        throw new Error(`result[${i}]が文字列ではありません。\nレイヤー : search_text\n関数 : autoCorrect`);
+      }
     }
   }
   //

@@ -63,6 +63,7 @@ import {
   enableTable,  // テーブルを再度有効化
   disableColumn,  // カラムを無効化
   enableColumn,  // カラムを再度有効化
+  autoCorrect,  // 予測変換
 } from "./021_search_text_validate.js";
 import { setBugMode } from "./022_search_text.js";
 
@@ -71,7 +72,7 @@ export async function test020() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 17; i++ ) {
+    for ( i = 1; i <= 22; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -100,7 +101,8 @@ async function _test(){
   await createRecord( tableId, {
     [columnId]: "データベースの最大サイズの項目によれば、データベースは最大281TBまでとなっています。",
   });
-  //
+  const suggestions = await autoCorrect( tableId, columnId, "データ", {} );
+  console.log(suggestions);
   await close();
 
 }
