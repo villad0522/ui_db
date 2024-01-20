@@ -323,20 +323,22 @@ async function _checkField( columnId, value ){
       message: "数値ではありません。",
     };
   }
-  const parentPrimaryKey = await getPrimaryKey(parentTableId);
+  const parentColumnId = await getPrimaryKey(parentTableId);
   const matrix = await runSqlReadOnly(
     `SELECT *
     FROM ${parentTableId}
-    WHERE ${parentPrimaryKey} = :recordId
+    WHERE ${parentColumnId} = :recordId
     LIMIT 1;`,
     {
       ":recordId": value,
     },
   );
   if(matrix.length===0){
+    const parentTableName = await getTableName( parentTableId );
+    const parentColumnName = await getColumnName( parentColumnId );
     return {
       isOK: false,
-      message: "参照先のデータが見つかりません",
+      message: `参照先のデータが見つかりません。\nテーブル : ${parentTableName}(${parentTableId})\n主キー : ${parentColumnName}(${parentColumnId})\nレコードID : ${value}`,
     };
   }
   return {

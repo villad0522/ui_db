@@ -94,13 +94,20 @@ async function _test(){
     await startUp("http://localhost:3000/", true);
     //
     const { tableId: tableId1 } = await createTable("学年");
-    await createColumn( tableId1, "学年", "INTEGER", null );
+    const { columnId: columnId1 } = await createColumn( tableId1, "学年", "INTEGER", null );
+    const { recordId: recordId } = await createRecord( tableId1, {
+      [columnId1]: 3,
+    });
     //
     const { tableId: tableId2 } = await createTable("名簿");
-    await createColumn( tableId2, "氏名", "TEXT", null );
-    const {columnId} = await createColumn( tableId2, "学年", "POINTER", tableId1 );
+    const { columnId: columnId2  } = await createColumn( tableId2, "学年", "POINTER", tableId1 );
+    const { columnId: columnId3  } = await createColumn( tableId2, "氏名", "TEXT", null );
+    await createRecord( tableId2, {
+      [columnId2]: recordId,
+      [columnId3]: "田中太郎",
+    });
     //
-    if(await getParentTableId(columnId)!==tableId1){
+    if(await getParentTableId(columnId2)!==tableId1){
       throw "想定外のテスト結果です";
     }
     //
@@ -110,7 +117,7 @@ async function _test(){
     await disableTable( tableId2 );
     await listColumnsForGUI( tableId2, 1, 100, false );
     //
-    await disableColumn( columnId );
+    await disableColumn( columnId2 );
     await listColumnsForGUI( tableId2, 1, 100, false );
     //
     await deleteTable(tableId2);
