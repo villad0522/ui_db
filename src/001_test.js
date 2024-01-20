@@ -1,21 +1,22 @@
 
-import { test050 } from "./050_ip_address_test.js";
-import { test047 } from "./047_directory_test.js";
-import { test044 } from "./044_connect_database_test.js";
-import { test041 } from "./041_primary_key_test.js";
-import { test038 } from "./038_data_type_test.js";
-import { test035 } from "./035_table_name_test.js";
-import { test032 } from "./032_column_name_test.js";
-import { test029 } from "./029_reserved_word_test.js";
-import { test026 } from "./026_record_title_test.js";
-import { test023 } from "./023_relation_test.js";
-import { test020 } from "./020_search_text_test.js";
-import { test017 } from "./017_sort_test.js";
-import { test014 } from "./014_columnPath_test.js";
-import { test011 } from "./011_convert_sql_data_test.js";
-import { test008 } from "./008_generate_sql2_test.js";
-import { test005 } from "./005_generate_sql1_test.js";
-import { test002 } from "./002_generate_sql_test.js";
+import { test053 } from "./053_ip_address_test.js";
+import { test050 } from "./050_directory_test.js";
+import { test047 } from "./047_connect_database_test.js";
+import { test044 } from "./044_primary_key_test.js";
+import { test041 } from "./041_data_type_test.js";
+import { test038 } from "./038_table_name_test.js";
+import { test035 } from "./035_column_name_test.js";
+import { test032 } from "./032_reserved_word_test.js";
+import { test029 } from "./029_record_title_2_test.js";
+import { test026 } from "./026_relation_test.js";
+import { test023 } from "./023_search_text_test.js";
+import { test020 } from "./020_sort_test.js";
+import { test017 } from "./017_columnPath_test.js";
+import { test014 } from "./014_convert_sql_data_test.js";
+import { test011 } from "./011_generate_sql2_test.js";
+import { test008 } from "./008_generate_sql1_test.js";
+import { test005 } from "./005_generate_sql_test.js";
+import { test002 } from "./002_record_title_1_test.js";
 
 
 async function test() {
@@ -23,6 +24,7 @@ async function test() {
     if( process.argv.length < 3 ){
       // testNumberが指定されていない場合
       console.log("全てのレイヤーの動作テストを行います。");
+      await test053();
       await test050();
       await test047();
       await test044();
@@ -47,6 +49,9 @@ async function test() {
     const testNumber = Number(process.argv[2]);
     console.log(`テストコード${ testNumber }を実行します。`);
     switch( testNumber ){
+      case 53:
+        await test053();
+        break;
       case 50:
         await test050();
         break;

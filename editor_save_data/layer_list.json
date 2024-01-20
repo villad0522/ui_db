@@ -1,5 +1,10 @@
 [
   {
+    "layerId": "01HMK3QQV40SHFD77XNVCA8P2Y",
+    "layerNameJP": "レコードの見出し(上)",
+    "layerNameEN": "record_title_1"
+  },
+  {
     "layerId": "01HM5T8G9WJWNKEMEGBYP29CKA",
     "layerNameJP": "SQL生成",
     "layerNameEN": "generate_sql"
@@ -41,8 +46,8 @@
   },
   {
     "layerId": "01HM7EY8CJGHQ1YBC7NCFA5BH3",
-    "layerNameJP": "レコードの見出し",
-    "layerNameEN": "record_title"
+    "layerNameJP": "レコードの見出し(下)",
+    "layerNameEN": "record_title_2"
   },
   {
     "layerId": "01HM5YDWDRQGWAF3EKKWMW7985",
