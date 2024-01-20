@@ -100,5 +100,4 @@ export async function startUp_core( localUrl, isDebug ){
   catch (err) {
     throw `システム管理用テーブルの作成に失敗しました。${String(err)}`;
   }
-  await _reload();    // メモリに再読み込み
 }

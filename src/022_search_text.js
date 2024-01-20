@@ -396,17 +396,21 @@ export async function enableColumn_core( columnId ){
 // 予測変換
 export async function autoCorrect_core( tableId, columnId, inputText, conditions ){
   if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+  const primaryKey = await getPrimaryKey( tableId );
+  //
   // 文字列から名刺を抽出して、カタカナに変換する
   const inputWords = await _convertKeywords( inputText );
   console.log(inputWords.join(", "));
   //
   let sql = `
-    SELECT original_text AS originalText
-      FROM search_text
-      WHERE table_id = :tableId
-        AND column_id = :columnId
-        AND is_enable_table = 1
-        AND is_enable_column = 1`;
+    SELECT ${tableId}.${columnId} AS originalText
+      FROM ${tableId}
+      INNER JOIN search_text
+        ON ${tableId}.${primaryKey} = search_text.record_id
+        AND search_text.table_id = :tableId
+        AND search_text.column_id = :columnId
+      WHERE search_text.is_enable_table = 1
+        AND search_text.is_enable_column = 1`;
   //
   const statements = {};
   const searchList = [];
