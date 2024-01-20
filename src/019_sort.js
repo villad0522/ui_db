@@ -102,9 +102,3 @@ export async function startUp_core( localUrl, isDebug ){
   }
   await _reload();    // メモリに再読み込み
 }
-
-
-//【サブ関数】メモリに再読み込み
-async function _reload() {
-  //throw "この関数は未実装です。";
-}
