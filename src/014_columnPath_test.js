@@ -47,6 +47,7 @@ import {
   listDataTypes,
   checkField,
   checkRecord,
+  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   createTable,
@@ -101,4 +102,42 @@ export async function test014() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+  if( await getPathLength("main.c2 > c53 > c1") !== 3 ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if( await getPathLength("c2 > c53 > c1 > main") !== 4 ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if( await slicePath("main.c2 > c53 > c1", 1 ) !== "main.c2" ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if( await slicePath("main.c2 > c53 > c1", 2 ) !== "main.c2 > c53" ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if( await slicePath("main.c2 > c53 > c1", 3 ) !== "main.c2 > c53 > c1" ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if( await slicePath("c2 > c53 > c1 > main", 1 ) !== "main" ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if( await slicePath("c2 > c53 > c1 > main", 2 ) !== "c1 > main" ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if( await slicePath("c2 > c53 > c1 > main", 3 ) !== "c53 > c1 > main" ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if( await slicePath("c2 > c53 > c1 > main", 4 ) !== "c2 > c53 > c1 > main" ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  await checkPath("main.c2 > c53 > c1");
+  await checkPath("main.c2");
+  await checkPath("c2 > c53 > c1 > main");
+  //
+  if( await pathToColumnId("main.c2 > c53 > c1") !== "c1" ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if( await pathToColumnId("c2 > c53 > c1 > main") !== "c2" ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+
 }

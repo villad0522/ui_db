@@ -47,6 +47,7 @@ import {
   listDataTypes,
   checkField,
   checkRecord,
+  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   createTable,
@@ -76,6 +77,9 @@ let bugMode = 0;
 export function setBugMode( mode ){
     bugMode = mode;
 }
+
+
+
 
 
 // パスの例
@@ -124,32 +128,32 @@ export async function checkPath_core( pathText ){
   let pathArray = String(pathText).split(">");
   pathArray = pathArray.map( text => text.trim() );
   if(pathArray.length===0){
-    throw "カラムパスの長さが足りません";
+    throw `カラムパスの長さが足りません\npathText = ${pathText}`;
   }
   if( pathArray[0].startsWith("main.") ){
     if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
     // 先頭がメインテーブルの場合
-    pathArray = pathArray[0].replace( "main.", "" );
+    pathArray[0] = pathArray[0].replace( "main.", "" );
   }
   else if( pathArray.pop() === "main" ){
     if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
     // 末尾がメインテーブルの場合
-    if(pathArray.length===0){
-      throw "カラムパスの長さが足りません";
-    }
   }
   else{
-    throw "カラムパスの文法が不正です。先頭か末尾に「main」を書く必要があります。";
+    throw `カラムパスの文法が不正です。先頭か末尾に「main」を書く必要があります。\npathText = ${pathText}`;
+  }
+  if(pathArray.length===0){
+    throw `カラムパスの長さが足りません\npathText = ${pathText}`;
   }
   // この時点で、pathArrayの中身は全てカラムIDの形式（例：c55）になっているはず。
   for( let columnId of pathArray ){
     if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     if( !columnId.startsWith("c") ){
-      throw "カラムパスの文法が不正です。カラムIDの先頭に「c」が見つかりません。";
+      throw `カラムパスの文法が不正です。カラムIDの先頭に「c」が見つかりません。\npathText = ${pathText}`;
     }
     columnId = columnId.replace("c","");
     if(isNaN(columnId)){
-      throw "カラムパスの文法が不正です。カラムIDを数値に変換できません。";
+      throw `カラムパスの文法が不正です。カラムIDを数値に変換できません。\npathText = ${pathText}`;
     }
   }
 }

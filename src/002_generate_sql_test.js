@@ -47,6 +47,7 @@ import {
   listDataTypes,
   checkField,
   checkRecord,
+  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   createTable,
@@ -118,5 +119,6 @@ export async function test002() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+  aa
 
 }

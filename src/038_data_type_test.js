@@ -31,6 +31,7 @@ import {
   createTable,  // テーブルを作成
   deleteTable,  // 不可逆的にテーブルを削除
   getDataType,  // データ型を取得
+  deleteRecord,  // レコードを削除
 } from "./039_data_type_validate.js";
 import { setBugMode } from "./040_data_type.js";
 
@@ -39,7 +40,7 @@ export async function test038() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 19; i++ ) {
+    for ( i = 1; i <= 30; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -62,5 +63,109 @@ export async function test038() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+    await startUp("http://localhost:3000/", true);
+    //
+    await createTable("t88");
+    await createColumn( "t88", "c1", "FILE" );
+    //
+    await createTable("t67");
+    await createColumn( "t67", "c2", "INTEGER" );
+    await createColumn( "t67", "c3", "REAL" );
+    await createColumn( "t67", "c4", "TEXT" );
+    await createColumn( "t67", "c5", "BOOL" );
+    //
+    if( await getDataType("c1") !== "FILE" ){
+        throw "関数が想定通りの動作をしませんでした。";
+    }
+    if( await getDataType("c2") !== "INTEGER" ){
+        throw "関数が想定通りの動作をしませんでした。";
+    }
+    if( await getDataType("c3") !== "REAL" ){
+        throw "関数が想定通りの動作をしませんでした。";
+    }
+    if( await getDataType("c4") !== "TEXT" ){
+        throw "関数が想定通りの動作をしませんでした。";
+    }
+    if( await getDataType("c5") !== "BOOL" ){
+        throw "関数が想定通りの動作をしませんでした。";
+    }
+    await clearCache();
+    //
+    const dataTypes = await listDataTypes("t67");
+    if( dataTypes["c2"] !== "INTEGER" ){
+        throw "関数が想定通りの動作をしませんでした。";
+    }
+    if( dataTypes["c3"] !== "REAL" ){
+        throw "関数が想定通りの動作をしませんでした。";
+    }
+    if( dataTypes["c4"] !== "TEXT" ){
+        throw "関数が想定通りの動作をしませんでした。";
+    }
+    if( dataTypes["c5"] !== "BOOL" ){
+        throw "関数が想定通りの動作をしませんでした。";
+    }
+    //
+    await checkField( "c2", 23 );
+    await checkField( "c3", 3.14 );
+    await checkField( "c4", "hello" );
+    await checkField( "c5", false );
+    await checkRecord( "t67", {
+        "c2": 23,
+        "c3": 3.14,
+        "c4": "hello",
+        "c5": false,
+    });
+    const { recordId } = await createRecord( "t67", {
+        "c2": 23,
+        "c3": 3.14,
+        "c4": "hello",
+        "c5": false,
+    });
+    await updateRecord( "t67", [{
+        "t67_id": recordId,
+        "c2": 13,
+        "c3": 6.14,
+        "c4": "good",
+        "c5": true,
+    }]);
+    await updateRecord( "t67", [{
+        "recordId": recordId,
+        "c2": 13,
+        "c3": 6.14,
+        "gdyyuywg": "余分なデータ",
+        "c4": "good",
+        "c5": true,
+    }]);
+    await updateRecord( "t67", [{
+        "id": recordId,
+        "c2": 13,
+        "c3": 6.14,
+        "c4": "good",
+        "c5": true,
+    }]);
+    await deleteRecord( "t67", [{
+        "t67_id": recordId,
+    }]);
+    const { recordId: recordId2 } = await createRecord( "t67", {
+        "c2": 23,
+        "c3": 3.14,
+        "c4": "hello",
+        "c5": false,
+    });
+    await deleteRecord( "t67", [{
+        "recordId": recordId2,
+    }]);
+    const { recordId: recordId3 } = await createRecord( "t67", {
+        "c2": 23,
+        "c3": 3.14,
+        "c4": "hello",
+        "c5": false,
+    });
+    await deleteRecord( "t67", [{
+        "id": recordId3,
+    }]);
+    await deleteTable("t67");
+    //
+    await close();
 
 }

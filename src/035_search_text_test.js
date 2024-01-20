@@ -9,6 +9,7 @@ import {
   createTable,
   deleteTable,
   getDataType,
+  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   getLocalIp,
@@ -65,4 +66,5 @@ export async function test035() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+
 }

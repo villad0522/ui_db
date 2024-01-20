@@ -37,5 +37,28 @@ export async function test047() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+  await startUp("http://localhost:3000/");
+  //
+  if ( !fs.existsSync( await pathToColumnId("FRONTEND") ) ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if ( !fs.existsSync( await pathToColumnId("FRONTEND_CUSTOM") ) ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if ( !fs.existsSync( await pathToColumnId("FRONTEND_DEFAULT") ) ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if ( !fs.existsSync( await pathToColumnId("STATIC_DATA") ) ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if ( !fs.existsSync( await pathToColumnId("CACHE") ) ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if ( !fs.existsSync( await pathToColumnId("SAVEDATA") ) ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
+  if ( !fs.existsSync( await pathToColumnId("SHARE") ) ){
+    throw "関数が想定通りの動作をしませんでした。";
+  }
 
 }

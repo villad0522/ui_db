@@ -45,6 +45,7 @@ import {
   checkField,
   checkRecord,
   getDataType,
+  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   disableTable,

@@ -228,7 +228,7 @@ export async function createRecord_core( tableId, recordData ){
         }
     );
     const records = await runSqlReadOnly(
-        `SELECT ${primaryKey} FROM ${tableId}
+        `SELECT * FROM ${tableId}
             WHERE created_at = :createdAt
             LIMIT 1;`,
         {
@@ -249,72 +249,95 @@ export async function createRecord_core( tableId, recordData ){
 }
 
 // レコードを上書き
-export async function updateRecord_core( tableId, recordId, recordData ){
+export async function updateRecord_core( tableId, records ){
   if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
-    const primaryKey = await getPrimaryKey( tableId );
-    if( recordData[primaryKey] ){
-        throw "プライマリキーは上書き禁止です。";
-    }
-    //
-    // 「tableId」が本当に存在するのか確認（インジェクション攻撃対策）
+    // 「tableId」が本当に存在するのか確認
     const dataTypes = cacheData[tableId];
     if(Object.keys(dataTypes).length===0){
         throw "指定されたテーブルは存在しません。";
     }
     //
-    const records = await runSqlReadOnly(
-        `SELECT * FROM ${tableId} WHERE ${primaryKey} = :recordId LIMIT 1;`,
-        {
-            ":recordId": recordId,
-        },
-    );
-    if(records.length===0){
-        throw "指定されたレコードは存在しません。";
-    }
-    //
-    // レコードのデータ型を検証する
-    const {isOK,message} = _checkRecord( tableId, recordData )
-    if( isOK===false ){
-        throw message;
-    }
-    //
-    const words = [];
-    for( const columnId in recordData ){
+    const primaryKey = await getPrimaryKey( tableId );
+    for( const r of records ){
         if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
-        // 配列「columnId」が本当に存在するカラムなのかを確認（インジェクション攻撃対策）
-        if( !dataTypes[columnId] ){
-            throw "指定されたカラムは存在しません。";
+        const recordData = structuredClone(r);
+        let recordId;
+        if( recordData[primaryKey] ){
+            if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+            recordId = recordData[primaryKey];
+            delete recordData[primaryKey];
         }
-        words.push(`${columnId}=:${columnId}`);
+        else if( recordData["recordId"] ){
+            if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+            recordId = recordData["recordId"];
+            delete recordData["recordId"];
+        }
+        else if( recordData["id"] ){
+            if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+            recordId = recordData["id"];
+            delete recordData["id"];
+        }
+        else{
+            throw "上書き対象のプライマリキーが指定されていません。";
+        }
+        const records = await runSqlReadOnly(
+            `SELECT * FROM ${tableId} WHERE ${primaryKey} = :recordId LIMIT 1;`,
+            {
+                ":recordId": recordId,
+            },
+        );
+        if(records.length===0){
+            throw "指定されたレコードは存在しません。";
+        }
+        //
+        // 存在しないカラムを削除する
+        for( const columnId in recordData ){
+            if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+            if( !dataTypes[columnId] ){
+                if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+                delete recordData[columnId];
+            }
+        }
+        //
+        // レコードのデータ型を検証する
+        const {isOK,message} = _checkRecord( tableId, recordData )
+        if( isOK===false ){
+            throw message;
+        }
+        //
+        const words = [];
+        const newRecordData = {};
+        for( const columnId in recordData ){
+            if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+            words.push(`${columnId}=:${columnId}`);
+            newRecordData[":"+columnId] = recordData[columnId];
+        }
+        //
+        // レコードを上書きする。
+        const timestamp = new Date().getTime();
+        await runSqlWriteOnly(
+            `UPDATE ${tableId}
+                SET ${words.join(", ")}, updated_at=:updatedAt
+                WHERE ${primaryKey} = :recordId;`,
+            {
+                ...newRecordData,
+                ":recordId": recordId,
+                ":updatedAt": timestamp,
+            },
+        );
     }
-    //
-    // レコードを上書きする。
-    const timestamp = new Date().getTime();
-    await runSqlWriteOnly(
-        `UPDATE ${tableId}
-            SET ${words.join(", ")}, updated_at=:updatedAt
-            WHERE ${primaryKey} = :recordId;`,
-        {
-            ...newRecordData,
-            ":recordId": recordId,
-            ":updatedAt": timestamp,
-        },
-    );
     return "レコードを上書きしました。";
 }
 
 
 // フィールドを検証
-export async function checkField_core( tableId, columnId, value ){
-  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
-    return _checkField( tableId, columnId, value );
+export async function checkField_core( columnId, value ){
+  if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+    return _checkField( columnId, value );
 }
 
 
-function _checkField( tableId, columnId, value ){
-    if( !String(tableId).startsWith("t") ){
-        throw `テーブルIDに無効な文字列「${tableId}」が指定されました。`;
-    }
+function _checkField( columnId, value ){
     if( !String(columnId).startsWith("c") ){
         throw `カラムIDに無効な文字列「${columnId}」が指定されました。`;
     }
@@ -324,7 +347,7 @@ function _checkField( tableId, columnId, value ){
             message: "空欄です。",
         };
     }
-    const dataType = cacheData[tableId][columnId];
+    const dataType = cacheData2[columnId];
     if(!dataType){
         throw "指定されたカラムは存在しません。";
     }
@@ -382,14 +405,14 @@ function _checkField( tableId, columnId, value ){
 
 // レコードを検証
 export async function checkRecord_core( tableId, recordData ){
-  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
     return _checkRecord( tableId, recordData );
 }
 
 // レコードを検証
 function _checkRecord( tableId, recordData ){
     for( const columnId in recordData){
-        const {isOK,message} = _checkField( tableId, columnId, recordData[columnId] );
+        const {isOK,message} = _checkField( columnId, recordData[columnId] );
         if(isOK===false){
             return {
                 isOK: false,
@@ -405,7 +428,7 @@ function _checkRecord( tableId, recordData ){
 
 // テーブルを作成
 export async function createTable_core( tableId ){
-  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
     const primaryKey = await getPrimaryKey( tableId );
     // テーブルを作成する
     await runSqlWriteOnly(
@@ -421,7 +444,7 @@ export async function createTable_core( tableId ){
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
-  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
     // テーブルを削除する
     await runSqlWriteOnly(
         `DROP TABLE IF EXISTS ${tableId};`,
@@ -442,6 +465,55 @@ export async function deleteTable_core( tableId ){
 
 // データ型を取得
 export async function getDataType_core( columnId ){
-  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
     return cacheData2[columnId];
+}
+
+
+// レコードを削除
+export async function deleteRecord_core( tableId, records ){
+  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+    // 「tableId」が本当に存在するのか確認
+    const dataTypes = cacheData[tableId];
+    if(Object.keys(dataTypes).length===0){
+        throw "指定されたテーブルは存在しません。";
+    }
+    //
+    const primaryKey = await getPrimaryKey( tableId );
+    for( const recordData of records ){
+        if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+        let recordId;
+        if( recordData[primaryKey] ){
+            if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+            recordId = recordData[primaryKey];
+        }
+        else if( recordData["recordId"] ){
+            if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+            recordId = recordData["recordId"];
+        }
+        else if( recordData["id"] ){
+            if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+            recordId = recordData["id"];
+        }
+        else{
+            throw "削除対象のプライマリキーが指定されていません。";
+        }
+        const records2 = await runSqlReadOnly(
+            `SELECT * FROM ${tableId} WHERE ${primaryKey} = :recordId LIMIT 1;`,
+            {
+                ":recordId": recordId,
+            },
+        );
+        if(records2.length===0){
+            throw "指定されたレコードは存在しません。";
+        }
+        //
+        await runSqlWriteOnly(
+            `DELETE FROM ${tableId} WHERE ${primaryKey} = :recordId;`,
+            {
+                ":recordId": recordId,
+            },
+        );
+    }
+    return "レコードを削除しました。";
 }

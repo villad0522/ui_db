@@ -41,6 +41,7 @@ import {
   checkField,
   checkRecord,
   getDataType,
+  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   disableTable,
@@ -86,4 +87,5 @@ export async function test026() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+
 }

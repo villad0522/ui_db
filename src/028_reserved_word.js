@@ -43,6 +43,7 @@ import {
   checkField,
   checkRecord,
   getDataType,
+  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   createTable,
@@ -132,6 +133,8 @@ export async function reserveWord_core( word ){
 }
 
 const reservedWords = [
+  "ID",
+  "RECORDID",
   "ABORT",
   "ACTION",
   "ADD",

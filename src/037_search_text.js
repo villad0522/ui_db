@@ -12,6 +12,7 @@ import {
   createTable,
   deleteTable,
   getDataType,
+  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   getLocalIp,
@@ -52,15 +53,13 @@ export async function startUp_core( localUrl, isDebug ){
   await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
   try {
     // テーブルを作成する（検索のため）
-    await createTable("search_text");
-    //
-    // テーブルを作成する（検索テーブルの情報が最新かどうかを保存するため）
-    await createTable("is_search_text_latest");
     await runSqlWriteOnly(
       `CREATE TABLE IF NOT EXISTS is_search_text_latest (
-        "table_id" INTEGER NOT NULL,
-        "data_type" TEXT NOT NULL,
-        "created_at" INTEGER NOT NULL
+        "table_id" TEXT NOT NULL,
+        "column_id" TEXT NOT NULL,
+        "record_id" TEXT NOT NULL,
+        "original_text" TEXT NOT NULL,
+        "romanAlphabet" TEXT NOT NULL
       );`,
       {},
     );

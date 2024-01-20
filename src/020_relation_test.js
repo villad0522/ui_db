@@ -46,6 +46,7 @@ import {
   listDataTypes,
   checkField,
   checkRecord,
+  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   disableTable,
@@ -93,4 +94,18 @@ export async function test020() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+    await startUp("http://localhost:3000/", true);
+    //
+    const {tableId1} = await createTable("学年");
+    await createColumn( tableId1, "学年", "INTEGER", null );
+    //
+    const {tableId2} = await createTable("名簿");
+    await createColumn( tableId2, "氏名", "TEXT", null );
+    await createColumn( tableId2, "学年", "POINTER", tableId1 );
+    //
+    await listColumnsAll( tableId2 );
+    //
+    await deleteTable(tableId2);
+    await close();
+
 }

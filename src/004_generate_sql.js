@@ -47,6 +47,7 @@ import {
   listDataTypes,
   checkField,
   checkRecord,
+  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   createTable,

@@ -53,6 +53,7 @@ import {
   checkField,
   checkRecord,
   getDataType,
+  deleteRecord,
 } from "./039_data_type_validate.js";
 import {
   disableTable,
@@ -71,6 +72,9 @@ let bugMode = 0;
 export function setBugMode( mode ){
     bugMode = mode;
 }
+
+
+
 
 
 // プログラム起動
