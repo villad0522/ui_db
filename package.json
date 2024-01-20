@@ -27,6 +27,8 @@
     "express-session": "^1.17.3",
     "glob": "^10.3.10",
     "iconv-lite": "^0.6.3",
+    "kuroshiro": "~1.1.2",
+    "kuroshiro-analyzer-kuromoji": "^1.1.0",
     "opener": "^1.5.2",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",

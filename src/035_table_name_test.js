@@ -1,11 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 import {
+  createColumn,
+  listDataTypes,
   createRecord,
   updateRecord,
+  checkField,
+  checkRecord,
+  getDataType,
   deleteRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
+} from "./039_data_type_validate.js";
 import {
   getLocalIp,
 } from "./051_ip_address_validate.js";
@@ -24,13 +28,6 @@ import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
 import {
-  createColumn,
-  listDataTypes,
-  checkField,
-  checkRecord,
-  getDataType,
-} from "./039_data_type_validate.js";
-import {
   startUp,  // プログラム起動
   clearCache,  // インメモリキャッシュを削除する
   createTable,  // テーブルを作成
@@ -43,11 +40,11 @@ import {
   runSqlWriteOnly,  // SQLクエリ実行（書き込み専用）
   checkTableEnabled,  // テーブルが有効なのか判定
   getTableName,  // IDからテーブル名を取得
-} from "./033_table_name_validate.js";
-import { setBugMode } from "./034_table_name.js";
+} from "./036_table_name_validate.js";
+import { setBugMode } from "./037_table_name.js";
 
 
-export async function test032() {
+export async function test035() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;

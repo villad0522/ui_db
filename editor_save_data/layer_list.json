@@ -30,6 +30,11 @@
     "layerNameEN": "sort"
   },
   {
+    "layerId": "01HM1S7MRXG1TPKCR514Y0SS5J",
+    "layerNameJP": "文字列検索",
+    "layerNameEN": "search_text"
+  },
+  {
     "layerId": "01HM63PB1G602AZ8FNS545P6DY",
     "layerNameJP": "リレーション",
     "layerNameEN": "relation"
@@ -53,11 +58,6 @@
     "layerId": "01HM1SCJ67H41MWK6BDG6MQE76",
     "layerNameJP": "テーブル名の置き換え",
     "layerNameEN": "table_name"
-  },
-  {
-    "layerId": "01HM1S7MRXG1TPKCR514Y0SS5J",
-    "layerNameJP": "文字列検索",
-    "layerNameEN": "search_text"
   },
   {
     "layerId": "01HM1S4TRMCV7S59Y7PVYHHRTE",

@@ -13,7 +13,7 @@ import {
   checkColumnEnabled,
   listColumnsAll,
   getColumnName,
-} from "./030_column_name_validate.js";
+} from "./033_column_name_validate.js";
 import {
   getLocalIp,
 } from "./051_ip_address_validate.js";
@@ -37,26 +37,23 @@ import {
   updateTableName,
   updateColumnName,
   reserveWord,
-} from "./027_reserved_word_validate.js";
+} from "./030_reserved_word_validate.js";
 import {
   listDataTypes,
+  createRecord,
+  updateRecord,
   checkField,
   checkRecord,
   getDataType,
-} from "./039_data_type_validate.js";
-import {
-  createRecord,
-  updateRecord,
   deleteRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
+} from "./039_data_type_validate.js";
 import {
   disableTable,
   enableTable,
   listTables,
   checkTableEnabled,
   getTableName,
-} from "./033_table_name_validate.js";
+} from "./036_table_name_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
@@ -68,6 +65,8 @@ let bugMode = 0;
 export function setBugMode( mode ){
     bugMode = mode;
 }
+
+
 
 
 // プログラム起動

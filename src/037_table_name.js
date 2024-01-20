@@ -2,11 +2,18 @@
 //
 import {
   startUp,
+  clearCache,
+  createColumn,
+  listDataTypes,
   createRecord,
   updateRecord,
+  checkField,
+  checkRecord,
+  createTable,
+  deleteTable,
+  getDataType,
   deleteRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
+} from "./039_data_type_validate.js";
 import {
   getLocalIp,
 } from "./051_ip_address_validate.js";
@@ -26,16 +33,6 @@ import {
 import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
-import {
-  clearCache,
-  createColumn,
-  listDataTypes,
-  checkField,
-  checkRecord,
-  createTable,
-  deleteTable,
-  getDataType,
-} from "./039_data_type_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）

@@ -20,12 +20,10 @@ import {
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
-  disableColumn,
-  enableColumn,
   getTableId,
   checkColumnEnabled,
   getColumnName,
-} from "./030_column_name_validate.js";
+} from "./033_column_name_validate.js";
 import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
@@ -37,7 +35,7 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
-} from "./021_relation_validate.js";
+} from "./024_relation_validate.js";
 import {
   listDataTypes,
   checkField,
@@ -47,25 +45,27 @@ import {
   createRecord,
   updateRecord,
   deleteRecord,
+  disableTable,
+  enableTable,
+  disableColumn,
+  enableColumn,
   delete_table,
-} from "./036_search_text_validate.js";
+} from "./021_search_text_validate.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
-} from "./027_reserved_word_validate.js";
-import {
-  disableTable,
-  enableTable,
-  checkTableEnabled,
-  getTableName,
-} from "./033_table_name_validate.js";
+} from "./030_reserved_word_validate.js";
 import {
   listTables,
   setTitleColumn,
   getTitleColumnId,
-} from "./024_record_title_validate.js";
+} from "./027_record_title_validate.js";
+import {
+  checkTableEnabled,
+  getTableName,
+} from "./036_table_name_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）

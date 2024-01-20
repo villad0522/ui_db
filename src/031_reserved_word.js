@@ -15,7 +15,7 @@ import {
   checkColumnEnabled,
   listColumnsAll,
   getColumnName,
-} from "./030_column_name_validate.js";
+} from "./033_column_name_validate.js";
 import {
   getLocalIp,
 } from "./051_ip_address_validate.js";
@@ -35,16 +35,13 @@ import {
 } from "./042_primary_key_validate.js";
 import {
   listDataTypes,
+  createRecord,
+  updateRecord,
   checkField,
   checkRecord,
   getDataType,
-} from "./039_data_type_validate.js";
-import {
-  createRecord,
-  updateRecord,
   deleteRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
+} from "./039_data_type_validate.js";
 import {
   createTable,
   disableTable,
@@ -53,7 +50,7 @@ import {
   listTables,
   checkTableEnabled,
   getTableName,
-} from "./033_table_name_validate.js";
+} from "./036_table_name_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
@@ -137,6 +134,7 @@ export async function reserveWord_core( word ){
 const reservedWords = [
   "ID",
   "RECORDID",
+  //
   "ABORT",
   "ACTION",
   "ADD",

@@ -1,8 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import {
+  startUp,
   runSqlReadOnly,
   runSqlWriteOnly,
+  clearCache,
+  deleteTable,
   disableColumn,
   enableColumn,
   listColumnsForGUI,
@@ -10,7 +13,7 @@ import {
   checkColumnEnabled,
   listColumnsAll,
   getColumnName,
-} from "./030_column_name_validate.js";
+} from "./033_column_name_validate.js";
 import {
   getLocalIp,
 } from "./051_ip_address_validate.js";
@@ -29,42 +32,32 @@ import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
 import {
-  createColumn,
-  createTable,
-  updateTableName,
-  updateColumnName,
-  reserveWord,
-} from "./027_reserved_word_validate.js";
-import {
   listDataTypes,
+  createRecord,
+  updateRecord,
   checkField,
   checkRecord,
   getDataType,
-} from "./039_data_type_validate.js";
-import {
-  createRecord,
-  updateRecord,
   deleteRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
+} from "./039_data_type_validate.js";
 import {
   disableTable,
   enableTable,
+  listTables,
   checkTableEnabled,
   getTableName,
-} from "./033_table_name_validate.js";
+} from "./036_table_name_validate.js";
 import {
-  startUp,  // プログラム起動
-  setTitleColumn,  // 見出しの役割を果たすカラムを登録する
-  getTitleColumnId,  // 見出しの役割を果たすカラムを取得する
-  listTables,  // テーブルの一覧を取得(重)
-  deleteTable,  // 不可逆的にテーブルを削除
-  clearCache,  // インメモリキャッシュを削除する
-} from "./024_record_title_validate.js";
-import { setBugMode } from "./025_record_title.js";
+  createColumn,  // カラムを作成
+  updateColumnName,  // カラム名を変更
+  createTable,  // テーブルを作成
+  updateTableName,  // テーブル名を変更
+  reserveWord,  // 予約語を追加
+} from "./030_reserved_word_validate.js";
+import { setBugMode } from "./031_reserved_word.js";
 
 
-export async function test023() {
+export async function test029() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
@@ -78,12 +71,12 @@ export async function test023() {
         }
         // 意図的に埋め込んだバグを検出できなかった場合
         setBugMode(0);    // 意図的なバグの発生を止める
-        console.log(`レイヤー「record_title」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
+        console.log(`レイヤー「reserved_word」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
         return;
     }
     // 意図的に埋め込んだ全てのバグを、正常に検出できた
     setBugMode(0);    // 意図的なバグの発生を止める
-    console.log(`レイヤー「record_title」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
+    console.log(`レイヤー「reserved_word」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
     return;
 }
 

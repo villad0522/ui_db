@@ -11,7 +11,7 @@ import {
   runSqlWriteOnly_core,  // SQLクエリ実行（書き込み専用）
   checkTableEnabled_core,  // テーブルが有効なのか判定
   getTableName_core,  // IDからテーブル名を取得
-} from "./034_table_name.js";
+} from "./037_table_name.js";
 
 
 //#######################################################################################

@@ -8,7 +8,7 @@ import {
   listTables,
   checkTableEnabled,
   getTableName,
-} from "./033_table_name_validate.js";
+} from "./036_table_name_validate.js";
 import {
   getLocalIp,
 } from "./051_ip_address_validate.js";
@@ -28,16 +28,13 @@ import {
 } from "./042_primary_key_validate.js";
 import {
   listDataTypes,
+  createRecord,
+  updateRecord,
   checkField,
   checkRecord,
   getDataType,
-} from "./039_data_type_validate.js";
-import {
-  createRecord,
-  updateRecord,
   deleteRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
+} from "./039_data_type_validate.js";
 import {
   startUp,  // プログラム起動
   clearCache,  // インメモリキャッシュを削除する
@@ -53,11 +50,11 @@ import {
   checkColumnEnabled,  // カラムが有効なのか判定
   listColumnsAll,  // カラムの一覧を取得（高速）
   getColumnName,  // IDからカラム名を取得
-} from "./030_column_name_validate.js";
-import { setBugMode } from "./031_column_name.js";
+} from "./033_column_name_validate.js";
+import { setBugMode } from "./034_column_name.js";
 
 
-export async function test029() {
+export async function test032() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;

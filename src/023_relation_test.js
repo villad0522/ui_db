@@ -4,7 +4,7 @@ import {
   listTables,
   setTitleColumn,
   getTitleColumnId,
-} from "./024_record_title_validate.js";
+} from "./027_record_title_validate.js";
 import {
   getLocalIp,
 } from "./051_ip_address_validate.js";
@@ -27,7 +27,7 @@ import {
   getTableId,
   checkColumnEnabled,
   getColumnName,
-} from "./030_column_name_validate.js";
+} from "./033_column_name_validate.js";
 import {
   getPrimaryKey,
 } from "./042_primary_key_validate.js";
@@ -36,24 +36,21 @@ import {
   updateTableName,
   updateColumnName,
   reserveWord,
-} from "./027_reserved_word_validate.js";
+} from "./030_reserved_word_validate.js";
 import {
   listDataTypes,
-  checkField,
-  checkRecord,
-} from "./039_data_type_validate.js";
-import {
   createRecord,
   updateRecord,
+  checkField,
+  checkRecord,
   deleteRecord,
-  delete_table,
-} from "./036_search_text_validate.js";
+} from "./039_data_type_validate.js";
 import {
   disableTable,
   enableTable,
   checkTableEnabled,
   getTableName,
-} from "./033_table_name_validate.js";
+} from "./036_table_name_validate.js";
 import {
   startUp,  // プログラム起動
   createColumn,  // カラムを作成
@@ -63,11 +60,11 @@ import {
   listColumnsAll,  // カラムの一覧を取得
   getParentTableId,  // 参照先のテーブルIDを取得する
   getDataType,  // データ型を取得
-} from "./021_relation_validate.js";
-import { setBugMode } from "./022_relation.js";
+} from "./024_relation_validate.js";
+import { setBugMode } from "./025_relation.js";
 
 
-export async function test020() {
+export async function test023() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;

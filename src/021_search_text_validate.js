@@ -4,7 +4,11 @@ import {
   updateRecord_core,  // レコードを上書き
   delete_table_core,  // 不可逆的にテーブルを削除
   deleteRecord_core,  // レコードを削除
-} from "./037_search_text.js";
+  disableTable_core,  // テーブルを無効化
+  enableTable_core,  // テーブルを再度有効化
+  disableColumn_core,  // カラムを無効化
+  enableColumn_core,  // カラムを再度有効化
+} from "./022_search_text.js";
 
 
 //#######################################################################################
@@ -311,6 +315,190 @@ export async function deleteRecord( tableId, records ){
     }
     else{
       throw new Error(`resultが文字列ではありません。\nレイヤー : search_text\n関数 : deleteRecord`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「disableTable_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function disableTable( tableId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : search_text\n関数 : disableTable`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : search_text\n関数 : disableTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await disableTable_core( tableId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : search_text\n関数 : disableTable`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : search_text\n関数 : disableTable`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : search_text\n関数 : disableTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「enableTable_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function enableTable( tableId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : search_text\n関数 : enableTable`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : search_text\n関数 : enableTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await enableTable_core( tableId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : search_text\n関数 : enableTable`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : search_text\n関数 : enableTable`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : search_text\n関数 : enableTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「disableColumn_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function disableColumn( columnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof columnId !== "string" ){
+    if( !columnId ){
+      throw new Error(`columnIdがNULLです。\nレイヤー : search_text\n関数 : disableColumn`);
+    }
+    else{
+      throw new Error(`columnIdが文字列ではありません。\nレイヤー : search_text\n関数 : disableColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await disableColumn_core( columnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : search_text\n関数 : disableColumn`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : search_text\n関数 : disableColumn`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : search_text\n関数 : disableColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「enableColumn_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function enableColumn( columnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof columnId !== "string" ){
+    if( !columnId ){
+      throw new Error(`columnIdがNULLです。\nレイヤー : search_text\n関数 : enableColumn`);
+    }
+    else{
+      throw new Error(`columnIdが文字列ではありません。\nレイヤー : search_text\n関数 : enableColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await enableColumn_core( columnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : search_text\n関数 : enableColumn`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : search_text\n関数 : enableColumn`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : search_text\n関数 : enableColumn`);
     }
   }
   //

@@ -7,7 +7,7 @@ import {
   listColumnsAll_core,  // カラムの一覧を取得
   getParentTableId_core,  // 参照先のテーブルIDを取得する
   getDataType_core,  // データ型を取得
-} from "./022_relation.js";
+} from "./025_relation.js";
 
 
 //#######################################################################################
