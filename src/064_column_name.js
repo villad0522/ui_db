@@ -66,7 +66,7 @@ export async function startUp_core( localUrl, isDebug ){
             "column_name" TEXT NOT NULL,
             "table_id" TEXT NOT NULL,
             "enable" INTEGER NOT NULL DEFAULT 1,
-            "created_at" INTEGER NOT NULL
+            "created_at" INTEGER UNIQUE
         );`,
         {},
     );

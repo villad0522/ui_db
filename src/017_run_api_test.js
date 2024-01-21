@@ -2,7 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import {
   startUp,
-} from "./024_question_validate.js";
+  createPage,
+  updatePageName,
+  getPageInfo,
+} from "./024_pages_validate.js";
 import {
   getLocalIp,
 } from "./081_ip_address_validate.js";

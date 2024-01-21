@@ -61,7 +61,7 @@ export async function startUp_core( localUrl, isDebug ){
             "table_number" INTEGER PRIMARY KEY AUTOINCREMENT,
             "table_name" TEXT NOT NULL,
             "enable" INTEGER NOT NULL DEFAULT 1,
-            "created_at" INTEGER NOT NULL
+            "created_at" INTEGER UNIQUE
         );`,
         {},
     );

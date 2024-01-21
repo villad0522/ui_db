@@ -18,7 +18,7 @@ import { test035 } from "./035_generate_sql1_test.js";
 import { test032 } from "./032_generate_sql_test.js";
 import { test029 } from "./029_record_title_1_test.js";
 import { test026 } from "./026_frontend_files_test.js";
-import { test023 } from "./023_question_test.js";
+import { test023 } from "./023_pages_test.js";
 import { test020 } from "./020_api_info_test.js";
 import { test017 } from "./017_run_api_test.js";
 import { test014 } from "./014_pagination_test.js";
