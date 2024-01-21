@@ -52,7 +52,7 @@ window.renameButton = function () {
 }
 //
 //###############################################################
-// テーブルがクリックされたときに実行する関数
+// 列がクリックされたときに実行する関数
 window.tableButton = function (i) {
     // テーブル名
     let tableId = document.getElementsByName(`columns${i}_id`)[0].value;

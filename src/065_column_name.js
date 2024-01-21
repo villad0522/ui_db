@@ -54,6 +54,9 @@ export function setBugMode( mode ){
 }
 
 
+
+
+
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -88,6 +91,11 @@ let cacheData2 = {
     //        }
     //    ]
 };
+let cacheData3 = {
+    // データの例
+    // "c2": "t1",
+    // "c8": "t1"
+};
 
 //【サブ関数】メモリに再読み込み
 async function _reload() {
@@ -103,9 +111,11 @@ async function _reload() {
     );
     cacheData1 = {};
     cacheData2 = {};
+    cacheData3 = {};
     for (const { columnNumber, columnName, tableId } of matrix) {
         const columnId = "c" + String(columnNumber);
         cacheData1[columnId] = columnName;
+        cacheData3[columnId] = tableId;
         if(!cacheData2[tableId]){
             cacheData2[tableId] = [];
         }
@@ -270,7 +280,8 @@ export async function updateColumnName_core( columns ){
     if(columns.length===0){
         throw "配列「columns」が空です。";
     }
-    const tableId = await getTableId( columns[0].id );
+    const columnId = columns[0].id;
+    const tableId = cacheData3[columnId];
     //
     //==========================================================
     // カラム名の先頭にテーブルIDを付け加える（「t2」など）
@@ -421,24 +432,7 @@ export async function runSqlWriteOnly_core( sql, params ){
 // カラムIDからテーブルIDを調べる
 export async function getTableId_core( columnId ){
   if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
-    let columnNumber = columnId.replace("c","");
-    if(isNaN(columnNumber)){
-        throw "指定されたカラムIDは無効です。";
-    }
-    columnNumber = Number(columnNumber);
-    const columns = await runSqlReadOnly(
-        `SELECT table_id AS tableId
-        FROM column_names
-        WHERE column_number = :columnNumber
-        LIMIT 1;`,
-        {
-            ":columnNumber": columnNumber,
-        },
-    );
-    if(columns.length===0){
-        throw "指定されたカラムIDは存在しません。";
-    }
-    return columns[0]["tableId"];
+    return cacheData3[columnId];
 }
 
 // 不可逆的にテーブルを削除

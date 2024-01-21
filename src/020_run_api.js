@@ -223,7 +223,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       );
       return {
         "userMessage": message,
-        "nextUrl": "../",
+        "nextUrl": `../?table=${queryParameters["table"]}`,
       };
     }
     //======================================================================

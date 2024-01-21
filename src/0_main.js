@@ -53,7 +53,7 @@ async function main({ isDebug }) {
 }
 
 
-main({ isDebug: true });
+main({ isDebug: false });
 
 //============================================================
 function _launchServer(app, hostname, startPort, maxPort) {
