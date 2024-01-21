@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title></title>
+        <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP" rel="stylesheet">
+        <link rel="stylesheet" href="./table.css" />
+        <script defer src="./table.js"></script>
+    </head>
+
+    <body>
+        <div>
+            <div style="position: fixed;">
+                <button onclick="history.back()" class="button_flat">
+                    戻る
+                </button>
+                <a href="/" class="button_flat">
+                    メインメニュー
+                </a>
+            </div>
+            <br>
+            <br>
+            <table>
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <p id="no_data" class="no_data">
+            データが１件もありません
+        </p>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <div id="bottom_bar">
+            <span id="select_number">4件を選択中</span>
+            <button id="deselect_button" class="button_flat dark">選択解除</button>
+            <button id="edit_button" class="button_flat dark">編集</button>
+            <button id="delete_button" class="button_flat dark">まとめて削除</button>
+
+            <a class="add_button">
+                <svg class="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M911.232 420.565333l0 109.717333q0 22.848-16 38.848t-38.848 16l-237.717333 0 0 237.717333q0 22.848-16 38.848t-38.848 16l-109.717333 0q-22.848 0-38.848-16t-16-38.848l0-237.717333-237.717333 0q-22.848 0-38.848-16t-16-38.848l0-109.717333q0-22.848 16-38.848t38.848-16l237.717333 0 0-237.717333q0-22.848 16-38.848t38.848-16l109.717333 0q22.848 0 38.848 16t16 38.848l0 237.717333 237.717333 0q22.848 0 38.848 16t16 38.848z" />
+                </svg>
+            </a>
+
+        </div>
+    </body>
+
+</html>

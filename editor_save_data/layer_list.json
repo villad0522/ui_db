@@ -1,5 +1,20 @@
 [
   {
+    "layerId": "01HMNZ8SGAZXY68HQTQN230ZHH",
+    "layerNameJP": "テンプレート管理",
+    "layerNameEN": "excel_template"
+  },
+  {
+    "layerId": "01HMP19J9MP2XK0MN03KMVTWP0",
+    "layerNameJP": "動的リスト",
+    "layerNameEN": "dynamic_list"
+  },
+  {
+    "layerId": "01HMNXBFJ0S33T6WGJCJ0C3YF6",
+    "layerNameJP": "Excelファイル操作",
+    "layerNameEN": "excel_edit"
+  },
+  {
     "layerId": "01HMKV6GE8BJ4FKMNAVGZST2ZT",
     "layerNameJP": "トランザクション処理",
     "layerNameEN": "transaction"

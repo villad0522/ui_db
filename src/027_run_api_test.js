@@ -1,12 +1,11 @@
-
+import fs from 'fs';
+import path from 'path';
 import {
   startUp,
-  createTemplate,
-  deleteTemplate,
-  updateTemplateName,
-  listTemplates,
-  getTemplateName,
-} from "./004_excel_template_validate.js";
+  createPage,
+  updatePageName,
+  getPageInfo,
+} from "./034_pages_validate.js";
 import {
   getLocalIp,
 } from "./091_ip_address_validate.js";
@@ -35,6 +34,7 @@ import {
 } from "./082_primary_key_validate.js";
 import {
   clearCache,
+  getEndpointInfo,
   listEndpoints,
 } from "./031_api_info_validate.js";
 import {
@@ -101,96 +101,39 @@ import {
 } from "./046_generate_sql1_validate.js";
 import {
   generateSQL,
-  createDynamicList,
-  deleteDynamicList,
-} from "./007_dynamic_list_validate.js";
+} from "./043_generate_sql_validate.js";
 import {
-  createPage,
-  updatePageName,
-  getPageInfo,
-} from "./034_pages_validate.js";
-import {
-  getEndpointInfo,
-} from "./022_convert_array_validate.js";
-import {
-  runApi,
-} from "./013_transaction_validate.js";
-import {
-  updateExcel,
-  openExcel,
-} from "./010_excel_edit_validate.js";
+  runApi,  // APIを実行する関数
+} from "./028_run_api_validate.js";
+import { setBugMode } from "./029_run_api.js";
 
-export {
-  startUp,
-  getLocalIp,
-  getPath,
-  getDebugMode,
-  startTransaction,
-  endTransaction,
-  runSqlReadOnly,
-  runSqlWriteOnly,
-  createRecordsFromCsv,
-  getCsvProgress,
-  close,
-  getPrimaryKey,
-  clearCache,
-  createColumn,
-  listDataTypes,
-  createRecord,
-  updateRecord,
-  checkField,
-  checkRecord,
-  createTable,
-  deleteTable,
-  getDataType,
-  deleteRecord,
-  disableTable,
-  enableTable,
-  updateTableName,
-  listTables,
-  checkTableEnabled,
-  getTableName,
-  disableColumn,
-  enableColumn,
-  updateColumnName,
-  listColumnsForGUI,
-  getTableId,
-  checkColumnEnabled,
-  listColumnsAll,
-  getColumnName,
-  reserveWord,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-  getParentTableId,
-  delete_table,
-  autoCorrect,
-  getPathLength,
-  slicePath,
-  checkPath,
-  pathToColumnId,
-  getJoinIdMap,
-  checkTableDuplication,
-  getSelectData,
-  getJoinData,
-  getWhereData,
-  getOrderData,
-  generateSQLwithoutDuplication,
-  generateSQLwithDuplication,
-  generateSQL,
-  createPage,
-  updatePageName,
-  getPageInfo,
-  getEndpointInfo,
-  listEndpoints,
-  runApi,
-  updateExcel,
-  openExcel,
-  createDynamicList,
-  deleteDynamicList,
-  createTemplate,
-  deleteTemplate,
-  updateTemplateName,
-  listTemplates,
-  getTemplateName,
-};
+
+export async function test027() {
+    setBugMode(0);    // バグを混入させない（通常動作）
+    await _test();  // テストを実行（意図的にバグを混入させない）
+    let i;
+    for ( i = 1; i <= 10; i++ ) {
+        setBugMode(i);      // 意図的にバグを混入させる
+        try {
+            await _test();  // 意図的にバグを混入させてテストを実行
+        }
+        catch (err) {
+            continue;   // 意図的に埋め込んだバグを正常に検出できた場合
+        }
+        // 意図的に埋め込んだバグを検出できなかった場合
+        setBugMode(0);    // 意図的なバグの発生を止める
+        console.log(`レイヤー「run_api」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
+        return;
+    }
+    // 意図的に埋め込んだ全てのバグを、正常に検出できた
+    setBugMode(0);    // 意図的なバグの発生を止める
+    console.log(`レイヤー「run_api」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
+    return;
+}
+
+
+// このレイヤーの動作テストを実行する関数
+async function _test(){
+    
+
+}

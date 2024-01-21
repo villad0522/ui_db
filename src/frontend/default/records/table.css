@@ -1,0 +1,235 @@
+:root {
+  --line-height: 1.8em;
+}
+
+* {
+  letter-spacing: 0.05em !important;
+  line-height: var(--line-height) !important;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  min-width: 100%;
+  background: #fafafa;
+  font-family: "Noto Sans JP";
+}
+
+body {
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+
+/***********************************************/
+
+table {
+  margin: 0 auto;
+  padding: 0;
+  border-collapse: collapse;
+  position: sticky;
+  top: 0;
+}
+
+tr {
+  position: relative;
+  height: 45px;
+}
+
+.row_background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  display: flex;
+}
+
+.row_checkbox {
+  display: none;
+}
+
+.row_checkbox+div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+
+.row_checkbox:checked+div {
+  background: rgb(105, 218, 255);
+}
+
+
+
+th {
+  border: solid 1px #aaa;
+  background: #555;
+  color: #fff;
+}
+
+thead th {
+  /* 縦スクロール時に固定する */
+  position: -webkit-sticky;
+  position: sticky;
+  top: -1px;
+  /* tbody内のセルより手前に表示する */
+  z-index: 1;
+  padding: 3px 5px;
+}
+
+th.title_column,
+td.title_column {
+  /* 横スクロール時に固定する */
+  position: -webkit-sticky;
+  position: sticky;
+  left: -1px;
+  text-align: right;
+  box-sizing: border-box;
+}
+
+thead th.title_column {
+  z-index: 2;
+}
+
+td {
+  border: solid 1px #aaa;
+  margin: 0;
+  padding: 0;
+  max-width: 200px;
+  overflow: hidden;
+}
+
+
+td.button_box {
+  min-width: 120px;
+  text-align: center;
+}
+
+th>label,
+td>label,
+td>a {
+  display: block;
+  margin: 0;
+  padding: 3px 5px;
+  box-sizing: border-box;
+  cursor: pointer;
+  min-width: max-content;
+  width: 100%;
+  height: 100%;
+}
+
+
+th>label:hover,
+td>label:hover,
+td>a:hover {
+  background: rgb(227, 248, 255);
+}
+
+/***********************************************/
+
+.no_data {
+  display: none;
+  text-align: center;
+  width: 95vw;
+  position: sticky;
+  left: 0;
+}
+
+/***********************************************/
+
+#bottom_bar {
+  position: fixed;
+  width: 100%;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 25px 0 rgba(0, 0, 0, .5);
+  text-align: center;
+  padding-top: 5px;
+  box-sizing: border-box;
+  transition: all 0.5s ease-in-out;
+  bottom: -50px;
+}
+
+#bottom_bar>*:not(.add_button) {
+  /* 下がっている途中で中身が見えないようにするため */
+  visibility: hidden;
+}
+
+#bottom_bar.selected {
+  bottom: 0;
+}
+
+#bottom_bar.selected>* {
+  visibility: visible;
+}
+
+#select_number {
+  background: #fff;
+  padding: 5px 10px;
+}
+
+/***********************************************/
+
+.add_button {
+  position: absolute;
+  bottom: 60px;
+  right: 10px;
+  visibility: visible;
+  background: rgb(0, 149, 255);
+  color: #fff;
+  border-radius: 50%;
+  padding: 12px 10px 10px 11px;
+  box-shadow: 0 10px 25px 0 rgba(0, 0, 0, .5);
+}
+
+.add_button>svg {
+  display: block;
+  width: 50px;
+  height: 50px;
+  fill: currentColor;
+  overflow: hidden;
+}
+
+/*===========================================================================*/
+/* button_flatクラス   シンプルな角丸ボタンを作れます */
+
+.button_flat {
+  margin: 3px;
+  background: #e8e8ed;
+  color: #666;
+  display: inline-block;
+  width: max-content;
+  max-width: 100%;
+  height: max-content;
+  word-wrap: break-word;
+  text-decoration: none;
+  font-size: small;
+  padding: 6px 10px 4px 10px;
+  border: none;
+  border-radius: 15px;
+  text-align: left;
+}
+
+.button_flat:hover {
+  cursor: pointer;
+  background: #f0f0f0;
+}
+
+.button_flat.dark {
+  background: #555;
+  color: #fff;
+}
+
+.button_flat.dark:hover {
+  background: #777;
+}
+
+
+/*===========================================================================*/

@@ -1,12 +1,10 @@
-
+import fs from 'fs';
+import path from 'path';
 import {
-  startUp,
-  createTemplate,
-  deleteTemplate,
-  updateTemplateName,
-  listTemplates,
-  getTemplateName,
-} from "./004_excel_template_validate.js";
+  generateSQL,
+  createDynamicList,
+  deleteDynamicList,
+} from "./007_dynamic_list_validate.js";
 import {
   getLocalIp,
 } from "./091_ip_address_validate.js";
@@ -100,11 +98,6 @@ import {
   generateSQLwithDuplication,
 } from "./046_generate_sql1_validate.js";
 import {
-  generateSQL,
-  createDynamicList,
-  deleteDynamicList,
-} from "./007_dynamic_list_validate.js";
-import {
   createPage,
   updatePageName,
   getPageInfo,
@@ -119,78 +112,45 @@ import {
   updateExcel,
   openExcel,
 } from "./010_excel_edit_validate.js";
+import {
+  startUp,  // プログラム起動
+  createTemplate,  // テンプレートを作成
+  deleteTemplate,  // 不可逆的にテンプレートを削除
+  updateTemplateName,  // テンプレート名を変更
+  listTemplates,  // テンプレートの一覧を取得(重)
+  getTemplateName,  // IDからテンプレート名を取得
+} from "./004_excel_template_validate.js";
+import { setBugMode } from "./005_excel_template.js";
 
-export {
-  startUp,
-  getLocalIp,
-  getPath,
-  getDebugMode,
-  startTransaction,
-  endTransaction,
-  runSqlReadOnly,
-  runSqlWriteOnly,
-  createRecordsFromCsv,
-  getCsvProgress,
-  close,
-  getPrimaryKey,
-  clearCache,
-  createColumn,
-  listDataTypes,
-  createRecord,
-  updateRecord,
-  checkField,
-  checkRecord,
-  createTable,
-  deleteTable,
-  getDataType,
-  deleteRecord,
-  disableTable,
-  enableTable,
-  updateTableName,
-  listTables,
-  checkTableEnabled,
-  getTableName,
-  disableColumn,
-  enableColumn,
-  updateColumnName,
-  listColumnsForGUI,
-  getTableId,
-  checkColumnEnabled,
-  listColumnsAll,
-  getColumnName,
-  reserveWord,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-  getParentTableId,
-  delete_table,
-  autoCorrect,
-  getPathLength,
-  slicePath,
-  checkPath,
-  pathToColumnId,
-  getJoinIdMap,
-  checkTableDuplication,
-  getSelectData,
-  getJoinData,
-  getWhereData,
-  getOrderData,
-  generateSQLwithoutDuplication,
-  generateSQLwithDuplication,
-  generateSQL,
-  createPage,
-  updatePageName,
-  getPageInfo,
-  getEndpointInfo,
-  listEndpoints,
-  runApi,
-  updateExcel,
-  openExcel,
-  createDynamicList,
-  deleteDynamicList,
-  createTemplate,
-  deleteTemplate,
-  updateTemplateName,
-  listTemplates,
-  getTemplateName,
-};
+
+export async function test003() {
+    setBugMode(0);    // バグを混入させない（通常動作）
+    await _test();  // テストを実行（意図的にバグを混入させない）
+    let i;
+    for ( i = 1; i <= 12; i++ ) {
+        setBugMode(i);      // 意図的にバグを混入させる
+        try {
+            await _test();  // 意図的にバグを混入させてテストを実行
+        }
+        catch (err) {
+            continue;   // 意図的に埋め込んだバグを正常に検出できた場合
+        }
+        // 意図的に埋め込んだバグを検出できなかった場合
+        setBugMode(0);    // 意図的なバグの発生を止める
+        console.log(`レイヤー「excel_template」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
+        return;
+    }
+    // 意図的に埋め込んだ全てのバグを、正常に検出できた
+    setBugMode(0);    // 意図的なバグの発生を止める
+    console.log(`レイヤー「excel_template」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
+    return;
+}
+
+
+// このレイヤーの動作テストを実行する関数
+async function _test(){
+    
+    await startUp("http://localhost:3000/", true);
+    await close();
+
+}
