@@ -4,7 +4,7 @@
         "./src/for_commonjs/",
         "./src/static_data/",
         "./src/frontend/",
-        "./src/8001_dirname.js"
+        "./src/dirname.js"
     ],
     "presets": [
         "@babel/preset-env"

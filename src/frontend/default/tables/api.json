@@ -1,6 +1,7 @@
 {
     "httpMethod": "GET",
     "description": "テーブルの一覧を取得します。",
+    "commandName": "LIST_TABLES",
     "queryParameters": {
         "page_main": {
             "dataType": "INTEGER",
@@ -33,14 +34,5 @@
             "description": "テーブルの個数",
             "example": 1
         }
-    },
-    "commands": [
-        {
-            "resultNameSpace": "",
-            "commandName": "LIST_TABLES",
-            "additionalParameters": {
-                "onePageMaxSize": 35
-            }
-        }
-    ]
+    }
 }

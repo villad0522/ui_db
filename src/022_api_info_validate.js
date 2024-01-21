@@ -61,6 +61,14 @@ export async function getEndpointInfo( endpointPath ){
       throw new Error(`result.descriptionが文字列ではありません。\nレイヤー : api_info\n関数 : getEndpointInfo`);
     }
   }
+  if( typeof result.commandName !== "string" ){
+    if( !result.commandName ){
+      throw new Error(`result.commandNameがNULLです。\nレイヤー : api_info\n関数 : getEndpointInfo`);
+    }
+    else{
+      throw new Error(`result.commandNameが文字列ではありません。\nレイヤー : api_info\n関数 : getEndpointInfo`);
+    }
+  }
   if( result.queryParameters===null || result.queryParameters===undefined ){
     throw new Error(`result.queryParametersがNULLです。\nレイヤー : api_info\n関数 : getEndpointInfo`);
   }

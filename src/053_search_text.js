@@ -76,6 +76,8 @@ export function setBugMode( mode ){
 
 
 
+import path from 'path';
+
 // カタカナ変換ライブラリ
 import Kuroshiro from "kuroshiro";
 import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
@@ -83,13 +85,14 @@ const kuroshiro = new Kuroshiro();
 
 // 形態素解析ライブラリ
 import kuromoji from 'kuromoji';
-const defaultBuilder = kuromoji.builder({ dicPath: 'node_modules/kuromoji/dict' });
-
 let tokenizer;
 
 // 形態素解析器を初期化する関数
-function _buildTokenizer() {
-  return new Promise((resolve, reject) => {
+async function _buildTokenizer() {
+  const staticPath = await getPath( "STATIC_DATA" );
+  const dicPath = path.join( staticPath,'light/kuromoji_dict');
+  const defaultBuilder = kuromoji.builder({ dicPath: dicPath });
+  return await new Promise((resolve, reject) => {
     defaultBuilder.build((err, tokenizer) => {
       if (err) {
         reject(err);

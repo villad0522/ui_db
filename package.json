@@ -53,6 +53,10 @@
     "targets": [
       "win"
     ],
-    "outputPath": "./build/"
+    "outputPath": "./build/",
+    "assets": [
+      "./node_modules/kuromoji/*",
+      "./node_modules/kuromoji/dict/*"
+    ]
   }
 }
