@@ -159,13 +159,11 @@ export async function listColumnsForGUI( tableId, pageNumber, onePageMaxSize, is
       throw new Error(`tableIdが文字列ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
     }
   }
-  if( typeof pageNumber !== "number" ){
-    if( !pageNumber ){
-      throw new Error(`pageNumberがNULLです。\nレイヤー : relation\n関数 : listColumnsForGUI`);
-    }
-    else{
-      throw new Error(`pageNumberが数値ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
-    }
+  if( (pageNumber===null) || (pageNumber===undefined) ){
+    // pageNumberは空欄OK。
+  }
+  else if( typeof pageNumber !== "number" ){
+    throw new Error(`pageNumberが数値ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);
   }
   else if( isNaN(pageNumber) ){
     throw new Error(`pageNumberが数値ではありません。\nレイヤー : relation\n関数 : listColumnsForGUI`);

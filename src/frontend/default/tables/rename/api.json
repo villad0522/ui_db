@@ -10,10 +10,10 @@
             "onePageMaxSize": 35,
             "children": {
                 "id": {
-                    "dataType": "INTEGER",
+                    "dataType": "TEXT",
                     "description": "名前を変更したいテーブルのID",
                     "isRequired": true,
-                    "example": 1
+                    "example": "t6"
                 },
                 "name": {
                     "dataType": "TEXT",

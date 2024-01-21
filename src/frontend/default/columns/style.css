@@ -23,3 +23,15 @@
 .card-title>input {
     font-weight: bold;
 }
+
+main {
+    overflow-x: scroll;
+}
+
+.flexOuter {
+    display: flex;
+}
+
+.flexOuter>div {
+    display: flex;
+}

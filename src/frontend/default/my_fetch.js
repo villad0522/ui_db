@@ -17,7 +17,7 @@ export default async function myFetch(url, parameters) {
             newParams.set(key, value);
         });
         // URLを再構築
-        url = nextUrl.origin + nextUrl.pathname + "?" + nextParams.toString();
+        url = nextUrl.origin + nextUrl.pathname + "?" + newParams.toString();
     }
     let parameters2 = {};
     if (!parameters?.body && parameters?.method !== "GET") {

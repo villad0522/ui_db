@@ -8,7 +8,7 @@
         "userMessage": {
             "dataType": "TEXT",
             "description": "完了メッセージ",
-            "example": "9層までのキャッシュデータを削除しました。"
+            "example": "キャッシュデータを削除しました。"
         }
     }
 }

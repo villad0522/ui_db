@@ -7,7 +7,7 @@ let isEdit = false;
 //###############################################################
 // ページを読み込んだら、はじめに実行する
 window.addEventListener('DOMContentLoaded', async () => {
-    await myFetch("../form", { method: "GET" });
+    await myFetch("../form" + location.search, { method: "GET" });
     //
     // 変更された項目を水色にする
     const formElements = document.querySelectorAll("input,select,textarea");

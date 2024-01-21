@@ -89,5 +89,9 @@ export async function test057() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+  await startUp("http://localhost:3000/", true);
+  await createTable("クラス一覧");
+  await listTables( 1, 35, false );
+  await close();
 
 }

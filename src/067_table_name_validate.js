@@ -369,13 +369,11 @@ export async function updateTableName( tables ){
 export async function listTables( pageNumber, onePageMaxSize, isTrash ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( typeof pageNumber !== "number" ){
-    if( !pageNumber ){
-      throw new Error(`pageNumberがNULLです。\nレイヤー : table_name\n関数 : listTables`);
-    }
-    else{
-      throw new Error(`pageNumberが数値ではありません。\nレイヤー : table_name\n関数 : listTables`);
-    }
+  if( (pageNumber===null) || (pageNumber===undefined) ){
+    // pageNumberは空欄OK。
+  }
+  else if( typeof pageNumber !== "number" ){
+    throw new Error(`pageNumberが数値ではありません。\nレイヤー : table_name\n関数 : listTables`);
   }
   else if( isNaN(pageNumber) ){
     throw new Error(`pageNumberが数値ではありません。\nレイヤー : table_name\n関数 : listTables`);

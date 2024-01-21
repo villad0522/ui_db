@@ -12,6 +12,11 @@
         }
     },
     "response": {
+        "tableId": {
+            "dataType": "TEXT",
+            "description": "新しく作成したテーブルのID",
+            "example": "t4"
+        },
         "userMessage": {
             "dataType": "TEXT",
             "description": "完了メッセージ",

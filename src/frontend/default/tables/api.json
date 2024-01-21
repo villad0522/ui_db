@@ -3,7 +3,7 @@
     "description": "テーブルの一覧を取得します。",
     "commandName": "LIST_TABLES",
     "queryParameters": {
-        "page_main": {
+        "page_tables": {
             "dataType": "INTEGER",
             "description": "ページ番号。テーブル一覧のページに一度に表示しきれなかった場合に、活用します。このパラメータを2,3,4...と増やすことで、次のページを閲覧できます。",
             "isRequired": false,
@@ -18,9 +18,9 @@
             "onePageMaxSize": 35,
             "children": {
                 "id": {
-                    "dataType": "INTEGER",
+                    "dataType": "TEXT",
                     "description": "テーブルID",
-                    "example": 1
+                    "example": "t2"
                 },
                 "name": {
                     "dataType": "TEXT",

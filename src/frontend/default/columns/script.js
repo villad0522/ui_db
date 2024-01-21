@@ -7,7 +7,7 @@ let isEdit = false;
 //###############################################################
 // ページを読み込んだら、はじめに実行する
 window.addEventListener('DOMContentLoaded', async () => {
-    await myFetch("./form", { method: "GET" });
+    await myFetch("./form" + location.search, { method: "GET" });
     //
     // 変更された項目を水色にする
     const formElements = document.querySelectorAll("input,select,textarea");
@@ -38,7 +38,14 @@ window.cancelButton = function () {
 }
 //
 //###############################################################
-// 「表の名前を変更」ボタンがクリックされたときに実行する関数
+// 「作成」ボタンがクリックされたときに実行する関数
+window.createButton = function () {
+    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
+    window.location.href = "./create" + window.location.search;
+}
+//
+//###############################################################
+// 「名前を変更」ボタンがクリックされたときに実行する関数
 window.renameButton = function () {
     // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
     window.location.href = "./rename" + window.location.search;

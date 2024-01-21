@@ -144,13 +144,11 @@ export async function getTitleColumnId( tableId ){
 export async function listTables( pageNumber, onePageMaxSize, isTrash ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( typeof pageNumber !== "number" ){
-    if( !pageNumber ){
-      throw new Error(`pageNumberがNULLです。\nレイヤー : record_title_2\n関数 : listTables`);
-    }
-    else{
-      throw new Error(`pageNumberが数値ではありません。\nレイヤー : record_title_2\n関数 : listTables`);
-    }
+  if( (pageNumber===null) || (pageNumber===undefined) ){
+    // pageNumberは空欄OK。
+  }
+  else if( typeof pageNumber !== "number" ){
+    throw new Error(`pageNumberが数値ではありません。\nレイヤー : record_title_2\n関数 : listTables`);
   }
   else if( isNaN(pageNumber) ){
     throw new Error(`pageNumberが数値ではありません。\nレイヤー : record_title_2\n関数 : listTables`);
@@ -236,13 +234,11 @@ export async function listTables( pageNumber, onePageMaxSize, isTrash ){
         throw new Error(`result.tables[${i}].nameが文字列ではありません。\nレイヤー : record_title_2\n関数 : listTables`);
       }
     }
-    if( typeof result.tables[i].titleColumnId !== "string" ){
-      if( !result.tables[i].titleColumnId ){
-        throw new Error(`result.tables[${i}].titleColumnIdがNULLです。\nレイヤー : record_title_2\n関数 : listTables`);
-      }
-      else{
-        throw new Error(`result.tables[${i}].titleColumnIdが文字列ではありません。\nレイヤー : record_title_2\n関数 : listTables`);
-      }
+    if( (result.tables[i].titleColumnId===null) || (result.tables[i].titleColumnId===undefined) ){
+      // result.tables[i].titleColumnIdは空欄OK。
+    }
+    else if( typeof result.tables[i].titleColumnId !== "string" ){
+      throw new Error(`result.tables[${i}].titleColumnIdが文字列ではありません。\nレイヤー : record_title_2\n関数 : listTables`);
     }
   }
   if( typeof result.total !== "number" ){

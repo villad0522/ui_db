@@ -275,8 +275,12 @@ export async function updateTableName_core( tables ){
 // テーブルの一覧を取得(重)
 export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
   if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
-    if (!(pageNumber >= 1)) {
+    if ( !pageNumber ) {
         if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+        pageNumber = 1;
+    }
+    if (!(pageNumber >= 1)) {
+        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
         pageNumber = 1;
     }
     const [{ "COUNT(*)": total }] = await runSqlReadOnly(
@@ -291,7 +295,7 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
     );
     let offset = onePageMaxSize * (pageNumber - 1);
     if( offset >= total ){
-        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
         offset = total;
     }
     // 「sqlite_master」と結合させることで、実際に存在するテーブルのみに絞り込む
@@ -322,10 +326,10 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
 
 // SQLクエリ実行（読み取り専用）
 export async function runSqlReadOnly_core( sql, params ){
-  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
     //入力パラメータに含まれるテーブル名をIDに置き換える
     for( const tableId in cacheData1 ){
-        if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
         const tableName = cacheData1[tableId];
         const regexp = new RegExp(`(?<!\")${tableName}(?!\")`, "g");
         sql = sql.replaceAll(regexp, tableId );
@@ -336,10 +340,10 @@ export async function runSqlReadOnly_core( sql, params ){
 
 // SQLクエリ実行（書き込み専用）
 export async function runSqlWriteOnly_core( sql, params ){
-  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
     //入力パラメータに含まれるテーブル名をIDに置き換える
     for( const tableId in cacheData1 ){
-        if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
         const tableName = cacheData1[tableId];
         const regexp = new RegExp(`(?<!\")${tableName}(?!\")`, "g");
         sql = sql.replaceAll( regexp, tableId );
@@ -350,12 +354,12 @@ export async function runSqlWriteOnly_core( sql, params ){
 
 // テーブルが有効なのか判定
 export async function checkTableEnabled_core( tableId ){
-  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
     return cacheData1[tableId] ? true : false;
 }
 
 // IDからテーブル名を取得
 export async function getTableName_core( tableId ){
-  if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData1[tableId];
 }

@@ -121,15 +121,113 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   const apiInfo = await getEndpointInfo( endpointPath );
   switch(apiInfo.commandName){
-    case "LIST_TABLES":
+    //======================================================================
+    case "START_UP":{
       if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-      await listTables( pageNumber, 35, isTrash );
-      break;
+      await startUp( null, false );
+      return {
+        "userMessage": "再接続しました。"
+      };
+    }
+    //======================================================================
+    case "CLEAR_CACHE":{
+      if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+      await clearCache();
+      return {
+        "userMessage": "キャッシュデータを削除しました。"
+      };
+    }
+    //======================================================================
+    case "LIST_TABLES":{
+      if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+      const { tables, total } = await listTables(
+        queryParameters["page_tables"],
+        35,
+        false, //isTrash
+      );
+      return {
+        "tables": tables,
+        "tables_total": total,
+      };
+    }
+    //======================================================================
+    case "LIST_COLUMNS":{
+      if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+      const { columns, total } = await listColumnsForGUI(
+        queryParameters["table"],
+        queryParameters["page_columns"],
+        35,
+        false, //isTrash
+      );
+      return {
+        "columns": columns,
+        "columns_total": total,
+      };
+    }
+    //======================================================================
+    case "CREATE_TABLE":{
+      if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+      const { tableId, message } = await createTable( requestBody["tableName"] );
+      return {
+        "tableId": tableId,
+        "userMessage": message,
+        "nextUrl": "../",
+      };
+    }
+    //======================================================================
+    case "CREATE_PRIMITIVE_COLUMN":{
+      if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+      const { columnId, message } = await createColumn(
+        queryParameters["table"],
+        requestBody["columnName"],
+        requestBody["dataType"],
+        null
+      );
+      return {
+        "columnId": columnId,
+        "userMessage": message,
+        "nextUrl": `../?table=${queryParameters["table"]}`,
+      };
+    }
+    //======================================================================
+    case "CREATE_POINTER_COLUMN":{
+      if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+      const { columnId, message } = await createColumn(
+        queryParameters["table"],
+        requestBody["columnName"],
+        "POINTER",
+        requestBody["parentTableId"]
+      );
+      return {
+        "columnId": columnId,
+        "userMessage": message,
+        "nextUrl": `../?table=${queryParameters["table"]}`,
+      };
+    }
+    //======================================================================
+    case "UPDATE_TABLE_NAME":{
+      if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+      const message = await updateTableName(
+        requestBody["tables"],
+      );
+      return {
+        "userMessage": message,
+        "nextUrl": "../",
+      };
+    }
+    //======================================================================
+    case "UPDATE_COLUMN_NAME":{
+      if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+      const message = await updateColumnName(
+        requestBody["columns"],
+      );
+      return {
+        "userMessage": message,
+        "nextUrl": "../",
+      };
+    }
+    //======================================================================
     default:
       throw `サポートされていないAPIコマンドです。\ncommandName = ${apiInfo.commandName}`;
   }
-  return {
-    tables:[],
-    tables_total: 0,
-  };
 }

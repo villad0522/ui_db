@@ -32,6 +32,9 @@ async function load() {
     const jsonData = await response.json();
     console.log(jsonData);
     //
+    const commandNameElement = document.getElementById("command");
+    commandNameElement.innerText = jsonData.commandName;
+    //
     const httpMethodElement = document.getElementById("http_method");
     httpMethodElement.innerText = jsonData.httpMethod;
     //

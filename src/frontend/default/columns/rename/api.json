@@ -1,25 +1,25 @@
 {
     "httpMethod": "POST",
-    "description": "テーブルの名前を一括で変更します。",
+    "description": "カラムの名前を一括で変更します。",
     "commandName": "UPDATE_COLUMN_NAME",
     "queryParameters": {},
     "requestBody": {
         "tables": {
-            "title": "テーブル一覧",
+            "title": "カラム一覧",
             "isArray": true,
             "onePageMaxSize": 35,
             "children": {
                 "id": {
-                    "dataType": "INTEGER",
-                    "description": "名前を変更したいテーブルのID",
+                    "dataType": "TEXT",
+                    "description": "名前を変更したいカラムのID",
                     "isRequired": true,
-                    "example": 1
+                    "example": "c67"
                 },
                 "name": {
                     "dataType": "TEXT",
-                    "description": "変更後のテーブル名",
+                    "description": "変更後のカラム名",
                     "isRequired": true,
-                    "example": "売上表"
+                    "example": "氏名"
                 }
             }
         }
@@ -28,12 +28,12 @@
         "userMessage": {
             "dataType": "TEXT",
             "description": "完了メッセージ",
-            "example": "再接続しました。"
+            "example": "完了しました。"
         },
         "nextUrl": {
             "dataType": "TEXT",
             "description": "完了した場合に、移動すべきURL",
-            "example": "../"
+            "example": "../?table=t6"
         }
     }
 }

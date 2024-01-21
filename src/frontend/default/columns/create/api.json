@@ -1,17 +1,35 @@
 {
     "httpMethod": "POST",
-    "description": "テーブルを作成します。",
-    "commandName": "CREATE_COLUMN",
-    "queryParameters": {},
-    "requestBody": {
-        "tableName": {
+    "description": "カラムを作成します。",
+    "commandName": "CREATE_PRIMITIVE_COLUMN",
+    "queryParameters": {
+        "table": {
             "dataType": "TEXT",
-            "description": "新しく作成するテーブルの名前",
+            "description": "テーブルID",
             "isRequired": true,
-            "example": "商品一覧"
+            "example": "t3"
+        }
+    },
+    "requestBody": {
+        "columnName": {
+            "dataType": "TEXT",
+            "description": "新しく作成するカラムの名前",
+            "isRequired": true,
+            "example": "氏名"
+        },
+        "dataType": {
+            "dataType": "TEXT",
+            "description": "新しく作成するカラムのデータ型。INTEGER,REAL,TEXT,BOOL,FILE のいずれかを指定してください。",
+            "isRequired": true,
+            "example": "TEXT"
         }
     },
     "response": {
+        "columnId": {
+            "dataType": "TEXT",
+            "description": "新しく作成したカラムのID",
+            "example": "c4"
+        },
         "userMessage": {
             "dataType": "TEXT",
             "description": "完了メッセージ",
@@ -20,7 +38,7 @@
         "nextUrl": {
             "dataType": "TEXT",
             "description": "完了した場合に、移動すべきURL",
-            "example": "../"
+            "example": "../?table=t6"
         }
     }
 }

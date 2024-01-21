@@ -39,8 +39,16 @@
                                 </svg>
                             </div>
                             <div class="card-body row">
-                                <input name="tableName" placeholder="新しい表の名前" type="text" class="form-control">
-                                <div name="tableName_error" style="color: red; font-size: small;"></div>
+                                <input name="columnName" placeholder="新しい表の名前" type="text" class="form-control">
+                                <div name="columnName_error" style="color: red; font-size: small;"></div>
+                                <br>
+                                <select name="dataType" class="form-select" aria-label="Default select example">
+                                    <option value="TEXT" selected>文字列</option>
+                                    <option value="INTEGER">整数</option>
+                                    <option value="REAL">実数</option>
+                                    <option value="BOOL">ブール値</option>
+                                    <option value="FILE">ファイル</option>
+                                </select>
                             </div>
                         </div>
                     </div>

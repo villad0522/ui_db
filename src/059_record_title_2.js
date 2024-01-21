@@ -132,8 +132,8 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
   // 下層から得たテーブルの一覧に、「titleColumnId」を付け加えて上層に提供する
   for( let i=0; i<tables.length; i++ ){
     if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-    const tableId = tables[0].id;
-    tables[0].titleColumnId = cacheData[tableId];
+    const tableId = tables[i].id;
+    tables[i].titleColumnId = cacheData[tableId];
   }
   return {
     "tables": tables,

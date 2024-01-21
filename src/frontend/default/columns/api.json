@@ -3,13 +3,13 @@
     "description": "カラムの一覧を取得します。",
     "commandName": "LIST_COLUMNS",
     "queryParameters": {
-        "table_id": {
-            "dataType": "INTEGER",
+        "table": {
+            "dataType": "TEXT",
             "description": "テーブルID",
             "isRequired": true,
-            "example": 1
+            "example": "t3"
         },
-        "page_main": {
+        "page_columns": {
             "dataType": "INTEGER",
             "description": "ページ番号。１ページに収まらなかった場合に活用します。このパラメータを2,3,4...と増やすことで、次のページを閲覧できます。",
             "isRequired": false,
@@ -24,14 +24,24 @@
             "onePageMaxSize": 35,
             "children": {
                 "id": {
-                    "dataType": "INTEGER",
+                    "dataType": "TEXT",
                     "description": "カラムID",
-                    "example": 1
+                    "example": "c7"
                 },
                 "name": {
                     "dataType": "TEXT",
                     "description": "カラム名",
-                    "example": "id"
+                    "example": "氏名"
+                },
+                "dataType": {
+                    "dataType": "TEXT",
+                    "description": "データ型",
+                    "example": "TEXT"
+                },
+                "parentTableId": {
+                    "dataType": "TEXT",
+                    "description": "参照先のテーブルID",
+                    "example": "t8"
                 }
             }
         },
