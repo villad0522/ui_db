@@ -4,7 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
 import opener from "opener";
-import { runApi } from "./003_transaction_validate.js";
+import { startUp, getLocalIp, getPath, runApi, close } from "./002_index.js";
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -16,7 +16,7 @@ let server2;
 
 async function main({ isDebug }) {
     // ローカルIPアドレス
-    const localIpAddress = await action("GET_LOCAL_IP");
+    const localIpAddress = await getLocalIp();
     if (!localIpAddress) {
         console.error('ローカルIPアドレスを取得できませんでした');
         process.exit();
@@ -28,15 +28,12 @@ async function main({ isDebug }) {
     console.log(localUrl);
     //
     // 下層の処理を呼び出す
-    await action("START_UP", {
-        localUrl: localUrl,
-        isDebug: isDebug,
-    });
+    await startUp(localUrl, isDebug);
     //
     //
     // フロントエンドフォルダを公開する
-    const customDirPath = await action("GET_PATH", { directoryCode: "FRONTEND_CUSTOM" });
-    const defaultDirPath = await action("GET_PATH", { directoryCode: "FRONTEND_DEFAULT" });
+    const customDirPath = await getPath("FRONTEND_CUSTOM");
+    const defaultDirPath = await getPath("FRONTEND_DEFAULT");
     app.use('/custom', express.static(customDirPath));
     app.use('/default', express.static(defaultDirPath));
     const customFilePath = path.join(customDirPath, "index.html");
@@ -52,9 +49,7 @@ async function main({ isDebug }) {
         }
     });
     //============================================================
-    if (isDebug === false) {
-        opener("http://" + addressInfo.address + ":" + addressInfo.port + "/default");
-    }
+    opener("http://" + addressInfo.address + ":" + addressInfo.port + "/default");
 }
 
 
@@ -84,11 +79,20 @@ function _launchServer(app, hostname, startPort, maxPort) {
     })
 }
 //============================================================
+
+
+
 app.get('*/json', _api);
 app.get('*/form', _api);
 app.post('*/json', _api);
 app.post('*/form', _api);
+
+
+
 //============================================================
+
+
+
 async function _api(req, res) {
     try {
         let requestBody = req.body ?? {};
@@ -127,16 +131,13 @@ async function _api(req, res) {
         }
         //
         // 処理本体を実行する
-        const responseData = await action(
-            "RUN_API",
-            {
-                httpMethod: req.method,
-                endpointPath: path,
-                requestBody: requestBody,
-                queryParameters: req.query,
-                isRequestFormData: isRequestFormData, // リクエストがFormData形式ならtrue、JSON形式ならfalse
-                isResponseFormData: isResponseFormData,  // レスポンスがFormData形式ならtrue、JSON形式ならfalse
-            },
+        const responseData = await runApi(
+            req.method,
+            path,
+            req.query,
+            requestBody,
+            isRequestFormData, // リクエストがFormData形式ならtrue、JSON形式ならfalse
+            isResponseFormData,  // レスポンスがFormData形式ならtrue、JSON形式ならfalse
         );
         if (isResponseFormData) {
             // FormData形式に変換
@@ -156,6 +157,10 @@ async function _api(req, res) {
         res.status(500).type("text/plain").send(String(err));
     }
 }
+
+
+
+
 //============================================================
 // 終了時の処理
 // kill
@@ -165,7 +170,7 @@ process.on('SIGINT', async () => await endProcess());
 
 async function endProcess() {
     try {
-        await action("CLOSE");
+        await close();
         await _closeServer(server1);
         await _closeServer(server2);
         console.log("終了処理を完了しました。\n");

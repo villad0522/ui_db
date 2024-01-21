@@ -1,31 +1,31 @@
 
-import { test080 } from "./080_ip_address_test.js";
-import { test077 } from "./077_directory_test.js";
-import { test074 } from "./074_connect_database_test.js";
-import { test071 } from "./071_primary_key_test.js";
-import { test068 } from "./068_data_type_test.js";
-import { test065 } from "./065_table_name_test.js";
-import { test062 } from "./062_column_name_test.js";
-import { test059 } from "./059_reserved_word_test.js";
-import { test056 } from "./056_record_title_2_test.js";
-import { test053 } from "./053_relation_test.js";
-import { test050 } from "./050_search_text_test.js";
-import { test047 } from "./047_sort_test.js";
-import { test044 } from "./044_columnPath_test.js";
-import { test041 } from "./041_convert_sql_data_test.js";
-import { test038 } from "./038_generate_sql2_test.js";
-import { test035 } from "./035_generate_sql1_test.js";
-import { test032 } from "./032_generate_sql_test.js";
-import { test029 } from "./029_record_title_1_test.js";
-import { test026 } from "./026_frontend_files_test.js";
-import { test023 } from "./023_pages_test.js";
-import { test020 } from "./020_api_info_test.js";
-import { test017 } from "./017_run_api_test.js";
-import { test014 } from "./014_pagination_test.js";
-import { test011 } from "./011_convert_array_test.js";
-import { test008 } from "./008_api_validator_test.js";
-import { test005 } from "./005_api_document_test.js";
-import { test002 } from "./002_transaction_test.js";
+import { test081 } from "./081_ip_address_test.js";
+import { test078 } from "./078_directory_test.js";
+import { test075 } from "./075_connect_database_test.js";
+import { test072 } from "./072_primary_key_test.js";
+import { test069 } from "./069_data_type_test.js";
+import { test066 } from "./066_table_name_test.js";
+import { test063 } from "./063_column_name_test.js";
+import { test060 } from "./060_reserved_word_test.js";
+import { test057 } from "./057_record_title_2_test.js";
+import { test054 } from "./054_relation_test.js";
+import { test051 } from "./051_search_text_test.js";
+import { test048 } from "./048_sort_test.js";
+import { test045 } from "./045_columnPath_test.js";
+import { test042 } from "./042_convert_sql_data_test.js";
+import { test039 } from "./039_generate_sql2_test.js";
+import { test036 } from "./036_generate_sql1_test.js";
+import { test033 } from "./033_generate_sql_test.js";
+import { test030 } from "./030_record_title_1_test.js";
+import { test027 } from "./027_frontend_files_test.js";
+import { test024 } from "./024_pages_test.js";
+import { test021 } from "./021_api_info_test.js";
+import { test018 } from "./018_run_api_test.js";
+import { test015 } from "./015_pagination_test.js";
+import { test012 } from "./012_convert_array_test.js";
+import { test009 } from "./009_api_validator_test.js";
+import { test006 } from "./006_api_document_test.js";
+import { test003 } from "./003_transaction_test.js";
 
 
 async function test() {
@@ -33,33 +33,33 @@ async function test() {
     if( process.argv.length < 3 ){
       // testNumberが指定されていない場合
       console.log("全てのレイヤーの動作テストを行います。");
-      await test080();
-      await test077();
-      await test074();
-      await test071();
-      await test068();
-      await test065();
-      await test062();
-      await test059();
-      await test056();
-      await test053();
-      await test050();
-      await test047();
-      await test044();
-      await test041();
-      await test038();
-      await test035();
-      await test032();
-      await test029();
-      await test026();
-      await test023();
-      await test020();
-      await test017();
-      await test014();
-      await test011();
-      await test008();
-      await test005();
-      await test002();
+      await test081();
+      await test078();
+      await test075();
+      await test072();
+      await test069();
+      await test066();
+      await test063();
+      await test060();
+      await test057();
+      await test054();
+      await test051();
+      await test048();
+      await test045();
+      await test042();
+      await test039();
+      await test036();
+      await test033();
+      await test030();
+      await test027();
+      await test024();
+      await test021();
+      await test018();
+      await test015();
+      await test012();
+      await test009();
+      await test006();
+      await test003();
       console.log("\n\nテストが終了しました\n");
       return;
     }
@@ -67,86 +67,86 @@ async function test() {
     const testNumber = Number(process.argv[2]);
     console.log(`テストコード${ testNumber }を実行します。`);
     switch( testNumber ){
-      case 80:
-        await test080();
+      case 81:
+        await test081();
         break;
-      case 77:
-        await test077();
+      case 78:
+        await test078();
         break;
-      case 74:
-        await test074();
+      case 75:
+        await test075();
         break;
-      case 71:
-        await test071();
+      case 72:
+        await test072();
         break;
-      case 68:
-        await test068();
+      case 69:
+        await test069();
         break;
-      case 65:
-        await test065();
+      case 66:
+        await test066();
         break;
-      case 62:
-        await test062();
+      case 63:
+        await test063();
         break;
-      case 59:
-        await test059();
+      case 60:
+        await test060();
         break;
-      case 56:
-        await test056();
+      case 57:
+        await test057();
         break;
-      case 53:
-        await test053();
+      case 54:
+        await test054();
         break;
-      case 50:
-        await test050();
+      case 51:
+        await test051();
         break;
-      case 47:
-        await test047();
+      case 48:
+        await test048();
         break;
-      case 44:
-        await test044();
+      case 45:
+        await test045();
         break;
-      case 41:
-        await test041();
+      case 42:
+        await test042();
         break;
-      case 38:
-        await test038();
+      case 39:
+        await test039();
         break;
-      case 35:
-        await test035();
+      case 36:
+        await test036();
         break;
-      case 32:
-        await test032();
+      case 33:
+        await test033();
         break;
-      case 29:
-        await test029();
+      case 30:
+        await test030();
         break;
-      case 26:
-        await test026();
+      case 27:
+        await test027();
         break;
-      case 23:
-        await test023();
+      case 24:
+        await test024();
         break;
-      case 20:
-        await test020();
+      case 21:
+        await test021();
         break;
-      case 17:
-        await test017();
+      case 18:
+        await test018();
         break;
-      case 14:
-        await test014();
+      case 15:
+        await test015();
         break;
-      case 11:
-        await test011();
+      case 12:
+        await test012();
         break;
-      case 8:
-        await test008();
+      case 9:
+        await test009();
         break;
-      case 5:
-        await test005();
+      case 6:
+        await test006();
         break;
-      case 2:
-        await test002();
+      case 3:
+        await test003();
         break;
       default:
         console.error(`指定されたテストコード「${ testNumber }」は存在しません。`);
