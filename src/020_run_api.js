@@ -119,6 +119,15 @@ export function setBugMode( mode ){
 // APIを実行する関数
 export async function runApi_core( httpMethod, endpointPath, queryParameters, requestBody, isRequestFormData, isResponseFormData ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
+  const apiInfo = await getEndpointInfo( endpointPath );
+  switch(apiInfo.commandName){
+    case "LIST_TABLES":
+      if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+      await listTables( pageNumber, 35, isTrash );
+      break;
+    default:
+      throw `サポートされていないAPIコマンドです。\ncommandName = ${apiInfo.commandName}`;
+  }
   return {
     tables:[],
     tables_total: 0,

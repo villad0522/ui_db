@@ -137,5 +137,6 @@ export async function test003() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+  await runApi("GET","/default/tables",{},{},true,true);
 
 }

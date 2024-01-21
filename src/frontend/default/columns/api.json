@@ -1,6 +1,7 @@
 {
     "httpMethod": "GET",
     "description": "カラムの一覧を取得します。",
+    "commandName": "LIST_COLUMNS",
     "queryParameters": {
         "table_id": {
             "dataType": "INTEGER",
@@ -39,14 +40,5 @@
             "description": "カラムの個数",
             "example": 1
         }
-    },
-    "commands": [
-        {
-            "resultNameSpace": "",
-            "commandName": "LIST_COLUMNS",
-            "additionalParameters": {
-                "onePageMaxSize": 35
-            }
-        }
-    ]
+    }
 }

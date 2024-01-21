@@ -1,6 +1,7 @@
 {
     "httpMethod": "POST",
     "description": "データベースに再接続します。",
+    "commandName": "START_UP",
     "queryParameters": {},
     "requestBody": {},
     "response": {
@@ -9,12 +10,5 @@
             "description": "完了メッセージ",
             "example": "再接続しました。"
         }
-    },
-    "commands": [
-        {
-            "resultNameSpace": "",
-            "commandName": "START_UP",
-            "additionalParameters": {}
-        }
-    ]
+    }
 }

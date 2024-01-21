@@ -1,6 +1,7 @@
 {
     "httpMethod": "POST",
     "description": "キャッシュデータを削除します。",
+    "commandName": "CLEAR_CACHE",
     "queryParameters": {},
     "requestBody": {},
     "response": {
@@ -9,12 +10,5 @@
             "description": "完了メッセージ",
             "example": "9層までのキャッシュデータを削除しました。"
         }
-    },
-    "commands": [
-        {
-            "resultNameSpace": "",
-            "commandName": "CLEAR_CACHE",
-            "additionalParameters": {}
-        }
-    ]
+    }
 }

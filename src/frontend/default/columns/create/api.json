@@ -1,6 +1,7 @@
 {
     "httpMethod": "POST",
     "description": "テーブルを作成します。",
+    "commandName": "CREATE_COLUMN",
     "queryParameters": {},
     "requestBody": {
         "tableName": {
@@ -21,12 +22,5 @@
             "description": "完了した場合に、移動すべきURL",
             "example": "../"
         }
-    },
-    "commands": [
-        {
-            "resultNameSpace": "",
-            "commandName": "CREATE_TABLE",
-            "additionalParameters": {}
-        }
-    ]
+    }
 }

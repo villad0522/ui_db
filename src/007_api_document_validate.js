@@ -93,20 +93,6 @@ export async function runApi( httpMethod, endpointPath, queryParameters, request
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( result===null || result===undefined ){
-    throw new Error(`resultがNULLです。\nレイヤー : api_document\n関数 : runApi`);
-  }
-  else if( typeof result !== "object" ){
-    throw new Error(`resultがオブジェクトではありません。\nレイヤー : api_document\n関数 : runApi`);
-  }
-  else if( result.constructor !== Object ){
-    throw new Error(`resultが辞書型ではありません。\nレイヤー : api_document\n関数 : runApi`);
-  }
-  for( const i in result ){
-    if( typeof i !== "string" ){
-      throw new Error(`resultのキーが文字列ではありません。\nレイヤー : api_document\n関数 : runApi`);
-    }
-  }
   //
   //--------------------------------------------------------------------------
   return result;
