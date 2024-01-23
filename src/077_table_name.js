@@ -66,7 +66,7 @@ export async function startUp_core( localUrl, isDebug ){
         );`,
         {},
     );
-    await _reload();    // メモリに再読み込み
+    await reload_core();    // メモリに再読み込み
 }
 
 //【グローバル変数】テーブル名を保存するキャッシュ
@@ -76,27 +76,10 @@ let cacheData1 = {
     // "t8": "テーブル名２"
 };
 
-//【サブ関数】メモリに再読み込み
-async function _reload() {
-    const matrix = await runSqlReadOnly(
-        `SELECT
-            table_number AS tableNumber,
-            table_name AS tableName
-        FROM table_names
-        WHERE enable = 1;`,
-        {},
-    );
-    cacheData1 = {};
-    for (const { tableNumber, tableName } of matrix) {
-        const tableId = "t" + String(tableNumber);
-        cacheData1[tableId] = tableName;
-    }
-}
-
 // インメモリキャッシュを削除する
 export async function clearCache_core(  ){
   if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    await _reload();    // メモリに再読み込み
+    await reload_core();    // メモリに再読み込み
     return await clearCache();   // 下層の関数を呼び出す
 }
 
@@ -144,7 +127,7 @@ export async function createTable_core( tableName ){
     }
     const tableId = "t" + tableNumber;
     await createTable( tableId );   // 下層の関数を呼び出す
-    await _reload();    // メモリに再読み込み
+    await reload_core();    // メモリに再読み込み
     return {
         tableId: tableId,
         message: `テーブル「${tableName}」を作成しました。`,
@@ -161,7 +144,7 @@ export async function deleteTable_core( tableId ){
             ":tableNumber": tableId.replace("t",""),
         },
     );
-    await _reload();    // メモリに再読み込み
+    await reload_core();    // メモリに再読み込み
     return await deleteTable( tableId );  // 下層の関数を実行する
 }
 
@@ -176,7 +159,7 @@ export async function disableTable_core( tableId ){
             ":tableNumber": tableId.replace("t",""),
         },
     );
-    await _reload();    // メモリに再読み込み
+    await reload_core();    // メモリに再読み込み
     return "テーブルを無効化しました";
 }
 
@@ -210,7 +193,7 @@ export async function enableTable_core( tableId ){
             ":tableNumber": tableId.replace("t",""),
         },
     );
-    await _reload();    // メモリに再読み込み
+    await reload_core();    // メモリに再読み込み
     return "テーブルを有効化しました";
 }
 
@@ -219,7 +202,7 @@ export async function updateTableName_core( tables ){
   if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     //==========================================================
     // テーブル名が重複していないか確認する
-    await _reload();
+    await reload_core();
     const obj = structuredClone(cacheData1);    // ディープコピー
     // データの例
     // obj = {
@@ -268,7 +251,7 @@ export async function updateTableName_core( tables ){
         );
     }
     //==========================================================
-    await _reload();    // メモリに再読み込み
+    await reload_core();    // メモリに再読み込み
     return "テーブル名を変更しました";
 }
 
@@ -363,4 +346,23 @@ export async function checkTableEnabled_core( tableId ){
 export async function getTableName_core( tableId ){
   if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData1[tableId];
+}
+
+// 【サブ関数】メモリに再読み込み
+export async function reload_core(  ){
+  if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+    const matrix = await runSqlReadOnly(
+        `SELECT
+            table_number AS tableNumber,
+            table_name AS tableName
+        FROM table_names
+        WHERE enable = 1;`,
+        {},
+    );
+    cacheData1 = {};
+    for (const { tableNumber, tableName } of matrix) {
+        if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+        const tableId = "t" + String(tableNumber);
+        cacheData1[tableId] = tableName;
+    }
 }

@@ -3,6 +3,7 @@
 import {
   startUp,
   clearCache,
+  createColumn,
   deleteTable,
   listTables,
   setTitleColumn,
@@ -38,13 +39,6 @@ import {
   getPrimaryKey,
 } from "./082_primary_key_validate.js";
 import {
-  createColumn,
-  createTable,
-  updateTableName,
-  updateColumnName,
-  reserveWord,
-} from "./070_reserved_word_validate.js";
-import {
   listDataTypes,
   createRecord,
   updateRecord,
@@ -52,9 +46,15 @@ import {
   checkRecord,
   getDataType,
   deleteRecord,
-  reload,
 } from "./079_data_type_validate.js";
 import {
+  createTable,
+  updateTableName,
+  updateColumnName,
+  reserveWord,
+} from "./070_reserved_word_validate.js";
+import {
+  reload,
   disableTable,
   enableTable,
   checkTableEnabled,

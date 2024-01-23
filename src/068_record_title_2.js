@@ -46,9 +46,9 @@ import {
   checkRecord,
   getDataType,
   deleteRecord,
-  reload,
 } from "./079_data_type_validate.js";
 import {
+  reload,
   disableTable,
   enableTable,
   listTables,
@@ -142,6 +142,8 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
   }
 }
 
+
+
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
   if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -155,6 +157,8 @@ export async function deleteTable_core( tableId ){
     await _reload();    // メモリに再読み込み
     return await deleteTable( tableId );  // 下層の関数を実行する
 }
+
+
 
 // インメモリキャッシュを削除する
 export async function clearCache_core(  ){
@@ -192,4 +196,35 @@ export async function getRecordIdFromTitle_core( tableId, titleText ){
   else{
     throw `文字列からマスターデータのIDを取得しようとしましたが、複数のマスターデータが見つかりました。\nテーブルID = ${tableId}\n文字列="${titleText}"`;
   }
+}
+
+
+
+// カラムを作成
+export async function createColumn_core( tableId, columnName, dataType ){
+  if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+  const result = await createColumn( tableId, columnName, dataType ); // 下層の関数を呼び出す
+  if( dataType !== "TEXT" ){
+    if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+    // データ型が文字列ではない場合
+    return result;
+  }
+  // データ型が文字列の場合
+  const titleColumn = await runSqlReadOnly(
+    `SELECT * FROM title_columns
+      WHERE table_id = :tableId;`,
+    {
+      ":tableId": tableId,
+    },
+  );
+  if( titleColumn.length > 0 ){
+    if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+    // 既にタイトルが設定されている場合
+    return result;
+  }
+  // まだタイトルが設定されていない場合
+  // このカラムをタイトルに設定する
+  await setTitleColumn_core( result.columnId );
+  //
+  return result;
 }

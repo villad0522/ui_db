@@ -45,6 +45,11 @@
     "layerNameEN": "api_info"
   },
   {
+    "layerId": "01HMP19J9MP2XK0MN03KMVTWP0",
+    "layerNameJP": "テーブル結合",
+    "layerNameEN": "joined_table"
+  },
+  {
     "layerId": "01HMMRXX42FSBM04FQ4QMB44H3",
     "layerNameJP": "ページの管理",
     "layerNameEN": "pages"
@@ -53,11 +58,6 @@
     "layerId": "01HMK8T5KJMT7KBEVASQCSQGTN",
     "layerNameJP": "フロントエンドファイル",
     "layerNameEN": "frontend_files"
-  },
-  {
-    "layerId": "01HMP19J9MP2XK0MN03KMVTWP0",
-    "layerNameJP": "テーブル結合",
-    "layerNameEN": "joined_table"
   },
   {
     "layerId": "01HM5T8G9WJWNKEMEGBYP29CKA",

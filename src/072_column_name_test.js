@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import {
   createTable,
+  reload,
   disableTable,
   enableTable,
   updateTableName,
@@ -34,7 +35,6 @@ import {
   checkRecord,
   getDataType,
   deleteRecord,
-  reload,
 } from "./079_data_type_validate.js";
 import {
   startUp,  // プログラム起動

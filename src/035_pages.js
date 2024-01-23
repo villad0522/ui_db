@@ -3,7 +3,7 @@
 import {
   startUp,
   close,
-} from "./034_frontend_files_validate.js";
+} from "./037_frontend_files_validate.js";
 import {
   getLocalIp,
 } from "./091_ip_address_validate.js";
@@ -38,7 +38,6 @@ import {
 } from "./064_relation_validate.js";
 import {
   listDataTypes,
-  reload,
 } from "./079_data_type_validate.js";
 import {
   createRecord,
@@ -62,15 +61,16 @@ import {
   delete_table,
 } from "./061_search_text_validate.js";
 import {
+  reload,
+  checkTableEnabled,
+  getTableName,
+} from "./076_table_name_validate.js";
+import {
   listTables,
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
 } from "./067_record_title_2_validate.js";
-import {
-  checkTableEnabled,
-  getTableName,
-} from "./076_table_name_validate.js";
 import {
   getPathLength,
   slicePath,
@@ -93,9 +93,7 @@ import {
 } from "./043_generate_sql1_validate.js";
 import {
   generateSQL,
-  createJoinedTable,
-  deleteJoinedTable,
-} from "./037_joined_table_validate.js";
+} from "./040_generate_sql_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
@@ -136,7 +134,7 @@ export async function startUp_core( localUrl, isDebug ){
     `CREATE TABLE IF NOT EXISTS joined_tables (
       "page_id" INTEGER PRIMARY KEY,
       "table_id" TEXT NOT NULL,
-      "joined_table_type" TEXT NOT NULL,
+      "joined_table_type" TEXT NOT NULL DEFAULT 'TABLE',
       FOREIGN KEY (page_id) REFERENCES pages(page_id)
     );`, {},
   );
@@ -352,7 +350,7 @@ export async function getPageInfo_core( pageId ){
         OR dynamic_parent_id = :pageId
       ORDER BY static_parent_id ASC, sort_number ASC;`,
     {
-      ":pageId": pageId,    // 作成日時
+      ":pageId": pageId,
     },
   );
   const staticPages = [];
@@ -385,3 +383,56 @@ export async function getPageInfo_core( pageId ){
     "dynamicPages": dynamicPages,
   };
 }
+
+
+
+// テーブルIDからページIDを取得する
+export async function listPagesFromTableId_core( tableId ){
+  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+  const pages = await runSqlReadOnly(
+    `SELECT page_id AS pageId
+      FROM joined_tables
+      WHERE table_id = :tableId;`,
+    {
+      ":tableId": tableId,    // 作成日時
+    },
+  );
+  return pages.map( ({ pageId }) => pageId );
+}
+
+
+
+// テーブルIDからページIDを取得
+export async function getTableFromPage_core( pageId ){
+  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+  const pages = await runSqlReadOnly(
+    `SELECT table_id AS tableId
+      FROM joined_tables
+      WHERE page_id = :pageId;`,
+    {
+      ":pageId": pageId,
+    },
+  );
+  if( pages.length===0 ){
+    if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+    return null;
+  }
+  return pages[0].tableId;
+}
+
+
+
+
+// 結合済みテーブルを作成
+export async function createJoinedTable_core( pageId, tableId ){
+  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+  await runSqlWriteOnly(
+    `INSERT INTO joined_tables( page_id, table_id )
+        VALUES ( :pageId, :tableId );`,
+    {
+      ":pageId": pageId,
+      ":tableId": tableId,
+    },
+  );
+}
+

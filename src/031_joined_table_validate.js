@@ -3,7 +3,9 @@ import {
   createJoinedTable_core,  // 結合済みテーブルを作成
   deleteJoinedTable_core,  // 結合済みテーブルを削除
   generateSQL_core,  // SQLクエリを生成
-} from "./038_joined_table.js";
+  createColumn_core,  // カラムを作成
+  addJoinedColumn_core,  // 結合済み列を作成
+} from "./032_joined_table.js";
 
 
 //#######################################################################################
@@ -194,6 +196,155 @@ export async function generateSQL( pageId ){
       throw new Error(`result.sqlが文字列ではありません。\nレイヤー : joined_table\n関数 : generateSQL`);
     }
   }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「createColumn_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function createColumn( tableId, columnName, dataType, parentTableId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+  }
+  if( typeof columnName !== "string" ){
+    if( !columnName ){
+      throw new Error(`columnNameがNULLです。\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`columnNameが文字列ではありません。\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+  }
+  if( typeof dataType !== "string" ){
+    if( !dataType ){
+      throw new Error(`dataTypeがNULLです。\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`dataTypeが文字列ではありません。\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+  }
+  if( (parentTableId===null) || (parentTableId===undefined) ){
+    // parentTableIdは空欄OK。
+  }
+  else if( typeof parentTableId !== "string" ){
+    throw new Error(`parentTableIdが文字列ではありません。\nレイヤー : joined_table\n関数 : createColumn`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await createColumn_core( tableId, columnName, dataType, parentTableId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "object" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+  }
+  if( typeof result.message !== "string" ){
+    if( !result.message ){
+      throw new Error(`result.messageがNULLです。\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`result.messageが文字列ではありません。\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+  }
+  if( typeof result.columnId !== "string" ){
+    if( !result.columnId ){
+      throw new Error(`result.columnIdがNULLです。\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`result.columnIdが文字列ではありません。\nレイヤー : joined_table\n関数 : createColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「addJoinedColumn_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function addJoinedColumn( pageId, joinedColumnType, columnPath, joinedColumnName ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof pageId !== "number" ){
+    if( !pageId ){
+      throw new Error(`pageIdがNULLです。\nレイヤー : joined_table\n関数 : addJoinedColumn`);
+    }
+    else{
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : joined_table\n関数 : addJoinedColumn`);
+    }
+  }
+  else if( isNaN(pageId) ){
+    throw new Error(`pageIdが数値ではありません。\nレイヤー : joined_table\n関数 : addJoinedColumn`);
+  }
+  if( typeof joinedColumnType !== "string" ){
+    if( !joinedColumnType ){
+      throw new Error(`joinedColumnTypeがNULLです。\nレイヤー : joined_table\n関数 : addJoinedColumn`);
+    }
+    else{
+      throw new Error(`joinedColumnTypeが文字列ではありません。\nレイヤー : joined_table\n関数 : addJoinedColumn`);
+    }
+  }
+  if( typeof columnPath !== "string" ){
+    if( !columnPath ){
+      throw new Error(`columnPathがNULLです。\nレイヤー : joined_table\n関数 : addJoinedColumn`);
+    }
+    else{
+      throw new Error(`columnPathが文字列ではありません。\nレイヤー : joined_table\n関数 : addJoinedColumn`);
+    }
+  }
+  if( typeof joinedColumnName !== "string" ){
+    if( !joinedColumnName ){
+      throw new Error(`joinedColumnNameがNULLです。\nレイヤー : joined_table\n関数 : addJoinedColumn`);
+    }
+    else{
+      throw new Error(`joinedColumnNameが文字列ではありません。\nレイヤー : joined_table\n関数 : addJoinedColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await addJoinedColumn_core( pageId, joinedColumnType, columnPath, joinedColumnName );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : joined_table\n関数 : addJoinedColumn`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
   //
   //--------------------------------------------------------------------------
   return result;

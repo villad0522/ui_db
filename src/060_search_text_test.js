@@ -37,7 +37,6 @@ import {
 } from "./082_primary_key_validate.js";
 import {
   listDataTypes,
-  reload,
 } from "./079_data_type_validate.js";
 import {
   createTable,
@@ -46,6 +45,7 @@ import {
   reserveWord,
 } from "./070_reserved_word_validate.js";
 import {
+  reload,
   checkTableEnabled,
   getTableName,
 } from "./076_table_name_validate.js";

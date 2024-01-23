@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import {
   close,
-} from "./034_frontend_files_validate.js";
+} from "./037_frontend_files_validate.js";
 import {
   getLocalIp,
 } from "./091_ip_address_validate.js";
@@ -37,7 +37,6 @@ import {
 } from "./064_relation_validate.js";
 import {
   listDataTypes,
-  reload,
 } from "./079_data_type_validate.js";
 import {
   createRecord,
@@ -61,15 +60,16 @@ import {
   delete_table,
 } from "./061_search_text_validate.js";
 import {
+  reload,
+  checkTableEnabled,
+  getTableName,
+} from "./076_table_name_validate.js";
+import {
   listTables,
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
 } from "./067_record_title_2_validate.js";
-import {
-  checkTableEnabled,
-  getTableName,
-} from "./076_table_name_validate.js";
 import {
   getPathLength,
   slicePath,
@@ -92,23 +92,24 @@ import {
 } from "./043_generate_sql1_validate.js";
 import {
   generateSQL,
-  createJoinedTable,
-  deleteJoinedTable,
-} from "./037_joined_table_validate.js";
+} from "./040_generate_sql_validate.js";
 import {
   startUp,  // プログラム起動
   createPage,  // ページを作成
   updatePageName,  // ページ名やメモを変更
   getPageInfo,  // １ページの情報を取得
-} from "./031_pages_validate.js";
-import { setBugMode } from "./032_pages.js";
+  listPagesFromTableId,  // テーブルIDからページIDを取得する
+  getTableFromPage,  // テーブルIDからページIDを取得
+  createJoinedTable,  // 結合済みテーブルを作成
+} from "./034_pages_validate.js";
+import { setBugMode } from "./035_pages.js";
 
 
-export async function test030() {
+export async function test033() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 15; i++ ) {
+    for ( i = 1; i <= 19; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

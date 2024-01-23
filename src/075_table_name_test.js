@@ -9,7 +9,6 @@ import {
   checkRecord,
   getDataType,
   deleteRecord,
-  reload,
 } from "./079_data_type_validate.js";
 import {
   getLocalIp,
@@ -41,6 +40,7 @@ import {
   runSqlWriteOnly,  // SQLクエリ実行（書き込み専用）
   checkTableEnabled,  // テーブルが有効なのか判定
   getTableName,  // IDからテーブル名を取得
+  reload,  // 【サブ関数】メモリに再読み込み
 } from "./076_table_name_validate.js";
 import { setBugMode } from "./077_table_name.js";
 
@@ -49,7 +49,7 @@ export async function test075() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 21; i++ ) {
+    for ( i = 1; i <= 23; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

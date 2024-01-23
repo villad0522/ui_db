@@ -1,7 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import {
-} from "./055_sort_validate.js";
+  createPage,
+  updatePageName,
+  getPageInfo,
+  listPagesFromTableId,
+  getTableFromPage,
+} from "./034_pages_validate.js";
 import {
   getLocalIp,
 } from "./091_ip_address_validate.js";
@@ -14,7 +19,6 @@ import {
   endTransaction,
   createRecordsFromCsv,
   getCsvProgress,
-  close,
 } from "./085_connect_database_validate.js";
 import {
   runSqlReadOnly,
@@ -24,11 +28,13 @@ import {
   getColumnName,
 } from "./073_column_name_validate.js";
 import {
+  close,
+} from "./037_frontend_files_validate.js";
+import {
   getPrimaryKey,
 } from "./082_primary_key_validate.js";
 import {
   clearCache,
-  createColumn,
   deleteTable,
   getDataType,
   listColumnsForGUI,
@@ -37,7 +43,6 @@ import {
 } from "./064_relation_validate.js";
 import {
   listDataTypes,
-  reload,
 } from "./079_data_type_validate.js";
 import {
   createRecord,
@@ -61,15 +66,16 @@ import {
   delete_table,
 } from "./061_search_text_validate.js";
 import {
+  reload,
+  checkTableEnabled,
+  getTableName,
+} from "./076_table_name_validate.js";
+import {
   listTables,
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
 } from "./067_record_title_2_validate.js";
-import {
-  checkTableEnabled,
-  getTableName,
-} from "./076_table_name_validate.js";
 import {
   getPathLength,
   slicePath,
@@ -97,15 +103,17 @@ import {
   createJoinedTable,  // 結合済みテーブルを作成
   deleteJoinedTable,  // 結合済みテーブルを削除
   generateSQL,  // SQLクエリを生成
-} from "./037_joined_table_validate.js";
-import { setBugMode } from "./038_joined_table.js";
+  createColumn,  // カラムを作成
+  addJoinedColumn,  // 結合済み列を作成
+} from "./031_joined_table_validate.js";
+import { setBugMode } from "./032_joined_table.js";
 
 
-export async function test036() {
+export async function test030() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 7; i++ ) {
+    for ( i = 1; i <= 16; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -128,7 +136,42 @@ export async function test036() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
-    await startUp("http://localhost:3000/", true);
-    await close();
+  await startUp("http://localhost:3000/", true);
+  //
+  const { tableId: tableId1 } = await createTable("学年");
+  const { columnId: columnId1 } = await createColumn( tableId1, "学年", "INTEGER", null );
+  // 見出しの役割を果たすカラムを登録する
+  await setTitleColumn( columnId1 );
+  const { recordId: recordId } = await createRecord( tableId1, {
+    [columnId1]: 3,
+  });
+  //
+  const { tableId: tableId2 } = await createTable("名簿");
+  const { columnId: columnId2  } = await createColumn( tableId2, "学年", "POINTER", tableId1 );
+  const { columnId: columnId3  } = await createColumn( tableId2, "氏名", "TEXT", null );
+  await createRecord( tableId2, {
+    [columnId2]: recordId,
+    [columnId3]: "田中太郎",
+  });
+  //
+  // ページを作成
+  const { pageId: pageId1 } = await createPage( null, "ページ１", false );
+  //
+  // ページに動的リストを追加
+  await createJoinedTable( pageId1, tableId2 );
+  //
+  const { sql, parameters } = await generateSQL( pageId1 );
+  const matrix = await runSqlReadOnly(sql,parameters);
+  console.log( matrix );
+  if( matrix.length !== 1 ){
+    throw "テスト結果が想定とは異なります。";
+  }
+  if( matrix[0]['学年'] !== 3 ){
+    throw "テスト結果が想定とは異なります。";
+  }
+  if( matrix[0]['氏名'] !== "田中太郎" ){
+    throw "テスト結果が想定とは異なります。";
+  }
+  await close();
 
 }

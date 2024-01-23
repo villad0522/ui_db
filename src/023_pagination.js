@@ -2,10 +2,12 @@
 //
 import {
   startUp,
-  createPage,
-  updatePageName,
-  getPageInfo,
-} from "./031_pages_validate.js";
+  createColumn,
+  generateSQL,
+  createJoinedTable,
+  deleteJoinedTable,
+  addJoinedColumn,
+} from "./031_joined_table_validate.js";
 import {
   getLocalIp,
 } from "./091_ip_address_validate.js";
@@ -28,7 +30,7 @@ import {
 } from "./073_column_name_validate.js";
 import {
   close,
-} from "./034_frontend_files_validate.js";
+} from "./037_frontend_files_validate.js";
 import {
   getPrimaryKey,
 } from "./082_primary_key_validate.js";
@@ -38,16 +40,7 @@ import {
   listEndpoints,
 } from "./028_api_info_validate.js";
 import {
-  createColumn,
-  deleteTable,
-  getDataType,
-  listColumnsForGUI,
-  listColumnsAll,
-  getParentTableId,
-} from "./064_relation_validate.js";
-import {
   listDataTypes,
-  reload,
 } from "./079_data_type_validate.js";
 import {
   createRecord,
@@ -63,6 +56,13 @@ import {
   reserveWord,
 } from "./070_reserved_word_validate.js";
 import {
+  deleteTable,
+  getDataType,
+  listColumnsForGUI,
+  listColumnsAll,
+  getParentTableId,
+} from "./064_relation_validate.js";
+import {
   deleteRecord,
   disableTable,
   enableTable,
@@ -71,15 +71,16 @@ import {
   delete_table,
 } from "./061_search_text_validate.js";
 import {
+  reload,
+  checkTableEnabled,
+  getTableName,
+} from "./076_table_name_validate.js";
+import {
   listTables,
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
 } from "./067_record_title_2_validate.js";
-import {
-  checkTableEnabled,
-  getTableName,
-} from "./076_table_name_validate.js";
 import {
   getPathLength,
   slicePath,
@@ -101,10 +102,12 @@ import {
   generateSQLwithDuplication,
 } from "./043_generate_sql1_validate.js";
 import {
-  generateSQL,
-  createJoinedTable,
-  deleteJoinedTable,
-} from "./037_joined_table_validate.js";
+  createPage,
+  updatePageName,
+  getPageInfo,
+  listPagesFromTableId,
+  getTableFromPage,
+} from "./034_pages_validate.js";
 import {
   runApi,
 } from "./025_run_api_validate.js";

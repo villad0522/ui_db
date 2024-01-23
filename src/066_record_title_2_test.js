@@ -29,7 +29,6 @@ import {
   getPrimaryKey,
 } from "./082_primary_key_validate.js";
 import {
-  createColumn,
   createTable,
   updateTableName,
   updateColumnName,
@@ -43,9 +42,9 @@ import {
   checkRecord,
   getDataType,
   deleteRecord,
-  reload,
 } from "./079_data_type_validate.js";
 import {
+  reload,
   disableTable,
   enableTable,
   checkTableEnabled,
@@ -59,6 +58,7 @@ import {
   deleteTable,  // 不可逆的にテーブルを削除
   clearCache,  // インメモリキャッシュを削除する
   getRecordIdFromTitle,  // 文字列からレコードIDを取得
+  createColumn,  // カラムを作成
 } from "./067_record_title_2_validate.js";
 import { setBugMode } from "./068_record_title_2.js";
 
@@ -67,7 +67,7 @@ export async function test066() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 10; i++ ) {
+    for ( i = 1; i <= 13; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

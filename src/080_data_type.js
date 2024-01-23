@@ -174,7 +174,7 @@ export async function createRecord_core( tableId, recordData ){
     }
     //
     // レコードのデータ型を検証する
-    const {isOK,message} = _checkRecord( tableId, recordData )
+    const {isOK,message} = await checkRecord_core( tableId, recordData )
     if( isOK===false ){
         throw message;
     }
@@ -270,7 +270,7 @@ export async function updateRecord_core( tableId, records ){
         }
         //
         // レコードのデータ型を検証する
-        const {isOK,message} = _checkRecord( tableId, newRecordData );
+        const {isOK,message} = await checkRecord_core( tableId, newRecordData );
         if( isOK===false ){
             throw message;
         }
@@ -303,15 +303,11 @@ export async function updateRecord_core( tableId, records ){
 // フィールドを検証
 export async function checkField_core( columnId, value ){
   if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
-    return _checkField( columnId, value );
-}
-
-
-function _checkField( columnId, value ){
     if( !String(columnId).startsWith("c") ){
         throw `カラムIDに無効な文字列「${columnId}」が指定されました。`;
     }
     if( (value===null) || (value===undefined) ){
+        if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
         return {
             isOK: true,
             message: "空欄です。",
@@ -323,7 +319,9 @@ function _checkField( columnId, value ){
     }
     switch( dataType ){
         case "INTEGER":
+            if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
             if( typeof value !== "number" || isNaN(value) ){
+                if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "数値ではありません。",
@@ -334,7 +332,9 @@ function _checkField( columnId, value ){
             }
             break;
         case "REAL":
+            if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
             if( typeof value !== "number" || isNaN(value) ){
+                if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "数値ではありません。",
@@ -342,7 +342,9 @@ function _checkField( columnId, value ){
             }
             break;
         case "TEXT":
+            if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
             if( typeof value !== "string" ){
+                if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "文字列ではありません。",
@@ -350,7 +352,9 @@ function _checkField( columnId, value ){
             }
             break;
         case "BOOL":
+            if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
             if( typeof value !== "boolean" ){
+                if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: `ブール値ではありません。value=${value}  columnId=${columnId}  dataType=${dataType}`,
@@ -358,7 +362,9 @@ function _checkField( columnId, value ){
             }
             break;
         case "FILE":
+            if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
             if (!value instanceof Uint8Array) {
+                if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "サポートされているファイル形式（Uint8Array）ではありません。",
@@ -375,16 +381,13 @@ function _checkField( columnId, value ){
 
 // レコードを検証
 export async function checkRecord_core( tableId, recordData ){
-  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
-    return _checkRecord( tableId, recordData );
-}
-
-// レコードを検証
-function _checkRecord( tableId, recordData ){
+  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
     const dataTypeMap = cacheData[tableId];
     for( const columnId in dataTypeMap){
-        const {isOK,message} = _checkField( columnId, recordData[columnId] );
+        if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+        const {isOK,message} = await checkField_core( columnId, recordData[columnId] );
         if(isOK===false){
+            if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
             return {
                 isOK: false,
                 message: message,
@@ -399,7 +402,7 @@ function _checkRecord( tableId, recordData ){
 
 // テーブルを作成
 export async function createTable_core( tableId ){
-  if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
     const primaryKey = await getPrimaryKey( tableId );
     // テーブルを作成する
     await runSqlWriteOnly(
@@ -415,7 +418,7 @@ export async function createTable_core( tableId ){
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
-  if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
     // テーブルを削除する
     await runSqlWriteOnly(
         `DROP TABLE IF EXISTS ${tableId};`,
@@ -436,14 +439,14 @@ export async function deleteTable_core( tableId ){
 
 // データ型を取得
 export async function getDataType_core( columnId ){
-  if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
     return cacheData2[columnId];
 }
 
 
 // レコードを削除
 export async function deleteRecord_core( tableId, records ){
-  if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
     // 「tableId」が本当に存在するのか確認
     const dataTypes = cacheData[tableId];
     if(Object.keys(dataTypes).length===0){
@@ -452,10 +455,10 @@ export async function deleteRecord_core( tableId, records ){
     //
     const primaryKey = await getPrimaryKey( tableId );
     for( const recordData of records ){
-        if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
         let recordId;
         if( recordData["id"] ){
-            if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
             recordId = recordData["id"];
         }
         else{
@@ -483,7 +486,7 @@ export async function deleteRecord_core( tableId, records ){
 
 // 【サブ関数】メモリに再読み込み
 export async function reload_core(  ){
-  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
     const columns = await runSqlReadOnly(
         `SELECT
             column_id AS columnId,
@@ -495,9 +498,9 @@ export async function reload_core(  ){
     cacheData = {};
     cacheData2 = {};
     for( const { columnId, tableId, dataType } of columns ){
-        if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
         if(!cacheData[tableId]){
-            if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
             cacheData[tableId] = {};
         }
         cacheData[tableId][columnId] = dataType;

@@ -38,7 +38,6 @@ import {
 } from "./064_relation_validate.js";
 import {
   listDataTypes,
-  reload,
 } from "./079_data_type_validate.js";
 import {
   createRecord,
@@ -62,15 +61,16 @@ import {
   delete_table,
 } from "./061_search_text_validate.js";
 import {
+  reload,
+  checkTableEnabled,
+  getTableName,
+} from "./076_table_name_validate.js";
+import {
   listTables,
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
 } from "./067_record_title_2_validate.js";
-import {
-  checkTableEnabled,
-  getTableName,
-} from "./076_table_name_validate.js";
 import {
   getPathLength,
   slicePath,

@@ -43,7 +43,6 @@ import {
 import {
   listDataTypes,
   deleteRecord,
-  reload,
 } from "./079_data_type_validate.js";
 import {
   createTable,
@@ -52,6 +51,7 @@ import {
   reserveWord,
 } from "./070_reserved_word_validate.js";
 import {
+  reload,
   disableTable,
   enableTable,
   checkTableEnabled,

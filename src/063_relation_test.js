@@ -33,17 +33,17 @@ import {
   getPrimaryKey,
 } from "./082_primary_key_validate.js";
 import {
+  listDataTypes,
+  deleteRecord,
+} from "./079_data_type_validate.js";
+import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
 } from "./070_reserved_word_validate.js";
 import {
-  listDataTypes,
-  deleteRecord,
   reload,
-} from "./079_data_type_validate.js";
-import {
   disableTable,
   enableTable,
   checkTableEnabled,

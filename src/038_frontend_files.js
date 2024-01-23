@@ -2,10 +2,7 @@
 //
 import {
   startUp,
-  generateSQL,
-  createJoinedTable,
-  deleteJoinedTable,
-} from "./037_joined_table_validate.js";
+} from "./055_sort_validate.js";
 import {
   getLocalIp,
 } from "./091_ip_address_validate.js";
@@ -41,7 +38,6 @@ import {
 } from "./064_relation_validate.js";
 import {
   listDataTypes,
-  reload,
 } from "./079_data_type_validate.js";
 import {
   createRecord,
@@ -65,15 +61,16 @@ import {
   delete_table,
 } from "./061_search_text_validate.js";
 import {
+  reload,
+  checkTableEnabled,
+  getTableName,
+} from "./076_table_name_validate.js";
+import {
   listTables,
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
 } from "./067_record_title_2_validate.js";
-import {
-  checkTableEnabled,
-  getTableName,
-} from "./076_table_name_validate.js";
 import {
   getPathLength,
   slicePath,
@@ -94,6 +91,9 @@ import {
 import {
   generateSQLwithDuplication,
 } from "./043_generate_sql1_validate.js";
+import {
+  generateSQL,
+} from "./040_generate_sql_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
