@@ -475,13 +475,11 @@ export async function getParentTableId( columnId ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( typeof result !== "string" ){
-    if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : relation\n関数 : getParentTableId`);
-    }
-    else{
-      throw new Error(`resultが文字列ではありません。\nレイヤー : relation\n関数 : getParentTableId`);
-    }
+  if( (result===null) || (result===undefined) ){
+    // resultは空欄OK。
+  }
+  else if( typeof result !== "string" ){
+    throw new Error(`resultが文字列ではありません。\nレイヤー : relation\n関数 : getParentTableId`);
   }
   //
   //--------------------------------------------------------------------------

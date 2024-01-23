@@ -14,7 +14,7 @@ export async function test087() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 9; i++ ) {
+    for ( i = 1; i <= 28; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -39,25 +39,25 @@ async function _test(){
     
   await startUp("http://localhost:3000/");
   //
-  if ( !fs.existsSync( await pathToColumnId("FRONTEND") ) ){
+  if ( !fs.existsSync( await getPath("FRONTEND") ) ){
     throw "関数が想定通りの動作をしませんでした。";
   }
-  if ( !fs.existsSync( await pathToColumnId("FRONTEND_CUSTOM") ) ){
+  if ( !fs.existsSync( await getPath("FRONTEND_CUSTOM") ) ){
     throw "関数が想定通りの動作をしませんでした。";
   }
-  if ( !fs.existsSync( await pathToColumnId("FRONTEND_DEFAULT") ) ){
+  if ( !fs.existsSync( await getPath("FRONTEND_DEFAULT") ) ){
     throw "関数が想定通りの動作をしませんでした。";
   }
-  if ( !fs.existsSync( await pathToColumnId("STATIC_DATA") ) ){
+  if ( !fs.existsSync( await getPath("STATIC_DATA") ) ){
     throw "関数が想定通りの動作をしませんでした。";
   }
-  if ( !fs.existsSync( await pathToColumnId("CACHE") ) ){
+  if ( !fs.existsSync( await getPath("CACHE") ) ){
     throw "関数が想定通りの動作をしませんでした。";
   }
-  if ( !fs.existsSync( await pathToColumnId("SAVEDATA") ) ){
+  if ( !fs.existsSync( await getPath("SAVEDATA") ) ){
     throw "関数が想定通りの動作をしませんでした。";
   }
-  if ( !fs.existsSync( await pathToColumnId("SHARE") ) ){
+  if ( !fs.existsSync( await getPath("SHARE") ) ){
     throw "関数が想定通りの動作をしませんでした。";
   }
 

@@ -41,6 +41,7 @@ import {
   checkRecord,
   getDataType,
   deleteRecord,
+  reload,
 } from "./079_data_type_validate.js";
 import {
   createTable,
@@ -79,6 +80,7 @@ export async function createColumn_core( tableId, columnName, dataType ){
   return await createColumn( tableId, columnName, dataType );
 }
 
+
 // カラム名を変更
 export async function updateColumnName_core( columns ){
   if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -95,6 +97,7 @@ export async function updateColumnName_core( columns ){
   return await updateColumnName( columns );
 }
 
+
 // テーブルを作成
 export async function createTable_core( tableName ){
   if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -107,6 +110,7 @@ export async function createTable_core( tableName ){
   }
   return await createTable( tableName );
 }
+
 
 // テーブル名を変更
 export async function updateTableName_core( tables ){
@@ -124,12 +128,17 @@ export async function updateTableName_core( tables ){
   return await updateTableName( tables );
 }
 
+
+
 // 予約語を追加
 export async function reserveWord_core( word ){
   if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
   const word2 = String(word).toUpperCase();
   reservedWords.push(word2);
 }
+
+
+
 
 const reservedWords = [
   "ID",

@@ -2,10 +2,10 @@
 //
 import {
   startUp,
-  generateSQL,
-  createDynamicList,
-  deleteDynamicList,
-} from "./007_dynamic_list_validate.js";
+  createPage,
+  updatePageName,
+  getPageInfo,
+} from "./031_pages_validate.js";
 import {
   getLocalIp,
 } from "./091_ip_address_validate.js";
@@ -28,14 +28,14 @@ import {
 } from "./073_column_name_validate.js";
 import {
   close,
-} from "./037_frontend_files_validate.js";
+} from "./034_frontend_files_validate.js";
 import {
   getPrimaryKey,
 } from "./082_primary_key_validate.js";
 import {
   clearCache,
   listEndpoints,
-} from "./031_api_info_validate.js";
+} from "./028_api_info_validate.js";
 import {
   createColumn,
   deleteTable,
@@ -46,6 +46,7 @@ import {
 } from "./064_relation_validate.js";
 import {
   listDataTypes,
+  reload,
 } from "./079_data_type_validate.js";
 import {
   createRecord,
@@ -53,7 +54,7 @@ import {
   checkField,
   checkRecord,
   autoCorrect,
-} from "./040_record_title_1_validate.js";
+} from "./058_record_title_1_validate.js";
 import {
   createTable,
   updateTableName,
@@ -83,7 +84,7 @@ import {
   slicePath,
   checkPath,
   pathToColumnId,
-} from "./055_columnPath_validate.js";
+} from "./052_columnPath_validate.js";
 import {
   getJoinIdMap,
   checkTableDuplication,
@@ -91,28 +92,28 @@ import {
   getJoinData,
   getWhereData,
   getOrderData,
-} from "./052_convert_sql_data_validate.js";
+} from "./049_convert_sql_data_validate.js";
 import {
   generateSQLwithoutDuplication,
-} from "./049_generate_sql2_validate.js";
+} from "./046_generate_sql2_validate.js";
 import {
   generateSQLwithDuplication,
-} from "./046_generate_sql1_validate.js";
+} from "./043_generate_sql1_validate.js";
 import {
-  createPage,
-  updatePageName,
-  getPageInfo,
-} from "./034_pages_validate.js";
+  generateSQL,
+  createJoinedTable,
+  deleteJoinedTable,
+} from "./037_joined_table_validate.js";
 import {
   getEndpointInfo,
-} from "./022_convert_array_validate.js";
+} from "./019_convert_array_validate.js";
 import {
   runApi,
-} from "./013_transaction_validate.js";
+} from "./010_transaction_validate.js";
 import {
   updateExcel,
   openExcel,
-} from "./010_excel_edit_validate.js";
+} from "./007_excel_edit_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
@@ -156,7 +157,7 @@ export async function startUp_core( localUrl, isDebug ){
             "page_id" INTEGER NOT NULL,
             "sheet_name" TEXT NOT NULL,
             FOREIGN KEY (template_id) REFERENCES excel_templates(template_id),
-            FOREIGN KEY (page_id) REFERENCES dynamic_lists(page_id)
+            FOREIGN KEY (page_id) REFERENCES joined_tables(page_id)
         );`,
         {},
     );

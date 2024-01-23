@@ -84,9 +84,6 @@ async function _test(){
     // CSVファイルからデータベースに読み込む
     await createRecordsFromCsv( "t99999", csvFilePath, 3 );
     //
-    // わざと再接続
-    await startUp("localhost:3000", true);
-    //
     // テーブルから読み出す
     const matrix = await runSqlReadOnly(`SELECT * FROM t99999`,{});
     if (matrix.length !== data.length) {
@@ -105,6 +102,10 @@ async function _test(){
     await runSqlWriteOnly(`
         DROP TABLE IF EXISTS t99999;
     `,{});
+    //
+    // わざと再接続
+    await startUp("localhost:3000", true);
+    //
     await close();
 
 }

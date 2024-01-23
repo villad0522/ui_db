@@ -1,4 +1,4 @@
-// レコードの見出し(下)
+// レコードの見出し2
 //
 import {
   startUp,
@@ -46,6 +46,7 @@ import {
   checkRecord,
   getDataType,
   deleteRecord,
+  reload,
 } from "./079_data_type_validate.js";
 import {
   disableTable,

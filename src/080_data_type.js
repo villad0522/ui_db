@@ -60,8 +60,10 @@ export async function startUp_core( localUrl, isDebug ){
         );`,
         {},
     );
-    await _reload();    // メモリに再読み込み
+    await reload_core();    // メモリに再読み込み
 }
+
+
 
 //【グローバル変数】データ型を保存するキャッシュ
 let cacheData = {
@@ -87,31 +89,10 @@ let cacheData2 = {
     //    "c78": "BOOL"
 };
 
-//【サブ関数】メモリに再読み込み
-async function _reload() {
-    const columns = await runSqlReadOnly(
-        `SELECT
-            column_id AS columnId,
-            table_id AS tableId,
-            data_type AS dataType
-        FROM data_types;`,
-        {},
-    );
-    cacheData = {};
-    cacheData2 = {};
-    for( const { columnId, tableId, dataType } of columns ){
-        if(!cacheData[tableId]){
-            cacheData[tableId] = {};
-        }
-        cacheData[tableId][columnId] = dataType;
-        cacheData2[columnId] = dataType;
-    }
-}
-
 // インメモリキャッシュを削除する
 export async function clearCache_core(  ){
   if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    await _reload();    // メモリに再読み込み
+    await reload_core();    // メモリに再読み込み
 }
 
 // カラムを作成
@@ -161,7 +142,7 @@ export async function createColumn_core( tableId, columnId, dataType ){
             ":dataType": dataType,
         },
     );
-    await _reload();    // メモリに再読み込み
+    await reload_core();    // メモリに再読み込み
     return "カラムを追加しました。";
 }
 
@@ -176,6 +157,7 @@ export async function listDataTypes_core( tableId ){
 //    "c22": "INTEGER",
 //    "c13": "BOOL"
 //  }
+
 
 // レコードを作成
 export async function createRecord_core( tableId, recordData ){
@@ -247,6 +229,8 @@ export async function createRecord_core( tableId, recordData ){
         message: "レコードを追加しました。",
     };
 }
+
+
 
 // レコードを上書き
 export async function updateRecord_core( tableId, records ){
@@ -444,7 +428,7 @@ export async function deleteTable_core( tableId ){
             ":tableId": tableId,
         },
     );
-    await _reload();    // メモリに再読み込み
+    await reload_core();    // メモリに再読み込み
     return "テーブルを削除しました。";
 }
 
@@ -495,4 +479,28 @@ export async function deleteRecord_core( tableId, records ){
         );
     }
     return "レコードを削除しました。";
+}
+
+// 【サブ関数】メモリに再読み込み
+export async function reload_core(  ){
+  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+    const columns = await runSqlReadOnly(
+        `SELECT
+            column_id AS columnId,
+            table_id AS tableId,
+            data_type AS dataType
+        FROM data_types;`,
+        {},
+    );
+    cacheData = {};
+    cacheData2 = {};
+    for( const { columnId, tableId, dataType } of columns ){
+        if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(!cacheData[tableId]){
+            if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+            cacheData[tableId] = {};
+        }
+        cacheData[tableId][columnId] = dataType;
+        cacheData2[columnId] = dataType;
+    }
 }

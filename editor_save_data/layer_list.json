@@ -5,11 +5,6 @@
     "layerNameEN": "excel_template"
   },
   {
-    "layerId": "01HMP19J9MP2XK0MN03KMVTWP0",
-    "layerNameJP": "動的リスト",
-    "layerNameEN": "dynamic_list"
-  },
-  {
     "layerId": "01HMNXBFJ0S33T6WGJCJ0C3YF6",
     "layerNameJP": "Excelファイル操作",
     "layerNameEN": "excel_edit"
@@ -60,9 +55,9 @@
     "layerNameEN": "frontend_files"
   },
   {
-    "layerId": "01HMK3QQV40SHFD77XNVCA8P2Y",
-    "layerNameJP": "レコードの見出し(上)",
-    "layerNameEN": "record_title_1"
+    "layerId": "01HMP19J9MP2XK0MN03KMVTWP0",
+    "layerNameJP": "テーブル結合",
+    "layerNameEN": "joined_table"
   },
   {
     "layerId": "01HM5T8G9WJWNKEMEGBYP29CKA",
@@ -95,6 +90,11 @@
     "layerNameEN": "sort"
   },
   {
+    "layerId": "01HMK3QQV40SHFD77XNVCA8P2Y",
+    "layerNameJP": "レコードの見出し1",
+    "layerNameEN": "record_title_1"
+  },
+  {
     "layerId": "01HM1S7MRXG1TPKCR514Y0SS5J",
     "layerNameJP": "文字列検索",
     "layerNameEN": "search_text"
@@ -106,7 +106,7 @@
   },
   {
     "layerId": "01HM7EY8CJGHQ1YBC7NCFA5BH3",
-    "layerNameJP": "レコードの見出し(下)",
+    "layerNameJP": "レコードの見出し2",
     "layerNameEN": "record_title_2"
   },
   {

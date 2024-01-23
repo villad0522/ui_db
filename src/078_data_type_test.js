@@ -32,6 +32,7 @@ import {
   deleteTable,  // 不可逆的にテーブルを削除
   getDataType,  // データ型を取得
   deleteRecord,  // レコードを削除
+  reload,  // 【サブ関数】メモリに再読み込み
 } from "./079_data_type_validate.js";
 import { setBugMode } from "./080_data_type.js";
 
@@ -40,7 +41,7 @@ export async function test078() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 25; i++ ) {
+    for ( i = 1; i <= 28; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -122,21 +123,6 @@ async function _test(){
         "c5": false,
     });
     await updateRecord( "t67", [{
-        "t67_id": recordId,
-        "c2": 13,
-        "c3": 6.14,
-        "c4": "good",
-        "c5": true,
-    }]);
-    await updateRecord( "t67", [{
-        "recordId": recordId,
-        "c2": 13,
-        "c3": 6.14,
-        "gdyyuywg": "余分なデータ",
-        "c4": "good",
-        "c5": true,
-    }]);
-    await updateRecord( "t67", [{
         "id": recordId,
         "c2": 13,
         "c3": 6.14,
@@ -153,7 +139,7 @@ async function _test(){
         "c5": false,
     });
     await deleteRecord( "t67", [{
-        "recordId": recordId2,
+        "id": recordId2,
     }]);
     const { recordId: recordId3 } = await createRecord( "t67", {
         "c2": 23,

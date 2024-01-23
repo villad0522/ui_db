@@ -162,6 +162,7 @@ export async function runSqlReadOnly_core( sql, params ){
   }
 }
 
+
 // SQLクエリ実行（書き込み専用）
 export async function runSqlWriteOnly_core( sql, params ){
   if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
