@@ -98,8 +98,8 @@ import {
   createPage,  // ページを作成
   updatePageName,  // ページ名やメモを変更
   getPageInfo,  // １ページの情報を取得
-  listPagesFromTableId,  // テーブルIDからページIDを取得する
-  getTableFromPage,  // ページIDからテーブルIDを取得する
+  listJoinsFromTableId,  // テーブルIDからjoinedTableIdを取得する
+  getTableFromJoin,  // joinedTableIdからテーブルIDを取得する
   createJoinedTable,  // 結合済みテーブルを作成
   deleteJoinedTable,  // 結合済みテーブルを削除
   deletePage,  // ページを削除
@@ -109,6 +109,7 @@ import {
   pastePage,  // ページを貼り付ける
   getCuttingPage,  // 切り取り中のページを取得する
   getCopyingPage,  // コピー中のページを取得する
+  listAllPages,  // ページを全て取得する関数
 } from "./040_pages_validate.js";
 import { setBugMode } from "./041_pages.js";
 
@@ -117,7 +118,7 @@ export async function test039() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 29; i++ ) {
+    for ( i = 1; i <= 25; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -141,13 +142,30 @@ export async function test039() {
 async function _test(){
     
   await startUp("http://localhost:3000/", true);
-  const { pageId: pageId1 } = await createPage( null, "ページ１", false );
-  const { pageId: pageId2 } = await createPage( pageId1, "ページ2", false );
-  const { pageId: pageId3 } = await createPage( pageId2, "ページ3", false );
-  const { pageId: pageId4 } = await createPage( pageId3, "ページ4", false );
-  const { pageId: pageId5 } = await createPage( pageId4, "ページ5", false );
-  const { pageId: pageId6 } = await createPage( pageId5, "ページ6", false );
-  const { pageId: pageId7 } = await createPage( pageId6, "ページ7", false );
+  //
+  const { tableId: tableId1 } = await createTable("学年");
+  const { columnId: columnId1 } = await createColumn( tableId1, "学年", "INTEGER", null );
+  const { recordId: recordId } = await createRecord( tableId1, {
+    [columnId1]: 3,
+  });
+  //
+  const { tableId: tableId2 } = await createTable("名簿");
+  const { columnId: columnId2  } = await createColumn( tableId2, "学年", "POINTER", tableId1 );
+  const { columnId: columnId3  } = await createColumn( tableId2, "氏名", "TEXT", null );
+  await createRecord( tableId2, {
+    [columnId2]: recordId,
+    [columnId3]: "田中太郎",
+  });
+  //
+  const { pageId: pageId1 } = await createPage( 1, "ページ１" );
+  const { pageId: pageId2 } = await createPage( pageId1, "ページ2" );
+  const { pageId: pageId3 } = await createPage( pageId2, "ページ3" );
+  const { pageId: pageId4 } = await createPage( pageId3, "ページ4" );
+  const { pageId: pageId5 } = await createPage( pageId4, "ページ5" );
+  const { pageId: pageId6 } = await createPage( pageId5, "ページ6" );
+  const { pageId: pageId7 } = await createPage( pageId6, "ページ7" );
+  //
+  await createJoinedTable( pageId6, tableId1, `SELECT * FROM ${tableId1};` );
   await updatePageName([
     {
       id: pageId1,
@@ -155,10 +173,9 @@ async function _test(){
       memo: "メモ",
     }
   ]);
-  const info1 = await getPageInfo();
-  const info2 = await getPageInfo( pageId1 );
-  const info5 = await getPageInfo( pageId5 );
-  console.log(info5);
+  //const info1 = await getPageInfo();
+  //const info2 = await getPageInfo( pageId1 );
+  //const info5 = await getPageInfo( pageId5 );
   await close();
 
 }

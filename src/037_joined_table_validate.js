@@ -5,6 +5,7 @@ import {
   generateSQL_core,  // SQLクエリを生成
   createColumn_core,  // カラムを作成
   addJoinedColumn_core,  // 結合済み列を作成
+  getSimpleSQL_core,  // 最低限のSQLクエリを生成する
 } from "./038_joined_table.js";
 
 
@@ -58,19 +59,19 @@ export async function startUp( localUrl, isDebug ){
 //#######################################################################################
 // 関数「createJoinedTable_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function createJoinedTable( joinedTableId, tableId ){
+export async function createJoinedTable( pageId, tableId ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( typeof joinedTableId !== "number" ){
-    if( !joinedTableId ){
-      throw new Error(`joinedTableIdがNULLです。\nレイヤー : joined_table\n関数 : createJoinedTable`);
+  if( typeof pageId !== "number" ){
+    if( !pageId ){
+      throw new Error(`pageIdがNULLです。\nレイヤー : joined_table\n関数 : createJoinedTable`);
     }
     else{
-      throw new Error(`joinedTableIdが数値ではありません。\nレイヤー : joined_table\n関数 : createJoinedTable`);
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : joined_table\n関数 : createJoinedTable`);
     }
   }
-  else if( isNaN(joinedTableId) ){
-    throw new Error(`joinedTableIdが数値ではありません。\nレイヤー : joined_table\n関数 : createJoinedTable`);
+  else if( isNaN(pageId) ){
+    throw new Error(`pageIdが数値ではありません。\nレイヤー : joined_table\n関数 : createJoinedTable`);
   }
   if( typeof tableId !== "string" ){
     if( !tableId ){
@@ -85,7 +86,7 @@ export async function createJoinedTable( joinedTableId, tableId ){
   // メイン処理を実行
   let result;
   try{
-    result = await createJoinedTable_core( joinedTableId, tableId );
+    result = await createJoinedTable_core( pageId, tableId );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -345,6 +346,52 @@ export async function addJoinedColumn( joinedTableId, joinedColumnType, columnPa
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「getSimpleSQL_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function getSimpleSQL( tableId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : joined_table\n関数 : getSimpleSQL`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : joined_table\n関数 : getSimpleSQL`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await getSimpleSQL_core( tableId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : joined_table\n関数 : getSimpleSQL`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : joined_table\n関数 : getSimpleSQL`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : joined_table\n関数 : getSimpleSQL`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;

@@ -3,8 +3,8 @@ import {
   createPage_core,  // ページを作成
   updatePageName_core,  // ページ名やメモを変更
   getPageInfo_core,  // １ページの情報を取得
-  listPagesFromTableId_core,  // テーブルIDからページIDを取得する
-  getTableFromPage_core,  // ページIDからテーブルIDを取得する
+  listJoinsFromTableId_core,  // テーブルIDからjoinedTableIdを取得する
+  getTableFromJoin_core,  // joinedTableIdからテーブルIDを取得する
   createJoinedTable_core,  // 結合済みテーブルを作成
   deleteJoinedTable_core,  // 結合済みテーブルを削除
   deletePage_core,  // ページを削除
@@ -14,6 +14,7 @@ import {
   pastePage_core,  // ページを貼り付ける
   getCuttingPage_core,  // 切り取り中のページを取得する
   getCopyingPage_core,  // コピー中のページを取得する
+  listAllPages_core,  // ページを全て取得する関数
 } from "./041_pages.js";
 
 
@@ -67,14 +68,16 @@ export async function startUp( localUrl, isDebug ){
 //#######################################################################################
 // 関数「createPage_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function createPage( parentPageId, pageName, isInJoinedTable ){
+export async function createPage( parentPageId, pageName ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( (parentPageId===null) || (parentPageId===undefined) ){
-    // parentPageIdは空欄OK。
-  }
-  else if( typeof parentPageId !== "number" ){
-    throw new Error(`parentPageIdが数値ではありません。\nレイヤー : pages\n関数 : createPage`);
+  if( typeof parentPageId !== "number" ){
+    if( !parentPageId ){
+      throw new Error(`parentPageIdがNULLです。\nレイヤー : pages\n関数 : createPage`);
+    }
+    else{
+      throw new Error(`parentPageIdが数値ではありません。\nレイヤー : pages\n関数 : createPage`);
+    }
   }
   else if( isNaN(parentPageId) ){
     throw new Error(`parentPageIdが数値ではありません。\nレイヤー : pages\n関数 : createPage`);
@@ -87,23 +90,12 @@ export async function createPage( parentPageId, pageName, isInJoinedTable ){
       throw new Error(`pageNameが文字列ではありません。\nレイヤー : pages\n関数 : createPage`);
     }
   }
-  if( typeof isInJoinedTable !== "boolean" ){
-    if( !isInJoinedTable ){
-      throw new Error(`isInJoinedTableがNULLです。\nレイヤー : pages\n関数 : createPage`);
-    }
-    else{
-      throw new Error(`isInJoinedTableがブール値ではありません。\nレイヤー : pages\n関数 : createPage`);
-    }
-  }
-  else if( isNaN(isInJoinedTable) ){
-    throw new Error(`isInJoinedTableがブール値ではありません。\nレイヤー : pages\n関数 : createPage`);
-  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await createPage_core( parentPageId, pageName, isInJoinedTable );
+    result = await createPage_core( parentPageId, pageName );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -416,17 +408,17 @@ export async function getPageInfo( pageId ){
 
 
 //#######################################################################################
-// 関数「listPagesFromTableId_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「listJoinsFromTableId_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function listPagesFromTableId( tableId ){
+export async function listJoinsFromTableId( tableId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : pages\n関数 : listPagesFromTableId`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : pages\n関数 : listPagesFromTableId`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
     }
   }
   //
@@ -434,11 +426,11 @@ export async function listPagesFromTableId( tableId ){
   // メイン処理を実行
   let result;
   try{
-    result = await listPagesFromTableId_core( tableId );
+    result = await listJoinsFromTableId_core( tableId );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : pages\n関数 : listPagesFromTableId`);
+      throw new Error(`${error}\nレイヤー : pages\n関数 : listJoinsFromTableId`);
     }
     else{
       throw error;
@@ -449,23 +441,23 @@ export async function listPagesFromTableId( tableId ){
   // 戻り値を検証
   if( !Array.isArray(result) ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : pages\n関数 : listPagesFromTableId`);
+      throw new Error(`resultがNULLです。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
     }
     else{
-      throw new Error(`resultが配列ではありません。\nレイヤー : pages\n関数 : listPagesFromTableId`);
+      throw new Error(`resultが配列ではありません。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
     }
   }
   for( let i=0; i<result.length; i++ ){
     if( typeof result[i] !== "number" ){
       if( !result[i] ){
-        throw new Error(`result[${i}]がNULLです。\nレイヤー : pages\n関数 : listPagesFromTableId`);
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
       }
       else{
-        throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listPagesFromTableId`);
+        throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
       }
     }
     else if( isNaN(result[i]) ){
-      throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listPagesFromTableId`);
+      throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
     }
   }
   //
@@ -475,32 +467,32 @@ export async function listPagesFromTableId( tableId ){
 
 
 //#######################################################################################
-// 関数「getTableFromPage_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「getTableFromJoin_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function getTableFromPage( pageId ){
+export async function getTableFromJoin( joinedTableId ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( typeof pageId !== "number" ){
-    if( !pageId ){
-      throw new Error(`pageIdがNULLです。\nレイヤー : pages\n関数 : getTableFromPage`);
+  if( typeof joinedTableId !== "number" ){
+    if( !joinedTableId ){
+      throw new Error(`joinedTableIdがNULLです。\nレイヤー : pages\n関数 : getTableFromJoin`);
     }
     else{
-      throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : getTableFromPage`);
+      throw new Error(`joinedTableIdが数値ではありません。\nレイヤー : pages\n関数 : getTableFromJoin`);
     }
   }
-  else if( isNaN(pageId) ){
-    throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : getTableFromPage`);
+  else if( isNaN(joinedTableId) ){
+    throw new Error(`joinedTableIdが数値ではありません。\nレイヤー : pages\n関数 : getTableFromJoin`);
   }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await getTableFromPage_core( pageId );
+    result = await getTableFromJoin_core( joinedTableId );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : pages\n関数 : getTableFromPage`);
+      throw new Error(`${error}\nレイヤー : pages\n関数 : getTableFromJoin`);
     }
     else{
       throw error;
@@ -513,7 +505,7 @@ export async function getTableFromPage( pageId ){
     // resultは空欄OK。
   }
   else if( typeof result !== "string" ){
-    throw new Error(`resultが文字列ではありません。\nレイヤー : pages\n関数 : getTableFromPage`);
+    throw new Error(`resultが文字列ではありません。\nレイヤー : pages\n関数 : getTableFromJoin`);
   }
   //
   //--------------------------------------------------------------------------
@@ -524,7 +516,7 @@ export async function getTableFromPage( pageId ){
 //#######################################################################################
 // 関数「createJoinedTable_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function createJoinedTable( pageId, tableId ){
+export async function createJoinedTable( pageId, tableId, sqlQuery ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof pageId !== "number" ){
@@ -546,12 +538,20 @@ export async function createJoinedTable( pageId, tableId ){
       throw new Error(`tableIdが文字列ではありません。\nレイヤー : pages\n関数 : createJoinedTable`);
     }
   }
+  if( typeof sqlQuery !== "string" ){
+    if( !sqlQuery ){
+      throw new Error(`sqlQueryがNULLです。\nレイヤー : pages\n関数 : createJoinedTable`);
+    }
+    else{
+      throw new Error(`sqlQueryが文字列ではありません。\nレイヤー : pages\n関数 : createJoinedTable`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await createJoinedTable_core( pageId, tableId );
+    result = await createJoinedTable_core( pageId, tableId, sqlQuery );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -930,6 +930,57 @@ export async function getCopyingPage(  ){
   }
   else if( isNaN(result) ){
     throw new Error(`resultが数値ではありません。\nレイヤー : pages\n関数 : getCopyingPage`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「listAllPages_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function listAllPages(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await listAllPages_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : pages\n関数 : listAllPages`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( !Array.isArray(result) ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : pages\n関数 : listAllPages`);
+    }
+    else{
+      throw new Error(`resultが配列ではありません。\nレイヤー : pages\n関数 : listAllPages`);
+    }
+  }
+  for( let i=0; i<result.length; i++ ){
+    if( typeof result[i] !== "number" ){
+      if( !result[i] ){
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : pages\n関数 : listAllPages`);
+      }
+      else{
+        throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listAllPages`);
+      }
+    }
+    else if( isNaN(result[i]) ){
+      throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listAllPages`);
+    }
   }
   //
   //--------------------------------------------------------------------------

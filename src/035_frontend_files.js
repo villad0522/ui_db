@@ -7,6 +7,7 @@ import {
   createJoinedTable,
   deleteJoinedTable,
   addJoinedColumn,
+  getSimpleSQL,
 } from "./037_joined_table_validate.js";
 import {
   getLocalIp,
@@ -99,8 +100,8 @@ import {
   createPage,
   updatePageName,
   getPageInfo,
-  listPagesFromTableId,
-  getTableFromPage,
+  listJoinsFromTableId,
+  getTableFromJoin,
   deletePage,
   getBreadcrumbs,
   cutPage,
@@ -108,6 +109,7 @@ import {
   pastePage,
   getCuttingPage,
   getCopyingPage,
+  listAllPages,
 } from "./040_pages_validate.js";
 
 

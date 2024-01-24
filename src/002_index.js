@@ -44,6 +44,7 @@ import {
   createJoinedTable,
   deleteJoinedTable,
   addJoinedColumn,
+  getSimpleSQL,
 } from "./037_joined_table_validate.js";
 import {
   listDataTypes,
@@ -111,8 +112,8 @@ import {
   createPage,
   updatePageName,
   getPageInfo,
-  listPagesFromTableId,
-  getTableFromPage,
+  listJoinsFromTableId,
+  getTableFromJoin,
   deletePage,
   getBreadcrumbs,
   cutPage,
@@ -120,6 +121,7 @@ import {
   pastePage,
   getCuttingPage,
   getCopyingPage,
+  listAllPages,
 } from "./040_pages_validate.js";
 import {
   regenerateHTML,
@@ -197,8 +199,8 @@ export {
   createPage,
   updatePageName,
   getPageInfo,
-  listPagesFromTableId,
-  getTableFromPage,
+  listJoinsFromTableId,
+  getTableFromJoin,
   createJoinedTable,
   deleteJoinedTable,
   deletePage,
@@ -208,7 +210,9 @@ export {
   pastePage,
   getCuttingPage,
   getCopyingPage,
+  listAllPages,
   addJoinedColumn,
+  getSimpleSQL,
   createDirectories,
   regenerateHTML,
   getEndpointInfo,

@@ -5,8 +5,8 @@ import {
   createPage,
   updatePageName,
   getPageInfo,
-  listPagesFromTableId,
-  getTableFromPage,
+  listJoinsFromTableId,
+  getTableFromJoin,
   createJoinedTable,
   deleteJoinedTable,
   deletePage,
@@ -16,6 +16,7 @@ import {
   pastePage,
   getCuttingPage,
   getCopyingPage,
+  listAllPages,
 } from "./040_pages_validate.js";
 import {
   getLocalIp,
@@ -168,12 +169,13 @@ export async function startUp_core( localUrl, isDebug ){
 
 
 // 結合済みテーブルを作成
-export async function createJoinedTable_core( joinedTableId, tableId ){
+export async function createJoinedTable_core( pageId, tableId ){
   if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    const result = await createJoinedTable( joinedTableId, tableId );  // 下層の関数を実行する
-    await _deleteJoinedColumns( joinedTableId );
+    const sqlQuery = await getSimpleSQL_core( tableId );
+    const result = await createJoinedTable( pageId, tableId, sqlQuery );  // 下層の関数を実行する
     //
     // 自動的に列を表示設定にしてあげる
+    await _deleteJoinedColumns( result.joinedTableId );
     const columns = await listColumnsAll( tableId );
     for( const { id, name, dataType, parentTableId } of columns ){
         if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -183,7 +185,7 @@ export async function createJoinedTable_core( joinedTableId, tableId ){
             if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
             // 列を表示設定にする
             await addJoinedColumn_core(
-                joinedTableId,
+                result.joinedTableId,
                 "RAW",
                 `main.${id}`,
                 columnName,
@@ -201,7 +203,7 @@ export async function createJoinedTable_core( joinedTableId, tableId ){
         }
         // 列を表示設定にする
         await addJoinedColumn_core(
-            joinedTableId,
+            result.joinedTableId,
             "RAW",
             `main.${id} > ${parentColumnId}`,
             columnName,
@@ -275,7 +277,7 @@ async function _deleteJoinedColumns( joinedTableId ){
 // SQLクエリを生成
 export async function generateSQL_core( joinedTableId ){
   if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-    const tableId = await getTableFromPage( joinedTableId );
+    const tableId = await getTableFromJoin( joinedTableId );
     if( !tableId ){
         throw `指定されたページには、動的リストが登録されていません。\njoinedTableId = ${joinedTableId}`;
     }
@@ -332,7 +334,7 @@ export async function createColumn_core( tableId, columnName, dataType, parentTa
   if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     const result = await createColumn( tableId, columnName, dataType, parentTableId );    // 下層の関数を呼び出す
     //
-    const joinedTableIdList = await listPagesFromTableId( tableId );
+    const joinedTableIdList = await listJoinsFromTableId( tableId );
     if( dataType !== "POINTER" ){
         if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
         // 列を表示設定にする
@@ -422,4 +424,50 @@ export async function addJoinedColumn_core( joinedTableId, joinedColumnType, col
             ":excelColumnIndex": excelColumnIndex,
         },
     );
+}
+
+
+
+// 最低限のSQLクエリを生成する
+export async function getSimpleSQL_core( tableId ){
+  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+    // SQLクエリを生成する
+    const joinedColumns = [];
+    const columns = await listColumnsAll( tableId );
+    for( let i=0; i<columns.length; i++ ){
+        if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+        const { id, name, dataType, parentTableId } = columns[i];
+        //
+        // 文字列からアンダーバー（_）以降を切り取る
+        const columnName = _cutStringAfterUnderscore(name);
+        if( dataType !== "POINTER" ){
+            if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+            // 列を表示設定にする
+            joinedColumns.push({
+                joinedColumnId: "d"+i,
+                joinedColumnType: "RAW",
+                columnPath: `main.${id}`,
+                joinedColumnName: columnName,
+            });
+            continue;
+        }
+        if( !parentTableId ){
+            throw `親テーブルが不明です。\nテーブルID=${tableId}\nカラムID=${id}`;
+        }
+        const parentColumnId = await getTitleColumnId( parentTableId );
+        if(!parentColumnId){
+            if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+            console.error(`createJoinedTable > タイトル列が設定されていません。${parentTableId}`);
+            continue;
+        }
+        // 列を表示設定にする
+        joinedColumns.push({
+            joinedColumnId: "d"+i,
+            joinedColumnType: "RAW",
+            columnPath: `main.${id} > ${parentColumnId}`,
+            joinedColumnName: columnName,
+        });
+    }
+    const { sql: sqlQuery } = await generateSQL( tableId, joinedColumns, [], [] );
+    return sqlQuery;
 }

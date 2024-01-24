@@ -4,8 +4,8 @@ import {
   createPage,
   updatePageName,
   getPageInfo,
-  listPagesFromTableId,
-  getTableFromPage,
+  listJoinsFromTableId,
+  getTableFromJoin,
   deletePage,
   getBreadcrumbs,
   cutPage,
@@ -13,6 +13,7 @@ import {
   pastePage,
   getCuttingPage,
   getCopyingPage,
+  listAllPages,
 } from "./040_pages_validate.js";
 import {
   getLocalIp,
@@ -110,6 +111,7 @@ import {
   generateSQL,  // SQLクエリを生成
   createColumn,  // カラムを作成
   addJoinedColumn,  // 結合済み列を作成
+  getSimpleSQL,  // 最低限のSQLクエリを生成する
 } from "./037_joined_table_validate.js";
 import { setBugMode } from "./038_joined_table.js";
 
@@ -118,7 +120,7 @@ export async function test036() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 16; i++ ) {
+    for ( i = 1; i <= 20; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -160,7 +162,7 @@ async function _test(){
   });
   //
   // ページを作成
-  const { pageId: pageId1 } = await createPage( null, "ページ１", false );
+  const { pageId: pageId1 } = await createPage( 1, "ページ１" );
   //
   // ページに動的リストを追加
   const { joinedTableId: joinedTableId1 } = await createJoinedTable( pageId1, tableId2 );

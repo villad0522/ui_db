@@ -42,6 +42,7 @@ import {
   createJoinedTable,
   deleteJoinedTable,
   addJoinedColumn,
+  getSimpleSQL,
 } from "./037_joined_table_validate.js";
 import {
   listDataTypes,
@@ -102,8 +103,8 @@ import {
   createPage,
   updatePageName,
   getPageInfo,
-  listPagesFromTableId,
-  getTableFromPage,
+  listJoinsFromTableId,
+  getTableFromJoin,
   deletePage,
   getBreadcrumbs,
   cutPage,
@@ -111,6 +112,7 @@ import {
   pastePage,
   getCuttingPage,
   getCopyingPage,
+  listAllPages,
 } from "./040_pages_validate.js";
 
 
@@ -126,6 +128,9 @@ export function setBugMode( mode ){
 
 
 
+
+import fs from 'fs';
+import path from 'path';
 
 
 // HTMLを再生成する
@@ -146,7 +151,17 @@ export async function regenerateHTML_core( pageId ){
         <!--  -->
         <script src="/default/my_fetch.js" type="module"></script>
     </head>
-    <body>`;
+    <body style="background: #eee;">
+        <header>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">${ await _getBreadcrumbHTML( pageId ) }
+                </ol>
+            </nav>
+        </header>
+        <main class="container">
+        </main>
+    </body>
+</html>`;
     //
     // HTMLファイルを作成
     const customDirPath = await getPath("FRONTEND_CUSTOM");
@@ -156,12 +171,25 @@ export async function regenerateHTML_core( pageId ){
 
 
 
-// パンくずリストを生成する
+// パンくずリストを生成する関数
 async function _getBreadcrumbHTML( pageId ){
     let htmlText = "";
     const breadcrumbs = await getBreadcrumbs( pageId );
-    for( const breadcrumb of breadcrumbs ){
-      
+    for( const { pageId, pageName } of breadcrumbs ){
+      htmlText += `
+                    <li class="breadcrumb-item"><a href="./${pageId}.html">${pageName}</a></li>`;
     }
     return htmlText;
+}
+
+
+// プログラム起動
+export async function startUp_core( localUrl, isDebug ){
+  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+    await startUp( localUrl, isDebug );     // 下層の関数を呼び出す
+    const pageIdList = await listAllPages();
+    for( const pageId of pageIdList ){
+        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+        await regenerateHTML_core( pageId );
+    }
 }

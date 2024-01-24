@@ -36,12 +36,12 @@ async function main({ isDebug }) {
     const defaultDirPath = await getPath("FRONTEND_DEFAULT");
     app.use('/custom', express.static(customDirPath));
     app.use('/default', express.static(defaultDirPath));
-    const customFilePath = path.join(customDirPath, "index.html");
     //============================================================
     app.get('/', async (req, res) => {
+        const customFilePath = path.join(customDirPath, "1.html");
         if (fs.existsSync(customFilePath)) {
-            // ./src/frontend/custom/index.html が存在する場合
-            res.redirect("/custom");
+            // ./src/frontend/custom/1.html が存在する場合
+            res.redirect("/custom/1.html");
         }
         else {
             // ./src/frontend/custom/index.html が存在しない場合
@@ -49,7 +49,7 @@ async function main({ isDebug }) {
         }
     });
     //============================================================
-    opener("http://" + addressInfo.address + ":" + addressInfo.port + "/default");
+    opener("http://" + addressInfo.address + ":" + addressInfo.port);
 }
 
 

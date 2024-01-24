@@ -1,9 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  close,
-  createDirectories,
-} from "./034_frontend_files_validate.js";
+  regenerateHTML,
+} from "./031_regenerate_html_validate.js";
 import {
   getLocalIp,
 } from "./094_ip_address_validate.js";
@@ -25,6 +24,10 @@ import {
   getColumnName,
 } from "./076_column_name_validate.js";
 import {
+  close,
+  createDirectories,
+} from "./034_frontend_files_validate.js";
+import {
   getPrimaryKey,
 } from "./085_primary_key_validate.js";
 import {
@@ -37,6 +40,7 @@ import {
   createJoinedTable,
   deleteJoinedTable,
   addJoinedColumn,
+  getSimpleSQL,
 } from "./037_joined_table_validate.js";
 import {
   listDataTypes,
@@ -104,8 +108,8 @@ import {
   createPage,
   updatePageName,
   getPageInfo,
-  listPagesFromTableId,
-  getTableFromPage,
+  listJoinsFromTableId,
+  getTableFromJoin,
   deletePage,
   getBreadcrumbs,
   cutPage,
@@ -113,10 +117,8 @@ import {
   pastePage,
   getCuttingPage,
   getCopyingPage,
+  listAllPages,
 } from "./040_pages_validate.js";
-import {
-  regenerateHTML,
-} from "./031_regenerate_html_validate.js";
 import {
   getEndpointInfo,
 } from "./019_convert_array_validate.js";
