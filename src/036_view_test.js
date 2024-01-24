@@ -106,14 +106,14 @@ import {
 } from "./043_generate_sql_validate.js";
 import {
   startUp,  // プログラム起動
-  createJoinedTable,  // 結合済みテーブルを作成
-  deleteJoinedTable,  // 結合済みテーブルを削除
+  createView,  // ビューを作成
+  deleteView,  // ビューを削除
   generateSQL,  // SQLクエリを生成
   createColumn,  // カラムを作成
   addJoinedColumn,  // 結合済み列を作成
   getSimpleSQL,  // 最低限のSQLクエリを生成する
-} from "./037_joined_table_validate.js";
-import { setBugMode } from "./038_joined_table.js";
+} from "./037_view_validate.js";
+import { setBugMode } from "./038_view.js";
 
 
 export async function test036() {
@@ -130,12 +130,12 @@ export async function test036() {
         }
         // 意図的に埋め込んだバグを検出できなかった場合
         setBugMode(0);    // 意図的なバグの発生を止める
-        console.log(`レイヤー「joined_table」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
+        console.log(`レイヤー「view」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
         return;
     }
     // 意図的に埋め込んだ全てのバグを、正常に検出できた
     setBugMode(0);    // 意図的なバグの発生を止める
-    console.log(`レイヤー「joined_table」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
+    console.log(`レイヤー「view」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
     return;
 }
 
@@ -165,9 +165,9 @@ async function _test(){
   const { pageId: pageId1 } = await createPage( 1, "ページ１" );
   //
   // ページに動的リストを追加
-  const { joinedTableId: joinedTableId1 } = await createJoinedTable( pageId1, tableId2 );
+  const { viewId: viewId1 } = await createView( pageId1, tableId2 );
   //
-  const { sql, parameters } = await generateSQL( joinedTableId1 );
+  const { sql, parameters } = await generateSQL( viewId1 );
   const matrix = await runSqlReadOnly(sql,parameters);
   console.log( matrix );
   if( matrix.length !== 1 ){

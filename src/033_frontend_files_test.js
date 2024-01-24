@@ -3,11 +3,11 @@ import path from 'path';
 import {
   createColumn,
   generateSQL,
-  createJoinedTable,
-  deleteJoinedTable,
+  createView,
+  deleteView,
   addJoinedColumn,
   getSimpleSQL,
-} from "./037_joined_table_validate.js";
+} from "./037_view_validate.js";
 import {
   getLocalIp,
 } from "./094_ip_address_validate.js";

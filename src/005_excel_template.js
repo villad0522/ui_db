@@ -2,7 +2,9 @@
 //
 import {
   startUp,
-  regenerateHTML,
+  createPage,
+  createView,
+  regeneratePage,
 } from "./031_regenerate_html_validate.js";
 import {
   getLocalIp,
@@ -38,11 +40,10 @@ import {
 import {
   createColumn,
   generateSQL,
-  createJoinedTable,
-  deleteJoinedTable,
+  deleteView,
   addJoinedColumn,
   getSimpleSQL,
-} from "./037_joined_table_validate.js";
+} from "./037_view_validate.js";
 import {
   listDataTypes,
 } from "./082_data_type_validate.js";
@@ -106,7 +107,6 @@ import {
   generateSQLwithDuplication,
 } from "./046_generate_sql1_validate.js";
 import {
-  createPage,
   updatePageName,
   getPageInfo,
   listJoinsFromTableId,
@@ -173,7 +173,7 @@ export async function startUp_core( localUrl, isDebug ){
             "page_id" INTEGER NOT NULL,
             "sheet_name" TEXT NOT NULL,
             FOREIGN KEY (template_id) REFERENCES excel_templates(template_id),
-            FOREIGN KEY (page_id) REFERENCES joined_tables(page_id)
+            FOREIGN KEY (page_id) REFERENCES views(page_id)
         );`,
         {},
     );
@@ -347,6 +347,8 @@ export async function listTemplates_core( pageNumber, onePageMaxSize, isTrash ){
         "total": total,
     }
 }
+
+
 
 // IDからテンプレート名を取得
 export async function getTemplateName_core( templateId ){

@@ -38,11 +38,10 @@ import {
 import {
   createColumn,
   generateSQL,
-  createJoinedTable,
-  deleteJoinedTable,
+  deleteView,
   addJoinedColumn,
   getSimpleSQL,
-} from "./037_joined_table_validate.js";
+} from "./037_view_validate.js";
 import {
   listDataTypes,
 } from "./082_data_type_validate.js";
@@ -99,7 +98,6 @@ import {
   generateSQLwithDuplication,
 } from "./046_generate_sql1_validate.js";
 import {
-  createPage,
   updatePageName,
   getPageInfo,
   listJoinsFromTableId,
@@ -114,7 +112,9 @@ import {
   listAllPages,
 } from "./040_pages_validate.js";
 import {
-  regenerateHTML,  // HTMLを再生成する
+  regeneratePage,  // ページを再生成する
+  createPage,  // ページを作成
+  createView,  // ビューを作成
   startUp,  // プログラム起動
 } from "./031_regenerate_html_validate.js";
 import { setBugMode } from "./032_regenerate_html.js";
@@ -124,7 +124,7 @@ export async function test030() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 3; i++ ) {
+    for ( i = 1; i <= 6; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -169,7 +169,7 @@ async function _test(){
     const { pageId: pageId1 } = await createPage( null, "ページ１", false );
     //
     // ページに動的リストを追加
-    const { joinedTableId: joinedTableId1 } = await createJoinedTable( pageId1, tableId2 );
+    const { viewId: viewId1 } = await createView( pageId1, tableId2 );
     await regenerateHTML( pageId1 );
     await close();
 

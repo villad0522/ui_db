@@ -39,11 +39,11 @@ import {
 import {
   createColumn,
   generateSQL,
-  createJoinedTable,
-  deleteJoinedTable,
+  createView,
+  deleteView,
   addJoinedColumn,
   getSimpleSQL,
-} from "./037_joined_table_validate.js";
+} from "./037_view_validate.js";
 import {
   listDataTypes,
 } from "./082_data_type_validate.js";
@@ -133,8 +133,8 @@ import fs from 'fs';
 import path from 'path';
 
 
-// HTMLを再生成する
-export async function regenerateHTML_core( pageId ){
+// ページを再生成する
+export async function regeneratePage_core( pageId ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
     let htmlText = `<!DOCTYPE html>
 <html lang="ja">
@@ -160,15 +160,37 @@ export async function regenerateHTML_core( pageId ){
         </header>
         <main class="container">
         </main>
+        <footer>
+            <div class="container">
+                <a href="/default" class="btn btn-dark" target="_blank">
+                    管理画面
+                </a>
+                <button onclick="myFetch('/default/regenerate_page/json?page_id=${pageId}');" type="button" class="btn btn-outline-dark">
+                    ページを再生成
+                </button>
+                <br>
+                <br>
+            </div>
+        </footer>
     </body>
 </html>`;
+    let cssText = ``;
+    let jsText = ``;
     //
-    // HTMLファイルを作成
+    // ファイルを生成
     const customDirPath = await getPath("FRONTEND_CUSTOM");
-    const filePath = path.join( customDirPath, `${pageId}.html` );
-    await fs.promises.writeFile( filePath, htmlText );
+    const folderPath = path.join( customDirPath, String(pageId) );
+    if (  !fs.existsSync( folderPath )  ) {
+        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+        await fs.promises.mkdir( folderPath );
+    }
+    const htmlPath = path.join( folderPath, `index.html` );
+    await fs.promises.writeFile( htmlPath, htmlText );
+    const cssPath = path.join( folderPath, `style.css` );
+    await fs.promises.writeFile( cssPath, cssText );
+    const jsPath = path.join( folderPath, `script.js` );
+    await fs.promises.writeFile( jsPath, jsText );
 }
-
 
 
 // パンくずリストを生成する関数
@@ -182,14 +204,35 @@ async function _getBreadcrumbHTML( pageId ){
     return htmlText;
 }
 
+// ページを作成
+export async function createPage_core( parentPageId ){
+  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+    const result = await createPage( parentPageId );
+    await regeneratePage_core( result.pageId );
+    return result;
+}
+
+
+
+// ビューを作成
+export async function createView_core( pageId, tableId, sqlQuery ){
+  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+    const result = await createPage( parentPageId, pageName );
+    await regeneratePage_core( result.pageId );
+    return result;
+}
+
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
-  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    await startUp( localUrl, isDebug );     // 下層の関数を呼び出す
-    const pageIdList = await listAllPages();
-    for( const pageId of pageIdList ){
-        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
-        await regenerateHTML_core( pageId );
+  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+    await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
+    //
+    const customDirPath = await getPath("FRONTEND_CUSTOM");
+    const customFilePath = path.join(customDirPath, "1.html");
+    if ( !fs.existsSync(customFilePath)) {
+        if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+        // ./src/frontend/custom/1.html が存在しない場合
+        await regeneratePage_core( 1 );
     }
 }

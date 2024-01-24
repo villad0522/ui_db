@@ -7,8 +7,8 @@ import {
   getPageInfo,
   listJoinsFromTableId,
   getTableFromJoin,
-  createJoinedTable,
-  deleteJoinedTable,
+  createView,
+  deleteView,
   deletePage,
   getBreadcrumbs,
   cutPage,
@@ -133,13 +133,13 @@ export async function startUp_core( localUrl, isDebug ){
     await runSqlWriteOnly(
         `CREATE TABLE IF NOT EXISTS joined_columns (
             "joined_column_id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "joined_table_id" INTEGER NOT NULL,
+            "view_id" INTEGER NOT NULL,
             "joined_column_type" TEXT NOT NULL,
             "column_path" TEXT NOT NULL,
             "joined_column_name" TEXT NOT NULL,
             "excel_column_index" INTEGER NOT NULL,
-            FOREIGN KEY (joined_table_id) REFERENCES joined_tables(joined_table_id),
-            UNIQUE (joined_table_id, excel_column_index)
+            FOREIGN KEY (view_id) REFERENCES views(view_id),
+            UNIQUE (view_id, excel_column_index)
         );`,
         {},
     );
@@ -168,14 +168,14 @@ export async function startUp_core( localUrl, isDebug ){
 
 
 
-// 結合済みテーブルを作成
-export async function createJoinedTable_core( pageId, tableId ){
+// ビューを作成
+export async function createView_core( pageId, tableId ){
   if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     const sqlQuery = await getSimpleSQL_core( tableId );
-    const result = await createJoinedTable( pageId, tableId, sqlQuery );  // 下層の関数を実行する
+    const result = await createView( pageId, tableId, sqlQuery );  // 下層の関数を実行する
     //
     // 自動的に列を表示設定にしてあげる
-    await _deleteJoinedColumns( result.joinedTableId );
+    await _deleteJoinedColumns( result.viewId );
     const columns = await listColumnsAll( tableId );
     for( const { id, name, dataType, parentTableId } of columns ){
         if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -185,7 +185,7 @@ export async function createJoinedTable_core( pageId, tableId ){
             if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
             // 列を表示設定にする
             await addJoinedColumn_core(
-                result.joinedTableId,
+                result.viewId,
                 "RAW",
                 `main.${id}`,
                 columnName,
@@ -198,12 +198,12 @@ export async function createJoinedTable_core( pageId, tableId ){
         const parentColumnId = await getTitleColumnId( parentTableId );
         if(!parentColumnId){
             if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-            console.error(`createJoinedTable > タイトル列が設定されていません。${parentTableId}`);
+            console.error(`createView > タイトル列が設定されていません。${parentTableId}`);
             continue;
         }
         // 列を表示設定にする
         await addJoinedColumn_core(
-            result.joinedTableId,
+            result.viewId,
             "RAW",
             `main.${id} > ${parentColumnId}`,
             columnName,
@@ -228,16 +228,16 @@ function _cutStringAfterUnderscore(inputString) {
 }
 
 
-// 結合済みテーブルを削除
-export async function deleteJoinedTable_core( joinedTableId ){
+// ビューを削除
+export async function deleteView_core( viewId ){
   if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
-    await _deleteJoinedColumns( joinedTableId );
-    return await deleteJoinedTable( joinedTableId );  // 下層の関数を実行する
+    await _deleteJoinedColumns( viewId );
+    return await deleteView( viewId );  // 下層の関数を実行する
 }
 
 
-// 結合済みテーブルを削除
-async function _deleteJoinedColumns( joinedTableId ){
+// ビューを削除
+async function _deleteJoinedColumns( viewId ){
     // 外部キー制約があるため、消す順番に注意！
     await runSqlWriteOnly(
         `DELETE FROM sort_orders
@@ -245,10 +245,10 @@ async function _deleteJoinedColumns( joinedTableId ){
             (
                 SELECT joined_columns.joined_column_id
                 FROM joined_columns
-                WHERE joined_columns.joined_table_id = :joinedTableId
+                WHERE joined_columns.view_id = :viewId
             );`,
         {
-            ":joinedTableId": joinedTableId,
+            ":viewId": viewId,
         },
     );
     await runSqlWriteOnly(
@@ -257,17 +257,17 @@ async function _deleteJoinedColumns( joinedTableId ){
             (
                 SELECT joined_column_id
                 FROM joined_columns
-                WHERE joined_table_id = :joinedTableId
+                WHERE view_id = :viewId
             );`,
         {
-            ":joinedTableId": joinedTableId,
+            ":viewId": viewId,
         },
     );
     await runSqlWriteOnly(
         `DELETE FROM joined_columns
-            WHERE joined_table_id = :joinedTableId;`,
+            WHERE view_id = :viewId;`,
         {
-            ":joinedTableId": joinedTableId,
+            ":viewId": viewId,
         },
     );
 }
@@ -275,11 +275,11 @@ async function _deleteJoinedColumns( joinedTableId ){
 
 
 // SQLクエリを生成
-export async function generateSQL_core( joinedTableId ){
+export async function generateSQL_core( viewId ){
   if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-    const tableId = await getTableFromJoin( joinedTableId );
+    const tableId = await getTableFromJoin( viewId );
     if( !tableId ){
-        throw `指定されたページには、動的リストが登録されていません。\njoinedTableId = ${joinedTableId}`;
+        throw `指定されたページには、動的リストが登録されていません。\nviewId = ${viewId}`;
     }
     const joinedColumns = await runSqlReadOnly(
         `SELECT
@@ -289,10 +289,10 @@ export async function generateSQL_core( joinedTableId ){
             joined_column_name AS joinedColumnName,
             excel_column_index AS excelColumnIndex
         FROM joined_columns
-        WHERE joined_table_id = :joinedTableId
+        WHERE view_id = :viewId
         ORDER BY excel_column_index ASC;`,
         {
-            ":joinedTableId": joinedTableId,
+            ":viewId": viewId,
         },
     );
     const conditionInfoList = await runSqlReadOnly(
@@ -302,9 +302,9 @@ export async function generateSQL_core( joinedTableId ){
         FROM conditions
         INNER JOIN joined_columns
             ON conditions.joined_column_id = joined_columns.joined_column_id
-        WHERE joined_columns.joined_table_id = :joinedTableId;`,
+        WHERE joined_columns.view_id = :viewId;`,
         {
-            ":joinedTableId": joinedTableId,
+            ":viewId": viewId,
         },
     );
     const sortOrders = await runSqlReadOnly(
@@ -314,9 +314,9 @@ export async function generateSQL_core( joinedTableId ){
         FROM sort_orders
         INNER JOIN joined_columns
             ON sort_orders.joined_column_id = joined_columns.joined_column_id
-        WHERE joined_columns.joined_table_id = :joinedTableId;`,
+        WHERE joined_columns.view_id = :viewId;`,
         {
-            ":joinedTableId": joinedTableId,
+            ":viewId": viewId,
         },
     );
     const { sql, parameters } = await generateSQL(
@@ -334,14 +334,14 @@ export async function createColumn_core( tableId, columnName, dataType, parentTa
   if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     const result = await createColumn( tableId, columnName, dataType, parentTableId );    // 下層の関数を呼び出す
     //
-    const joinedTableIdList = await listJoinsFromTableId( tableId );
+    const viewIdList = await listJoinsFromTableId( tableId );
     if( dataType !== "POINTER" ){
         if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
         // 列を表示設定にする
-        for( const joinedTableId of joinedTableIdList ){
+        for( const viewId of viewIdList ){
             if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
             await addJoinedColumn_core({ 
-                joinedTableId: joinedTableId,
+                viewId: viewId,
                 joinedColumnType: "RAW",
                 columnPath: `main.${result.columnId}`,
                 joinedColumnName: columnName,
@@ -356,10 +356,10 @@ export async function createColumn_core( tableId, columnName, dataType, parentTa
         return result;
     }
     // 列を表示設定にする
-    for( const joinedTableId of joinedTableIdList ){
+    for( const viewId of viewIdList ){
         if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
         await addJoinedColumn_core({ 
-            joinedTableId: joinedTableId,
+            viewId: viewId,
             joinedColumnType: "RAW",
             columnPath: `main.${result.columnId} > ${parentColumnId}`,
             joinedColumnName: columnName,
@@ -371,9 +371,9 @@ export async function createColumn_core( tableId, columnName, dataType, parentTa
 
 
 // 結合済み列を作成
-export async function addJoinedColumn_core( joinedTableId, joinedColumnType, columnPath, joinedColumnName ){
+export async function addJoinedColumn_core( viewId, joinedColumnType, columnPath, joinedColumnName ){
   if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
-    if( typeof joinedTableId !== "number" || isNaN(joinedTableId) ){
+    if( typeof viewId !== "number" || isNaN(viewId) ){
         throw `ページIDが数値ではありません`;
     }
     //
@@ -381,10 +381,10 @@ export async function addJoinedColumn_core( joinedTableId, joinedColumnType, col
     const matrix = await runSqlReadOnly(
         `SELECT excel_column_index AS excelColumnIndex
             FROM joined_columns
-            WHERE joined_table_id = :joinedTableId
+            WHERE view_id = :viewId
             ORDER BY excel_column_index ASC;`,
         {
-            ":joinedTableId": joinedTableId,
+            ":viewId": viewId,
         },
     );
     const numbers = new Set();
@@ -404,20 +404,20 @@ export async function addJoinedColumn_core( joinedTableId, joinedColumnType, col
     // 列を表示設定にする
     await runSqlWriteOnly(
         `INSERT INTO joined_columns(
-            joined_table_id,
+            view_id,
             joined_column_type,
             column_path,
             joined_column_name,
             excel_column_index
         ) VALUES (
-            :joinedTableId,
+            :viewId,
             :joinedColumnType,
             :columnPath,
             :joinedColumnName,
             :excelColumnIndex
         );`,
         {
-            ":joinedTableId": joinedTableId,
+            ":viewId": viewId,
             ":joinedColumnType": joinedColumnType,
             ":columnPath": columnPath,
             ":joinedColumnName": joinedColumnName,
@@ -457,7 +457,7 @@ export async function getSimpleSQL_core( tableId ){
         const parentColumnId = await getTitleColumnId( parentTableId );
         if(!parentColumnId){
             if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
-            console.error(`createJoinedTable > タイトル列が設定されていません。${parentTableId}`);
+            console.error(`createView > タイトル列が設定されていません。${parentTableId}`);
             continue;
         }
         // 列を表示設定にする

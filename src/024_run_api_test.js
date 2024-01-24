@@ -2,7 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import {
   startUp,
-  regenerateHTML,
+  createPage,
+  createView,
+  regeneratePage,
 } from "./031_regenerate_html_validate.js";
 import {
   getLocalIp,
@@ -39,11 +41,10 @@ import {
 import {
   createColumn,
   generateSQL,
-  createJoinedTable,
-  deleteJoinedTable,
+  deleteView,
   addJoinedColumn,
   getSimpleSQL,
-} from "./037_joined_table_validate.js";
+} from "./037_view_validate.js";
 import {
   listDataTypes,
 } from "./082_data_type_validate.js";
@@ -107,7 +108,6 @@ import {
   generateSQLwithDuplication,
 } from "./046_generate_sql1_validate.js";
 import {
-  createPage,
   updatePageName,
   getPageInfo,
   listJoinsFromTableId,
@@ -131,7 +131,7 @@ export async function test024() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 10; i++ ) {
+    for ( i = 1; i <= 11; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

@@ -1,0 +1,21 @@
+{
+    "httpMethod": "POST",
+    "description": "HTMLページを自動生成します。",
+    "commandName": "REGENERATE_PAGE",
+    "queryParameters": {
+        "page_id": {
+            "dataType": "INTEGER",
+            "description": "生成したいページのID。",
+            "isRequired": true,
+            "example": 8
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "生成したページの相対URL",
+            "example": "/8.html"
+        }
+    }
+}

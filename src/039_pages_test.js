@@ -98,10 +98,10 @@ import {
   createPage,  // ページを作成
   updatePageName,  // ページ名やメモを変更
   getPageInfo,  // １ページの情報を取得
-  listJoinsFromTableId,  // テーブルIDからjoinedTableIdを取得する
-  getTableFromJoin,  // joinedTableIdからテーブルIDを取得する
-  createJoinedTable,  // 結合済みテーブルを作成
-  deleteJoinedTable,  // 結合済みテーブルを削除
+  listJoinsFromTableId,  // テーブルIDからviewIdを取得する
+  getTableFromJoin,  // viewIdからテーブルIDを取得する
+  createView,  // ビューを作成
+  deleteView,  // ビューを削除
   deletePage,  // ページを削除
   getBreadcrumbs,  // パンくずリストを再帰的に取得
   cutPage,  // ページを切り取る
@@ -118,7 +118,7 @@ export async function test039() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 25; i++ ) {
+    for ( i = 1; i <= 22; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -165,7 +165,7 @@ async function _test(){
   const { pageId: pageId6 } = await createPage( pageId5, "ページ6" );
   const { pageId: pageId7 } = await createPage( pageId6, "ページ7" );
   //
-  await createJoinedTable( pageId6, tableId1, `SELECT * FROM ${tableId1};` );
+  await createView( pageId6, tableId1, `SELECT * FROM ${tableId1};` );
   await updatePageName([
     {
       id: pageId1,

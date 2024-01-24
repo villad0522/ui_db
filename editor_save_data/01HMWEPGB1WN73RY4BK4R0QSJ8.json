@@ -1,1 +1,81 @@
-[{"functionId":"test","functionNameJP":"テストコード","functionNameEN":"test","beforeCode":"","innerCode":"\n    await startUp(\"http://localhost:3000/\", true);\n    //\n    const { tableId: tableId1 } = await createTable(\"学年\");\n    const { columnId: columnId1 } = await createColumn( tableId1, \"学年\", \"INTEGER\", null );\n    // 見出しの役割を果たすカラムを登録する\n    await setTitleColumn( columnId1 );\n    const { recordId: recordId } = await createRecord( tableId1, {\n        [columnId1]: 3,\n    });\n    //\n    const { tableId: tableId2 } = await createTable(\"名簿\");\n    const { columnId: columnId2  } = await createColumn( tableId2, \"学年\", \"POINTER\", tableId1 );\n    const { columnId: columnId3  } = await createColumn( tableId2, \"氏名\", \"TEXT\", null );\n    await createRecord( tableId2, {\n        [columnId2]: recordId,\n        [columnId3]: \"田中太郎\",\n    });\n    //\n    // ページを作成\n    const { pageId: pageId1 } = await createPage( null, \"ページ１\", false );\n    //\n    // ページに動的リストを追加\n    const { joinedTableId: joinedTableId1 } = await createJoinedTable( pageId1, tableId2 );\n    await regenerateHTML( pageId1 );\n    await close();\n","afterCode":"","parametersName":[],"parametersDataType":[],"returnValue":"void"},{"functionNameJP":"HTMLを再生成する","functionNameEN":"regenerateHTML","parametersName":["pageId"],"parametersDataType":["number"],"returnValue":"void","functionId":"01HMWEPGB83MFHHKJMWGTFZQ0B","beforeCode":"\n\n\nimport fs from 'fs';\nimport path from 'path';\n\n\n","innerCode":"\n    let htmlText = `<!DOCTYPE html>\n<html lang=\"ja\">\n\n    <head>\n        <meta charset=\"utf-8\">\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n        <title>システム管理</title>\n        <!--  -->\n        <!-- bootstrap5.3を読み込む -->\n        <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM\" crossorigin=\"anonymous\">\n        <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz\" crossorigin=\"anonymous\"></script>\n        <!-- bootstrapのドキュメントはこちら -->\n        <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->\n        <!--  -->\n        <script src=\"/default/my_fetch.js\" type=\"module\"></script>\n    </head>\n\n    <body style=\"background: #eee;\">\n        <header>\n            <nav aria-label=\"breadcrumb\">\n                <ol class=\"breadcrumb\">${ await _getBreadcrumbHTML( pageId ) }\n                </ol>\n            </nav>\n        </header>\n        <main class=\"container\">\n        </main>\n    </body>\n\n</html>`;\n    //\n    // HTMLファイルを作成\n    const customDirPath = await getPath(\"FRONTEND_CUSTOM\");\n    const filePath = path.join( customDirPath, `${pageId}.html` );\n    await fs.promises.writeFile( filePath, htmlText );\n","afterCode":""},{"functionNameJP":"プログラム起動","functionNameEN":"startUp","parametersName":["localUrl","isDebug"],"parametersDataType":["string_nullable","boolean"],"returnValue":"void","functionId":"01HMX686ETS9R1QBJDWAVCH1BR","beforeCode":"\n\n\n\n// パンくずリストを生成する関数\nasync function _getBreadcrumbHTML( pageId ){\n    let htmlText = \"\";\n    const breadcrumbs = await getBreadcrumbs( pageId );\n    for( const { pageId, pageName } of breadcrumbs ){\n      htmlText += `\n                    <li class=\"breadcrumb-item\"><a href=\"./${pageId}.html\">${pageName}</a></li>`;\n    }\n    return htmlText;\n}\n\n\n","innerCode":"\n    await startUp( localUrl, isDebug );     // 下層の関数を呼び出す\n    const pageIdList = await listAllPages();\n    for( const pageId of pageIdList ){\n        await regenerateHTML_core( pageId );\n    }\n","afterCode":"\n"}]
+[
+    {
+        "functionId": "test",
+        "functionNameJP": "テストコード",
+        "functionNameEN": "test",
+        "beforeCode": "",
+        "innerCode": "\n    await startUp(\"http://localhost:3000/\", true);\n    //\n    const { tableId: tableId1 } = await createTable(\"学年\");\n    const { columnId: columnId1 } = await createColumn( tableId1, \"学年\", \"INTEGER\", null );\n    // 見出しの役割を果たすカラムを登録する\n    await setTitleColumn( columnId1 );\n    const { recordId: recordId } = await createRecord( tableId1, {\n        [columnId1]: 3,\n    });\n    //\n    const { tableId: tableId2 } = await createTable(\"名簿\");\n    const { columnId: columnId2  } = await createColumn( tableId2, \"学年\", \"POINTER\", tableId1 );\n    const { columnId: columnId3  } = await createColumn( tableId2, \"氏名\", \"TEXT\", null );\n    await createRecord( tableId2, {\n        [columnId2]: recordId,\n        [columnId3]: \"田中太郎\",\n    });\n    //\n    // ページを作成\n    const { pageId: pageId1 } = await createPage( null, \"ページ１\", false );\n    //\n    // ページに動的リストを追加\n    const { viewId: viewId1 } = await createView( pageId1, tableId2 );\n    await regenerateHTML( pageId1 );\n    await close();\n",
+        "afterCode": "",
+        "parametersName": [],
+        "parametersDataType": [],
+        "returnValue": "void"
+    },
+    {
+        "functionNameJP": "ページを再生成する",
+        "functionNameEN": "regeneratePage",
+        "parametersName": [
+            "pageId"
+        ],
+        "parametersDataType": [
+            "number"
+        ],
+        "returnValue": "void",
+        "functionId": "01HMWEPGB83MFHHKJMWGTFZQ0B",
+        "beforeCode": "\n\n\nimport fs from 'fs';\nimport path from 'path';\n\n\n",
+        "innerCode": "\n    let htmlText = `<!DOCTYPE html>\n<html lang=\"ja\">\n\n    <head>\n        <meta charset=\"utf-8\">\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n        <title>システム管理</title>\n        <!--  -->\n        <!-- bootstrap5.3を読み込む -->\n        <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM\" crossorigin=\"anonymous\">\n        <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz\" crossorigin=\"anonymous\"></script>\n        <!-- bootstrapのドキュメントはこちら -->\n        <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->\n        <!--  -->\n        <script src=\"/default/my_fetch.js\" type=\"module\"></script>\n    </head>\n\n    <body style=\"background: #eee;\">\n        <header>\n            <nav aria-label=\"breadcrumb\">\n                <ol class=\"breadcrumb\">${ await _getBreadcrumbHTML( pageId ) }\n                </ol>\n            </nav>\n        </header>\n        <main class=\"container\">\n\n        </main>\n        <footer>\n            <div class=\"container\">\n                <a href=\"/default\" class=\"btn btn-dark\" target=\"_blank\">\n                    管理画面\n                </a>\n                <button onclick=\"myFetch('/default/regenerate_page/json?page_id=${pageId}');\" type=\"button\" class=\"btn btn-outline-dark\">\n                    ページを再生成\n                </button>\n                <br>\n                <br>\n            </div>\n        </footer>\n    </body>\n\n</html>`;\n    let cssText = ``;\n    let jsText = ``;\n    //\n    // ファイルを生成\n    const customDirPath = await getPath(\"FRONTEND_CUSTOM\");\n    const folderPath = path.join( customDirPath, String(pageId) );\n    if (  !fs.existsSync( folderPath )  ) {\n        await fs.promises.mkdir( folderPath );\n    }\n    const htmlPath = path.join( folderPath, `index.html` );\n    await fs.promises.writeFile( htmlPath, htmlText );\n    const cssPath = path.join( folderPath, `style.css` );\n    await fs.promises.writeFile( cssPath, cssText );\n    const jsPath = path.join( folderPath, `script.js` );\n    await fs.promises.writeFile( jsPath, jsText );\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "ページを作成",
+        "functionNameEN": "createPage",
+        "parametersName": [
+            "parentPageId"
+        ],
+        "parametersDataType": [
+            "number"
+        ],
+        "returnValue": {
+            "pageId": "number"
+        },
+        "functionId": "01HMXCR4NRYWTDFZ5VB4VBYS8T",
+        "beforeCode": "\n\n\n// パンくずリストを生成する関数\nasync function _getBreadcrumbHTML( pageId ){\n    let htmlText = \"\";\n    const breadcrumbs = await getBreadcrumbs( pageId );\n    for( const { pageId, pageName } of breadcrumbs ){\n      htmlText += `\n                    <li class=\"breadcrumb-item\"><a href=\"./${pageId}.html\">${pageName}</a></li>`;\n    }\n    return htmlText;\n}\n\n",
+        "innerCode": "\n    const result = await createPage( parentPageId );\n    await regeneratePage_core( result.pageId );\n    return result;\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "ビューを作成",
+        "functionNameEN": "createView",
+        "parametersName": [
+            "pageId",
+            "tableId",
+            "sqlQuery"
+        ],
+        "parametersDataType": [
+            "number",
+            "string",
+            "string"
+        ],
+        "returnValue": "void",
+        "functionId": "01HMXCRYM57G6T43PG2TGVSJSG",
+        "beforeCode": "\n\n\n\n",
+        "innerCode": "\n    const result = await createPage( parentPageId, pageName );\n    await regeneratePage_core( result.pageId );\n    return result;\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "プログラム起動",
+        "functionNameEN": "startUp",
+        "parametersName": [
+            "localUrl",
+            "isDebug"
+        ],
+        "parametersDataType": [
+            "string_nullable",
+            "boolean"
+        ],
+        "returnValue": "void",
+        "functionId": "01HMXDYQFB5MX8R0C8EW2Q5GDQ",
+        "beforeCode": "\n\n\n",
+        "innerCode": "\n    await startUp( localUrl, isDebug );   // 下層の関数を呼び出す\n    //\n    const customDirPath = await getPath(\"FRONTEND_CUSTOM\");\n    const customFilePath = path.join(customDirPath, \"1.html\");\n    if ( !fs.existsSync(customFilePath)) {\n        // ./src/frontend/custom/1.html が存在しない場合\n        await regeneratePage_core( 1 );\n    }\n",
+        "afterCode": "\n"
+    }
+]

@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  regenerateHTML,
+  createPage,
+  createView,
+  regeneratePage,
 } from "./031_regenerate_html_validate.js";
 import {
   getLocalIp,
@@ -37,11 +39,10 @@ import {
 import {
   createColumn,
   generateSQL,
-  createJoinedTable,
-  deleteJoinedTable,
+  deleteView,
   addJoinedColumn,
   getSimpleSQL,
-} from "./037_joined_table_validate.js";
+} from "./037_view_validate.js";
 import {
   listDataTypes,
 } from "./082_data_type_validate.js";
@@ -105,7 +106,6 @@ import {
   generateSQLwithDuplication,
 } from "./046_generate_sql1_validate.js";
 import {
-  createPage,
   updatePageName,
   getPageInfo,
   listJoinsFromTableId,

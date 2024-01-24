@@ -1,10 +1,8 @@
 'use strict';
 import express from 'express';
 import cors from 'cors';
-import path from 'path';
-import fs from 'fs';
 import opener from "opener";
-import { startUp, getLocalIp, getPath, runApi, close } from "./002_index.js";
+import { runApi, startUp, getLocalIp, getPath, close } from "./002_index.js";
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -38,15 +36,7 @@ async function main({ isDebug }) {
     app.use('/default', express.static(defaultDirPath));
     //============================================================
     app.get('/', async (req, res) => {
-        const customFilePath = path.join(customDirPath, "1.html");
-        if (fs.existsSync(customFilePath)) {
-            // ./src/frontend/custom/1.html が存在する場合
-            res.redirect("/custom/1.html");
-        }
-        else {
-            // ./src/frontend/custom/index.html が存在しない場合
-            res.redirect("/default");
-        }
+        res.redirect("/custom/1/index.html");
     });
     //============================================================
     opener("http://" + addressInfo.address + ":" + addressInfo.port);

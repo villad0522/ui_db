@@ -1,1 +1,125 @@
-[{"functionId":"test","functionNameJP":"テストコード","functionNameEN":"test","beforeCode":"","innerCode":"\n    await startUp(\"http://localhost:3000/\", true);\n    await close();\n","afterCode":"","parametersName":[],"parametersDataType":[],"returnValue":"void"},{"functionNameJP":"プログラム起動","functionNameEN":"startUp","parametersName":["localUrl","isDebug"],"parametersDataType":["string_nullable","boolean"],"returnValue":"void","functionId":"01HM3F8XKW1HFKGW5H7RFMYD0C","beforeCode":"\n\n\nimport path from 'path';\nimport fs from 'fs';\n\n\n","innerCode":"\n    await startUp( localUrl, isDebug );   // 下層の関数を呼び出す\n    //\n    await reserveWord(\"excel_templates\"); // 予約語に登録\n    await runSqlWriteOnly(\n        `CREATE TABLE IF NOT EXISTS excel_templates (\n            \"template_id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n            \"template_name\" TEXT NOT NULL,\n            \"excel_file_data\" BLOB,\n            \"created_at\" INTEGER UNIQUE\n        );`,\n        {},\n    );\n    //\n    await reserveWord(\"excel_sheets\"); // 予約語に登録\n    await runSqlWriteOnly(\n        `CREATE TABLE IF NOT EXISTS excel_sheets (\n            \"sheet_id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n            \"template_id\" INTEGER NOT NULL,\n            \"page_id\" INTEGER NOT NULL,\n            \"sheet_name\" TEXT NOT NULL,\n            FOREIGN KEY (template_id) REFERENCES excel_templates(template_id),\n            FOREIGN KEY (page_id) REFERENCES joined_tables(page_id)\n        );`,\n        {},\n    );\n","afterCode":""},{"functionNameJP":"テンプレートを作成","functionNameEN":"createTemplate","parametersName":["templateName"],"parametersDataType":["string"],"returnValue":{"message":"string","templateId":"string"},"functionId":"01HM3FA7KYR69753F0SEZNV80C","beforeCode":"\n\n\n\n","innerCode":"\n    const staticPath = await getPath( \"STATIC_DATA\" );\n    const excelPath = path.join(staticPath,\"light/template.xlsm\");\n    const excelFileData = await fs.promises.readFile(excelPath);\n    //\n    const timestamp = new Date().getTime();\n    await runSqlWriteOnly(\n        `INSERT INTO excel_templates (template_name, excel_file_data, created_at)\n            VALUES ( :templateName, :excelFileData, :createdAt );`,\n        {\n            \":templateName\": templateName,\n            \":excelFileData\": excelFileData,\n            \":createdAt\": timestamp,\n        },\n    );\n    const templates2 = await runSqlReadOnly(\n        `SELECT template_id FROM excel_templates\n            WHERE template_name = :templateName\n                AND created_at = :createdAt\n            LIMIT 1;`,\n        {\n            \":templateName\": templateName,\n            \":createdAt\": timestamp,\n        },\n    );\n    if(templates2.length===0){\n        throw \"追加したはずのテンプレートが見つかりません。\";\n    }\n    const templateId = templates2[0][\"template_id\"];\n    if(isNaN(templateId)){\n        throw \"新しく発行されたテンプレートIDが見つかりません。\";\n    }\n    return {\n        templateId: templateId,\n        message: `テンプレート「${templateName}」を作成しました。`,\n    };\n","afterCode":""},{"functionNameJP":"不可逆的にテンプレートを削除","functionNameEN":"deleteTemplate","parametersName":["templateId"],"parametersDataType":["string"],"returnValue":"string","functionId":"01HM3FBB33TCXTHW0Y5B2A3T0H","beforeCode":"\n\n\n","innerCode":"\n    await runSqlWriteOnly(\n        `DELETE FROM excel_templates\n            WHERE template_id = :templateNumber;`,\n        {\n            \":templateNumber\": templateId.replace(\"t\",\"\"),\n        },\n    );\n    await _reload();    // メモリに再読み込み\n    return await deleteTemplate( templateId );  // 下層の関数を実行する\n","afterCode":""},{"functionNameJP":"テンプレート名を変更","functionNameEN":"updateTemplateName","parametersName":["templates"],"parametersDataType":[[{"id":"string","name":"string"}]],"returnValue":"string","functionId":"01HM3JBPT13CTBB9DZYD7HQBFZ","beforeCode":"\n\n\n\n","innerCode":"\n    //==========================================================\n    // テンプレート名が重複していないか確認する\n    await _reload();\n    const obj = structuredClone(cacheData1);    // ディープコピー\n    // データの例\n    // obj = {\n    //     \"t2\": \"テンプレート名１\",\n    //     \"t8\": \"テンプレート名２\"\n    // };\n    for (const { id, name } of templates) {\n        obj[id] = name;\n    }\n    // この時点で、連想配列「obj」には、全てのテンプレート一覧が格納されている。\n    // データの例\n    // obj = {\n    //     \"t2\": \"変更後のテンプレート名１\",\n    //     \"t8\": \"テンプレート名２\"\n    // };\n    for (const { id, name } of templates) {\n        const newObj = structuredClone(obj);    // ディープコピー\n        //\n        // 自分自身を除いた、他のテンプレートと名前が被っていないか確認する\n        delete newObj[id];    //自分自身を除く\n        const templateNameArray = Object.values(newObj);\n        if (templateNameArray.includes(name)) {\n            throw `テンプレート名「${name}」は重複しています。`;\n        }\n    }\n    //\n    //==========================================================\n    // テンプレート名を変更する\n    for (const { id, name } of templates) {\n        let templateNumber = id.replace(\"t\",\"\");\n        if(isNaN(templateNumber)){\n            throw \"指定されたテンプレートIDは無効です。\";\n        }\n        templateNumber = Number(templateNumber);\n        await runSqlWriteOnly(\n            `UPDATE excel_templates\n                SET template_name = :templateName\n                WHERE template_id = :templateNumber;`,\n            {\n                \":templateName\": name,\n                \":templateNumber\": templateNumber,\n            },\n        );\n    }\n    //==========================================================\n    await _reload();    // メモリに再読み込み\n    return \"テンプレート名を変更しました\";\n","afterCode":""},{"functionNameJP":"テンプレートの一覧を取得(重)","functionNameEN":"listTemplates","parametersName":["pageNumber","onePageMaxSize","isTrash"],"parametersDataType":["number_nullable","number","boolean"],"returnValue":{"templates":[{"id":"string","name":"string"}],"total":"number"},"functionId":"01HM3JXCNA6V88MQG3FHAFSV92","beforeCode":"\n\n\n","innerCode":"\n    if ( !pageNumber ) {\n        pageNumber = 1;\n    }\n    if (!(pageNumber >= 1)) {\n        pageNumber = 1;\n    }\n    const [{ \"COUNT(*)\": total }] = await runSqlReadOnly(\n        `SELECT COUNT(*)\n            FROM excel_templates\n            WHERE enable = :isEnable;`,\n        {\n            // 現存するテンプレート一覧を取得する場合は１\n            // 削除済みのテンプレート一覧を取得する場合は０\n            \":isEnable\": isTrash ? 0 : 1,\n        },\n    );\n    let offset = onePageMaxSize * (pageNumber - 1);\n    if( offset >= total ){\n        offset = total;\n    }\n    // 「sqlite_master」と結合させることで、実際に存在するテンプレートのみに絞り込む\n    const matrix = await runSqlReadOnly(\n        `SELECT\n            ( \"t\" || excel_templates.template_id ) AS id,\n            excel_templates.template_name AS name\n        FROM excel_templates\n        INNER JOIN sqlite_master\n            ON ( \"t\" || excel_templates.template_id ) = sqlite_master.name\n        WHERE excel_templates.enable = :isEnable\n        ORDER BY excel_templates.created_at DESC\n        LIMIT :limit OFFSET :offset;`,\n        {\n            // 現存するテンプレート一覧を取得する場合は１\n            // 削除済みのテンプレート一覧を取得する場合は０\n            \":isEnable\": isTrash ? 0 : 1,\n            \":limit\": onePageMaxSize,\n            \":offset\": offset,\n        },\n    );\n    return {\n        \"templates\": matrix,\n        \"total\": total,\n    }\n","afterCode":""},{"functionNameJP":"IDからテンプレート名を取得","functionNameEN":"getTemplateName","parametersName":["templateId"],"parametersDataType":["string"],"returnValue":"string_nullable","functionId":"01HM922PPCJVX86SGF68VCBDDH","beforeCode":"\n\n","innerCode":"\n  return cacheData1[templateId];\n","afterCode":"\n"}]
+[
+    {
+        "functionId": "test",
+        "functionNameJP": "テストコード",
+        "functionNameEN": "test",
+        "beforeCode": "",
+        "innerCode": "\n    await startUp(\"http://localhost:3000/\", true);\n    await close();\n",
+        "afterCode": "",
+        "parametersName": [],
+        "parametersDataType": [],
+        "returnValue": "void"
+    },
+    {
+        "functionNameJP": "プログラム起動",
+        "functionNameEN": "startUp",
+        "parametersName": [
+            "localUrl",
+            "isDebug"
+        ],
+        "parametersDataType": [
+            "string_nullable",
+            "boolean"
+        ],
+        "returnValue": "void",
+        "functionId": "01HM3F8XKW1HFKGW5H7RFMYD0C",
+        "beforeCode": "\n\n\nimport path from 'path';\nimport fs from 'fs';\n\n\n",
+        "innerCode": "\n    await startUp( localUrl, isDebug );   // 下層の関数を呼び出す\n    //\n    await reserveWord(\"excel_templates\"); // 予約語に登録\n    await runSqlWriteOnly(\n        `CREATE TABLE IF NOT EXISTS excel_templates (\n            \"template_id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n            \"template_name\" TEXT NOT NULL,\n            \"excel_file_data\" BLOB,\n            \"created_at\" INTEGER UNIQUE\n        );`,\n        {},\n    );\n    //\n    await reserveWord(\"excel_sheets\"); // 予約語に登録\n    await runSqlWriteOnly(\n        `CREATE TABLE IF NOT EXISTS excel_sheets (\n            \"sheet_id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n            \"template_id\" INTEGER NOT NULL,\n            \"page_id\" INTEGER NOT NULL,\n            \"sheet_name\" TEXT NOT NULL,\n            FOREIGN KEY (template_id) REFERENCES excel_templates(template_id),\n            FOREIGN KEY (page_id) REFERENCES views(page_id)\n        );`,\n        {},\n    );\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "テンプレートを作成",
+        "functionNameEN": "createTemplate",
+        "parametersName": [
+            "templateName"
+        ],
+        "parametersDataType": [
+            "string"
+        ],
+        "returnValue": {
+            "message": "string",
+            "templateId": "string"
+        },
+        "functionId": "01HM3FA7KYR69753F0SEZNV80C",
+        "beforeCode": "\n\n\n\n",
+        "innerCode": "\n    const staticPath = await getPath( \"STATIC_DATA\" );\n    const excelPath = path.join(staticPath,\"light/template.xlsm\");\n    const excelFileData = await fs.promises.readFile(excelPath);\n    //\n    const timestamp = new Date().getTime();\n    await runSqlWriteOnly(\n        `INSERT INTO excel_templates (template_name, excel_file_data, created_at)\n            VALUES ( :templateName, :excelFileData, :createdAt );`,\n        {\n            \":templateName\": templateName,\n            \":excelFileData\": excelFileData,\n            \":createdAt\": timestamp,\n        },\n    );\n    const templates2 = await runSqlReadOnly(\n        `SELECT template_id FROM excel_templates\n            WHERE template_name = :templateName\n                AND created_at = :createdAt\n            LIMIT 1;`,\n        {\n            \":templateName\": templateName,\n            \":createdAt\": timestamp,\n        },\n    );\n    if(templates2.length===0){\n        throw \"追加したはずのテンプレートが見つかりません。\";\n    }\n    const templateId = templates2[0][\"template_id\"];\n    if(isNaN(templateId)){\n        throw \"新しく発行されたテンプレートIDが見つかりません。\";\n    }\n    return {\n        templateId: templateId,\n        message: `テンプレート「${templateName}」を作成しました。`,\n    };\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "不可逆的にテンプレートを削除",
+        "functionNameEN": "deleteTemplate",
+        "parametersName": [
+            "templateId"
+        ],
+        "parametersDataType": [
+            "string"
+        ],
+        "returnValue": "string",
+        "functionId": "01HM3FBB33TCXTHW0Y5B2A3T0H",
+        "beforeCode": "\n\n\n",
+        "innerCode": "\n    await runSqlWriteOnly(\n        `DELETE FROM excel_templates\n            WHERE template_id = :templateNumber;`,\n        {\n            \":templateNumber\": templateId.replace(\"t\",\"\"),\n        },\n    );\n    await _reload();    // メモリに再読み込み\n    return await deleteTemplate( templateId );  // 下層の関数を実行する\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "テンプレート名を変更",
+        "functionNameEN": "updateTemplateName",
+        "parametersName": [
+            "templates"
+        ],
+        "parametersDataType": [
+            [
+                {
+                    "id": "string",
+                    "name": "string"
+                }
+            ]
+        ],
+        "returnValue": "string",
+        "functionId": "01HM3JBPT13CTBB9DZYD7HQBFZ",
+        "beforeCode": "\n\n\n\n",
+        "innerCode": "\n    //==========================================================\n    // テンプレート名が重複していないか確認する\n    await _reload();\n    const obj = structuredClone(cacheData1);    // ディープコピー\n    // データの例\n    // obj = {\n    //     \"t2\": \"テンプレート名１\",\n    //     \"t8\": \"テンプレート名２\"\n    // };\n    for (const { id, name } of templates) {\n        obj[id] = name;\n    }\n    // この時点で、連想配列「obj」には、全てのテンプレート一覧が格納されている。\n    // データの例\n    // obj = {\n    //     \"t2\": \"変更後のテンプレート名１\",\n    //     \"t8\": \"テンプレート名２\"\n    // };\n    for (const { id, name } of templates) {\n        const newObj = structuredClone(obj);    // ディープコピー\n        //\n        // 自分自身を除いた、他のテンプレートと名前が被っていないか確認する\n        delete newObj[id];    //自分自身を除く\n        const templateNameArray = Object.values(newObj);\n        if (templateNameArray.includes(name)) {\n            throw `テンプレート名「${name}」は重複しています。`;\n        }\n    }\n    //\n    //==========================================================\n    // テンプレート名を変更する\n    for (const { id, name } of templates) {\n        let templateNumber = id.replace(\"t\",\"\");\n        if(isNaN(templateNumber)){\n            throw \"指定されたテンプレートIDは無効です。\";\n        }\n        templateNumber = Number(templateNumber);\n        await runSqlWriteOnly(\n            `UPDATE excel_templates\n                SET template_name = :templateName\n                WHERE template_id = :templateNumber;`,\n            {\n                \":templateName\": name,\n                \":templateNumber\": templateNumber,\n            },\n        );\n    }\n    //==========================================================\n    await _reload();    // メモリに再読み込み\n    return \"テンプレート名を変更しました\";\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "テンプレートの一覧を取得(重)",
+        "functionNameEN": "listTemplates",
+        "parametersName": [
+            "pageNumber",
+            "onePageMaxSize",
+            "isTrash"
+        ],
+        "parametersDataType": [
+            "number_nullable",
+            "number",
+            "boolean"
+        ],
+        "returnValue": {
+            "templates": [
+                {
+                    "id": "string",
+                    "name": "string"
+                }
+            ],
+            "total": "number"
+        },
+        "functionId": "01HM3JXCNA6V88MQG3FHAFSV92",
+        "beforeCode": "\n\n\n",
+        "innerCode": "\n    if ( !pageNumber ) {\n        pageNumber = 1;\n    }\n    if (!(pageNumber >= 1)) {\n        pageNumber = 1;\n    }\n    const [{ \"COUNT(*)\": total }] = await runSqlReadOnly(\n        `SELECT COUNT(*)\n            FROM excel_templates\n            WHERE enable = :isEnable;`,\n        {\n            // 現存するテンプレート一覧を取得する場合は１\n            // 削除済みのテンプレート一覧を取得する場合は０\n            \":isEnable\": isTrash ? 0 : 1,\n        },\n    );\n    let offset = onePageMaxSize * (pageNumber - 1);\n    if( offset >= total ){\n        offset = total;\n    }\n    // 「sqlite_master」と結合させることで、実際に存在するテンプレートのみに絞り込む\n    const matrix = await runSqlReadOnly(\n        `SELECT\n            ( \"t\" || excel_templates.template_id ) AS id,\n            excel_templates.template_name AS name\n        FROM excel_templates\n        INNER JOIN sqlite_master\n            ON ( \"t\" || excel_templates.template_id ) = sqlite_master.name\n        WHERE excel_templates.enable = :isEnable\n        ORDER BY excel_templates.created_at DESC\n        LIMIT :limit OFFSET :offset;`,\n        {\n            // 現存するテンプレート一覧を取得する場合は１\n            // 削除済みのテンプレート一覧を取得する場合は０\n            \":isEnable\": isTrash ? 0 : 1,\n            \":limit\": onePageMaxSize,\n            \":offset\": offset,\n        },\n    );\n    return {\n        \"templates\": matrix,\n        \"total\": total,\n    }\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "IDからテンプレート名を取得",
+        "functionNameEN": "getTemplateName",
+        "parametersName": [
+            "templateId"
+        ],
+        "parametersDataType": [
+            "string"
+        ],
+        "returnValue": "string_nullable",
+        "functionId": "01HM922PPCJVX86SGF68VCBDDH",
+        "beforeCode": "\n\n\n\n",
+        "innerCode": "\n  return cacheData1[templateId];\n",
+        "afterCode": "\n"
+    }
+]
