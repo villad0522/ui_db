@@ -142,13 +142,32 @@ export async function test033() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
-  await startUp("http://localhost:3000/", true);
+  const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+  await startUp("http://localhost:3000/", false);
   const customDirPath = await getPath("FRONTEND_CUSTOM");
+  // フォルダを作成
   if (  !fs.existsSync(path.join(customDirPath,"qwert"))  ) {
     await fs.promises.mkdir(path.join(customDirPath,"qwert"));
   }
+  // ファイルを作成
   await fs.promises.writeFile(path.join(customDirPath,"this_is_test.txt"),"ああああ");
+  // ファイルを作成
   await fs.promises.writeFile(path.join(customDirPath,"./qwert/this_is_test.html"),"ああああ");
+  // 監視イベントが反応するのを待つ
+  await sleep(1000);
+  // 再起動
+  await close();
+  await startUp("http://localhost:3000/", false);
+  if (  !fs.existsSync(path.join(customDirPath,"./qwert/this_is_test.html"))  ) {
+    throw "作ったはずのファイルが存在しません";
+  }
+  // フォルダを削除
+  await fs.promises.rm(path.join(customDirPath,"qwert"),{recursive: true});
+  // ファイルを削除
+  await fs.promises.rm(path.join(customDirPath,"this_is_test.txt"));
+  // 監視イベントが反応するのを待つ
+  await sleep(1000);
+  //
   await close();
 
 }

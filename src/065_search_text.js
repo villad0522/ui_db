@@ -156,8 +156,11 @@ export async function startUp_core( localUrl, isDebug ){
   catch (err) {
     throw `システム管理用テーブルの作成に失敗しました。\n${String(err)}`;
   }
-  tokenizer = await _buildTokenizer();
-  await kuroshiro.init(new KuromojiAnalyzer());
+  if(!tokenizer){
+    if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+    tokenizer = await _buildTokenizer();
+    await kuroshiro.init(new KuromojiAnalyzer());
+  }
 }
 
 
@@ -236,7 +239,7 @@ async function _saveKeyword({ tableId, recordId, recordData }){
 
 // レコードを作成
 export async function createRecord_core( tableId, recordData ){
-  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
   const result = await createRecord( tableId, recordData ); // 下層の関数を呼び出す
   // 検索キーワードを登録する
   await _saveKeyword({
@@ -250,15 +253,15 @@ export async function createRecord_core( tableId, recordData ){
 
 // レコードを上書き
 export async function updateRecord_core( tableId, records ){
-  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
   const result = await updateRecord( tableId, records );  // 下層の関数を呼び出す
   //
   // 上書きしたいレコードごとに繰り返す
   for( const recordData of records ){
-    if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
     let recordId;
     if( recordData["id"] ){
-      if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
       recordId = recordData["id"];
     }
     else{
@@ -278,7 +281,7 @@ export async function updateRecord_core( tableId, records ){
 
 // 不可逆的にテーブルを削除
 export async function delete_table_core( tableId ){
-  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
   await runSqlWriteOnly(
     `DELETE FROM search_text
       WHERE table_id = :tableId;`,
@@ -293,12 +296,12 @@ export async function delete_table_core( tableId ){
 
 // レコードを削除
 export async function deleteRecord_core( tableId, records ){
-  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
   for( const recordData of records ){
-    if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
     let recordId;
     if( recordData["id"] ){
-      if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
       recordId = recordData["id"];
     }
     else{
@@ -320,7 +323,7 @@ export async function deleteRecord_core( tableId, records ){
 
 // テーブルを無効化
 export async function disableTable_core( tableId ){
-  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
   await runSqlWriteOnly(
     `UPDATE search_text
       SET is_enable_table = 0
@@ -336,7 +339,7 @@ export async function disableTable_core( tableId ){
 
 // テーブルを再度有効化
 export async function enableTable_core( tableId ){
-  if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
   await runSqlWriteOnly(
     `UPDATE search_text
       SET is_enable_table = 1
@@ -352,7 +355,7 @@ export async function enableTable_core( tableId ){
 
 // カラムを無効化
 export async function disableColumn_core( columnId ){
-  if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
   await runSqlWriteOnly(
     `UPDATE search_text
       SET is_enable_column = 0
@@ -368,7 +371,7 @@ export async function disableColumn_core( columnId ){
 
 // カラムを再度有効化
 export async function enableColumn_core( columnId ){
-  if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
   await runSqlWriteOnly(
     `UPDATE search_text
       SET is_enable_column = 1
@@ -384,7 +387,7 @@ export async function enableColumn_core( columnId ){
 
 // 予測変換
 export async function autoCorrect_core( tableId, columnId, inputText, conditions ){
-  if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
   const primaryKey = await getPrimaryKey( tableId );
   //
   // 文字列から名刺を抽出して、カタカナに変換する
@@ -404,20 +407,20 @@ export async function autoCorrect_core( tableId, columnId, inputText, conditions
   const statements = {};
   const searchList = [];
   for( let i=0; i<inputWords.length; i++ ){
-    if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
     searchList.push(`keyword LIKE :word${i}`);
     searchList.push(`original_text LIKE :word${i}`);
     statements[`:word${i}`] = "%" + inputWords[i] + "%";
   }
   if( searchList.length > 0 ){
-    if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     sql += `\n        AND (
           ${searchList.join(`\n          OR `)}
         )`;
   }
   //
   for( const columnId in conditions ){
-    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
     sql += `\n        AND ${columnId} = :${columnId}`;
     statements[`:${columnId}`] = conditions[columnId];
   }
@@ -429,7 +432,7 @@ export async function autoCorrect_core( tableId, columnId, inputText, conditions
   });
   const suggestions = new Set();
   for( const { originalText } of matrix ){
-    if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
     suggestions.add(originalText);
   }
   return Array.from(suggestions);

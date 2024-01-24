@@ -1,1 +1,28 @@
-[{"functionId":"test","functionNameJP":"テストコード","functionNameEN":"test","beforeCode":"","innerCode":"\n","afterCode":"","parametersName":[],"parametersDataType":[],"returnValue":"void"},{"functionNameJP":"HTMLを再生成する","functionNameEN":"regenerateHTML","parametersName":["pageId"],"parametersDataType":["number"],"returnValue":"void","functionId":"01HMWEPGB83MFHHKJMWGTFZQ0B","beforeCode":"\n\n\n\n","innerCode":"\n  throw \"この関数は未実装です。\";\n","afterCode":"\n"}]
+[
+    {
+        "functionId": "test",
+        "functionNameJP": "テストコード",
+        "functionNameEN": "test",
+        "beforeCode": "",
+        "innerCode": "\n    await startUp(\"http://localhost:3000/\", true);\n    //\n    const { tableId: tableId1 } = await createTable(\"学年\");\n    const { columnId: columnId1 } = await createColumn( tableId1, \"学年\", \"INTEGER\", null );\n    // 見出しの役割を果たすカラムを登録する\n    await setTitleColumn( columnId1 );\n    const { recordId: recordId } = await createRecord( tableId1, {\n        [columnId1]: 3,\n    });\n    //\n    const { tableId: tableId2 } = await createTable(\"名簿\");\n    const { columnId: columnId2  } = await createColumn( tableId2, \"学年\", \"POINTER\", tableId1 );\n    const { columnId: columnId3  } = await createColumn( tableId2, \"氏名\", \"TEXT\", null );\n    await createRecord( tableId2, {\n        [columnId2]: recordId,\n        [columnId3]: \"田中太郎\",\n    });\n    //\n    // ページを作成\n    const { pageId: pageId1 } = await createPage( null, \"ページ１\", false );\n    //\n    // ページに動的リストを追加\n    const { joinedTableId: joinedTableId1 } = await createJoinedTable( pageId1, tableId2 );\n    await regenerateHTML( pageId1 );\n    await close();\n",
+        "afterCode": "",
+        "parametersName": [],
+        "parametersDataType": [],
+        "returnValue": "void"
+    },
+    {
+        "functionNameJP": "HTMLを再生成する",
+        "functionNameEN": "regenerateHTML",
+        "parametersName": [
+            "pageId"
+        ],
+        "parametersDataType": [
+            "number"
+        ],
+        "returnValue": "void",
+        "functionId": "01HMWEPGB83MFHHKJMWGTFZQ0B",
+        "beforeCode": "\n\n\n\n",
+        "innerCode": "\n    let htmlText = ``;\n    htmlText += await _getBreadcrumbHTML( pageId );\n    //\n    // HTMLファイルを作成\n    const customDirPath = await getPath(\"FRONTEND_CUSTOM\");\n    const filePath = path.join( customDirPath, `${pageId}.html` );\n    await fs.promises.writeFile( filePath, htmlText );\n",
+        "afterCode": "\n\n\n\n// パンくずリストを生成する\nasync function _getBreadcrumbHTML( pageId ){\n    let htmlText = \"\";\n    const breadcrumbs = await getBreadcrumbs( pageId );\n    for( const breadcrumb of breadcrumbs ){\n      \n    }\n    return htmlText;\n}\n"
+    }
+]

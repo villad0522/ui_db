@@ -145,5 +145,30 @@ export async function test030() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+    await startUp("http://localhost:3000/", true);
+    //
+    const { tableId: tableId1 } = await createTable("学年");
+    const { columnId: columnId1 } = await createColumn( tableId1, "学年", "INTEGER", null );
+    // 見出しの役割を果たすカラムを登録する
+    await setTitleColumn( columnId1 );
+    const { recordId: recordId } = await createRecord( tableId1, {
+        [columnId1]: 3,
+    });
+    //
+    const { tableId: tableId2 } = await createTable("名簿");
+    const { columnId: columnId2  } = await createColumn( tableId2, "学年", "POINTER", tableId1 );
+    const { columnId: columnId3  } = await createColumn( tableId2, "氏名", "TEXT", null );
+    await createRecord( tableId2, {
+        [columnId2]: recordId,
+        [columnId3]: "田中太郎",
+    });
+    //
+    // ページを作成
+    const { pageId: pageId1 } = await createPage( null, "ページ１", false );
+    //
+    // ページに動的リストを追加
+    const { joinedTableId: joinedTableId1 } = await createJoinedTable( pageId1, tableId2 );
+    await regenerateHTML( pageId1 );
+    await close();
 
 }

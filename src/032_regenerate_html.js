@@ -131,5 +131,37 @@ export function setBugMode( mode ){
 // HTMLを再生成する
 export async function regenerateHTML_core( pageId ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
-  throw "この関数は未実装です。";
+    let htmlText = `<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>システム管理</title>
+        <!--  -->
+        <!-- bootstrap5.3を読み込む -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+        <!-- bootstrapのドキュメントはこちら -->
+        <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->
+        <!--  -->
+        <script src="/default/my_fetch.js" type="module"></script>
+    </head>
+    <body>`;
+    //
+    // HTMLファイルを作成
+    const customDirPath = await getPath("FRONTEND_CUSTOM");
+    const filePath = path.join( customDirPath, `${pageId}.html` );
+    await fs.promises.writeFile( filePath, htmlText );
+}
+
+
+
+// パンくずリストを生成する
+async function _getBreadcrumbHTML( pageId ){
+    let htmlText = "";
+    const breadcrumbs = await getBreadcrumbs( pageId );
+    for( const breadcrumb of breadcrumbs ){
+      
+    }
+    return htmlText;
 }

@@ -124,6 +124,8 @@ export function setBugMode( mode ){
 
 
 
+
+
 import fs from 'fs';
 import path from 'path';
 import chokidar from 'chokidar';
@@ -171,8 +173,8 @@ export async function startUp_core( localUrl, isDebug ){
       if( path.isAbsolute(filePath) ){
         throw `フロントエンドファイルについて、データベースに絶対パスが保存されていました。本来は相対パスです。`;
       }
+      await createDirectories_core( filePath );  // フォルダを作成
       const fileFullPath = path.join( customDirPath, filePath );
-      await createDirectories( fileFullPath );  // フォルダを作成
       try{
         await fs.promises.writeFile( fileFullPath, fileData );
       }
@@ -188,30 +190,29 @@ export async function startUp_core( localUrl, isDebug ){
         persistent: true,
     });
     //
-    watcher.on('ready', function () {
-      watcher.on('add', function (filePath, stats) {
-        console.log(`\nフロントエンドにファイルが追加されました。\n${filePath}`);
-        _handleEditFile( filePath );
-      });
-      watcher.on('change', function (filePath, stats) {
-        console.log(`\nフロントエンドのファイルが編集されました。\n${filePath}`);
-        _handleEditFile( filePath );
-      });
-      watcher.on('unlink', function (filePath) {
-        console.log(`\nフロントエンドのファイルが削除されました。\n${filePath}`);
-        //_refleshFrontEndDB();
-      });
-      watcher.on('addDir', function (path) {
-        console.log(`\nフロントエンドにフォルダが追加されました。\n${path}`);
-        // 何もしない
-      });
-      watcher.on('unlinkDir', function (path) {
-        console.log(`\nフロントエンドのフォルダが削除されました。\n${path}`);
-        //_refleshFrontEndDB();
-      });
-      watcher.on('error', function (path) {
-        console.error(`\nフロントエンドフォルダの監視中にエラーが発生しました。\n${path}`);
-      });
+    await new Promise((resolve, reject) => watcher.on('ready', resolve ));
+    watcher.on('add', function (filePath, stats) {
+      //console.log(`\nフロントエンドにファイルが追加されました。\n${filePath}`);
+      _handleEditFile( filePath );
+    });
+    watcher.on('change', function (filePath, stats) {
+      //console.log(`\nフロントエンドのファイルが編集されました。\n${filePath}`);
+      _handleEditFile( filePath );
+    });
+    watcher.on('unlink', function (filePath) {
+      //console.log(`\nフロントエンドのファイルが削除されました。\n${filePath}`);
+      //_refleshFrontEndDB();
+    });
+    watcher.on('addDir', function (path) {
+      //console.log(`\nフロントエンドにフォルダが追加されました。\n${path}`);
+      // 何もしない
+    });
+    watcher.on('unlinkDir', function (path) {
+      //console.log(`\nフロントエンドのフォルダが削除されました。\n${path}`);
+      //_refleshFrontEndDB();
+    });
+    watcher.on('error', function (path) {
+      //console.error(`\nフロントエンドフォルダの監視中にエラーが発生しました。\n${path}`);
     });
   }
 }
@@ -223,6 +224,7 @@ export async function close_core(  ){
   if(watcher){
     if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
     await watcher.close();
+    watcher = null;
   }
   //
   await close(); // 下層の関数を呼び出す
@@ -239,13 +241,13 @@ export async function close_core(  ){
 export async function createDirectories_core( filePath ){
   if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
   const directories = path.dirname(filePath).split(path.sep);
-  let currentPath = "";
+  let currentPath = await getPath("FRONTEND_CUSTOM");
   for (const directory of directories) {
     if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     currentPath = path.join(currentPath, directory);
-    if (fs.existsSync(customDirPath)) continue; // フォルダが既に存在する場合
+    if (fs.existsSync(currentPath)) continue; // フォルダが既に存在する場合
     try {
-      await fs.mkdir(currentPath);
+      await fs.promises.mkdir(currentPath);
     }
     catch (error) {
       console.error(`\nフォルダの作成中にエラーが発生しました`);
@@ -279,11 +281,12 @@ async function _refleshFrontEndDB(  ){
 // ファイルが編集されたとき
 async function _handleEditFile( filePath ){
   try{
+    const customDirPath = await getPath("FRONTEND_CUSTOM");
     await runSqlWriteOnly(
-      `INSERT INTO OR REPLACE frontend_files ( file_path, file_data )
+      `INSERT OR REPLACE INTO frontend_files ( file_path, file_data )
           VALUES ( :filePath, :fileData );`,
       {
-          ":filePath": filePath,
+          ":filePath": path.relative( customDirPath, filePath ),
           ":fileData": await fs.promises.readFile(filePath),
       },
     );
