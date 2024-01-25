@@ -117,15 +117,26 @@ export async function reserveWord_core( word ){
 // 予約語かどうか判定
 export async function checkReservedWord_core( word ){
   if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-  if ( word.length <= 2 ) {
-    throw new Error(`２文字以上で登録してください。`);
+  if ( /^[\x20-\x7e]*$/.test(word) ){
+    if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+    // 半角文字の場合
+    if( word.length <= 2 ) {
+      throw new Error(`「${word}」は登録できません。２文字以上の全角文字 または ３文字以上の英数字で登録してください。`);
+    }
+  }
+  else{
+    if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+    // 全角文字の場合
+    if( word.length <= 1 ) {
+      throw new Error(`「${word}」は登録できません。２文字以上の全角文字 または ３文字以上の英数字で登録してください。`);
+    }
   }
   if ( word.includes(' ') || word.includes('　') ) {
     throw new Error(`空白文字は使用できません。`);
   }
   const name2 = String(word).toUpperCase();
   for( const reservedWord of reservedWords ){
-    if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
     if( reservedWord.includes(name2) ){
       throw new Error(`テーブル名「${word}」は、予約語「${reserveWord}」と被るため使用できません。`);
     }

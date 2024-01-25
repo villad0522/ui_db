@@ -12,8 +12,14 @@
         <!-- bootstrapのドキュメントはこちら -->
         <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->
         <!--  -->
-        <link rel="stylesheet" href="./style.css" type="text/css">
+        <!--  -->
+        <!-- bootstrapのアイコンを読み込む -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <!--  -->
+        <!-- 自作CSSを読み込む -->
+        <link rel="stylesheet" href="./style.css" type="text/css">
+        <!--  -->
+        <!-- 自作JavaScriptを読み込む -->
         <script src="./script.js" type="module"></script>
     </head>
 
@@ -23,37 +29,74 @@
                 <button disabled type="button" class="btn btn-light me-2" style="color: #fff;">
                     戻る
                 </button>
-                <form class="d-flex" role="search" style="width: 300px;">
-                </form>
+                <div class="d-flex" role="search" style="width: 300px;">
+                </div>
                 <div class="form-check form-switch">
                     <input checked onchange="handleEditSwitch(event)" class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
                     <label class="form-check-label" for="edit_mode_switch" style="color:#fff">
                         編集
                     </label>
                 </div>
-                <a href="/default" class="btn btn-dark me-2" target="_blank">
+                <a href="/default/tables/index.html" class="btn btn-dark me-2" target="_blank">
                     本体データ
                     &nbsp;
                     <i class="bi bi-box-arrow-up-right"></i>
                 </a>
             </div>
         </nav>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <button onclick="jumpWithQuery('./1.html')" class="btn btn-link" style="color:#fff">
-                        トップ
-                    </button>
-                </li>
-            </ol>
-        </nav>
-        <button onclick="myFetch('/default/page_editor/regenerate_page/json?page_id=1');" type="button" class="btn btn-outline-dark">
-            ページを再生成
-        </button>
         <main class="container">
+            <form>
+                <br>
+                <!--  -->
+                <!--  -->
+                <!-- 見出し -->
+                <div class="form-floating">
+                    <textarea name="pageName" id="page_name" placeholder="ページ名" class="form-control" id="page_name" style="font-size: 30px; font-weight: 900; overflow: hidden; height: 80px;"></textarea>
+                    <label for="page_name">ページ名</label>
+                </div>
+                <br>
+                <!--  -->
+                <!--  -->
+                <!-- メモ -->
+                <div class="form-floating">
+                    <textarea name="memo" placeholder="メモ" class="form-control" id="memo_area" style="height: 200px"></textarea>
+                    <label for="memo_area">メモ</label>
+                </div>
+                <!--  -->
+                <!--  -->
+                <br>
+                <button onclick="myFetch('./rename_page/json');" type="button" class="btn btn-primary">
+                    保存
+                </button>
+            </form>
+            <br>
+            <br>
+            <br>
+            <!--  -->
+            <!--  -->
             <!-- 子ページへのリンクここから -->
             <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
-                <div class="tile_add" onclick="myFetch('/default/page_editor/create_page/json?parent_id=1')">
+                <div style="text-align: right;">
+                    <div class="tile"></div>
+                    <button onclick="myFetch('./cut_page/json');" type="button" class="btn btn-outline-warning btn-sm">
+                        貼り付け
+                    </button>
+                    <br>
+                    <button onclick="myFetch('./cut_page/json');" type="button" class="btn btn-outline-primary btn-sm">
+                        切り取り
+                    </button>
+                    <br>
+                    <button onclick="myFetch('./copy_page/json');" type="button" class="btn btn-outline-primary btn-sm">
+                        コピー
+                    </button>
+                    <br>
+                    <button onclick="myFetch('./delete_page/json');" type="button" class="btn btn-outline-danger btn-sm">
+                        削除
+                    </button>
+                    <br>
+                    <br>
+                </div>
+                <div class="tile_add" onclick="myFetch('./create_page/json')">
                     <i class="bi bi-plus" style="font-size: 70px; position: relative; top: -5px;"></i>
                     <br>
                     子ページを追加
@@ -68,266 +111,17 @@
                 <div class="tile_empty"></div>
                 <div class="tile_empty"></div>
             </div>
-            <!-- 子ページへのリンクここまで -->
             <!--  -->
             <!--  -->
-            <!-- メモ -->
-            <!--  -->
-            <!--  -->
-            <form>
-                <!-- 基本データここから -->
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="inputEmail4" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="inputEmail4" disabled>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="inputPassword4" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="inputPassword4" disabled>
-                    </div>
-                    <div class="col-12">
-                        <label for="inputAddress" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" disabled>
-                    </div>
-                    <div class="col-12">
-                        <label for="inputAddress2" class="form-label">Address 2</label>
-                        <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor" disabled>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="inputCity" class="form-label">City</label>
-                        <input type="text" class="form-control" id="inputCity" disabled>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="inputState" class="form-label">State</label>
-                        <select id="inputState" class="form-select" disabled>
-                            <option selected>Choose...</option>
-                            <option>...</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="inputZip" class="form-label">Zip</label>
-                        <input type="text" class="form-control" id="inputZip" disabled>
-                    </div>
-                </div>
-                <div class="row">
-                    <!-- リンク集 -->
-                    <a href=""></a>
-                    <a href=""></a>
-                    <a href=""></a>
-                </div>
-                <hr>
-                <!-- 基本データここまで -->
-                <!--  -->
-                <!--  -->
-                <div class="collapse" id="search_block">
-                    <h4>抽出／並び替え</h4>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="inputEmail4" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="inputEmail4">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputPassword4" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="inputPassword4">
-                        </div>
-                        <div class="col-12">
-                            <label for="inputAddress" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-                        </div>
-                        <div class="col-12">
-                            <label for="inputAddress2" class="form-label">Address 2</label>
-                            <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputCity" class="form-label">City</label>
-                            <input type="text" class="form-control" id="inputCity">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="inputState" class="form-label">State</label>
-                            <select id="inputState" class="form-select">
-                                <option selected>Choose...</option>
-                                <option>...</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="inputZip" class="form-label">Zip</label>
-                            <input type="text" class="form-control" id="inputZip">
-                        </div>
-                    </div>
-                    <br>
-                    <div style="text-align: right;">
-                        <button type="button" class="btn btn-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                            </svg>
-                            検索
-                        </button>
-                    </div>
-                    <hr>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h4 style="display: inline-block;">検索結果</h4>
-                        （
-                        <input type="number" id="inputEmail4" disabled style="background: none; border: none; width: 50px;">
-                        件）
-                    </div>
-                    <div class="col-sm-6" style="text-align: right;">
-                        <button data-bs-toggle="collapse" data-bs-target="#search_block" class="btn btn-outline-primary" type="button">
-                            抽出／並び替え
-                        </button>
-                        <button onclick="overwriteButton();" type="button" class="btn btn-outline-primary">
-                            上書き
-                        </button>
-                        <button onclick="addButton();" class="btn btn-primary" type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                            </svg>
-                            追加
-                        </button>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-md-6">
-                            <label for="inputEmail4" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="inputEmail4" disabled>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputPassword4" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="inputPassword4" disabled>
-                        </div>
-                        <div class="col-12">
-                            <label for="inputAddress" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" disabled>
-                        </div>
-                        <div class="col-12">
-                            <label for="inputAddress2" class="form-label">Address 2</label>
-                            <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor" disabled>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputCity" class="form-label">City</label>
-                            <input type="text" class="form-control" id="inputCity" disabled>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="inputState" class="form-label">State</label>
-                            <select id="inputState" class="form-select" disabled>
-                                <option selected>Choose...</option>
-                                <option>...</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="inputZip" class="form-label">Zip</label>
-                            <input type="text" class="form-control" id="inputZip" disabled>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="gridCheck" disabled>
-                                <label class="form-check-label" for="gridCheck">
-                                    Check me out
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <br>
-                <br>
-                <br>
-            </form>
+            <!-- 基本データここから -->
+            <br>
+            <br>
+            <br>
+            <br>
+            <button onclick="myFetch('./regenerate_page/json');" type="button" class="btn btn-outline-dark">
+                ページを再生成
+            </button>
         </main>
-        <footer>
-            <div class="container">
-                <br>
-                <br>
-            </div>
-        </footer>
     </body>
 
 </html>

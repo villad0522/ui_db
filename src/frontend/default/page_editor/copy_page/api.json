@@ -13,14 +13,16 @@
     "requestBody": {},
     "response": {
         "copyingPageId": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "コピー中で保留しているページのID",
-            "example": 8
+            "example": 8,
+            "isRequired": false
         },
         "cuttingPageId": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "切り取り中で保留しているページのID",
-            "example": null
+            "example": 8,
+            "isRequired": false
         }
     }
 }

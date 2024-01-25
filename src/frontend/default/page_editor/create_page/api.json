@@ -3,7 +3,7 @@
     "description": "ページを作成します。",
     "commandName": "CREATE_PAGE",
     "queryParameters": {
-        "parent_id": {
+        "page_id": {
             "dataType": "NUMBER",
             "description": "親ページのページID",
             "isRequired": true,

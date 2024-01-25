@@ -99,7 +99,6 @@ import {
   generateSQLwithDuplication,
 } from "./046_generate_sql1_validate.js";
 import {
-  updatePageName,
   getPageInfo,
   listJoinsFromTableId,
   getTableFromJoin,
@@ -113,12 +112,15 @@ import {
   listAllPages,
   listStaticChildren,
   listChildrenView,
+  getParentPage,
 } from "./040_pages_validate.js";
 import {
   regeneratePage,  // ページを再生成する
   createPage,  // ページを作成
   createView,  // ビューを作成
   startUp,  // プログラム起動
+  escapeHTML,  // HTMLエスケープ
+  updatePageName,  // ページ名やメモを変更
 } from "./031_regenerate_html_validate.js";
 import { setBugMode } from "./032_regenerate_html.js";
 
@@ -127,7 +129,7 @@ export async function test030() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 7; i++ ) {
+    for ( i = 1; i <= 10; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

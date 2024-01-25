@@ -121,20 +121,19 @@ function _setFormData(formData) {
         // name属性の値が変数keyと等しいHTML要素を探す。
         const elements = document.getElementsByName(key);
         if (elements.length === 0) {
-            console.error(`HTML要素が見つかりません。name=${key}`);
             return;
         }
         const element = elements[0];
         // フォームに値を設定
+        console.log(key, typeof value);
         if (element.type === 'checkbox' || element.type === 'radio') {
-            console.log(key, value);
             elements[0].checked = (value.toLowerCase() === "true") || (value === "1");
         }
         else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-            element.value = value;
+            element.value = value ?? "";
         }
         else {
-            element.innerText = value;
+            element.innerText = value ?? "";
         }
     });
 }

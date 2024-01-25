@@ -3,8 +3,10 @@ import path from 'path';
 import {
   startUp,
   createPage,
+  updatePageName,
   createView,
   regeneratePage,
+  escapeHTML,
 } from "./031_regenerate_html_validate.js";
 import {
   getLocalIp,
@@ -109,7 +111,6 @@ import {
   generateSQLwithDuplication,
 } from "./046_generate_sql1_validate.js";
 import {
-  updatePageName,
   getPageInfo,
   listJoinsFromTableId,
   getTableFromJoin,
@@ -123,6 +124,7 @@ import {
   listAllPages,
   listStaticChildren,
   listChildrenView,
+  getParentPage,
 } from "./040_pages_validate.js";
 import {
   runApi,  // APIを実行する関数
@@ -135,7 +137,7 @@ export async function test024() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 16; i++ ) {
+    for ( i = 1; i <= 18; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

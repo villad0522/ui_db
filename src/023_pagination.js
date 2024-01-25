@@ -3,8 +3,10 @@
 import {
   startUp,
   createPage,
+  updatePageName,
   createView,
   regeneratePage,
+  escapeHTML,
 } from "./031_regenerate_html_validate.js";
 import {
   getLocalIp,
@@ -109,7 +111,6 @@ import {
   generateSQLwithDuplication,
 } from "./046_generate_sql1_validate.js";
 import {
-  updatePageName,
   getPageInfo,
   listJoinsFromTableId,
   getTableFromJoin,
@@ -123,6 +124,7 @@ import {
   listAllPages,
   listStaticChildren,
   listChildrenView,
+  getParentPage,
 } from "./040_pages_validate.js";
 import {
   runApi,

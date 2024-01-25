@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 //###############################################################
 // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する関数
-function jumpWithQuery(url) {
+window.jumpWithQuery = function(url) {
     if (isEdit) {
         if (confirm("編集内容は破棄されます。よろしいですか？") == false) {
             return;

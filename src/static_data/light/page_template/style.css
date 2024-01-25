@@ -6,6 +6,10 @@
     color: #fff;
 }
 
+.breadcrumb-item {
+    cursor: pointer;
+}
+
 hr {
     margin: 50px 0;
 }

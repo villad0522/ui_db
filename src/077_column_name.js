@@ -411,7 +411,7 @@ export async function runSqlReadOnly_core( sql, params ){
     for( const columnId in cacheData1 ){
         if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
         const columnName = cacheData1[columnId];
-        const regexp = new RegExp(`(?<!\")${columnName}(?!\")`, "g");
+        const regexp = new RegExp(`(?<=[^a-zA-Z0-9])${columnName}(?=[^a-zA-Z0-9])`, "g");
         sql = sql.replaceAll( regexp, columnId );
     }
     return await runSqlReadOnly( sql, params );  // 下層の関数を実行する
@@ -424,7 +424,7 @@ export async function runSqlWriteOnly_core( sql, params ){
     for( const columnId in cacheData1 ){
         if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
         const columnName = cacheData1[columnId];
-        const regexp = new RegExp(`(?<!\")${columnName}(?!\")`, "g");
+        const regexp = new RegExp(`(?<=[^a-zA-Z0-9])${columnName}(?=[^a-zA-Z0-9])`, "g");
         sql = sql.replaceAll( regexp, columnId );
     }
     return await runSqlReadOnly( sql, params );  // 下層の関数を実行する

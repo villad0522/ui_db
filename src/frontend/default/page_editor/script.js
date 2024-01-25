@@ -8,7 +8,7 @@ let isEdit = false;
 //###############################################################
 // ページを読み込んだら、はじめに実行する関数
 window.addEventListener('DOMContentLoaded', async () => {
-    //await myFetch("./form" + location.search, { method: "GET" });
+    await myFetch("./form" + location.search, { method: "GET" });
     //
     // 変更された項目を水色にする
     const formElements = document.querySelectorAll("form input, form select, form textarea");
@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 //###############################################################
 // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する関数
-function jumpWithQuery(url) {
+window.jumpWithQuery = function (url) {
     if (isEdit) {
         if (confirm("編集内容は破棄されます。よろしいですか？") == false) {
             return;

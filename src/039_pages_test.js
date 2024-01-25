@@ -113,6 +113,7 @@ import {
   listAllPages,  // ページを全て取得する関数
   listStaticChildren,  // 子ページの一覧を取得
   listChildrenView,  // ビューの一覧を取得
+  getParentPage,  // 親ページのIDを取得
 } from "./040_pages_validate.js";
 import { setBugMode } from "./041_pages.js";
 
@@ -121,7 +122,7 @@ export async function test039() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 24; i++ ) {
+    for ( i = 1; i <= 26; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

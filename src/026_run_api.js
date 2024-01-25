@@ -3,8 +3,10 @@
 import {
   startUp,
   createPage,
+  updatePageName,
   createView,
   regeneratePage,
+  escapeHTML,
 } from "./031_regenerate_html_validate.js";
 import {
   getLocalIp,
@@ -109,7 +111,6 @@ import {
   generateSQLwithDuplication,
 } from "./046_generate_sql1_validate.js";
 import {
-  updatePageName,
   getPageInfo,
   listJoinsFromTableId,
   getTableFromJoin,
@@ -123,6 +124,7 @@ import {
   listAllPages,
   listStaticChildren,
   listChildrenView,
+  getParentPage,
 } from "./040_pages_validate.js";
 
 
@@ -253,31 +255,46 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     //======================================================================
     case "REGENERATE_PAGE":{
       if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
-      await regeneratePage( Number(queryParameters["page_id"]) );
+      const pageId = Number(queryParameters["page_id"]);
+      await regeneratePage( pageId );
       return {
-        "nextUrl": "./?" + await convertQuery_core(queryParameters),
+        "nextUrl": `/custom/${pageId}/index.html?` + await convertQuery_core(queryParameters),
       };
     }
     //======================================================================
     case "CREATE_PAGE":{
       if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
-      await createPage( Number(queryParameters["parent_id"]) );
+      const parentId = Number(queryParameters["page_id"]);
+      await createPage( parentId );
       return {
         "nextUrl": "./?" + await convertQuery_core(queryParameters),
       };
     }
     //======================================================================
-    case "DELETE_PAGE":{
+    case "RENAME_PAGE":{
       if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
-      await deletePage( Number(queryParameters["page_id"]) );
+      const pageId = Number(queryParameters["page_id"]);
+      const pageName = requestBody["pageName"];
+      const memo = requestBody["memo"] ?? "";
+      await updatePageName( pageId, pageName, memo );
+      return {
+        "nextUrl": `/custom/${pageId}/index.html?` + await convertQuery_core(queryParameters),
+      };
+    }
+    //======================================================================
+    case "DELETE_PAGE":{
+      if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+      const pageId = Number(queryParameters["page_id"]);
+      await deletePage( pageId );
       return {
         "nextUrl": "./?" + await convertQuery_core(queryParameters),
       };
     }
     //======================================================================
     case "COPY_PAGE":{
-      if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
-      const { copyingPageId, cuttingPageId } = await copyPage( Number(queryParameters["page_id"]) );
+      if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+      const pageId = Number(queryParameters["page_id"]);
+      const { copyingPageId, cuttingPageId } = await copyPage( pageId );
       return {
         "copyingPageId": copyingPageId,
         "cuttingPageId": cuttingPageId,
@@ -285,11 +302,30 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CUT_PAGE":{
-      if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
-      const { copyingPageId, cuttingPageId } = await cutPage( Number(queryParameters["page_id"]) );
+      if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+      const pageId = Number(queryParameters["page_id"]);
+      const { copyingPageId, cuttingPageId } = await cutPage( pageId );
       return {
         "copyingPageId": copyingPageId,
         "cuttingPageId": cuttingPageId,
+      };
+    }
+    //======================================================================
+    case "GET_PAGE_INFO":{
+      if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+      const pageId = Number(queryParameters["page_id"]);
+      const { pageName, memo } = await getPageInfo( pageId );
+      const staticChildren = await listStaticChildren( pageId );
+      const views = await listChildrenView( pageId );
+      return {
+        "pageName": pageName,
+        "memo": memo ?? "",
+        "staticChildren": staticChildren,
+        "staticChildren_total": staticChildren.length,
+        "views": views,
+        "views_total": views.length,
+        "copyingPageId": null,
+        "cuttingPageId": null
       };
     }
     //======================================================================
@@ -302,7 +338,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
 
 // 連想配列をクエリパラメータに変換
 export async function convertQuery_core( obj ){
-  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
   return Object.keys(obj)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
     .join('&');

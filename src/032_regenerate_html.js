@@ -116,6 +116,7 @@ import {
   listAllPages,
   listStaticChildren,
   listChildrenView,
+  getParentPage,
 } from "./040_pages_validate.js";
 
 
@@ -164,6 +165,14 @@ export async function regeneratePage_core( pageId ){
     // ページの情報を取得する
     const { pageName, memo } = await getPageInfo( pageId );
     //
+    // パンくずリストを取得する
+    const breadcrumbs = await getBreadcrumbs( pageId );
+    let parentPageId = null;
+    if( breadcrumbs.length >= 2 ){
+        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+        parentPageId = breadcrumbs[breadcrumbs.length-2].pageId;
+    }
+    //
     // 子ページの一覧
     const staticChildren = await listStaticChildren( pageId );
     //
@@ -184,31 +193,37 @@ export async function regeneratePage_core( pageId ){
         <!-- bootstrapのドキュメントはこちら -->
         <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->
         <!--  -->
-        <link rel="stylesheet" href="./style.css" type="text/css">
+        <!--  -->
+        <!-- bootstrapのアイコンを読み込む -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <!--  -->
+        <!-- 自作CSSを読み込む -->
+        <link rel="stylesheet" href="./style.css" type="text/css">
+        <!--  -->
+        <!-- 自作JavaScriptを読み込む -->
         <script src="./script.js" type="module"></script>
     </head>
     <body>
         <nav class="navbar navbar-dark bg-primary">
             <div class="container-fluid">
-                <button ${ (pageId===1) ? "disabled" : "" } onclick="backButton();" type="button" class="btn btn-light me-2">
+                <button ${ parentPageId ? "" : "disabled" } onclick="jumpWithQuery('/custom/${parentPageId}/index.html')" type="button" class="btn btn-light me-2">
                     戻る
                 </button>
-                <form class="d-flex" role="search" style="width: 300px;">
+                <div class="d-flex" role="search" style="width: 300px;">
                     <div class="input-group">
                         <span class="input-group-text" style="background: none; color: #fff;">
                             <i class="bi bi-search"></i>
                         </span>
                         <input class="form-control search_box" type="search" placeholder="検索" aria-label="Search">
                     </div>
-                </form>
+                </div>
                 <div class="form-check form-switch">
                     <input onchange="handleEditSwitch(event)" class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
                     <label class="form-check-label" for="edit_mode_switch" style="color:#fff">
                         編集
                     </label>
                 </div>
-                <a href="/default" class="btn btn-dark me-2" target="_blank">
+                <a href="/default/tables/index.html" class="btn btn-dark me-2" target="_blank">
                     本体データ
                     &nbsp;
                     <i class="bi bi-box-arrow-up-right"></i>
@@ -216,51 +231,34 @@ export async function regeneratePage_core( pageId ){
             </div>
         </nav>
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <button onclick="jumpWithQuery('./1.html')" class="btn btn-link" style="color:#fff">
-                        トップ
-                    </button>
-                </li>
+            <!-- パンくずリストをクリックすると、クエリパラメータ―を維持したまま別のページへジャンプする -->
+            <ol class="breadcrumb">${ _getBreadcrumbHTML({ breadcrumbs, pageId }) }
             </ol>
         </nav>
-        <button onclick="myFetch('/default/page_editor/regenerate_page/json?page_id=${pageId}');" type="button" class="btn btn-outline-dark">
-            ページを再生成
-        </button>
         <main class="container">
+            <!--  -->
+            <!--  -->
+            <!-- 見出し -->
+            <h1>${ await  escapeHTML_core( pageName ) }</h1>
+            <!--  -->
+            <!--  -->
+            <!-- メモ -->
+            <pre>${ await  escapeHTML_core( memo ) }</pre>
+            <!--  -->
+            <!--  -->
             <!-- 子ページへのリンクここから -->
-            <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">`;
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+                <!-- 正方形のアイコンをクリックすると、クエリパラメータ―を維持したまま別のページへジャンプする -->`;
     //
     for( const { pageId, pageName } of staticChildren ){
-        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
         mainHtmlText += `
-                <div style="text-align: right;">
-                    <div class="tile" onclick="jumpWithQuery('/custom/${pageId}/setting.html')">
-                        ${pageName}
-                    </div>
-                    <button onclick="myFetch('/default/page_editor/cut_page/json?page_id=${pageId}')" type="button" class="btn btn-outline-primary btn-sm">
-                        切り取り
-                    </button>
-                    <br>
-                    <button onclick="myFetch('/default/page_editor/copy_page/json?page_id=${pageId}')" type="button" class="btn btn-outline-primary btn-sm">
-                        コピー
-                    </button>
-                    <br>
-                    <button onclick="myFetch('/default/page_editor/delete_page/json?page_id=${pageId}')" type="button" class="btn btn-outline-danger btn-sm">
-                        削除
-                    </button>
-                    <br>
-                    <br>
+                <div class="tile" onclick="jumpWithQuery('/custom/${pageId}/index.html')">
+                    ${pageName}
                 </div>`;
     }
     //
     mainHtmlText += `
-                <div class="tile_add" onclick="myFetch('/default/page_editor/create_page/json?parent_id=${pageId}')">
-                    <i class="bi bi-plus" style="font-size: 70px; position: relative; top: -5px;"></i>
-                    <br>
-                    子ページを追加
-                    <br>
-                </div>
                 <div class="tile_empty"></div>
                 <div class="tile_empty"></div>
                 <div class="tile_empty"></div>
@@ -270,12 +268,7 @@ export async function regeneratePage_core( pageId ){
                 <div class="tile_empty"></div>
                 <div class="tile_empty"></div>
             </div>
-            <!-- 子ページへのリンクここまで -->
-            <!--  -->
-            <!--  -->
-            <!-- メモ -->
-            <!--  -->
-            <!--  -->
+            <br>
             <form>
                 <!-- 基本データここから -->
                 <div class="row">
@@ -541,21 +534,32 @@ export async function regeneratePage_core( pageId ){
 
 
 // パンくずリストを生成する関数
-async function _getBreadcrumbHTML( pageId ){
+function _getBreadcrumbHTML({ breadcrumbs, pageId }){
     let htmlText = "";
-    const breadcrumbs = await getBreadcrumbs( pageId );
-    for( const { pageId, pageName } of breadcrumbs ){
-      htmlText += `
-                    <li class="breadcrumb-item"><a href="./${pageId}.html">${pageName}</a></li>`;
+    for( let i=0; i<breadcrumbs.length; i++ ){
+        const isLast = ( i === breadcrumbs.length-1 );
+        const { pageId, pageName } = breadcrumbs[i];
+        htmlText += `
+                <li class="breadcrumb-item${ isLast ? ' active' : '' }" onclick="jumpWithQuery('/custom/${pageId}/index.html')" >
+                    ${pageName}
+                </li>`;
     }
     return htmlText;
 }
 
+
+
 // ページを作成
 export async function createPage_core( parentPageId ){
-  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
     const result = await createPage( parentPageId );
+    //
+    // 作ったばかりの子ページのHTMLを生成する
     await regeneratePage_core( result.pageId );
+    //
+    // 親ページのHTMLを再生成する
+    await regeneratePage_core( parentPageId );
+    //
     return result;
 }
 
@@ -563,7 +567,7 @@ export async function createPage_core( parentPageId ){
 
 // ビューを作成
 export async function createView_core( pageId, tableId, sqlQuery ){
-  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
     const result = await createPage( parentPageId, pageName );
     await regeneratePage_core( result.pageId );
     return result;
@@ -572,14 +576,48 @@ export async function createView_core( pageId, tableId, sqlQuery ){
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
-  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
     await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
     //
     const customDirPath = await getPath("FRONTEND_CUSTOM");
     const customFilePath = path.join(customDirPath, "1.html");
     if ( !fs.existsSync(customFilePath)) {
-        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
         // ./src/frontend/custom/1.html が存在しない場合
         await regeneratePage_core( 1 );
     }
+}
+
+
+
+
+
+// HTMLエスケープ
+export async function escapeHTML_core( text ){
+  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+  return text.replace(/[&'`"<>]/g, function(match) {
+    return {
+      '&': '&amp;',
+      "'": '&#x27;',
+      '`': '&#x60;',
+      '"': '&quot;',
+      '<': '&lt;',
+      '>': '&gt;',
+    }[match]
+  });
+}
+
+// ページ名やメモを変更
+export async function updatePageName_core( pageId, pageName, memo ){
+  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+    const result = await updatePageName( pageId, pageName, memo );
+    const parentPageId = await getParentPage( pageId );
+    //
+    // 名前を変更したページのHTMLを生成する
+    await regeneratePage_core( pageId );
+    //
+    // 親ページのHTMLを再生成する
+    await regeneratePage_core( parentPageId );
+    //
+    return result;
 }

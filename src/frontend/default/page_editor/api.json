@@ -2,18 +2,107 @@
     "httpMethod": "GET",
     "description": "ページの構造を取得します。",
     "commandName": "GET_PAGE_INFO",
-    "queryParameters": {},
+    "queryParameters": {
+        "page_id": {
+            "dataType": "NUMBER",
+            "description": "情報を取得したいページのID",
+            "isRequired": true,
+            "example": 8
+        }
+    },
     "requestBody": {},
     "response": {
+        "pageName": {
+            "dataType": "TEXT",
+            "description": "ページ名",
+            "example": "○○管理画面"
+        },
+        "memo": {
+            "dataType": "TEXT",
+            "description": "メモ",
+            "example": "○○を入力する際は、○○してください。",
+            "isRequired": false
+        },
+        "staticChildren": {
+            "title": "ページ上部からアクセスできる子ページの一覧",
+            "isArray": true,
+            "onePageMaxSize": 11,
+            "children": {
+                "pageId": {
+                    "dataType": "INTEGER",
+                    "description": "子ページのID",
+                    "example": 12
+                },
+                "pageName": {
+                    "dataType": "TEXT",
+                    "description": "子ページの名前",
+                    "example": "○○管理画面"
+                }
+            }
+        },
+        "staticChildren_total": {
+            "dataType": "INTEGER",
+            "description": "子ページの個数",
+            "example": 1
+        },
+        "views": {
+            "title": "ビューの一覧",
+            "isArray": true,
+            "onePageMaxSize": 5,
+            "children": {
+                "pageId": {
+                    "dataType": "INTEGER",
+                    "description": "子ページのID",
+                    "example": 12
+                },
+                "pageName": {
+                    "dataType": "TEXT",
+                    "description": "子ページの名前",
+                    "example": "○○管理画面"
+                },
+                "viewId": {
+                    "dataType": "INTEGER",
+                    "description": "ビューのID",
+                    "example": 5
+                },
+                "tableId": {
+                    "dataType": "TEXT",
+                    "description": "テーブルID",
+                    "example": "t4"
+                },
+                "sqlQuery": {
+                    "dataType": "TEXT",
+                    "description": "SQLクエリ",
+                    "example": "SELECT * FROM ○○;"
+                },
+                "onePageMaxSize": {
+                    "dataType": "INTEGER",
+                    "description": "ビューに一度に表示できる最大レコード数",
+                    "example": 5
+                },
+                "viewType": {
+                    "dataType": "TEXT",
+                    "description": "ビューの種類",
+                    "example": "TILE"
+                }
+            }
+        },
+        "views_total": {
+            "dataType": "INTEGER",
+            "description": "ビューの個数",
+            "example": 1
+        },
         "copyingPageId": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "コピー中で保留しているページのID",
-            "example": 8
+            "example": 8,
+            "isRequired": false
         },
         "cuttingPageId": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "切り取り中で保留しているページのID",
-            "example": null
+            "example": 8,
+            "isRequired": false
         }
     }
 }
