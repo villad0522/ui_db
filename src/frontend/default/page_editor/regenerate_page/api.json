@@ -15,7 +15,7 @@
         "nextUrl": {
             "dataType": "TEXT",
             "description": "生成したページの相対URL",
-            "example": "/8.html"
+            "example": "./"
         }
     }
 }

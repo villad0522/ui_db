@@ -121,6 +121,8 @@ import {
   getCuttingPage,
   getCopyingPage,
   listAllPages,
+  listStaticChildren,
+  listChildrenView,
 } from "./040_pages_validate.js";
 
 
@@ -253,11 +255,55 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
       await regeneratePage( Number(queryParameters["page_id"]) );
       return {
-        "nextUrl": `/custom/${queryParameters["page_id"]}/index.html`,
+        "nextUrl": "./?" + await convertQuery_core(queryParameters),
+      };
+    }
+    //======================================================================
+    case "CREATE_PAGE":{
+      if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+      await createPage( Number(queryParameters["parent_id"]) );
+      return {
+        "nextUrl": "./?" + await convertQuery_core(queryParameters),
+      };
+    }
+    //======================================================================
+    case "DELETE_PAGE":{
+      if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+      await deletePage( Number(queryParameters["page_id"]) );
+      return {
+        "nextUrl": "./?" + await convertQuery_core(queryParameters),
+      };
+    }
+    //======================================================================
+    case "COPY_PAGE":{
+      if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+      const { copyingPageId, cuttingPageId } = await copyPage( Number(queryParameters["page_id"]) );
+      return {
+        "copyingPageId": copyingPageId,
+        "cuttingPageId": cuttingPageId,
+      };
+    }
+    //======================================================================
+    case "CUT_PAGE":{
+      if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+      const { copyingPageId, cuttingPageId } = await cutPage( Number(queryParameters["page_id"]) );
+      return {
+        "copyingPageId": copyingPageId,
+        "cuttingPageId": cuttingPageId,
       };
     }
     //======================================================================
     default:
       throw `サポートされていないAPIコマンドです。\ncommandName = ${apiInfo.commandName}`;
   }
+}
+
+
+
+// 連想配列をクエリパラメータに変換
+export async function convertQuery_core( obj ){
+  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+  return Object.keys(obj)
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
+    .join('&');
 }

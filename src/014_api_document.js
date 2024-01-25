@@ -120,6 +120,8 @@ import {
   getCuttingPage,
   getCopyingPage,
   listAllPages,
+  listStaticChildren,
+  listChildrenView,
 } from "./040_pages_validate.js";
 import {
   getEndpointInfo,
@@ -127,6 +129,9 @@ import {
 import {
   runApi,
 } from "./016_api_validator_validate.js";
+import {
+  convertQuery,
+} from "./025_run_api_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）

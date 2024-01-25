@@ -15,6 +15,8 @@ import {
   getCuttingPage_core,  // 切り取り中のページを取得する
   getCopyingPage_core,  // コピー中のページを取得する
   listAllPages_core,  // ページを全て取得する関数
+  listStaticChildren_core,  // 子ページの一覧を取得
+  listChildrenView_core,  // ビューの一覧を取得
 } from "./041_pages.js";
 
 
@@ -214,11 +216,13 @@ export async function updatePageName( pages ){
 export async function getPageInfo( pageId ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( (pageId===null) || (pageId===undefined) ){
-    // pageIdは空欄OK。
-  }
-  else if( typeof pageId !== "number" ){
-    throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
+  if( typeof pageId !== "number" ){
+    if( !pageId ){
+      throw new Error(`pageIdがNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
+    }
+    else{
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
+    }
   }
   else if( isNaN(pageId) ){
     throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
@@ -249,15 +253,6 @@ export async function getPageInfo( pageId ){
       throw new Error(`resultがオブジェクトではありません。\nレイヤー : pages\n関数 : getPageInfo`);
     }
   }
-  if( (result.pageId===null) || (result.pageId===undefined) ){
-    // result.pageIdは空欄OK。
-  }
-  else if( typeof result.pageId !== "number" ){
-    throw new Error(`result.pageIdが数値ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-  }
-  else if( isNaN(result.pageId) ){
-    throw new Error(`result.pageIdが数値ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-  }
   if( typeof result.pageName !== "string" ){
     if( !result.pageName ){
       throw new Error(`result.pageNameがNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
@@ -272,125 +267,6 @@ export async function getPageInfo( pageId ){
     }
     else{
       throw new Error(`result.memoが文字列ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-    }
-  }
-  if( !Array.isArray(result.parentPages) ){
-    if( !result.parentPages ){
-      throw new Error(`result.parentPagesがNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-    }
-    else{
-      throw new Error(`result.parentPagesが配列ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-    }
-  }
-  for( let i=0; i<result.parentPages.length; i++ ){
-    if( typeof result.parentPages[i] !== "object" ){
-      if( !result.parentPages[i] ){
-        throw new Error(`result.parentPages[${i}]がNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-      else{
-        throw new Error(`result.parentPages[${i}]がオブジェクトではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-    }
-    if( typeof result.parentPages[i].id !== "number" ){
-      if( !result.parentPages[i].id ){
-        throw new Error(`result.parentPages[${i}].idがNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-      else{
-        throw new Error(`result.parentPages[${i}].idが数値ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-    }
-    else if( isNaN(result.parentPages[i].id) ){
-      throw new Error(`result.parentPages[${i}].idが数値ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-    }
-    if( typeof result.parentPages[i].name !== "string" ){
-      if( !result.parentPages[i].name ){
-        throw new Error(`result.parentPages[${i}].nameがNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-      else{
-        throw new Error(`result.parentPages[${i}].nameが文字列ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-    }
-  }
-  if( !Array.isArray(result.staticPages) ){
-    if( !result.staticPages ){
-      throw new Error(`result.staticPagesがNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-    }
-    else{
-      throw new Error(`result.staticPagesが配列ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-    }
-  }
-  for( let i=0; i<result.staticPages.length; i++ ){
-    if( typeof result.staticPages[i] !== "object" ){
-      if( !result.staticPages[i] ){
-        throw new Error(`result.staticPages[${i}]がNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-      else{
-        throw new Error(`result.staticPages[${i}]がオブジェクトではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-    }
-    if( typeof result.staticPages[i].id !== "number" ){
-      if( !result.staticPages[i].id ){
-        throw new Error(`result.staticPages[${i}].idがNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-      else{
-        throw new Error(`result.staticPages[${i}].idが数値ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-    }
-    else if( isNaN(result.staticPages[i].id) ){
-      throw new Error(`result.staticPages[${i}].idが数値ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-    }
-    if( typeof result.staticPages[i].name !== "string" ){
-      if( !result.staticPages[i].name ){
-        throw new Error(`result.staticPages[${i}].nameがNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-      else{
-        throw new Error(`result.staticPages[${i}].nameが文字列ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-    }
-  }
-  if( !Array.isArray(result.dynamicPages) ){
-    if( !result.dynamicPages ){
-      throw new Error(`result.dynamicPagesがNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-    }
-    else{
-      throw new Error(`result.dynamicPagesが配列ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-    }
-  }
-  for( let i=0; i<result.dynamicPages.length; i++ ){
-    if( typeof result.dynamicPages[i] !== "object" ){
-      if( !result.dynamicPages[i] ){
-        throw new Error(`result.dynamicPages[${i}]がNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-      else{
-        throw new Error(`result.dynamicPages[${i}]がオブジェクトではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-    }
-    if( typeof result.dynamicPages[i].id !== "number" ){
-      if( !result.dynamicPages[i].id ){
-        throw new Error(`result.dynamicPages[${i}].idがNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-      else{
-        throw new Error(`result.dynamicPages[${i}].idが数値ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-    }
-    else if( isNaN(result.dynamicPages[i].id) ){
-      throw new Error(`result.dynamicPages[${i}].idが数値ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-    }
-    if( typeof result.dynamicPages[i].name !== "string" ){
-      if( !result.dynamicPages[i].name ){
-        throw new Error(`result.dynamicPages[${i}].nameがNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-      else{
-        throw new Error(`result.dynamicPages[${i}].nameが文字列ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
-      }
-    }
-  }
-  if( typeof result.viewType !== "string" ){
-    if( !result.viewType ){
-      throw new Error(`result.viewTypeがNULLです。\nレイヤー : pages\n関数 : getPageInfo`);
-    }
-    else{
-      throw new Error(`result.viewTypeが文字列ではありません。\nレイヤー : pages\n関数 : getPageInfo`);
     }
   }
   //
@@ -972,6 +848,208 @@ export async function listAllPages(  ){
     }
     else if( isNaN(result[i]) ){
       throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listAllPages`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「listStaticChildren_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function listStaticChildren( pageId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof pageId !== "number" ){
+    if( !pageId ){
+      throw new Error(`pageIdがNULLです。\nレイヤー : pages\n関数 : listStaticChildren`);
+    }
+    else{
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : listStaticChildren`);
+    }
+  }
+  else if( isNaN(pageId) ){
+    throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : listStaticChildren`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await listStaticChildren_core( pageId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : pages\n関数 : listStaticChildren`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( !Array.isArray(result) ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : pages\n関数 : listStaticChildren`);
+    }
+    else{
+      throw new Error(`resultが配列ではありません。\nレイヤー : pages\n関数 : listStaticChildren`);
+    }
+  }
+  for( let i=0; i<result.length; i++ ){
+    if( typeof result[i] !== "object" ){
+      if( !result[i] ){
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : pages\n関数 : listStaticChildren`);
+      }
+      else{
+        throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : pages\n関数 : listStaticChildren`);
+      }
+    }
+    if( typeof result[i].pageId !== "number" ){
+      if( !result[i].pageId ){
+        throw new Error(`result[${i}].pageIdがNULLです。\nレイヤー : pages\n関数 : listStaticChildren`);
+      }
+      else{
+        throw new Error(`result[${i}].pageIdが数値ではありません。\nレイヤー : pages\n関数 : listStaticChildren`);
+      }
+    }
+    else if( isNaN(result[i].pageId) ){
+      throw new Error(`result[${i}].pageIdが数値ではありません。\nレイヤー : pages\n関数 : listStaticChildren`);
+    }
+    if( typeof result[i].pageName !== "string" ){
+      if( !result[i].pageName ){
+        throw new Error(`result[${i}].pageNameがNULLです。\nレイヤー : pages\n関数 : listStaticChildren`);
+      }
+      else{
+        throw new Error(`result[${i}].pageNameが文字列ではありません。\nレイヤー : pages\n関数 : listStaticChildren`);
+      }
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「listChildrenView_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function listChildrenView( pageId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof pageId !== "number" ){
+    if( !pageId ){
+      throw new Error(`pageIdがNULLです。\nレイヤー : pages\n関数 : listChildrenView`);
+    }
+    else{
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+    }
+  }
+  else if( isNaN(pageId) ){
+    throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await listChildrenView_core( pageId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : pages\n関数 : listChildrenView`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( !Array.isArray(result) ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : pages\n関数 : listChildrenView`);
+    }
+    else{
+      throw new Error(`resultが配列ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+    }
+  }
+  for( let i=0; i<result.length; i++ ){
+    if( typeof result[i] !== "object" ){
+      if( !result[i] ){
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+    }
+    if( typeof result[i].pageId !== "number" ){
+      if( !result[i].pageId ){
+        throw new Error(`result[${i}].pageIdがNULLです。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].pageIdが数値ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+    }
+    else if( isNaN(result[i].pageId) ){
+      throw new Error(`result[${i}].pageIdが数値ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+    }
+    if( typeof result[i].pageName !== "string" ){
+      if( !result[i].pageName ){
+        throw new Error(`result[${i}].pageNameがNULLです。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].pageNameが文字列ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+    }
+    if( typeof result[i].viewId !== "number" ){
+      if( !result[i].viewId ){
+        throw new Error(`result[${i}].viewIdがNULLです。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].viewIdが数値ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+    }
+    else if( isNaN(result[i].viewId) ){
+      throw new Error(`result[${i}].viewIdが数値ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+    }
+    if( typeof result[i].tableId !== "string" ){
+      if( !result[i].tableId ){
+        throw new Error(`result[${i}].tableIdがNULLです。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].tableIdが文字列ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+    }
+    if( typeof result[i].sqlQuery !== "string" ){
+      if( !result[i].sqlQuery ){
+        throw new Error(`result[${i}].sqlQueryがNULLです。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].sqlQueryが文字列ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+    }
+    if( typeof result[i].onePageMaxSize !== "number" ){
+      if( !result[i].onePageMaxSize ){
+        throw new Error(`result[${i}].onePageMaxSizeがNULLです。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].onePageMaxSizeが数値ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+    }
+    else if( isNaN(result[i].onePageMaxSize) ){
+      throw new Error(`result[${i}].onePageMaxSizeが数値ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+    }
+    if( typeof result[i].viewType !== "string" ){
+      if( !result[i].viewType ){
+        throw new Error(`result[${i}].viewTypeがNULLです。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].viewTypeが文字列ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
+      }
     }
   }
   //

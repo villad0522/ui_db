@@ -126,6 +126,8 @@ import {
   getCuttingPage,
   getCopyingPage,
   listAllPages,
+  listStaticChildren,
+  listChildrenView,
 } from "./040_pages_validate.js";
 import {
   getEndpointInfo,
@@ -133,6 +135,9 @@ import {
 import {
   runApi,
 } from "./010_transaction_validate.js";
+import {
+  convertQuery,
+} from "./025_run_api_validate.js";
 import {
   updateExcel,
   openExcel,
@@ -213,6 +218,8 @@ export {
   getCuttingPage,
   getCopyingPage,
   listAllPages,
+  listStaticChildren,
+  listChildrenView,
   addViewColumn,
   getSimpleSQL,
   createDirectories,
@@ -220,6 +227,7 @@ export {
   getEndpointInfo,
   listEndpoints,
   runApi,
+  convertQuery,
   updateExcel,
   openExcel,
   createTemplate,

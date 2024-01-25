@@ -114,6 +114,8 @@ import {
   getCuttingPage,
   getCopyingPage,
   listAllPages,
+  listStaticChildren,
+  listChildrenView,
 } from "./040_pages_validate.js";
 
 
@@ -137,29 +139,44 @@ import path from 'path';
 // ページを再生成する
 export async function regeneratePage_core( pageId ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
+    const staticDirPath = await getPath("STATIC_DATA");
+    const templateDirPath = path.join( staticDirPath, "./light/page_template" );
+    //
     const customDirPath = await getPath("FRONTEND_CUSTOM");
-    const folderPath = path.join( customDirPath, String(pageId) );
-    if (  !fs.existsSync( folderPath )  ) {
+    const pagePath = path.join( customDirPath, String(pageId) );
+    if (  !fs.existsSync( pagePath )  ) {
         if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-        await fs.promises.mkdir( folderPath );
+        await fs.promises.mkdir( pagePath );
     }
-    //#######################################################################################
-    let mainHtmlText = ``;
-    // ファイルを生成
-    const htmlPath = path.join( folderPath, `index.html` );
-    await fs.promises.writeFile( htmlPath, mainHtmlText );
+    //
+    // CSSを生成する（テンプレートからコピーする）
+    const cssSrcPath = path.join( templateDirPath, `style.css` );
+    const cssDestPath = path.join( pagePath, `style.css` );
+    await fs.promises.copyFile( cssSrcPath, cssDestPath );
+    //
+    // JavaScriptを生成する（テンプレートからコピーする）
+    const jsSrcPath = path.join( templateDirPath, `script.js` );
+    const jsDestPath = path.join( pagePath, `script.js` );
+    let jsText = await fs.promises.readFile( jsSrcPath, { encoding: "utf8" } );
+    jsText = jsText.replaceAll( "PAGE_ID", pageId );
+    await fs.promises.writeFile( jsDestPath, jsText );
+    //
+    // ページの情報を取得する
+    const { pageName, memo } = await getPageInfo( pageId );
+    //
+    // 子ページの一覧
+    const staticChildren = await listStaticChildren( pageId );
+    //
+    // ビューの一覧
+    const views = await listChildrenView( pageId );
     //
     //
-    //
-    //
-    //
-    //#######################################################################################
-    let settingHtmlText = `<!DOCTYPE html>
+    let mainHtmlText = `<!DOCTYPE html>
 <html lang="ja">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>webページのタイトル</title>
+        <title>${pageName}</title>
         <!--  -->
         <!-- bootstrap5.3を読み込む -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -168,21 +185,97 @@ export async function regeneratePage_core( pageId ){
         <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->
         <!--  -->
         <link rel="stylesheet" href="./style.css" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <script src="./script.js" type="module"></script>
     </head>
-    <body style="background: #eee;">
-        <header style="position: sticky; top: 0; padding: 5px; width: max-content; box-sizing: border-box; background: #eee; z-index: 999;">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">${ await _getBreadcrumbHTML( pageId ) }
-                </ol>
-            </nav>
-            ${ (pageId===1) ? "" : `
-            <button onclick="backButton();" type="button" class="btn btn-outline-primary">
-                戻る
-            </button>`
-            }
-        </header>
+    <body>
+        <nav class="navbar navbar-dark bg-primary">
+            <div class="container-fluid">
+                <button ${ (pageId===1) ? "disabled" : "" } onclick="backButton();" type="button" class="btn btn-light me-2">
+                    戻る
+                </button>
+                <form class="d-flex" role="search" style="width: 300px;">
+                    <div class="input-group">
+                        <span class="input-group-text" style="background: none; color: #fff;">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input class="form-control search_box" type="search" placeholder="検索" aria-label="Search">
+                    </div>
+                </form>
+                <div class="form-check form-switch">
+                    <input onchange="handleEditSwitch(event)" class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
+                    <label class="form-check-label" for="edit_mode_switch" style="color:#fff">
+                        編集
+                    </label>
+                </div>
+                <a href="/default" class="btn btn-dark me-2" target="_blank">
+                    本体データ
+                    &nbsp;
+                    <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+            </div>
+        </nav>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <button onclick="jumpWithQuery('./1.html')" class="btn btn-link" style="color:#fff">
+                        トップ
+                    </button>
+                </li>
+            </ol>
+        </nav>
+        <button onclick="myFetch('/default/page_editor/regenerate_page/json?page_id=${pageId}');" type="button" class="btn btn-outline-dark">
+            ページを再生成
+        </button>
         <main class="container">
+            <!-- 子ページへのリンクここから -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">`;
+    //
+    for( const { pageId, pageName } of staticChildren ){
+        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+        mainHtmlText += `
+                <div style="text-align: right;">
+                    <div class="tile" onclick="jumpWithQuery('/custom/${pageId}/setting.html')">
+                        ${pageName}
+                    </div>
+                    <button onclick="myFetch('/default/page_editor/cut_page/json?page_id=${pageId}')" type="button" class="btn btn-outline-primary btn-sm">
+                        切り取り
+                    </button>
+                    <br>
+                    <button onclick="myFetch('/default/page_editor/copy_page/json?page_id=${pageId}')" type="button" class="btn btn-outline-primary btn-sm">
+                        コピー
+                    </button>
+                    <br>
+                    <button onclick="myFetch('/default/page_editor/delete_page/json?page_id=${pageId}')" type="button" class="btn btn-outline-danger btn-sm">
+                        削除
+                    </button>
+                    <br>
+                    <br>
+                </div>`;
+    }
+    //
+    mainHtmlText += `
+                <div class="tile_add" onclick="myFetch('/default/page_editor/create_page/json?parent_id=${pageId}')">
+                    <i class="bi bi-plus" style="font-size: 70px; position: relative; top: -5px;"></i>
+                    <br>
+                    子ページを追加
+                    <br>
+                </div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+            </div>
+            <!-- 子ページへのリンクここまで -->
+            <!--  -->
+            <!--  -->
+            <!-- メモ -->
+            <!--  -->
+            <!--  -->
             <form>
                 <!-- 基本データここから -->
                 <div class="row">
@@ -433,176 +526,17 @@ export async function regeneratePage_core( pageId ){
         </main>
         <footer>
             <div class="container">
-                <a href="/default" class="btn btn-dark" target="_blank">
-                    管理画面
-                </a>
-                <button onclick="myFetch('/default/regenerate_page/json?page_id=${pageId}');" type="button" class="btn btn-outline-dark">
-                    ページを再生成
-                </button>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
-                    <label class="form-check-label" for="edit_mode_switch">
-                        ページを編集
-                    </label>
-                </div>
                 <br>
                 <br>
             </div>
         </footer>
     </body>
 </html>`;
-    // ファイルを生成
-    const settingPath = path.join( folderPath, `setting.html` );
-    await fs.promises.writeFile( settingPath, settingHtmlText );
     //
     //
-    //
-    //
-    //
-    //#######################################################################################
-    let cssText = `
-hr {
-    margin: 50px 0;
-}
-.card {
-    background: #fafafa;
-    margin: 20px 0;
-}
-.form-control,
-.form-select {
-    margin-bottom: 10px;
-}
-.form-control:disabled,
-.form-select:disabled {
-    border: none;
-    background: none;
-    margin-bottom: 30px;
-    padding: 0 0 0 15px;
-}
-`;
-    const cssPath = path.join( folderPath, `style.css` );
-    await fs.promises.writeFile( cssPath, cssText );
-    //
-    //
-    //
-    //
-    //
-    //#######################################################################################
-    let jsText = `
-import myFetch from "/default/my_fetch.js";
-// 一か所でも編集されたかどうかを記録する変数
-let isEdit = false;
-//
-//###############################################################
-// ページを読み込んだら、はじめに実行する
-window.addEventListener('DOMContentLoaded', async () => {
-    await myFetch("./form" + location.search, { method: "GET" });
-    //
-    // 変更された項目を水色にする
-    const formElements = document.querySelectorAll("input,select,textarea");
-    for (const formElement of formElements) {
-        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
-        formElement.addEventListener("change", () => {
-            formElement.style.background = "#ddffff";
-            isEdit = true;
-        });
-    }
-});
-//###############################################################
-// 「戻る」ボタンがクリックされたときに実行する関数
-window.backButton = function () {
-    if (isEdit) {
-        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-        if (confirm("編集内容は破棄されます。よろしいですか？") == false) {
-            if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-            return;
-        }
-    }
-    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
-    window.location.href = "../index.html" + window.location.search;
-}
-//
-//###############################################################
-// 「キャンセル」ボタンがクリックされたときに実行する関数
-window.cancelButton = function () {
-    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
-    window.location.href = "../index.html" + window.location.search;
-}
-//
-//###############################################################
-// 「表の名前を変更」ボタンがクリックされたときに実行する関数
-window.renameButton = function () {
-    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
-    window.location.href = "./rename" + window.location.search;
-}
-//
-//###############################################################
-// テーブルがクリックされたときに実行する関数
-window.tableButton = function (i) {
-    // テーブル名
-    let tableId = document.getElementsByName(\`tables\${i}_id\`)[0].value;
-    //
-    // 別のページに移動する
-    tableId = encodeURIComponent(tableId);
-    window.location.href = \`../records?table=\${tableId}\`;
-}
-//
-//###############################################################
-// ページネーションボタンの「First」がクリックされたときに実行する関数
-window.paginationButtonFirst = function (arrayName) {
-    // クエリパラメータ―を作成
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", 1);
-    // ページを再読み込み
-    window.location.href = "./?" + searchParams.toString();
-}
-//
-//###############################################################
-// ページネーションボタンの「Prev」がクリックされたときに実行する関数
-window.paginationButtonPrev = function () {
-    // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("tables_pagePrev")[0].value;
-    // クエリパラメータ―を作成
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", pageNumber);
-    // ページを再読み込み
-    window.location.href = "./?" + searchParams.toString();
-}
-//
-//###############################################################
-// ページネーションボタンの「Next」がクリックされたときに実行する関数
-window.paginationButtonNext = function () {
-    // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("tables_pageNext")[0].value;
-    // クエリパラメータ―を作成
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", pageNumber);
-    // ページを再読み込み
-    window.location.href = "./?" + searchParams.toString();
-}
-//
-//###############################################################
-// ページネーションボタンの「Last」がクリックされたときに実行する関数
-window.paginationButtonLast = function () {
-    // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("tables_pageLast")[0].value;
-    // クエリパラメータ―を作成
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", pageNumber);
-    // ページを再読み込み
-    window.location.href = "./?" + searchParams.toString();
-}
-//
-//###############################################################
-`;
-    const jsPath = path.join( folderPath, `script.js` );
-    await fs.promises.writeFile( jsPath, jsText );
-    //
-    //
-    //
-    //
-    //
-    //#######################################################################################
+    // HTMLファイルを生成
+    const htmlPath = path.join( pagePath, `index.html` );
+    await fs.promises.writeFile( htmlPath, mainHtmlText );
 }
 
 
@@ -619,7 +553,7 @@ async function _getBreadcrumbHTML( pageId ){
 
 // ページを作成
 export async function createPage_core( parentPageId ){
-  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
     const result = await createPage( parentPageId );
     await regeneratePage_core( result.pageId );
     return result;
@@ -629,7 +563,7 @@ export async function createPage_core( parentPageId ){
 
 // ビューを作成
 export async function createView_core( pageId, tableId, sqlQuery ){
-  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
     const result = await createPage( parentPageId, pageName );
     await regeneratePage_core( result.pageId );
     return result;
@@ -638,13 +572,13 @@ export async function createView_core( pageId, tableId, sqlQuery ){
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
-  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
     await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
     //
     const customDirPath = await getPath("FRONTEND_CUSTOM");
     const customFilePath = path.join(customDirPath, "1.html");
     if ( !fs.existsSync(customFilePath)) {
-        if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
         // ./src/frontend/custom/1.html が存在しない場合
         await regeneratePage_core( 1 );
     }

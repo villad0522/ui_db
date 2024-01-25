@@ -121,9 +121,12 @@ import {
   getCuttingPage,
   getCopyingPage,
   listAllPages,
+  listStaticChildren,
+  listChildrenView,
 } from "./040_pages_validate.js";
 import {
   runApi,  // APIを実行する関数
+  convertQuery,  // 連想配列をクエリパラメータに変換
 } from "./025_run_api_validate.js";
 import { setBugMode } from "./026_run_api.js";
 
@@ -132,7 +135,7 @@ export async function test024() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 11; i++ ) {
+    for ( i = 1; i <= 16; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -155,5 +158,11 @@ export async function test024() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+  const queryString = await convertQuery({
+    "a":32
+  });
+  if(queryString!=="a=32"){
+    throw `クエリパラメータ―に変換する関数が、想定とは異なる動作をしています。`;
+  }
 
 }

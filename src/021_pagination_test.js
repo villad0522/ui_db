@@ -120,8 +120,11 @@ import {
   getCuttingPage,
   getCopyingPage,
   listAllPages,
+  listStaticChildren,
+  listChildrenView,
 } from "./040_pages_validate.js";
 import {
+  convertQuery,
 } from "./025_run_api_validate.js";
 import {
   runApi,  // APIを実行する関数

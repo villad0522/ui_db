@@ -1,0 +1,21 @@
+{
+    "httpMethod": "POST",
+    "description": "ページを作成します。",
+    "commandName": "CREATE_PAGE",
+    "queryParameters": {
+        "parent_id": {
+            "dataType": "NUMBER",
+            "description": "親ページのページID",
+            "isRequired": true,
+            "example": 1
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "./"
+        }
+    }
+}

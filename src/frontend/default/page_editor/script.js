@@ -45,10 +45,15 @@ function jumpWithQuery(url) {
 }
 //
 //###############################################################
-// 編集スイッチが切り替えられたとき
+// UI編集スイッチが切り替えられたとき
 window.handleEditSwitch = function (event) {
-    event.target.checked = false;
-    jumpWithQuery('./index.html');
+    const params = new URL(location.href).searchParams;
+    const pageId = params.get("page_id");
+    jumpWithQuery(`/custom/${pageId}/index.html`);
+    event.target.checked = true;   // スイッチを「編集中」に戻す
+    // ↑ この処理の意義は、
+    // 「編集内容は破棄されます。よろしいですか？」に
+    // Noと答えた場合に、スイッチを戻すため。
 }
 //
 //###############################################################

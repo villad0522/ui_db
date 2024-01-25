@@ -1,0 +1,21 @@
+{
+    "httpMethod": "POST",
+    "description": "ページを削除します。",
+    "commandName": "DELETE_PAGE",
+    "queryParameters": {
+        "page_id": {
+            "dataType": "NUMBER",
+            "description": "削除したいページのIDを指定してください。トップページ(ID:1)は削除禁止です。",
+            "isRequired": true,
+            "example": 9
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "./"
+        }
+    }
+}

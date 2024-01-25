@@ -1,0 +1,26 @@
+{
+    "httpMethod": "POST",
+    "description": "ページをコピーして保留します。貼り付けは行いません。",
+    "commandName": "COPY_PAGE",
+    "queryParameters": {
+        "page_id": {
+            "dataType": "NUMBER",
+            "description": "コピーしたいページのID",
+            "isRequired": true,
+            "example": 8
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "copyingPageId": {
+            "dataType": "NUMBER",
+            "description": "コピー中で保留しているページのID",
+            "example": 8
+        },
+        "cuttingPageId": {
+            "dataType": "NUMBER",
+            "description": "切り取り中で保留しているページのID",
+            "example": null
+        }
+    }
+}

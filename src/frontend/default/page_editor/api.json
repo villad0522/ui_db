@@ -1,0 +1,19 @@
+{
+    "httpMethod": "GET",
+    "description": "ページの構造を取得します。",
+    "commandName": "GET_PAGE_INFO",
+    "queryParameters": {},
+    "requestBody": {},
+    "response": {
+        "copyingPageId": {
+            "dataType": "NUMBER",
+            "description": "コピー中で保留しているページのID",
+            "example": 8
+        },
+        "cuttingPageId": {
+            "dataType": "NUMBER",
+            "description": "切り取り中で保留しているページのID",
+            "example": null
+        }
+    }
+}

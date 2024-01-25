@@ -1,5 +1,6 @@
 import {
   runApi_core,  // APIを実行する関数
+  convertQuery_core,  // 連想配列をクエリパラメータに変換
 } from "./026_run_api.js";
 
 
@@ -105,6 +106,58 @@ export async function runApi( httpMethod, endpointPath, queryParameters, request
   for( const i in result ){
     if( typeof i !== "string" ){
       throw new Error(`resultのキーが文字列ではありません。\nレイヤー : run_api\n関数 : runApi`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「convertQuery_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function convertQuery( obj ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( obj===null || obj===undefined ){
+    throw new Error(`objがNULLです。\nレイヤー : run_api\n関数 : convertQuery`);
+  }
+  else if( typeof obj !== "object" ){
+    throw new Error(`objがオブジェクトではありません。\nレイヤー : run_api\n関数 : convertQuery`);
+  }
+  else if( obj.constructor !== Object ){
+    throw new Error(`objが辞書型ではありません。\nレイヤー : run_api\n関数 : convertQuery`);
+  }
+  for( const i in obj ){
+    if( typeof i !== "string" ){
+      throw new Error(`objのキーが文字列ではありません。\nレイヤー : run_api\n関数 : convertQuery`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await convertQuery_core( obj );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : run_api\n関数 : convertQuery`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : run_api\n関数 : convertQuery`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : run_api\n関数 : convertQuery`);
     }
   }
   //

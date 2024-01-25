@@ -250,8 +250,7 @@ export async function getPageInfo_core( pageId ){
     throw `ページIDは1以上の整数を指定してください。\npageId = ${pageId}`;
   }
   const pages = await runSqlReadOnly(
-    `SELECT 
-        pages.page_id AS pageId,
+    `SELECT
         pages.page_name AS pageName,
         pages.memo AS memo
       FROM pages
@@ -264,46 +263,9 @@ export async function getPageInfo_core( pageId ){
   if(pages.length===0){
     throw "ページが見つかりません。";
   }
-  const pageInfo = pages[0];
-  //
-  // 子ページの情報を取得する
-  const staticPages = await runSqlReadOnly(
-    `SELECT 
-        page_id AS pageId,
-        page_name AS pageName
-      FROM pages
-      WHERE static_parent_id = :parentPageId
-      ORDER BY sort_number ASC
-      LIMIT 1;`,
-    {
-      ":parentPageId": pageId,
-    },
-  );
-  const dynamicPages = await runSqlReadOnly(
-    `SELECT 
-        pages.page_id AS pageId,
-        pages.page_name AS pageName,
-        views.view_id AS viewId,
-        views.table_id AS tableId,
-        views.sql_query AS sqlQuery,
-        views.one_page_max_size AS onePageMaxSize,
-        views.view_type AS viewType
-      FROM pages
-      INNER JOIN views
-        ON pages.dynamic_parent_id = views.view_id
-      WHERE views.page_id = :parentPageId
-      ORDER BY views.sort_number ASC
-      LIMIT 1;`,
-    {
-      ":parentPageId": pageId,
-    },
-  );
   return {
-    "pageId": pageInfo["pageId"],
-    "pageName": pageInfo["pageName"],
-    "memo": pageInfo["memo"] ?? "",
-    "staticPages": staticPages,
-    "dynamicPages": dynamicPages,
+    "pageName": pages[0]["pageName"],
+    "memo": pages[0]["memo"] ?? "",
   };
 }
 
@@ -507,4 +469,51 @@ export async function listAllPages_core(  ){
     `SELECT page_id AS pageId FROM pages;`, {},
   );
   return matrix.map(({pageId})=>pageId);
+}
+
+
+
+
+// 子ページの一覧を取得
+export async function listStaticChildren_core( pageId ){
+  if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+  return await runSqlReadOnly(
+    `SELECT 
+        page_id AS pageId,
+        page_name AS pageName
+      FROM pages
+      WHERE static_parent_id = :parentPageId
+      ORDER BY sort_number ASC
+      LIMIT 1;`,
+    {
+      ":parentPageId": pageId,
+    },
+  );
+}
+
+
+
+
+// ビューの一覧を取得
+export async function listChildrenView_core( pageId ){
+  if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+  return await runSqlReadOnly(
+    `SELECT 
+        pages.page_id AS pageId,
+        pages.page_name AS pageName,
+        views.view_id AS viewId,
+        views.table_id AS tableId,
+        views.sql_query AS sqlQuery,
+        views.one_page_max_size AS onePageMaxSize,
+        views.view_type AS viewType
+      FROM pages
+      INNER JOIN views
+        ON pages.dynamic_parent_id = views.view_id
+      WHERE views.page_id = :parentPageId
+      ORDER BY views.sort_number ASC
+      LIMIT 1;`,
+    {
+      ":parentPageId": pageId,
+    },
+  );
 }
