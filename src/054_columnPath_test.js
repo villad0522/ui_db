@@ -51,6 +51,7 @@ import {
   updateTableName,
   updateColumnName,
   reserveWord,
+  checkReservedWord,
 } from "./073_reserved_word_validate.js";
 import {
   deleteRecord,

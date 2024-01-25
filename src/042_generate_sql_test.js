@@ -51,6 +51,7 @@ import {
   updateTableName,
   updateColumnName,
   reserveWord,
+  checkReservedWord,
 } from "./073_reserved_word_validate.js";
 import {
   deleteRecord,
@@ -144,16 +145,16 @@ async function _test(){
     tableId2,
     [
       {
-        joinedColumnId: "d1",
-        joinedColumnType: "RAW",
+        viewColumnId: "d1",
+        viewColumnType: "RAW",
         columnPath: `main.${columnId2} > ${columnId1}`,
-        joinedColumnName: "学年",
+        viewColumnName: "学年",
       },
       {
-        joinedColumnId: "d2",
-        joinedColumnType: "RAW",
+        viewColumnId: "d2",
+        viewColumnType: "RAW",
         columnPath: `main.${columnId3}`,
-        joinedColumnName: "氏名",
+        viewColumnName: "氏名",
       },
     ],
     [],
@@ -173,16 +174,16 @@ async function _test(){
     tableId1,
     [
       {
-        joinedColumnId: "d1",
-        joinedColumnType: "RAW",
+        viewColumnId: "d1",
+        viewColumnType: "RAW",
         columnPath: `main.${columnId1}`,
-        joinedColumnName: "学年",
+        viewColumnName: "学年",
       },
       {
-        joinedColumnId: "d2",
-        joinedColumnType: "COUNT",
+        viewColumnId: "d2",
+        viewColumnType: "COUNT",
         columnPath: `${columnId2} > main`,
-        joinedColumnName: "人数",
+        viewColumnName: "人数",
       },
     ],
     [],

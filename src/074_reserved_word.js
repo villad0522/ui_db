@@ -70,13 +70,7 @@ export function setBugMode( mode ){
 // カラムを作成
 export async function createColumn_core( tableId, columnName, dataType ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
-  if ( columnName.includes(' ') || columnName.includes('　') ) {
-    throw `空白文字は使用できません。`;
-  }
-  const name2 = String(columnName).toUpperCase();
-  if( reservedWords.includes(name2) ){
-    throw `カラム名「${columnName}」は、予約語のため使用できません。`;
-  }
+  await checkReservedWord_core( columnName );
   return await createColumn( tableId, columnName, dataType );
 }
 
@@ -86,13 +80,7 @@ export async function updateColumnName_core( columns ){
   if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
   for( const { id, name } of columns ){
     if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
-    if ( name.includes(' ') || name.includes('　') ) {
-      throw `空白文字は使用できません。`;
-    }
-    const name2 = String(name).toUpperCase();
-    if( reservedWords.includes(name2) ){
-      throw `カラム名「${name}」は、予約語のため使用できません。`;
-    }
+    await checkReservedWord_core( name );
   }
   return await updateColumnName( columns );
 }
@@ -101,13 +89,7 @@ export async function updateColumnName_core( columns ){
 // テーブルを作成
 export async function createTable_core( tableName ){
   if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-  if ( tableName.includes(' ') || tableName.includes('　') ) {
-    throw `空白文字は使用できません。`;
-  }
-  const name2 = String(tableName).toUpperCase();
-  if( reservedWords.includes(name2) ){
-    throw `テーブル名「${tableName}」は、予約語のため使用できません。`;
-  }
+  await checkReservedWord_core( tableName );
   return await createTable( tableName );
 }
 
@@ -117,13 +99,7 @@ export async function updateTableName_core( tables ){
   if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
   for( const { id, name } of tables ){
     if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
-    if ( name.includes(' ') || name.includes('　') ) {
-      throw `空白文字は使用できません。`;
-    }
-    const name2 = String(name).toUpperCase();
-    if( reservedWords.includes(name2) ){
-      throw `テーブル名「${name}」は、予約語のため使用できません。`;
-    }
+    await checkReservedWord_core( name );
   }
   return await updateTableName( tables );
 }
@@ -137,6 +113,24 @@ export async function reserveWord_core( word ){
   reservedWords.push(word2);
 }
 
+
+// 予約語かどうか判定
+export async function checkReservedWord_core( word ){
+  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+  if ( word.length <= 2 ) {
+    throw new Error(`２文字以上で登録してください。`);
+  }
+  if ( word.includes(' ') || word.includes('　') ) {
+    throw new Error(`空白文字は使用できません。`);
+  }
+  const name2 = String(word).toUpperCase();
+  for( const reservedWord of reservedWords ){
+    if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+    if( reservedWord.includes(name2) ){
+      throw new Error(`テーブル名「${word}」は、予約語「${reserveWord}」と被るため使用できません。`);
+    }
+  }
+}
 
 
 
@@ -292,3 +286,4 @@ const reservedWords = [
   "WITH",
   "WITHOUT",
 ];
+

@@ -51,6 +51,7 @@ import {
   updateTableName,
   updateColumnName,
   reserveWord,
+  checkReservedWord,
 } from "./073_reserved_word_validate.js";
 import {
   deleteRecord,
@@ -106,34 +107,34 @@ export function setBugMode( mode ){
 
 
 // SQLクエリを生成
-export async function generateSQL_core( tableId, joinedColumns, conditionInfoList, sortOrder ){
+export async function generateSQL_core( tableId, viewColumns, conditionInfoList, sortOrder ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
-  // joinedColumns の例
+  // viewColumns の例
   //   [
   //     {
-  //       joinedColumnId: "d28",
-  //       joinedColumnType: "RAW",
+  //       viewColumnId: "d28",
+  //       viewColumnType: "RAW",
   //       columnPath: "main.c2 > c53 > c1",
-  //       joinedColumnName: "○○",
+  //       viewColumnName: "○○",
   //     },
   //     {
-  //       joinedColumnId: "d66",
-  //       joinedColumnType: "COUNT",           // 集合関数。RAW, SUM、MAX、MIN、AVG、COUNT のいずれか。関数を使用しない場合はRAWを代入する。
+  //       viewColumnId: "d66",
+  //       viewColumnType: "COUNT",           // 集合関数。RAW, SUM、MAX、MIN、AVG、COUNT のいずれか。関数を使用しない場合はRAWを代入する。
   //       columnPath: "c89 > c67 > main",
-  //       joinedColumnName: "○○の件数",
+  //       viewColumnName: "○○の件数",
   //     },
   //     {
-  //       joinedColumnId: "d43",
-  //       joinedColumnType: "MAX",
+  //       viewColumnId: "d43",
+  //       viewColumnType: "MAX",
   //       columnPath: "c45 > c56 > main",
-  //       joinedColumnName: "○○の最大値",
+  //       viewColumnName: "○○の最大値",
   //     }
   //   ]
   //
   // conditionInfoList の例
   //   [
   //     {
-  //       joinedColumnId: "d66",
+  //       viewColumnId: "d66",
   //       conditionalExpression: "=",       // !=, =, >, <, <=, >= のいずれか
   //     }
   //   ]
@@ -141,26 +142,26 @@ export async function generateSQL_core( tableId, joinedColumns, conditionInfoLis
   // sortOrder の例
   //   [
   //     {
-  //       joinedColumnId: "d78",
+  //       viewColumnId: "d78",
   //       isAscending: true,
   //     }
   //   ]
-  for( const { columnPath } of joinedColumns ){
+  for( const { columnPath } of viewColumns ){
     if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     // パスの文法をチェックする
     await checkPath( columnPath );
   }
   //
   // テーブルを結合するために、外部キーの一覧を作成する（重複しないように）
-  const joinIdMap = await getJoinIdMap( joinedColumns );
+  const joinIdMap = await getJoinIdMap( viewColumns );
   //
   // 結合しているテーブルが重複しているか（ true:重複あり、false:重複無し ）
   const isDuplication = await checkTableDuplication( tableId, joinIdMap );
   //
-  const selectData = await getSelectData( joinedColumns, joinIdMap );
+  const selectData = await getSelectData( viewColumns, joinIdMap );
   const joinData = await getJoinData( joinIdMap );
-  const whereData = await getWhereData( joinedColumns, conditionInfoList, joinIdMap );
-  const orderData = await getOrderData( joinedColumns, sortOrder, joinIdMap );
+  const whereData = await getWhereData( viewColumns, conditionInfoList, joinIdMap );
+  const orderData = await getOrderData( viewColumns, sortOrder, joinIdMap );
   //
   if( isDuplication === true ){
     if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）

@@ -45,7 +45,7 @@ import {
   createColumn,
   generateSQL,
   deleteView,
-  addJoinedColumn,
+  addViewColumn,
   getSimpleSQL,
 } from "./037_view_validate.js";
 import {
@@ -63,6 +63,7 @@ import {
   updateTableName,
   updateColumnName,
   reserveWord,
+  checkReservedWord,
 } from "./073_reserved_word_validate.js";
 import {
   deleteRecord,

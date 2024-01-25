@@ -51,6 +51,7 @@ import {
   updateTableName,
   updateColumnName,
   reserveWord,
+  checkReservedWord,
 } from "./073_reserved_word_validate.js";
 import {
   deleteRecord,
@@ -93,7 +94,7 @@ export function setBugMode( mode ){
 
 
 // joinIdを決定
-export async function getJoinIdMap_core( joinedColumns ){
+export async function getJoinIdMap_core( viewColumns ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   // 【変換前】
   // main.c12
@@ -103,10 +104,10 @@ export async function getJoinIdMap_core( joinedColumns ){
   // c89 > main
   //
   const foreignKeys = new Set();
-  for( const { joinedColumnId, joinedColumnType, columnPath, joinedColumnName } of joinedColumns ){
+  for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
     if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     const pathLength = await getPathLength( columnPath );
-    if( joinedColumnType==="RAW" ){
+    if( viewColumnType==="RAW" ){
       if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
       if(pathLength>=2){
         if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -118,11 +119,11 @@ export async function getJoinIdMap_core( joinedColumns ){
       }
     }
     else if(
-      joinedColumnType==="SUM"
-      || joinedColumnType==="MAX"
-      || joinedColumnType==="MIN"
-      || joinedColumnType==="AVG"
-      || joinedColumnType==="COUNT"
+      viewColumnType==="SUM"
+      || viewColumnType==="MAX"
+      || viewColumnType==="MIN"
+      || viewColumnType==="AVG"
+      || viewColumnType==="COUNT"
     ){
       for( let i = 2; i <= pathLength; i++ ){
         if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -131,7 +132,7 @@ export async function getJoinIdMap_core( joinedColumns ){
       }
     }
     else{
-      throw `サポートされていない集合関数です。\njoinedColumnType = ${joinedColumnType}`;
+      throw `サポートされていない集合関数です。\nviewColumnType = ${viewColumnType}`;
     }
   }
   const array = Array.from(foreignKeys);
@@ -191,14 +192,14 @@ export async function checkTableDuplication_core( tableId, joinIdMap ){
 
 
 // SELECT句のデータ構築
-export async function getSelectData_core( joinedColumns, joinIdMap ){
+export async function getSelectData_core( viewColumns, joinIdMap ){
   if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
   const selectData = [];
-  for( const { joinedColumnId, joinedColumnType, columnPath, joinedColumnName } of joinedColumns ){
+  for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
     if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
     const pathLength = await getPathLength( columnPath );
     let joinId;
-    if( joinedColumnType==="RAW" ){
+    if( viewColumnType==="RAW" ){
       if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
       if( pathLength >= 2 ){
         if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -213,11 +214,11 @@ export async function getSelectData_core( joinedColumns, joinIdMap ){
       }
     }
     else if(
-      joinedColumnType==="SUM"
-      || joinedColumnType==="MAX"
-      || joinedColumnType==="MIN"
-      || joinedColumnType==="AVG"
-      || joinedColumnType==="COUNT"
+      viewColumnType==="SUM"
+      || viewColumnType==="MAX"
+      || viewColumnType==="MIN"
+      || viewColumnType==="AVG"
+      || viewColumnType==="COUNT"
     ){
       const path2 = await slicePath( columnPath, pathLength );
       joinId = joinIdMap[path2];
@@ -225,25 +226,25 @@ export async function getSelectData_core( joinedColumns, joinIdMap ){
     if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
     }
     else{
-      throw `サポートされていない集合関数です。\njoinedColumnType = ${joinedColumnType}`;
+      throw `サポートされていない集合関数です。\nviewColumnType = ${viewColumnType}`;
     }
     const columnId = await pathToColumnId( columnPath );
     selectData.push({
-      joinedColumnId: joinedColumnId,
-      joinedColumnType: joinedColumnType,
+      viewColumnId: viewColumnId,
+      viewColumnType: viewColumnType,
       joinId: joinId,
       columnName: await getColumnName( columnId ),
-      joinedColumnName: joinedColumnName
+      viewColumnName: viewColumnName
     });
   }
   return selectData;
   // 戻り値の例
   //  [
   //    {
-  //      joinedColumnType: "COUNT",    // RAW, SUM、MAX、MIN、AVG、COUNT のいずれか
+  //      viewColumnType: "COUNT",    // RAW, SUM、MAX、MIN、AVG、COUNT のいずれか
   //      joinId: "j2",
   //      columnName: "実際の列の名前",
-  //      joinedColumnName: "表示する際の列の名前"
+  //      viewColumnName: "表示する際の列の名前"
   //    },
   //  ]
 }
@@ -333,22 +334,22 @@ export async function getJoinData_core( joinIdMap ){
 
 
 // WHERE句のデータ構築
-export async function getWhereData_core( joinedColumns, conditionInfoList, joinIdMap ){
+export async function getWhereData_core( viewColumns, conditionInfoList, joinIdMap ){
   if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
   const pathMap = {
     // 代入例
     //  "d34": "c45 > c56 > main",
     //  "d99": "c45 > c56 > main",
   };
-  for( const { joinedColumnId, joinedColumnType, columnPath, joinedColumnName } of joinedColumns ){
+  for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
     if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
-    pathMap[joinedColumnId] = columnPath;
+    pathMap[viewColumnId] = columnPath;
   }
   //-------------------------------------------------------
   const whereData = [];
-  for( const { joinedColumnId, conditionalExpression } of conditionInfoList ){
+  for( const { viewColumnId, conditionalExpression } of conditionInfoList ){
     if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
-    const columnPath = pathMap[joinedColumnId];
+    const columnPath = pathMap[viewColumnId];
     const pathLength = await getPathLength( columnPath );
     let joinId;
     if( pathLength >= 2 ){
@@ -362,7 +363,7 @@ export async function getWhereData_core( joinedColumns, conditionInfoList, joinI
       joinId = "main";
     }
     whereData.push({
-      joinedColumnId: joinedColumnId,
+      viewColumnId: viewColumnId,
       joinId: joinId,
       columnName: await pathToColumnId( columnPath ),
       conditionalExpression: conditionalExpression,
@@ -372,7 +373,7 @@ export async function getWhereData_core( joinedColumns, conditionInfoList, joinI
   // 戻り値の例
   //  [
   //    {
-  //      joinedColumnId: "d3",
+  //      viewColumnId: "d3",
   //      joinId: "j2",
   //      columnName: "カラム名",
   //      conditionalExpression: "=",
@@ -384,22 +385,22 @@ export async function getWhereData_core( joinedColumns, conditionInfoList, joinI
 
 
 // ORDER句のデータ構築
-export async function getOrderData_core( joinedColumns, sortOrder, joinIdMap ){
+export async function getOrderData_core( viewColumns, sortOrder, joinIdMap ){
   if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
   const pathMap = {
     // 代入例
     //  "d34": "c45 > c56 > main",
     //  "d99": "c45 > c56 > main",
   };
-  for( const { joinedColumnId, joinedColumnType, columnPath, joinedColumnName } of joinedColumns ){
+  for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
     if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
-    pathMap[joinedColumnId] = columnPath;
+    pathMap[viewColumnId] = columnPath;
   }
   //-------------------------------------------------------
   const orderData = [];
-  for( const { joinedColumnId, isAscending } of sortOrder ){
+  for( const { viewColumnId, isAscending } of sortOrder ){
     if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
-    const columnPath = pathMap[joinedColumnId];
+    const columnPath = pathMap[viewColumnId];
     const pathLength = await getPathLength( columnPath );
     let joinId;
     if( pathLength >= 2 ){

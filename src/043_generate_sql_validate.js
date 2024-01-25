@@ -6,7 +6,7 @@ import {
 //#######################################################################################
 // 関数「generateSQL_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function generateSQL( tableId, joinedColumns, conditionInfoList, sortOrder ){
+export async function generateSQL( tableId, viewColumns, conditionInfoList, sortOrder ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
@@ -17,53 +17,53 @@ export async function generateSQL( tableId, joinedColumns, conditionInfoList, so
       throw new Error(`tableIdが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
     }
   }
-  if( !Array.isArray(joinedColumns) ){
-    if( !joinedColumns ){
-      throw new Error(`joinedColumnsがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
+  if( !Array.isArray(viewColumns) ){
+    if( !viewColumns ){
+      throw new Error(`viewColumnsがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
     }
     else{
-      throw new Error(`joinedColumnsが配列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+      throw new Error(`viewColumnsが配列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
     }
   }
-  for( let i=0; i<joinedColumns.length; i++ ){
-    if( typeof joinedColumns[i] !== "object" ){
-      if( !joinedColumns[i] ){
-        throw new Error(`joinedColumns[${i}]がNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
+  for( let i=0; i<viewColumns.length; i++ ){
+    if( typeof viewColumns[i] !== "object" ){
+      if( !viewColumns[i] ){
+        throw new Error(`viewColumns[${i}]がNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
       else{
-        throw new Error(`joinedColumns[${i}]がオブジェクトではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+        throw new Error(`viewColumns[${i}]がオブジェクトではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnId !== "string" ){
-      if( !joinedColumns[i].joinedColumnId ){
-        throw new Error(`joinedColumns[${i}].joinedColumnIdがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
+    if( typeof viewColumns[i].viewColumnId !== "string" ){
+      if( !viewColumns[i].viewColumnId ){
+        throw new Error(`viewColumns[${i}].viewColumnIdがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+        throw new Error(`viewColumns[${i}].viewColumnIdが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnType !== "string" ){
-      if( !joinedColumns[i].joinedColumnType ){
-        throw new Error(`joinedColumns[${i}].joinedColumnTypeがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
+    if( typeof viewColumns[i].viewColumnType !== "string" ){
+      if( !viewColumns[i].viewColumnType ){
+        throw new Error(`viewColumns[${i}].viewColumnTypeがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnTypeが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+        throw new Error(`viewColumns[${i}].viewColumnTypeが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
     }
-    if( typeof joinedColumns[i].columnPath !== "string" ){
-      if( !joinedColumns[i].columnPath ){
-        throw new Error(`joinedColumns[${i}].columnPathがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
+    if( typeof viewColumns[i].columnPath !== "string" ){
+      if( !viewColumns[i].columnPath ){
+        throw new Error(`viewColumns[${i}].columnPathがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].columnPathが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+        throw new Error(`viewColumns[${i}].columnPathが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnName !== "string" ){
-      if( !joinedColumns[i].joinedColumnName ){
-        throw new Error(`joinedColumns[${i}].joinedColumnNameがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
+    if( typeof viewColumns[i].viewColumnName !== "string" ){
+      if( !viewColumns[i].viewColumnName ){
+        throw new Error(`viewColumns[${i}].viewColumnNameがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnNameが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+        throw new Error(`viewColumns[${i}].viewColumnNameが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
     }
   }
@@ -84,12 +84,12 @@ export async function generateSQL( tableId, joinedColumns, conditionInfoList, so
         throw new Error(`conditionInfoList[${i}]がオブジェクトではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
     }
-    if( typeof conditionInfoList[i].joinedColumnId !== "string" ){
-      if( !conditionInfoList[i].joinedColumnId ){
-        throw new Error(`conditionInfoList[${i}].joinedColumnIdがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
+    if( typeof conditionInfoList[i].viewColumnId !== "string" ){
+      if( !conditionInfoList[i].viewColumnId ){
+        throw new Error(`conditionInfoList[${i}].viewColumnIdがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
       else{
-        throw new Error(`conditionInfoList[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+        throw new Error(`conditionInfoList[${i}].viewColumnIdが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
     }
     if( typeof conditionInfoList[i].conditionalExpression !== "string" ){
@@ -118,12 +118,12 @@ export async function generateSQL( tableId, joinedColumns, conditionInfoList, so
         throw new Error(`sortOrder[${i}]がオブジェクトではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
     }
-    if( typeof sortOrder[i].joinedColumnId !== "string" ){
-      if( !sortOrder[i].joinedColumnId ){
-        throw new Error(`sortOrder[${i}].joinedColumnIdがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
+    if( typeof sortOrder[i].viewColumnId !== "string" ){
+      if( !sortOrder[i].viewColumnId ){
+        throw new Error(`sortOrder[${i}].viewColumnIdがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
       else{
-        throw new Error(`sortOrder[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+        throw new Error(`sortOrder[${i}].viewColumnIdが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
     }
     if( typeof sortOrder[i].isAscending !== "boolean" ){
@@ -143,7 +143,7 @@ export async function generateSQL( tableId, joinedColumns, conditionInfoList, so
   // メイン処理を実行
   let result;
   try{
-    result = await generateSQL_core( tableId, joinedColumns, conditionInfoList, sortOrder );
+    result = await generateSQL_core( tableId, viewColumns, conditionInfoList, sortOrder );
   }
   catch(error){
     if( typeof error === "string" ){

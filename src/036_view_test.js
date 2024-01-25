@@ -62,6 +62,7 @@ import {
   updateTableName,
   updateColumnName,
   reserveWord,
+  checkReservedWord,
 } from "./073_reserved_word_validate.js";
 import {
   deleteRecord,
@@ -110,7 +111,7 @@ import {
   deleteView,  // ビューを削除
   generateSQL,  // SQLクエリを生成
   createColumn,  // カラムを作成
-  addJoinedColumn,  // 結合済み列を作成
+  addViewColumn,  // 結合済み列を作成
   getSimpleSQL,  // 最低限のSQLクエリを生成する
 } from "./037_view_validate.js";
 import { setBugMode } from "./038_view.js";

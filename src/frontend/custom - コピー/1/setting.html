@@ -1,161 +1,6 @@
-// HTML
-//
-import {
-  startUp,
-  close,
-  createDirectories,
-} from "./034_frontend_files_validate.js";
-import {
-  getLocalIp,
-} from "./094_ip_address_validate.js";
-import {
-  getPath,
-} from "./091_directory_validate.js";
-import {
-  getDebugMode,
-  startTransaction,
-  endTransaction,
-  createRecordsFromCsv,
-  getCsvProgress,
-} from "./088_connect_database_validate.js";
-import {
-  runSqlReadOnly,
-  runSqlWriteOnly,
-  getTableId,
-  checkColumnEnabled,
-  getColumnName,
-} from "./076_column_name_validate.js";
-import {
-  getPrimaryKey,
-} from "./085_primary_key_validate.js";
-import {
-  clearCache,
-  deleteTable,
-  getDataType,
-  listColumnsForGUI,
-  listColumnsAll,
-  getParentTableId,
-} from "./067_relation_validate.js";
-import {
-  createColumn,
-  generateSQL,
-  createView,
-  deleteView,
-  addViewColumn,
-  getSimpleSQL,
-} from "./037_view_validate.js";
-import {
-  listDataTypes,
-} from "./082_data_type_validate.js";
-import {
-  createRecord,
-  updateRecord,
-  checkField,
-  checkRecord,
-  autoCorrect,
-} from "./061_record_title_1_validate.js";
-import {
-  createTable,
-  updateTableName,
-  updateColumnName,
-  reserveWord,
-  checkReservedWord,
-} from "./073_reserved_word_validate.js";
-import {
-  deleteRecord,
-  disableTable,
-  enableTable,
-  disableColumn,
-  enableColumn,
-  delete_table,
-} from "./064_search_text_validate.js";
-import {
-  reload,
-  checkTableEnabled,
-  getTableName,
-} from "./079_table_name_validate.js";
-import {
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./070_record_title_2_validate.js";
-import {
-  getPathLength,
-  slicePath,
-  checkPath,
-  pathToColumnId,
-} from "./055_columnPath_validate.js";
-import {
-  getJoinIdMap,
-  checkTableDuplication,
-  getSelectData,
-  getJoinData,
-  getWhereData,
-  getOrderData,
-} from "./052_convert_sql_data_validate.js";
-import {
-  generateSQLwithoutDuplication,
-} from "./049_generate_sql2_validate.js";
-import {
-  generateSQLwithDuplication,
-} from "./046_generate_sql1_validate.js";
-import {
-  createPage,
-  updatePageName,
-  getPageInfo,
-  listJoinsFromTableId,
-  getTableFromJoin,
-  deletePage,
-  getBreadcrumbs,
-  cutPage,
-  copyPage,
-  pastePage,
-  getCuttingPage,
-  getCopyingPage,
-  listAllPages,
-} from "./040_pages_validate.js";
-
-
-//【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
-let bugMode = 0;
-//           0 : バグを混入させない（通常動作）
-//     1,2,3.. : 意図的にバグを混入させる
-
-
-export function setBugMode( mode ){
-    bugMode = mode;
-}
-
-
-
-
-import fs from 'fs';
-import path from 'path';
-
-
-// ページを再生成する
-export async function regeneratePage_core( pageId ){
-  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
-    const customDirPath = await getPath("FRONTEND_CUSTOM");
-    const folderPath = path.join( customDirPath, String(pageId) );
-    if (  !fs.existsSync( folderPath )  ) {
-        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-        await fs.promises.mkdir( folderPath );
-    }
-    //#######################################################################################
-    let mainHtmlText = ``;
-    // ファイルを生成
-    const htmlPath = path.join( folderPath, `index.html` );
-    await fs.promises.writeFile( htmlPath, mainHtmlText );
-    //
-    //
-    //
-    //
-    //
-    //#######################################################################################
-    let settingHtmlText = `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -168,21 +13,150 @@ export async function regeneratePage_core( pageId ){
         <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->
         <!--  -->
         <link rel="stylesheet" href="./style.css" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <script src="./script.js" type="module"></script>
     </head>
-    <body style="background: #eee;">
-        <header style="position: sticky; top: 0; padding: 5px; width: max-content; box-sizing: border-box; background: #eee; z-index: 999;">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">${ await _getBreadcrumbHTML( pageId ) }
-                </ol>
-            </nav>
-            ${ (pageId===1) ? "" : `
-            <button onclick="backButton();" type="button" class="btn btn-outline-primary">
-                戻る
-            </button>`
-            }
-        </header>
+
+    <body>
+        <nav class="navbar navbar-dark bg-primary">
+            <div class="container-fluid">
+                <button onclick="backButton();" type="button" class="btn btn-light me-2">
+                    戻る
+                </button>
+                <form class="d-flex" role="search" style="width: 300px;">
+                    <div class="input-group">
+                        <span class="input-group-text" style="background: none; color: #fff;">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input class="form-control search_box" type="search" placeholder="検索" aria-label="Search">
+                    </div>
+                </form>
+                <div class="form-check form-switch">
+                    <input onchange="handleEditSwitch(event)" class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
+                    <label class="form-check-label" for="edit_mode_switch" style="color:#fff">
+                        編集
+                    </label>
+                </div>
+                <a href="/default" class="btn btn-dark me-2" target="_blank">
+                    本体データ
+                    &nbsp;
+                    <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+            </div>
+        </nav>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <button onclick="jumpWithQuery('./1.html')" class="btn btn-link" style="color:#fff">
+                        トップ
+                    </button>
+                </li>
+            </ol>
+        </nav>
         <main class="container">
+            <!-- 子ページへのリンクここから -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+                <div style="text-align: right;">
+                    <div class="tile"></div>
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        切り取り
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        コピー
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn-outline-danger btn-sm">
+                        削除
+                    </button>
+                    <br>
+                    <br>
+                </div>
+                <div style="text-align: right;">
+                    <div class="tile"></div>
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        切り取り
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        コピー
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn-outline-danger btn-sm">
+                        削除
+                    </button>
+                    <br>
+                    <br>
+                </div>
+                <div style="text-align: right;">
+                    <div class="tile"></div>
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        切り取り
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        コピー
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn-outline-danger btn-sm">
+                        削除
+                    </button>
+                    <br>
+                    <br>
+                </div>
+                <div style="text-align: right;">
+                    <div class="tile"></div>
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        切り取り
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        コピー
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn-outline-danger btn-sm">
+                        削除
+                    </button>
+                    <br>
+                    <br>
+                </div>
+                <div style="text-align: right;">
+                    <div class="tile"></div>
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        切り取り
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        コピー
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn-outline-danger btn-sm">
+                        削除
+                    </button>
+                    <br>
+                    <br>
+                </div>
+                <div class="tile_add">
+                    <i class="bi bi-plus" style="font-size: 70px; position: relative; top: -5px;"></i>
+                    <br>
+                    子ページを追加
+                    <br>
+                </div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+                <div class="tile_empty"></div>
+            </div>
+            <!-- 子ページへのリンクここまで -->
+            <!--  -->
+            <!--  -->
+            <!-- メモ -->
+            <!--  -->
+            <!--  -->
             <form>
                 <!-- 基本データここから -->
                 <div class="row">
@@ -433,219 +407,10 @@ export async function regeneratePage_core( pageId ){
         </main>
         <footer>
             <div class="container">
-                <a href="/default" class="btn btn-dark" target="_blank">
-                    管理画面
-                </a>
-                <button onclick="myFetch('/default/regenerate_page/json?page_id=${pageId}');" type="button" class="btn btn-outline-dark">
-                    ページを再生成
-                </button>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
-                    <label class="form-check-label" for="edit_mode_switch">
-                        ページを編集
-                    </label>
-                </div>
                 <br>
                 <br>
             </div>
         </footer>
     </body>
-</html>`;
-    // ファイルを生成
-    const settingPath = path.join( folderPath, `setting.html` );
-    await fs.promises.writeFile( settingPath, settingHtmlText );
-    //
-    //
-    //
-    //
-    //
-    //#######################################################################################
-    let cssText = `
-hr {
-    margin: 50px 0;
-}
-.card {
-    background: #fafafa;
-    margin: 20px 0;
-}
-.form-control,
-.form-select {
-    margin-bottom: 10px;
-}
-.form-control:disabled,
-.form-select:disabled {
-    border: none;
-    background: none;
-    margin-bottom: 30px;
-    padding: 0 0 0 15px;
-}
-`;
-    const cssPath = path.join( folderPath, `style.css` );
-    await fs.promises.writeFile( cssPath, cssText );
-    //
-    //
-    //
-    //
-    //
-    //#######################################################################################
-    let jsText = `
-import myFetch from "/default/my_fetch.js";
-// 一か所でも編集されたかどうかを記録する変数
-let isEdit = false;
-//
-//###############################################################
-// ページを読み込んだら、はじめに実行する
-window.addEventListener('DOMContentLoaded', async () => {
-    await myFetch("./form" + location.search, { method: "GET" });
-    //
-    // 変更された項目を水色にする
-    const formElements = document.querySelectorAll("input,select,textarea");
-    for (const formElement of formElements) {
-        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
-        formElement.addEventListener("change", () => {
-            formElement.style.background = "#ddffff";
-            isEdit = true;
-        });
-    }
-});
-//###############################################################
-// 「戻る」ボタンがクリックされたときに実行する関数
-window.backButton = function () {
-    if (isEdit) {
-        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-        if (confirm("編集内容は破棄されます。よろしいですか？") == false) {
-            if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-            return;
-        }
-    }
-    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
-    window.location.href = "../index.html" + window.location.search;
-}
-//
-//###############################################################
-// 「キャンセル」ボタンがクリックされたときに実行する関数
-window.cancelButton = function () {
-    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
-    window.location.href = "../index.html" + window.location.search;
-}
-//
-//###############################################################
-// 「表の名前を変更」ボタンがクリックされたときに実行する関数
-window.renameButton = function () {
-    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
-    window.location.href = "./rename" + window.location.search;
-}
-//
-//###############################################################
-// テーブルがクリックされたときに実行する関数
-window.tableButton = function (i) {
-    // テーブル名
-    let tableId = document.getElementsByName(\`tables\${i}_id\`)[0].value;
-    //
-    // 別のページに移動する
-    tableId = encodeURIComponent(tableId);
-    window.location.href = \`../records?table=\${tableId}\`;
-}
-//
-//###############################################################
-// ページネーションボタンの「First」がクリックされたときに実行する関数
-window.paginationButtonFirst = function (arrayName) {
-    // クエリパラメータ―を作成
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", 1);
-    // ページを再読み込み
-    window.location.href = "./?" + searchParams.toString();
-}
-//
-//###############################################################
-// ページネーションボタンの「Prev」がクリックされたときに実行する関数
-window.paginationButtonPrev = function () {
-    // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("tables_pagePrev")[0].value;
-    // クエリパラメータ―を作成
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", pageNumber);
-    // ページを再読み込み
-    window.location.href = "./?" + searchParams.toString();
-}
-//
-//###############################################################
-// ページネーションボタンの「Next」がクリックされたときに実行する関数
-window.paginationButtonNext = function () {
-    // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("tables_pageNext")[0].value;
-    // クエリパラメータ―を作成
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", pageNumber);
-    // ページを再読み込み
-    window.location.href = "./?" + searchParams.toString();
-}
-//
-//###############################################################
-// ページネーションボタンの「Last」がクリックされたときに実行する関数
-window.paginationButtonLast = function () {
-    // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("tables_pageLast")[0].value;
-    // クエリパラメータ―を作成
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", pageNumber);
-    // ページを再読み込み
-    window.location.href = "./?" + searchParams.toString();
-}
-//
-//###############################################################
-`;
-    const jsPath = path.join( folderPath, `script.js` );
-    await fs.promises.writeFile( jsPath, jsText );
-    //
-    //
-    //
-    //
-    //
-    //#######################################################################################
-}
 
-
-// パンくずリストを生成する関数
-async function _getBreadcrumbHTML( pageId ){
-    let htmlText = "";
-    const breadcrumbs = await getBreadcrumbs( pageId );
-    for( const { pageId, pageName } of breadcrumbs ){
-      htmlText += `
-                    <li class="breadcrumb-item"><a href="./${pageId}.html">${pageName}</a></li>`;
-    }
-    return htmlText;
-}
-
-// ページを作成
-export async function createPage_core( parentPageId ){
-  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
-    const result = await createPage( parentPageId );
-    await regeneratePage_core( result.pageId );
-    return result;
-}
-
-
-
-// ビューを作成
-export async function createView_core( pageId, tableId, sqlQuery ){
-  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-    const result = await createPage( parentPageId, pageName );
-    await regeneratePage_core( result.pageId );
-    return result;
-}
-
-
-// プログラム起動
-export async function startUp_core( localUrl, isDebug ){
-  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-    await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
-    //
-    const customDirPath = await getPath("FRONTEND_CUSTOM");
-    const customFilePath = path.join(customDirPath, "1.html");
-    if ( !fs.existsSync(customFilePath)) {
-        if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
-        // ./src/frontend/custom/1.html が存在しない場合
-        await regeneratePage_core( 1 );
-    }
-}
+</html>

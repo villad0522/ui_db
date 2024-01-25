@@ -54,6 +54,7 @@ import {
   createTable,  // テーブルを作成
   updateTableName,  // テーブル名を変更
   reserveWord,  // 予約語を追加
+  checkReservedWord,  // 予約語かどうか判定
 } from "./073_reserved_word_validate.js";
 import { setBugMode } from "./074_reserved_word.js";
 
@@ -62,7 +63,7 @@ export async function test072() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 7; i++ ) {
+    for ( i = 1; i <= 9; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

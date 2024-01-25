@@ -11,56 +11,56 @@ import {
 //#######################################################################################
 // 関数「getJoinIdMap_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function getJoinIdMap( joinedColumns ){
+export async function getJoinIdMap( viewColumns ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( !Array.isArray(joinedColumns) ){
-    if( !joinedColumns ){
-      throw new Error(`joinedColumnsがNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
+  if( !Array.isArray(viewColumns) ){
+    if( !viewColumns ){
+      throw new Error(`viewColumnsがNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
     }
     else{
-      throw new Error(`joinedColumnsが配列ではありません。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
+      throw new Error(`viewColumnsが配列ではありません。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
     }
   }
-  for( let i=0; i<joinedColumns.length; i++ ){
-    if( typeof joinedColumns[i] !== "object" ){
-      if( !joinedColumns[i] ){
-        throw new Error(`joinedColumns[${i}]がNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
+  for( let i=0; i<viewColumns.length; i++ ){
+    if( typeof viewColumns[i] !== "object" ){
+      if( !viewColumns[i] ){
+        throw new Error(`viewColumns[${i}]がNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
       }
       else{
-        throw new Error(`joinedColumns[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
+        throw new Error(`viewColumns[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnId !== "string" ){
-      if( !joinedColumns[i].joinedColumnId ){
-        throw new Error(`joinedColumns[${i}].joinedColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
+    if( typeof viewColumns[i].viewColumnId !== "string" ){
+      if( !viewColumns[i].viewColumnId ){
+        throw new Error(`viewColumns[${i}].viewColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
+        throw new Error(`viewColumns[${i}].viewColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnType !== "string" ){
-      if( !joinedColumns[i].joinedColumnType ){
-        throw new Error(`joinedColumns[${i}].joinedColumnTypeがNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
+    if( typeof viewColumns[i].viewColumnType !== "string" ){
+      if( !viewColumns[i].viewColumnType ){
+        throw new Error(`viewColumns[${i}].viewColumnTypeがNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnTypeが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
+        throw new Error(`viewColumns[${i}].viewColumnTypeが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
       }
     }
-    if( typeof joinedColumns[i].columnPath !== "string" ){
-      if( !joinedColumns[i].columnPath ){
-        throw new Error(`joinedColumns[${i}].columnPathがNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
+    if( typeof viewColumns[i].columnPath !== "string" ){
+      if( !viewColumns[i].columnPath ){
+        throw new Error(`viewColumns[${i}].columnPathがNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].columnPathが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
+        throw new Error(`viewColumns[${i}].columnPathが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnName !== "string" ){
-      if( !joinedColumns[i].joinedColumnName ){
-        throw new Error(`joinedColumns[${i}].joinedColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
+    if( typeof viewColumns[i].viewColumnName !== "string" ){
+      if( !viewColumns[i].viewColumnName ){
+        throw new Error(`viewColumns[${i}].viewColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
+        throw new Error(`viewColumns[${i}].viewColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getJoinIdMap`);
       }
     }
   }
@@ -69,7 +69,7 @@ export async function getJoinIdMap( joinedColumns ){
   // メイン処理を実行
   let result;
   try{
-    result = await getJoinIdMap_core( joinedColumns );
+    result = await getJoinIdMap_core( viewColumns );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -162,56 +162,56 @@ export async function checkTableDuplication( tableId, joinIdMap ){
 //#######################################################################################
 // 関数「getSelectData_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function getSelectData( joinedColumns, joinIdMap ){
+export async function getSelectData( viewColumns, joinIdMap ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( !Array.isArray(joinedColumns) ){
-    if( !joinedColumns ){
-      throw new Error(`joinedColumnsがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+  if( !Array.isArray(viewColumns) ){
+    if( !viewColumns ){
+      throw new Error(`viewColumnsがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
     }
     else{
-      throw new Error(`joinedColumnsが配列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+      throw new Error(`viewColumnsが配列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
     }
   }
-  for( let i=0; i<joinedColumns.length; i++ ){
-    if( typeof joinedColumns[i] !== "object" ){
-      if( !joinedColumns[i] ){
-        throw new Error(`joinedColumns[${i}]がNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+  for( let i=0; i<viewColumns.length; i++ ){
+    if( typeof viewColumns[i] !== "object" ){
+      if( !viewColumns[i] ){
+        throw new Error(`viewColumns[${i}]がNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+        throw new Error(`viewColumns[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnId !== "string" ){
-      if( !joinedColumns[i].joinedColumnId ){
-        throw new Error(`joinedColumns[${i}].joinedColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+    if( typeof viewColumns[i].viewColumnId !== "string" ){
+      if( !viewColumns[i].viewColumnId ){
+        throw new Error(`viewColumns[${i}].viewColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+        throw new Error(`viewColumns[${i}].viewColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnType !== "string" ){
-      if( !joinedColumns[i].joinedColumnType ){
-        throw new Error(`joinedColumns[${i}].joinedColumnTypeがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+    if( typeof viewColumns[i].viewColumnType !== "string" ){
+      if( !viewColumns[i].viewColumnType ){
+        throw new Error(`viewColumns[${i}].viewColumnTypeがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnTypeが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+        throw new Error(`viewColumns[${i}].viewColumnTypeが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
     }
-    if( typeof joinedColumns[i].columnPath !== "string" ){
-      if( !joinedColumns[i].columnPath ){
-        throw new Error(`joinedColumns[${i}].columnPathがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+    if( typeof viewColumns[i].columnPath !== "string" ){
+      if( !viewColumns[i].columnPath ){
+        throw new Error(`viewColumns[${i}].columnPathがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].columnPathが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+        throw new Error(`viewColumns[${i}].columnPathが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnName !== "string" ){
-      if( !joinedColumns[i].joinedColumnName ){
-        throw new Error(`joinedColumns[${i}].joinedColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+    if( typeof viewColumns[i].viewColumnName !== "string" ){
+      if( !viewColumns[i].viewColumnName ){
+        throw new Error(`viewColumns[${i}].viewColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+        throw new Error(`viewColumns[${i}].viewColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
     }
   }
@@ -242,7 +242,7 @@ export async function getSelectData( joinedColumns, joinIdMap ){
   // メイン処理を実行
   let result;
   try{
-    result = await getSelectData_core( joinedColumns, joinIdMap );
+    result = await getSelectData_core( viewColumns, joinIdMap );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -272,20 +272,20 @@ export async function getSelectData( joinedColumns, joinIdMap ){
         throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
     }
-    if( typeof result[i].joinedColumnId !== "string" ){
-      if( !result[i].joinedColumnId ){
-        throw new Error(`result[${i}].joinedColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+    if( typeof result[i].viewColumnId !== "string" ){
+      if( !result[i].viewColumnId ){
+        throw new Error(`result[${i}].viewColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
       else{
-        throw new Error(`result[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+        throw new Error(`result[${i}].viewColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
     }
-    if( typeof result[i].joinedColumnType !== "string" ){
-      if( !result[i].joinedColumnType ){
-        throw new Error(`result[${i}].joinedColumnTypeがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+    if( typeof result[i].viewColumnType !== "string" ){
+      if( !result[i].viewColumnType ){
+        throw new Error(`result[${i}].viewColumnTypeがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
       else{
-        throw new Error(`result[${i}].joinedColumnTypeが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+        throw new Error(`result[${i}].viewColumnTypeが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
     }
     if( typeof result[i].joinId !== "string" ){
@@ -304,12 +304,12 @@ export async function getSelectData( joinedColumns, joinIdMap ){
         throw new Error(`result[${i}].columnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
     }
-    if( typeof result[i].joinedColumnName !== "string" ){
-      if( !result[i].joinedColumnName ){
-        throw new Error(`result[${i}].joinedColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+    if( typeof result[i].viewColumnName !== "string" ){
+      if( !result[i].viewColumnName ){
+        throw new Error(`result[${i}].viewColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
       else{
-        throw new Error(`result[${i}].joinedColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
+        throw new Error(`result[${i}].viewColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getSelectData`);
       }
     }
   }
@@ -432,56 +432,56 @@ export async function getJoinData( joinIdMap ){
 //#######################################################################################
 // 関数「getWhereData_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function getWhereData( joinedColumns, conditionInfoList, joinIdMap ){
+export async function getWhereData( viewColumns, conditionInfoList, joinIdMap ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( !Array.isArray(joinedColumns) ){
-    if( !joinedColumns ){
-      throw new Error(`joinedColumnsがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+  if( !Array.isArray(viewColumns) ){
+    if( !viewColumns ){
+      throw new Error(`viewColumnsがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
     }
     else{
-      throw new Error(`joinedColumnsが配列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+      throw new Error(`viewColumnsが配列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
     }
   }
-  for( let i=0; i<joinedColumns.length; i++ ){
-    if( typeof joinedColumns[i] !== "object" ){
-      if( !joinedColumns[i] ){
-        throw new Error(`joinedColumns[${i}]がNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+  for( let i=0; i<viewColumns.length; i++ ){
+    if( typeof viewColumns[i] !== "object" ){
+      if( !viewColumns[i] ){
+        throw new Error(`viewColumns[${i}]がNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+        throw new Error(`viewColumns[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnId !== "string" ){
-      if( !joinedColumns[i].joinedColumnId ){
-        throw new Error(`joinedColumns[${i}].joinedColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+    if( typeof viewColumns[i].viewColumnId !== "string" ){
+      if( !viewColumns[i].viewColumnId ){
+        throw new Error(`viewColumns[${i}].viewColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+        throw new Error(`viewColumns[${i}].viewColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnType !== "string" ){
-      if( !joinedColumns[i].joinedColumnType ){
-        throw new Error(`joinedColumns[${i}].joinedColumnTypeがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+    if( typeof viewColumns[i].viewColumnType !== "string" ){
+      if( !viewColumns[i].viewColumnType ){
+        throw new Error(`viewColumns[${i}].viewColumnTypeがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnTypeが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+        throw new Error(`viewColumns[${i}].viewColumnTypeが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
-    if( typeof joinedColumns[i].columnPath !== "string" ){
-      if( !joinedColumns[i].columnPath ){
-        throw new Error(`joinedColumns[${i}].columnPathがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+    if( typeof viewColumns[i].columnPath !== "string" ){
+      if( !viewColumns[i].columnPath ){
+        throw new Error(`viewColumns[${i}].columnPathがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].columnPathが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+        throw new Error(`viewColumns[${i}].columnPathが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnName !== "string" ){
-      if( !joinedColumns[i].joinedColumnName ){
-        throw new Error(`joinedColumns[${i}].joinedColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+    if( typeof viewColumns[i].viewColumnName !== "string" ){
+      if( !viewColumns[i].viewColumnName ){
+        throw new Error(`viewColumns[${i}].viewColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+        throw new Error(`viewColumns[${i}].viewColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
   }
@@ -502,12 +502,12 @@ export async function getWhereData( joinedColumns, conditionInfoList, joinIdMap 
         throw new Error(`conditionInfoList[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
-    if( typeof conditionInfoList[i].joinedColumnId !== "string" ){
-      if( !conditionInfoList[i].joinedColumnId ){
-        throw new Error(`conditionInfoList[${i}].joinedColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+    if( typeof conditionInfoList[i].viewColumnId !== "string" ){
+      if( !conditionInfoList[i].viewColumnId ){
+        throw new Error(`conditionInfoList[${i}].viewColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
       else{
-        throw new Error(`conditionInfoList[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+        throw new Error(`conditionInfoList[${i}].viewColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
     if( typeof conditionInfoList[i].conditionalExpression !== "string" ){
@@ -546,7 +546,7 @@ export async function getWhereData( joinedColumns, conditionInfoList, joinIdMap 
   // メイン処理を実行
   let result;
   try{
-    result = await getWhereData_core( joinedColumns, conditionInfoList, joinIdMap );
+    result = await getWhereData_core( viewColumns, conditionInfoList, joinIdMap );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -576,12 +576,12 @@ export async function getWhereData( joinedColumns, conditionInfoList, joinIdMap 
         throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
-    if( typeof result[i].joinedColumnId !== "string" ){
-      if( !result[i].joinedColumnId ){
-        throw new Error(`result[${i}].joinedColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+    if( typeof result[i].viewColumnId !== "string" ){
+      if( !result[i].viewColumnId ){
+        throw new Error(`result[${i}].viewColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
       else{
-        throw new Error(`result[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+        throw new Error(`result[${i}].viewColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
     if( typeof result[i].conditionalExpression !== "string" ){
@@ -608,12 +608,12 @@ export async function getWhereData( joinedColumns, conditionInfoList, joinIdMap 
         throw new Error(`result[${i}].columnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
-    if( typeof result[i].joinedColumnName !== "string" ){
-      if( !result[i].joinedColumnName ){
-        throw new Error(`result[${i}].joinedColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+    if( typeof result[i].viewColumnName !== "string" ){
+      if( !result[i].viewColumnName ){
+        throw new Error(`result[${i}].viewColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
       else{
-        throw new Error(`result[${i}].joinedColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+        throw new Error(`result[${i}].viewColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
   }
@@ -626,56 +626,56 @@ export async function getWhereData( joinedColumns, conditionInfoList, joinIdMap 
 //#######################################################################################
 // 関数「getOrderData_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function getOrderData( joinedColumns, sortOrder, joinIdMap ){
+export async function getOrderData( viewColumns, sortOrder, joinIdMap ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( !Array.isArray(joinedColumns) ){
-    if( !joinedColumns ){
-      throw new Error(`joinedColumnsがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+  if( !Array.isArray(viewColumns) ){
+    if( !viewColumns ){
+      throw new Error(`viewColumnsがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
     }
     else{
-      throw new Error(`joinedColumnsが配列ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+      throw new Error(`viewColumnsが配列ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
     }
   }
-  for( let i=0; i<joinedColumns.length; i++ ){
-    if( typeof joinedColumns[i] !== "object" ){
-      if( !joinedColumns[i] ){
-        throw new Error(`joinedColumns[${i}]がNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+  for( let i=0; i<viewColumns.length; i++ ){
+    if( typeof viewColumns[i] !== "object" ){
+      if( !viewColumns[i] ){
+        throw new Error(`viewColumns[${i}]がNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+        throw new Error(`viewColumns[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnId !== "string" ){
-      if( !joinedColumns[i].joinedColumnId ){
-        throw new Error(`joinedColumns[${i}].joinedColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+    if( typeof viewColumns[i].viewColumnId !== "string" ){
+      if( !viewColumns[i].viewColumnId ){
+        throw new Error(`viewColumns[${i}].viewColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+        throw new Error(`viewColumns[${i}].viewColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnType !== "string" ){
-      if( !joinedColumns[i].joinedColumnType ){
-        throw new Error(`joinedColumns[${i}].joinedColumnTypeがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+    if( typeof viewColumns[i].viewColumnType !== "string" ){
+      if( !viewColumns[i].viewColumnType ){
+        throw new Error(`viewColumns[${i}].viewColumnTypeがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnTypeが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+        throw new Error(`viewColumns[${i}].viewColumnTypeが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
     }
-    if( typeof joinedColumns[i].columnPath !== "string" ){
-      if( !joinedColumns[i].columnPath ){
-        throw new Error(`joinedColumns[${i}].columnPathがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+    if( typeof viewColumns[i].columnPath !== "string" ){
+      if( !viewColumns[i].columnPath ){
+        throw new Error(`viewColumns[${i}].columnPathがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].columnPathが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+        throw new Error(`viewColumns[${i}].columnPathが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
     }
-    if( typeof joinedColumns[i].joinedColumnName !== "string" ){
-      if( !joinedColumns[i].joinedColumnName ){
-        throw new Error(`joinedColumns[${i}].joinedColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+    if( typeof viewColumns[i].viewColumnName !== "string" ){
+      if( !viewColumns[i].viewColumnName ){
+        throw new Error(`viewColumns[${i}].viewColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
       else{
-        throw new Error(`joinedColumns[${i}].joinedColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+        throw new Error(`viewColumns[${i}].viewColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
     }
   }
@@ -696,12 +696,12 @@ export async function getOrderData( joinedColumns, sortOrder, joinIdMap ){
         throw new Error(`sortOrder[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
     }
-    if( typeof sortOrder[i].joinedColumnId !== "string" ){
-      if( !sortOrder[i].joinedColumnId ){
-        throw new Error(`sortOrder[${i}].joinedColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+    if( typeof sortOrder[i].viewColumnId !== "string" ){
+      if( !sortOrder[i].viewColumnId ){
+        throw new Error(`sortOrder[${i}].viewColumnIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
       else{
-        throw new Error(`sortOrder[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
+        throw new Error(`sortOrder[${i}].viewColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getOrderData`);
       }
     }
     if( typeof sortOrder[i].isAscending !== "boolean" ){
@@ -743,7 +743,7 @@ export async function getOrderData( joinedColumns, sortOrder, joinIdMap ){
   // メイン処理を実行
   let result;
   try{
-    result = await getOrderData_core( joinedColumns, sortOrder, joinIdMap );
+    result = await getOrderData_core( viewColumns, sortOrder, joinIdMap );
   }
   catch(error){
     if( typeof error === "string" ){

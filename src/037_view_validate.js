@@ -4,7 +4,7 @@ import {
   deleteView_core,  // ビューを削除
   generateSQL_core,  // SQLクエリを生成
   createColumn_core,  // カラムを作成
-  addJoinedColumn_core,  // 結合済み列を作成
+  addViewColumn_core,  // 結合済み列を作成
   getSimpleSQL_core,  // 最低限のSQLクエリを生成する
 } from "./038_view.js";
 
@@ -288,44 +288,44 @@ export async function createColumn( tableId, columnName, dataType, parentTableId
 
 
 //#######################################################################################
-// 関数「addJoinedColumn_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「addViewColumn_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function addJoinedColumn( viewId, joinedColumnType, columnPath, joinedColumnName ){
+export async function addViewColumn( viewId, viewColumnType, columnPath, viewColumnName ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewId !== "number" ){
     if( !viewId ){
-      throw new Error(`viewIdがNULLです。\nレイヤー : view\n関数 : addJoinedColumn`);
+      throw new Error(`viewIdがNULLです。\nレイヤー : view\n関数 : addViewColumn`);
     }
     else{
-      throw new Error(`viewIdが数値ではありません。\nレイヤー : view\n関数 : addJoinedColumn`);
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : view\n関数 : addViewColumn`);
     }
   }
   else if( isNaN(viewId) ){
-    throw new Error(`viewIdが数値ではありません。\nレイヤー : view\n関数 : addJoinedColumn`);
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : view\n関数 : addViewColumn`);
   }
-  if( typeof joinedColumnType !== "string" ){
-    if( !joinedColumnType ){
-      throw new Error(`joinedColumnTypeがNULLです。\nレイヤー : view\n関数 : addJoinedColumn`);
+  if( typeof viewColumnType !== "string" ){
+    if( !viewColumnType ){
+      throw new Error(`viewColumnTypeがNULLです。\nレイヤー : view\n関数 : addViewColumn`);
     }
     else{
-      throw new Error(`joinedColumnTypeが文字列ではありません。\nレイヤー : view\n関数 : addJoinedColumn`);
+      throw new Error(`viewColumnTypeが文字列ではありません。\nレイヤー : view\n関数 : addViewColumn`);
     }
   }
   if( typeof columnPath !== "string" ){
     if( !columnPath ){
-      throw new Error(`columnPathがNULLです。\nレイヤー : view\n関数 : addJoinedColumn`);
+      throw new Error(`columnPathがNULLです。\nレイヤー : view\n関数 : addViewColumn`);
     }
     else{
-      throw new Error(`columnPathが文字列ではありません。\nレイヤー : view\n関数 : addJoinedColumn`);
+      throw new Error(`columnPathが文字列ではありません。\nレイヤー : view\n関数 : addViewColumn`);
     }
   }
-  if( typeof joinedColumnName !== "string" ){
-    if( !joinedColumnName ){
-      throw new Error(`joinedColumnNameがNULLです。\nレイヤー : view\n関数 : addJoinedColumn`);
+  if( typeof viewColumnName !== "string" ){
+    if( !viewColumnName ){
+      throw new Error(`viewColumnNameがNULLです。\nレイヤー : view\n関数 : addViewColumn`);
     }
     else{
-      throw new Error(`joinedColumnNameが文字列ではありません。\nレイヤー : view\n関数 : addJoinedColumn`);
+      throw new Error(`viewColumnNameが文字列ではありません。\nレイヤー : view\n関数 : addViewColumn`);
     }
   }
   //
@@ -333,11 +333,11 @@ export async function addJoinedColumn( viewId, joinedColumnType, columnPath, joi
   // メイン処理を実行
   let result;
   try{
-    result = await addJoinedColumn_core( viewId, joinedColumnType, columnPath, joinedColumnName );
+    result = await addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : view\n関数 : addJoinedColumn`);
+      throw new Error(`${error}\nレイヤー : view\n関数 : addViewColumn`);
     }
     else{
       throw error;

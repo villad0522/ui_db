@@ -1,4 +1,16 @@
 
+// name属性を持つすべての要素を取得
+const elements = document.querySelectorAll('[name]');
+const nameSet = new Set();
+for (const element of elements) {
+    const name = element.getAttribute("name");
+    if (nameSet.has(name)) {
+        alert(`【エラー】name属性が重複しています。name = ${name}`);
+        break;
+    }
+    nameSet.add(name);
+}
+
 //###############################################################
 // サーバーと通信する関数
 export default async function myFetch(url, parameters) {
@@ -32,7 +44,6 @@ export default async function myFetch(url, parameters) {
     }
     //============================================================
     // 通信開始
-    console.log(parameters2);
     const response = await window.fetch(
         url,
         {
@@ -109,24 +120,21 @@ function _setFormData(formData) {
     formData.forEach((value, key) => {
         // name属性の値が変数keyと等しいHTML要素を探す。
         const elements = document.getElementsByName(key);
-        if (elements.length > 0) {
-            // フォームに値を設定
-            elements[0].value = value;
-            elements[0].innerText = value;
+        if (elements.length === 0) {
+            console.error(`HTML要素が見つかりません。name=${key}`);
+            return;
+        }
+        const element = elements[0];
+        // フォームに値を設定
+        if (element.type === 'checkbox' || element.type === 'radio') {
+            console.log(key, value);
             elements[0].checked = (value.toLowerCase() === "true") || (value === "1");
         }
-        else {
-            console.error(`HTML要素が見つかりません。name=${key}`);
+        else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+            element.value = value;
         }
-    });
-    //
-    // name属性を持つすべての要素を取得
-    const elementsWithNameAttribute = document.querySelectorAll('[name]');
-    // 取得した要素をコンソールに出力（例）
-    elementsWithNameAttribute.forEach(function (element) {
-        const name = element.getAttribute("name");
-        if (!formData.has(name)) {
-            console.error(`データが不足しています。${name}`);
+        else {
+            element.innerText = value;
         }
     });
 }

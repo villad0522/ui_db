@@ -4,6 +4,7 @@ import {
   createTable_core,  // テーブルを作成
   updateTableName_core,  // テーブル名を変更
   reserveWord_core,  // 予約語を追加
+  checkReservedWord_core,  // 予約語かどうか判定
 } from "./074_reserved_word.js";
 
 
@@ -315,6 +316,44 @@ export async function reserveWord( word ){
   catch(error){
     if( typeof error === "string" ){
       throw new Error(`${error}\nレイヤー : reserved_word\n関数 : reserveWord`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「checkReservedWord_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function checkReservedWord( word ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof word !== "string" ){
+    if( !word ){
+      throw new Error(`wordがNULLです。\nレイヤー : reserved_word\n関数 : checkReservedWord`);
+    }
+    else{
+      throw new Error(`wordが文字列ではありません。\nレイヤー : reserved_word\n関数 : checkReservedWord`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await checkReservedWord_core( word );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : reserved_word\n関数 : checkReservedWord`);
     }
     else{
       throw error;

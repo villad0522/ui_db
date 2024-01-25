@@ -34,20 +34,20 @@ export async function generateSQLwithDuplication( tableId, selectData, joinData,
         throw new Error(`selectData[${i}]がオブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
-    if( typeof selectData[i].joinedColumnId !== "string" ){
-      if( !selectData[i].joinedColumnId ){
-        throw new Error(`selectData[${i}].joinedColumnIdがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+    if( typeof selectData[i].viewColumnId !== "string" ){
+      if( !selectData[i].viewColumnId ){
+        throw new Error(`selectData[${i}].viewColumnIdがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
       else{
-        throw new Error(`selectData[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+        throw new Error(`selectData[${i}].viewColumnIdが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
-    if( typeof selectData[i].joinedColumnType !== "string" ){
-      if( !selectData[i].joinedColumnType ){
-        throw new Error(`selectData[${i}].joinedColumnTypeがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+    if( typeof selectData[i].viewColumnType !== "string" ){
+      if( !selectData[i].viewColumnType ){
+        throw new Error(`selectData[${i}].viewColumnTypeがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
       else{
-        throw new Error(`selectData[${i}].joinedColumnTypeが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+        throw new Error(`selectData[${i}].viewColumnTypeが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
     if( typeof selectData[i].joinId !== "string" ){
@@ -66,12 +66,12 @@ export async function generateSQLwithDuplication( tableId, selectData, joinData,
         throw new Error(`selectData[${i}].columnNameが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
-    if( typeof selectData[i].joinedColumnName !== "string" ){
-      if( !selectData[i].joinedColumnName ){
-        throw new Error(`selectData[${i}].joinedColumnNameがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+    if( typeof selectData[i].viewColumnName !== "string" ){
+      if( !selectData[i].viewColumnName ){
+        throw new Error(`selectData[${i}].viewColumnNameがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
       else{
-        throw new Error(`selectData[${i}].joinedColumnNameが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+        throw new Error(`selectData[${i}].viewColumnNameが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
   }
@@ -150,12 +150,12 @@ export async function generateSQLwithDuplication( tableId, selectData, joinData,
         throw new Error(`whereData[${i}]がオブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
-    if( typeof whereData[i].joinedColumnId !== "string" ){
-      if( !whereData[i].joinedColumnId ){
-        throw new Error(`whereData[${i}].joinedColumnIdがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+    if( typeof whereData[i].viewColumnId !== "string" ){
+      if( !whereData[i].viewColumnId ){
+        throw new Error(`whereData[${i}].viewColumnIdがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
       else{
-        throw new Error(`whereData[${i}].joinedColumnIdが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+        throw new Error(`whereData[${i}].viewColumnIdが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
     if( typeof whereData[i].conditionalExpression !== "string" ){
@@ -182,12 +182,12 @@ export async function generateSQLwithDuplication( tableId, selectData, joinData,
         throw new Error(`whereData[${i}].columnNameが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
-    if( typeof whereData[i].joinedColumnName !== "string" ){
-      if( !whereData[i].joinedColumnName ){
-        throw new Error(`whereData[${i}].joinedColumnNameがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+    if( typeof whereData[i].viewColumnName !== "string" ){
+      if( !whereData[i].viewColumnName ){
+        throw new Error(`whereData[${i}].viewColumnNameがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
       else{
-        throw new Error(`whereData[${i}].joinedColumnNameが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+        throw new Error(`whereData[${i}].viewColumnNameが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
       }
     }
   }

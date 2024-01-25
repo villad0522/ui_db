@@ -51,6 +51,7 @@ import {
   updateTableName,
   updateColumnName,
   reserveWord,
+  checkReservedWord,
 } from "./073_reserved_word_validate.js";
 import {
   deleteRecord,
@@ -115,35 +116,35 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
     throw "SELECT句の長さがゼロです。";
   }
   const selectList = [];
-  for( const { joinedColumnId, joinedColumnType, joinId, columnName, joinedColumnName } of selectData ){
+  for( const { viewColumnId, viewColumnType, joinId, columnName, viewColumnName } of selectData ){
     if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    switch(joinedColumnType){
+    switch(viewColumnType){
       case "RAW":
         if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
-        selectList.push(`${joinId}.${columnName} AS "${joinedColumnName}"`);
+        selectList.push(`${joinId}.${columnName} AS "${viewColumnName}"`);
         break;
       case "SUM":
         if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-        selectList.push(`SUM(${joinId}.${columnName}) AS "${joinedColumnName}"`);
+        selectList.push(`SUM(${joinId}.${columnName}) AS "${viewColumnName}"`);
         break;
       case "MAX":
         if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-        selectList.push(`MAX(${joinId}.${columnName}) AS "${joinedColumnName}"`);
+        selectList.push(`MAX(${joinId}.${columnName}) AS "${viewColumnName}"`);
         break;
       case "MIN":
         if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
-        selectList.push(`MIN(${joinId}.${columnName}) AS "${joinedColumnName}"`);
+        selectList.push(`MIN(${joinId}.${columnName}) AS "${viewColumnName}"`);
         break;
       case "AVG":
         if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-        selectList.push(`AVG(${joinId}.${columnName}) AS "${joinedColumnName}"`);
+        selectList.push(`AVG(${joinId}.${columnName}) AS "${viewColumnName}"`);
         break;
       case "COUNT":
         if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-        selectList.push(`COUNT(${joinId}.${columnName}) AS "${joinedColumnName}"`);
+        selectList.push(`COUNT(${joinId}.${columnName}) AS "${viewColumnName}"`);
         break;
       default:
-        throw `サポートされていない集合関数が指定されました。joinedColumnType = ${joinedColumnType}`;
+        throw `サポートされていない集合関数が指定されました。viewColumnType = ${viewColumnType}`;
     }
   }
   sql += `SELECT ${selectList.join(",\n  ")}\n`;
@@ -165,33 +166,33 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
   sql += `\n`;
   //===================================================================================
   const whereList = [];
-  for( const { joinedColumnId, conditionalExpression, joinId, columnName, conditionValue } of whereData ){
+  for( const { viewColumnId, conditionalExpression, joinId, columnName, conditionValue } of whereData ){
     if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
-    parameters[":"+joinedColumnId] = conditionValue;
+    parameters[":"+viewColumnId] = conditionValue;
     switch(conditionalExpression.trim()){
       case "=":
         if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
-        whereList.push(`( ${joinId}.${columnName} = :${joinedColumnId} )`);
+        whereList.push(`( ${joinId}.${columnName} = :${viewColumnId} )`);
         break;
       case "!=":
         if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
-        whereList.push(`( ${joinId}.${columnName} != :${joinedColumnId} )`);
+        whereList.push(`( ${joinId}.${columnName} != :${viewColumnId} )`);
         break;
       case ">":
         if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
-        whereList.push(`( ${joinId}.${columnName} > :${joinedColumnId} )`);
+        whereList.push(`( ${joinId}.${columnName} > :${viewColumnId} )`);
         break;
       case "<":
         if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
-        whereList.push(`( ${joinId}.${columnName} < :${joinedColumnId} )`);
+        whereList.push(`( ${joinId}.${columnName} < :${viewColumnId} )`);
         break;
       case ">=":
         if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
-        whereList.push(`( ${joinId}.${columnName} >= :${joinedColumnId} )`);
+        whereList.push(`( ${joinId}.${columnName} >= :${viewColumnId} )`);
         break;
       case "<=":
         if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
-        whereList.push(`( ${joinId}.${columnName} <= :${joinedColumnId} )`);
+        whereList.push(`( ${joinId}.${columnName} <= :${viewColumnId} )`);
         break;
       default:
         throw `サポートされていない条件演算子が指定されました。conditionalExpression = ${conditionalExpression}`;
