@@ -5,6 +5,9 @@ import {
   createPage,
   updatePageName,
   createView,
+  deleteView,
+  deletePage,
+  pastePage,
   regeneratePage,
   escapeHTML,
 } from "./031_regenerate_html_validate.js";
@@ -43,7 +46,6 @@ import {
 import {
   createColumn,
   generateSQL,
-  deleteView,
   addViewColumn,
   getSimpleSQL,
 } from "./037_view_validate.js";
@@ -114,11 +116,9 @@ import {
   getPageInfo,
   listViewsFromTableId,
   getTableFromView,
-  deletePage,
   getBreadcrumbs,
   cutPage,
   copyPage,
-  pastePage,
   getCuttingPage,
   getCopyingPage,
   listAllPages,
@@ -128,6 +128,7 @@ import {
   listChildrenPage,
   _movePage,
   _generatePageSortNumber,
+  _copyPage,
 } from "./040_pages_validate.js";
 
 
@@ -297,27 +298,21 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     case "COPY_PAGE":{
       if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
-      const { copyingPageId, cuttingPageId } = await copyPage( pageId );
-      return {
-        "copyingPageId": copyingPageId,
-        "cuttingPageId": cuttingPageId,
-      };
+      await copyPage( pageId );
+      return {};
     }
     //======================================================================
     case "CUT_PAGE":{
       if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
-      const { copyingPageId, cuttingPageId } = await cutPage( pageId );
-      return {
-        "copyingPageId": copyingPageId,
-        "cuttingPageId": cuttingPageId,
-      };
+      await cutPage( pageId );
+      return {};
     }
     //======================================================================
     case "PASTE_PAGE":{
       if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
       const parentPageId = Number(queryParameters["page_id"]);
-      const afterPageId = Number(queryParameters["after"]);
+      const afterPageId = Number(queryParameters["after_id"]);
       await pastePage( parentPageId, afterPageId );
       return {
         "nextUrl": "./?" + await convertQuery_core(queryParameters),
@@ -330,9 +325,12 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       const { pageName, memo } = await getPageInfo( pageId );
       const staticChildren = await listStaticChildren( pageId );
       const views = await listChildrenView( pageId );
+      const breadcrumbs = await getBreadcrumbs( pageId );
       return {
         "pageName": pageName,
         "memo": memo ?? "",
+        "breadcrumbs": breadcrumbs,
+        "breadcrumbs_total": breadcrumbs.length,
         "staticChildren": staticChildren,
         "staticChildren_total": staticChildren.length,
         "views": views,

@@ -117,6 +117,7 @@ import {
   listChildrenPage,  // 子ページの一覧を再帰的に取得
   _movePage,  // 【サブ関数】ページを移動する
   _generatePageSortNumber,  // 【サブ関数】ソート番号を発行する
+  _copyPage,  // 【サブ関数】ページをコピーする
 } from "./040_pages_validate.js";
 import { setBugMode } from "./041_pages.js";
 
@@ -125,7 +126,7 @@ export async function test039() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 42; i++ ) {
+    for ( i = 1; i <= 43; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

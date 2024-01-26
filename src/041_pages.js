@@ -375,7 +375,7 @@ export async function createView_core( pageId, tableId, sqlQuery ){
 // ビューを削除
 export async function deleteView_core( viewId ){
   if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
-// 子ページを取得する（１個のはず）
+  // 子ページを取得する（１個のはず）
   const pages = await runSqlReadOnly(
     `SELECT page_id AS pageId
       FROM pages
@@ -405,7 +405,6 @@ export async function deleteView_core( viewId ){
 // ページを再帰的に削除
 export async function deletePage_core( pageId ){
   if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
-  console.log(`ページ「${pageId}」を削除します。`);
   // 子ページの一覧を取得する
   const children = await listChildrenPage_core( pageId );
   // 子ページを削除する
@@ -521,12 +520,14 @@ export async function pastePage_core( parentPageId, afterPageId ){
   if( copyingPageId ){
     if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
     // ページをコピーする場合
-    throw `この操作は未実装です。`;
+    await _copyPage( copyingPageId, parentPageId, afterPageId );
+    return copyingPageId;
   }
   else if( cuttingPageId ){
     if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
     // 事前に切り取ったページを貼り付ける場合
     await _movePage_core( cuttingPageId, parentPageId, afterPageId );
+    return cuttingPageId;
   }
   else{
     throw new Error(`貼り付け操作を行う前に、切り取り または コピーを行ってください。`);
@@ -783,4 +784,13 @@ export async function _generatePageSortNumber_core( destParentPageId, destAfterP
       return sortNumberBefore + 8;
     }
   }
+}
+
+
+// 【サブ関数】ページをコピーする
+export async function _copyPage_core( pageId, destParentPageId, destAfterPageId ){
+  if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
+  // ソート番号を何にするべきか決める
+  const sortNumber = await _generatePageSortNumber_core( destParentPageId, destAfterPageId );
+  throw "この関数は未実装です。";
 }

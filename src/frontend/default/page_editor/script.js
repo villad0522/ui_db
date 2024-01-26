@@ -57,74 +57,17 @@ window.handleEditSwitch = function (event) {
 }
 //
 //###############################################################
-// 「キャンセル」ボタンがクリックされたときに実行する関数
-window.cancelButton = function () {
-    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
-    window.location.href = "../index.html" + window.location.search;
+// パンくずリストをクリックしたときに実行する関数
+window.breadcrumbButton = function (i) {
+    const pageId = document.getElementsByName(`breadcrumbs${i}_pageId`)[0].value;
+    jumpWithQuery(`./?page_id=${pageId}`);
 }
 //
 //###############################################################
-// 「表の名前を変更」ボタンがクリックされたときに実行する関数
-window.renameButton = function () {
-    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
-    window.location.href = "./rename" + window.location.search;
-}
-//
-//###############################################################
-// テーブルがクリックされたときに実行する関数
-window.tableButton = function (i) {
-    // テーブル名
-    let tableId = document.getElementsByName(`tables${i}_id`)[0].value;
-    //
-    // 別のページに移動する
-    tableId = encodeURIComponent(tableId);
-    window.location.href = `../records?table=${tableId}`;
-}
-//
-//###############################################################
-// ページネーションボタンの「First」がクリックされたときに実行する関数
-window.paginationButtonFirst = function (arrayName) {
-    // クエリパラメータ―を作成
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", 1);
-    // ページを再読み込み
-    window.location.href = "./?" + searchParams.toString();
-}
-//
-//###############################################################
-// ページネーションボタンの「Prev」がクリックされたときに実行する関数
-window.paginationButtonPrev = function () {
-    // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("tables_pagePrev")[0].value;
-    // クエリパラメータ―を作成
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", pageNumber);
-    // ページを再読み込み
-    window.location.href = "./?" + searchParams.toString();
-}
-//
-//###############################################################
-// ページネーションボタンの「Next」がクリックされたときに実行する関数
-window.paginationButtonNext = function () {
-    // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("tables_pageNext")[0].value;
-    // クエリパラメータ―を作成
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", pageNumber);
-    // ページを再読み込み
-    window.location.href = "./?" + searchParams.toString();
-}
-//
-//###############################################################
-// ページネーションボタンの「Last」がクリックされたときに実行する関数
-window.paginationButtonLast = function () {
-    // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("tables_pageLast")[0].value;
-    // クエリパラメータ―を作成
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", pageNumber);
-    // ページを再読み込み
-    window.location.href = "./?" + searchParams.toString();
+// 子ページのIDを取得する関数
+window.getChildPageId = function (i) {
+    const pageId = document.getElementsByName(`staticChildren${i}_pageId`)[0].value;
+    return pageId;
 }
 //
 //###############################################################

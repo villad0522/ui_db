@@ -1,3 +1,13 @@
+/* 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される */
+.flag+* {
+    display: none;
+}
+
+.flag:checked+* {
+    display: block;
+}
+
+/* 検索ボックス */
 .search_box {
     background: none;
 }
@@ -6,12 +16,19 @@
     color: #fff;
 }
 
+/* 表示設定スイッチ */
 #edit_mode_switch {
     background-color: #555;
     /* Change the color of the toggle when it is checked */
     border-color: #555;
     /* Change the border color of the toggle when it is checked */
 }
+
+.breadcrumb-item:hover {
+    cursor: pointer;
+    color: #999;
+}
+
 
 hr {
     margin: 50px 0;

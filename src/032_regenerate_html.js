@@ -120,6 +120,7 @@ import {
   listChildrenPage,
   _movePage,
   _generatePageSortNumber,
+  _copyPage,
 } from "./040_pages_validate.js";
 
 
@@ -223,7 +224,7 @@ export async function regeneratePage_core( pageId ){
                 <div class="form-check form-switch">
                     <input onchange="handleEditSwitch(event)" class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
                     <label class="form-check-label" for="edit_mode_switch" style="color:#fff">
-                        編集
+                        表示設定
                     </label>
                 </div>
                 <a href="/default/tables/index.html" class="btn btn-dark me-2" target="_blank">
@@ -610,6 +611,7 @@ export async function escapeHTML_core( text ){
   });
 }
 
+
 // ページ名やメモを変更
 export async function updatePageName_core( pageId, pageName, memo ){
   if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -630,6 +632,104 @@ export async function updatePageName_core( pageId, pageName, memo ){
     const children = await listChildrenPage( pageId );
     for( const pageId of children ){
         if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+        await regeneratePage_core( pageId );
+    }
+    //
+    return result;
+}
+
+
+
+// ビューを削除
+export async function deleteView_core( viewId ){
+  if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+    // 下層の関数を呼び出す
+    const result = await deleteView( viewId );
+    //
+    // 子ページを取得する（１個のはず）
+    const pages = await runSqlReadOnly(
+        `SELECT page_id AS pageId
+        FROM pages
+        WHERE dynamic_parent_id = :viewId;`,
+        {
+        ":viewId": viewId,
+        },
+    );
+    for( const { pageId } of pages ){
+        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        // 子ページを再帰的に削除する
+        await deletePage_core( pageId );
+    }
+    return result;
+}
+
+
+// ページを再帰的に削除
+export async function deletePage_core( pageId ){
+  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+    // 下層の関数を呼び出す
+    const result = await deletePage( pageId );
+    // 子ページの一覧を取得する
+    const children = await listChildrenPage_core( pageId );
+    // 子ページを削除する
+    //  （子→親の順番になるように削除する）
+    for( let i=children.length-1; i>=0; i-- ){
+        if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+        await _deletePageFolder( children[i] );
+    }
+    // 対象のページを削除する
+    await _deletePageFolder( pageId );
+    //
+    return result;
+}
+
+
+
+
+async function _deletePageFolder( pageId ){
+    const customDirPath = await getPath("FRONTEND_CUSTOM");
+    const pagePath = path.join( customDirPath, String(pageId) );
+    if (  fs.existsSync( pagePath )  ) {
+        await fs.promises.rm( pagePath,  { recursive: true } );
+    }
+}
+
+
+
+// ページを貼り付ける
+export async function pastePage_core( newParentId, afterPageId ){
+  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+    //
+    // 親ページ（切り取り元）を調べる
+    const cuttingPageId = await getCuttingPage();
+    let pastParentId = null;
+    if(cuttingPageId){
+        if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+        pastParentId = await getParentPage( cuttingPageId );
+    }
+    //
+    // 下層の関数を呼び出す
+    const result = await pastePage( newParentId, afterPageId );
+    //
+    if( pastParentId !== newParentId ){
+        if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+        // 親ページ（切り取り元）のHTMLを再生成する
+        if( pastParentId >= 1 ){
+            if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+            await regeneratePage_core( pastParentId );
+        }
+    }
+    //
+    // 移動したページのHTMLを再生成する（パンくずリストを更新するため）
+    await regeneratePage_core( result.pageId );
+    //
+    // 親ページ（貼り付け先）のHTMLを再生成する
+    await regeneratePage_core( newParentId );
+    //
+    // 子ページのHTMLを再生成する（パンくずリストを更新するため）
+    const children = await listChildrenPage( result.pageId );
+    for( const pageId of children ){
+        if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
         await regeneratePage_core( pageId );
     }
     //

@@ -38,7 +38,6 @@ import {
 import {
   createColumn,
   generateSQL,
-  deleteView,
   addViewColumn,
   getSimpleSQL,
 } from "./037_view_validate.js";
@@ -102,11 +101,9 @@ import {
   getPageInfo,
   listViewsFromTableId,
   getTableFromView,
-  deletePage,
   getBreadcrumbs,
   cutPage,
   copyPage,
-  pastePage,
   getCuttingPage,
   getCopyingPage,
   listAllPages,
@@ -116,6 +113,7 @@ import {
   listChildrenPage,
   _movePage,
   _generatePageSortNumber,
+  _copyPage,
 } from "./040_pages_validate.js";
 import {
   regeneratePage,  // ページを再生成する
@@ -124,6 +122,9 @@ import {
   startUp,  // プログラム起動
   escapeHTML,  // HTMLエスケープ
   updatePageName,  // ページ名やメモを変更
+  deleteView,  // ビューを削除
+  deletePage,  // ページを再帰的に削除
+  pastePage,  // ページを貼り付ける
 } from "./031_regenerate_html_validate.js";
 import { setBugMode } from "./032_regenerate_html.js";
 
@@ -132,7 +133,7 @@ export async function test030() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 12; i++ ) {
+    for ( i = 1; i <= 21; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

@@ -21,6 +21,7 @@ import {
   listChildrenPage_core,  // 子ページの一覧を再帰的に取得
   _movePage_core,  // 【サブ関数】ページを移動する
   _generatePageSortNumber_core,  // 【サブ関数】ソート番号を発行する
+  _copyPage_core,  // 【サブ関数】ページをコピーする
 } from "./041_pages.js";
 
 
@@ -712,6 +713,17 @@ export async function pastePage( parentPageId, afterPageId ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "number" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : pages\n関数 : pastePage`);
+    }
+    else{
+      throw new Error(`resultが数値ではありません。\nレイヤー : pages\n関数 : pastePage`);
+    }
+  }
+  else if( isNaN(result) ){
+    throw new Error(`resultが数値ではありません。\nレイヤー : pages\n関数 : pastePage`);
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -1277,6 +1289,67 @@ export async function _generatePageSortNumber( destParentPageId, destAfterPageId
   else if( isNaN(result) ){
     throw new Error(`resultが数値ではありません。\nレイヤー : pages\n関数 : _generatePageSortNumber`);
   }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「_copyPage_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function _copyPage( pageId, destParentPageId, destAfterPageId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof pageId !== "number" ){
+    if( !pageId ){
+      throw new Error(`pageIdがNULLです。\nレイヤー : pages\n関数 : _copyPage`);
+    }
+    else{
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : _copyPage`);
+    }
+  }
+  else if( isNaN(pageId) ){
+    throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : _copyPage`);
+  }
+  if( typeof destParentPageId !== "number" ){
+    if( !destParentPageId ){
+      throw new Error(`destParentPageIdがNULLです。\nレイヤー : pages\n関数 : _copyPage`);
+    }
+    else{
+      throw new Error(`destParentPageIdが数値ではありません。\nレイヤー : pages\n関数 : _copyPage`);
+    }
+  }
+  else if( isNaN(destParentPageId) ){
+    throw new Error(`destParentPageIdが数値ではありません。\nレイヤー : pages\n関数 : _copyPage`);
+  }
+  if( (destAfterPageId===null) || (destAfterPageId===undefined) ){
+    // destAfterPageIdは空欄OK。
+  }
+  else if( typeof destAfterPageId !== "number" ){
+    throw new Error(`destAfterPageIdが数値ではありません。\nレイヤー : pages\n関数 : _copyPage`);
+  }
+  else if( isNaN(destAfterPageId) ){
+    throw new Error(`destAfterPageIdが数値ではありません。\nレイヤー : pages\n関数 : _copyPage`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await _copyPage_core( pageId, destParentPageId, destAfterPageId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : pages\n関数 : _copyPage`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
   //
   //--------------------------------------------------------------------------
   return result;

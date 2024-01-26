@@ -5,6 +5,9 @@ import {
   startUp_core,  // プログラム起動
   escapeHTML_core,  // HTMLエスケープ
   updatePageName_core,  // ページ名やメモを変更
+  deleteView_core,  // ビューを削除
+  deletePage_core,  // ページを再帰的に削除
+  pastePage_core,  // ページを貼り付ける
 } from "./032_regenerate_html.js";
 
 
@@ -318,6 +321,138 @@ export async function updatePageName( pageId, pageName, memo ){
       throw new Error(`resultが文字列ではありません。\nレイヤー : regenerate_html\n関数 : updatePageName`);
     }
   }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「deleteView_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function deleteView( viewId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : regenerate_html\n関数 : deleteView`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : regenerate_html\n関数 : deleteView`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : regenerate_html\n関数 : deleteView`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await deleteView_core( viewId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : regenerate_html\n関数 : deleteView`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「deletePage_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function deletePage( pageId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof pageId !== "number" ){
+    if( !pageId ){
+      throw new Error(`pageIdがNULLです。\nレイヤー : regenerate_html\n関数 : deletePage`);
+    }
+    else{
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : regenerate_html\n関数 : deletePage`);
+    }
+  }
+  else if( isNaN(pageId) ){
+    throw new Error(`pageIdが数値ではありません。\nレイヤー : regenerate_html\n関数 : deletePage`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await deletePage_core( pageId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : regenerate_html\n関数 : deletePage`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「pastePage_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function pastePage( newParentId, afterPageId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof newParentId !== "number" ){
+    if( !newParentId ){
+      throw new Error(`newParentIdがNULLです。\nレイヤー : regenerate_html\n関数 : pastePage`);
+    }
+    else{
+      throw new Error(`newParentIdが数値ではありません。\nレイヤー : regenerate_html\n関数 : pastePage`);
+    }
+  }
+  else if( isNaN(newParentId) ){
+    throw new Error(`newParentIdが数値ではありません。\nレイヤー : regenerate_html\n関数 : pastePage`);
+  }
+  if( (afterPageId===null) || (afterPageId===undefined) ){
+    // afterPageIdは空欄OK。
+  }
+  else if( typeof afterPageId !== "number" ){
+    throw new Error(`afterPageIdが数値ではありません。\nレイヤー : regenerate_html\n関数 : pastePage`);
+  }
+  else if( isNaN(afterPageId) ){
+    throw new Error(`afterPageIdが数値ではありません。\nレイヤー : regenerate_html\n関数 : pastePage`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await pastePage_core( newParentId, afterPageId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : regenerate_html\n関数 : pastePage`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
   //
   //--------------------------------------------------------------------------
   return result;

@@ -5,6 +5,9 @@ import {
   createPage,
   updatePageName,
   createView,
+  deleteView,
+  deletePage,
+  pastePage,
   regeneratePage,
   escapeHTML,
 } from "./031_regenerate_html_validate.js";
@@ -42,7 +45,6 @@ import {
 import {
   createColumn,
   generateSQL,
-  deleteView,
   addViewColumn,
   getSimpleSQL,
 } from "./037_view_validate.js";
@@ -113,11 +115,9 @@ import {
   getPageInfo,
   listViewsFromTableId,
   getTableFromView,
-  deletePage,
   getBreadcrumbs,
   cutPage,
   copyPage,
-  pastePage,
   getCuttingPage,
   getCopyingPage,
   listAllPages,
@@ -127,6 +127,7 @@ import {
   listChildrenPage,
   _movePage,
   _generatePageSortNumber,
+  _copyPage,
 } from "./040_pages_validate.js";
 import {
   getEndpointInfo,
@@ -406,7 +407,7 @@ function _convertResponseInfo({ endpointPath, oldResponseInfo }) {
                 "dataType": "BOOL",
                 "isRequired": true,
                 "example": (i === 0) ? true : false,
-                "description": `${parentInfo.title}の${i}番目の項目を表示するべきか否か。（true...表示するべき。false...表示するべきではない。）`
+                "description": `「${parentInfo.title}」の${i}番目の項目を表示するべきか否か。（true...表示するべき。false...表示するべきではない。）`
                     + `ここでの「${i}番目」の数え方は、画面上に "実際に" 表示されている項目の先頭から数えてください。`
                     + `データの件数が増えた場合は複数のページに分割されますので、「データベースの先頭から${i}番目」とは限りません。`,
             };
@@ -419,7 +420,7 @@ function _convertResponseInfo({ endpointPath, oldResponseInfo }) {
                 newResponseInfo[newKey] = {
                     ...childInfo,
                     "isRequired": false,
-                    "description": `${parentInfo.title}の${i}番目の項目の` + childInfo.description
+                    "description": `「${parentInfo.title}」の${i}番目の項目の` + childInfo.description
                         + `。ただし項目「${flagKey}」がtrueの場合のみ、有効なデータとして表示してください。`,
                 };
             }

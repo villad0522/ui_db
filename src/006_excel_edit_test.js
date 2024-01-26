@@ -5,6 +5,9 @@ import {
   createPage,
   updatePageName,
   createView,
+  deleteView,
+  deletePage,
+  pastePage,
   regeneratePage,
   escapeHTML,
 } from "./031_regenerate_html_validate.js";
@@ -42,7 +45,6 @@ import {
 import {
   createColumn,
   generateSQL,
-  deleteView,
   addViewColumn,
   getSimpleSQL,
 } from "./037_view_validate.js";
@@ -113,11 +115,9 @@ import {
   getPageInfo,
   listViewsFromTableId,
   getTableFromView,
-  deletePage,
   getBreadcrumbs,
   cutPage,
   copyPage,
-  pastePage,
   getCuttingPage,
   getCopyingPage,
   listAllPages,
@@ -127,6 +127,7 @@ import {
   listChildrenPage,
   _movePage,
   _generatePageSortNumber,
+  _copyPage,
 } from "./040_pages_validate.js";
 import {
   getEndpointInfo,

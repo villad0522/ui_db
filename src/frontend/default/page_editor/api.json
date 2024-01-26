@@ -23,10 +23,32 @@
             "example": "○○を入力する際は、○○してください。",
             "isRequired": false
         },
+        "breadcrumbs": {
+            "title": "パンくずリストに表示する親ページの一覧",
+            "isArray": true,
+            "onePageMaxSize": 10,
+            "children": {
+                "pageId": {
+                    "dataType": "INTEGER",
+                    "description": "親ページのID",
+                    "example": 12
+                },
+                "pageName": {
+                    "dataType": "TEXT",
+                    "description": "親ページの名前",
+                    "example": "トップ"
+                }
+            }
+        },
+        "breadcrumbs_total": {
+            "dataType": "INTEGER",
+            "description": "親ページの個数（パスの長さ）",
+            "example": 2
+        },
         "staticChildren": {
             "title": "ページ上部からアクセスできる子ページの一覧",
             "isArray": true,
-            "onePageMaxSize": 11,
+            "onePageMaxSize": 35,
             "children": {
                 "pageId": {
                     "dataType": "INTEGER",
