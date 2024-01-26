@@ -117,8 +117,8 @@ import {
 } from "./031_regenerate_html_validate.js";
 import {
   getPageInfo,
-  listJoinsFromTableId,
-  getTableFromJoin,
+  listViewsFromTableId,
+  getTableFromView,
   deletePage,
   getBreadcrumbs,
   cutPage,
@@ -130,6 +130,9 @@ import {
   listStaticChildren,
   listChildrenView,
   getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
 } from "./040_pages_validate.js";
 import {
   getEndpointInfo,
@@ -208,8 +211,8 @@ export {
   createPage,
   updatePageName,
   getPageInfo,
-  listJoinsFromTableId,
-  getTableFromJoin,
+  listViewsFromTableId,
+  getTableFromView,
   createView,
   deleteView,
   deletePage,
@@ -223,6 +226,9 @@ export {
   listStaticChildren,
   listChildrenView,
   getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
   addViewColumn,
   getSimpleSQL,
   createDirectories,

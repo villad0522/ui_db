@@ -111,8 +111,8 @@ import {
 } from "./046_generate_sql1_validate.js";
 import {
   getPageInfo,
-  listJoinsFromTableId,
-  getTableFromJoin,
+  listViewsFromTableId,
+  getTableFromView,
   deletePage,
   getBreadcrumbs,
   cutPage,
@@ -124,6 +124,9 @@ import {
   listStaticChildren,
   listChildrenView,
   getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
 } from "./040_pages_validate.js";
 import {
   getEndpointInfo,

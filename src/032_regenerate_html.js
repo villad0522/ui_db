@@ -104,8 +104,8 @@ import {
   createPage,
   updatePageName,
   getPageInfo,
-  listJoinsFromTableId,
-  getTableFromJoin,
+  listViewsFromTableId,
+  getTableFromView,
   deletePage,
   getBreadcrumbs,
   cutPage,
@@ -117,6 +117,9 @@ import {
   listStaticChildren,
   listChildrenView,
   getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
 } from "./040_pages_validate.js";
 
 
@@ -610,14 +613,25 @@ export async function escapeHTML_core( text ){
 // ページ名やメモを変更
 export async function updatePageName_core( pageId, pageName, memo ){
   if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+    // 下層の関数を呼び出す
     const result = await updatePageName( pageId, pageName, memo );
-    const parentPageId = await getParentPage( pageId );
     //
     // 名前を変更したページのHTMLを生成する
     await regeneratePage_core( pageId );
     //
     // 親ページのHTMLを再生成する
-    await regeneratePage_core( parentPageId );
+    const parentPageId = await getParentPage( pageId );
+    if( parentPageId >= 1 ){
+        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+        await regeneratePage_core( parentPageId );
+    }
+    //
+    // 子ページのHTMLを再生成する（パンくずリストに表示されるため）
+    const children = await listChildrenPage( pageId );
+    for( const pageId of children ){
+        if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+        await regeneratePage_core( pageId );
+    }
     //
     return result;
 }

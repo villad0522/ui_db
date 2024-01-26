@@ -3,11 +3,11 @@ import {
   createPage_core,  // ページを作成
   updatePageName_core,  // ページ名やメモを変更
   getPageInfo_core,  // １ページの情報を取得
-  listJoinsFromTableId_core,  // テーブルIDからviewIdを取得する
-  getTableFromJoin_core,  // viewIdからテーブルIDを取得する
+  listViewsFromTableId_core,  // テーブルIDからviewIdを取得する
+  getTableFromView_core,  // viewIdからテーブルIDを取得する
   createView_core,  // ビューを作成
   deleteView_core,  // ビューを削除
-  deletePage_core,  // ページを削除
+  deletePage_core,  // ページを再帰的に削除
   getBreadcrumbs_core,  // パンくずリストを再帰的に取得
   cutPage_core,  // ページを切り取る
   copyPage_core,  // ページをコピーする
@@ -18,6 +18,9 @@ import {
   listStaticChildren_core,  // 子ページの一覧を取得
   listChildrenView_core,  // ビューの一覧を取得
   getParentPage_core,  // 親ページのIDを取得
+  listChildrenPage_core,  // 子ページの一覧を再帰的に取得
+  _movePage_core,  // 【サブ関数】ページを移動する
+  _generatePageSortNumber_core,  // 【サブ関数】ソート番号を発行する
 } from "./041_pages.js";
 
 
@@ -259,17 +262,17 @@ export async function getPageInfo( pageId ){
 
 
 //#######################################################################################
-// 関数「listJoinsFromTableId_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「listViewsFromTableId_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function listJoinsFromTableId( tableId ){
+export async function listViewsFromTableId( tableId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : pages\n関数 : listViewsFromTableId`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : pages\n関数 : listViewsFromTableId`);
     }
   }
   //
@@ -277,11 +280,11 @@ export async function listJoinsFromTableId( tableId ){
   // メイン処理を実行
   let result;
   try{
-    result = await listJoinsFromTableId_core( tableId );
+    result = await listViewsFromTableId_core( tableId );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : pages\n関数 : listJoinsFromTableId`);
+      throw new Error(`${error}\nレイヤー : pages\n関数 : listViewsFromTableId`);
     }
     else{
       throw error;
@@ -292,23 +295,23 @@ export async function listJoinsFromTableId( tableId ){
   // 戻り値を検証
   if( !Array.isArray(result) ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
+      throw new Error(`resultがNULLです。\nレイヤー : pages\n関数 : listViewsFromTableId`);
     }
     else{
-      throw new Error(`resultが配列ではありません。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
+      throw new Error(`resultが配列ではありません。\nレイヤー : pages\n関数 : listViewsFromTableId`);
     }
   }
   for( let i=0; i<result.length; i++ ){
     if( typeof result[i] !== "number" ){
       if( !result[i] ){
-        throw new Error(`result[${i}]がNULLです。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : pages\n関数 : listViewsFromTableId`);
       }
       else{
-        throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
+        throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listViewsFromTableId`);
       }
     }
     else if( isNaN(result[i]) ){
-      throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listJoinsFromTableId`);
+      throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listViewsFromTableId`);
     }
   }
   //
@@ -318,32 +321,32 @@ export async function listJoinsFromTableId( tableId ){
 
 
 //#######################################################################################
-// 関数「getTableFromJoin_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「getTableFromView_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function getTableFromJoin( viewId ){
+export async function getTableFromView( viewId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewId !== "number" ){
     if( !viewId ){
-      throw new Error(`viewIdがNULLです。\nレイヤー : pages\n関数 : getTableFromJoin`);
+      throw new Error(`viewIdがNULLです。\nレイヤー : pages\n関数 : getTableFromView`);
     }
     else{
-      throw new Error(`viewIdが数値ではありません。\nレイヤー : pages\n関数 : getTableFromJoin`);
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : pages\n関数 : getTableFromView`);
     }
   }
   else if( isNaN(viewId) ){
-    throw new Error(`viewIdが数値ではありません。\nレイヤー : pages\n関数 : getTableFromJoin`);
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : pages\n関数 : getTableFromView`);
   }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await getTableFromJoin_core( viewId );
+    result = await getTableFromView_core( viewId );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : pages\n関数 : getTableFromJoin`);
+      throw new Error(`${error}\nレイヤー : pages\n関数 : getTableFromView`);
     }
     else{
       throw error;
@@ -352,11 +355,13 @@ export async function getTableFromJoin( viewId ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( (result===null) || (result===undefined) ){
-    // resultは空欄OK。
-  }
-  else if( typeof result !== "string" ){
-    throw new Error(`resultが文字列ではありません。\nレイヤー : pages\n関数 : getTableFromJoin`);
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : pages\n関数 : getTableFromView`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : pages\n関数 : getTableFromView`);
+    }
   }
   //
   //--------------------------------------------------------------------------
@@ -468,13 +473,16 @@ export async function deleteView( viewId ){
 export async function deletePage( pageId ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( typeof pageId !== "string" ){
+  if( typeof pageId !== "number" ){
     if( !pageId ){
       throw new Error(`pageIdがNULLです。\nレイヤー : pages\n関数 : deletePage`);
     }
     else{
-      throw new Error(`pageIdが文字列ではありません。\nレイヤー : pages\n関数 : deletePage`);
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : deletePage`);
     }
+  }
+  else if( isNaN(pageId) ){
+    throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : deletePage`);
   }
   //
   //--------------------------------------------------------------------------
@@ -1084,6 +1092,190 @@ export async function getParentPage( pageId ){
   }
   else if( isNaN(result) ){
     throw new Error(`resultが数値ではありません。\nレイヤー : pages\n関数 : getParentPage`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「listChildrenPage_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function listChildrenPage( parentId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof parentId !== "number" ){
+    if( !parentId ){
+      throw new Error(`parentIdがNULLです。\nレイヤー : pages\n関数 : listChildrenPage`);
+    }
+    else{
+      throw new Error(`parentIdが数値ではありません。\nレイヤー : pages\n関数 : listChildrenPage`);
+    }
+  }
+  else if( isNaN(parentId) ){
+    throw new Error(`parentIdが数値ではありません。\nレイヤー : pages\n関数 : listChildrenPage`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await listChildrenPage_core( parentId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : pages\n関数 : listChildrenPage`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( !Array.isArray(result) ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : pages\n関数 : listChildrenPage`);
+    }
+    else{
+      throw new Error(`resultが配列ではありません。\nレイヤー : pages\n関数 : listChildrenPage`);
+    }
+  }
+  for( let i=0; i<result.length; i++ ){
+    if( typeof result[i] !== "number" ){
+      if( !result[i] ){
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : pages\n関数 : listChildrenPage`);
+      }
+      else{
+        throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listChildrenPage`);
+      }
+    }
+    else if( isNaN(result[i]) ){
+      throw new Error(`result[${i}]が数値ではありません。\nレイヤー : pages\n関数 : listChildrenPage`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「_movePage_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function _movePage( pageId, destParentPageId, destAfterPageId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof pageId !== "number" ){
+    if( !pageId ){
+      throw new Error(`pageIdがNULLです。\nレイヤー : pages\n関数 : _movePage`);
+    }
+    else{
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : _movePage`);
+    }
+  }
+  else if( isNaN(pageId) ){
+    throw new Error(`pageIdが数値ではありません。\nレイヤー : pages\n関数 : _movePage`);
+  }
+  if( typeof destParentPageId !== "number" ){
+    if( !destParentPageId ){
+      throw new Error(`destParentPageIdがNULLです。\nレイヤー : pages\n関数 : _movePage`);
+    }
+    else{
+      throw new Error(`destParentPageIdが数値ではありません。\nレイヤー : pages\n関数 : _movePage`);
+    }
+  }
+  else if( isNaN(destParentPageId) ){
+    throw new Error(`destParentPageIdが数値ではありません。\nレイヤー : pages\n関数 : _movePage`);
+  }
+  if( (destAfterPageId===null) || (destAfterPageId===undefined) ){
+    // destAfterPageIdは空欄OK。
+  }
+  else if( typeof destAfterPageId !== "number" ){
+    throw new Error(`destAfterPageIdが数値ではありません。\nレイヤー : pages\n関数 : _movePage`);
+  }
+  else if( isNaN(destAfterPageId) ){
+    throw new Error(`destAfterPageIdが数値ではありません。\nレイヤー : pages\n関数 : _movePage`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await _movePage_core( pageId, destParentPageId, destAfterPageId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : pages\n関数 : _movePage`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「_generatePageSortNumber_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function _generatePageSortNumber( destParentPageId, destAfterPageId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof destParentPageId !== "number" ){
+    if( !destParentPageId ){
+      throw new Error(`destParentPageIdがNULLです。\nレイヤー : pages\n関数 : _generatePageSortNumber`);
+    }
+    else{
+      throw new Error(`destParentPageIdが数値ではありません。\nレイヤー : pages\n関数 : _generatePageSortNumber`);
+    }
+  }
+  else if( isNaN(destParentPageId) ){
+    throw new Error(`destParentPageIdが数値ではありません。\nレイヤー : pages\n関数 : _generatePageSortNumber`);
+  }
+  if( (destAfterPageId===null) || (destAfterPageId===undefined) ){
+    // destAfterPageIdは空欄OK。
+  }
+  else if( typeof destAfterPageId !== "number" ){
+    throw new Error(`destAfterPageIdが数値ではありません。\nレイヤー : pages\n関数 : _generatePageSortNumber`);
+  }
+  else if( isNaN(destAfterPageId) ){
+    throw new Error(`destAfterPageIdが数値ではありません。\nレイヤー : pages\n関数 : _generatePageSortNumber`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await _generatePageSortNumber_core( destParentPageId, destAfterPageId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : pages\n関数 : _generatePageSortNumber`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "number" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : pages\n関数 : _generatePageSortNumber`);
+    }
+    else{
+      throw new Error(`resultが数値ではありません。\nレイヤー : pages\n関数 : _generatePageSortNumber`);
+    }
+  }
+  else if( isNaN(result) ){
+    throw new Error(`resultが数値ではありません。\nレイヤー : pages\n関数 : _generatePageSortNumber`);
   }
   //
   //--------------------------------------------------------------------------

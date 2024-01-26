@@ -99,8 +99,8 @@ import {
   createPage,
   updatePageName,
   getPageInfo,
-  listJoinsFromTableId,
-  getTableFromJoin,
+  listViewsFromTableId,
+  getTableFromView,
   deletePage,
   getBreadcrumbs,
   cutPage,
@@ -112,6 +112,9 @@ import {
   listStaticChildren,
   listChildrenView,
   getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
 } from "./040_pages_validate.js";
 import {
   startUp,  // プログラム起動

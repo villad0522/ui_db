@@ -5,8 +5,8 @@ import {
   createPage,
   updatePageName,
   getPageInfo,
-  listJoinsFromTableId,
-  getTableFromJoin,
+  listViewsFromTableId,
+  getTableFromView,
   createView,
   deleteView,
   deletePage,
@@ -20,6 +20,9 @@ import {
   listStaticChildren,
   listChildrenView,
   getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
 } from "./040_pages_validate.js";
 import {
   getLocalIp,
@@ -281,7 +284,7 @@ async function _deleteViewColumns( viewId ){
 // SQLクエリを生成
 export async function generateSQL_core( viewId ){
   if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-    const tableId = await getTableFromJoin( viewId );
+    const tableId = await getTableFromView( viewId );
     if( !tableId ){
         throw `指定されたページには、動的リストが登録されていません。\nviewId = ${viewId}`;
     }
@@ -338,7 +341,7 @@ export async function createColumn_core( tableId, columnName, dataType, parentTa
   if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     const result = await createColumn( tableId, columnName, dataType, parentTableId );    // 下層の関数を呼び出す
     //
-    const viewIdList = await listJoinsFromTableId( tableId );
+    const viewIdList = await listViewsFromTableId( tableId );
     if( dataType !== "POINTER" ){
         if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
         // 列を表示設定にする

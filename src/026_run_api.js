@@ -112,8 +112,8 @@ import {
 } from "./046_generate_sql1_validate.js";
 import {
   getPageInfo,
-  listJoinsFromTableId,
-  getTableFromJoin,
+  listViewsFromTableId,
+  getTableFromView,
   deletePage,
   getBreadcrumbs,
   cutPage,
@@ -125,6 +125,9 @@ import {
   listStaticChildren,
   listChildrenView,
   getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
 } from "./040_pages_validate.js";
 
 
@@ -311,8 +314,18 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       };
     }
     //======================================================================
-    case "GET_PAGE_INFO":{
+    case "PASTE_PAGE":{
       if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+      const parentPageId = Number(queryParameters["page_id"]);
+      const afterPageId = Number(queryParameters["after"]);
+      await pastePage( parentPageId, afterPageId );
+      return {
+        "nextUrl": "./?" + await convertQuery_core(queryParameters),
+      };
+    }
+    //======================================================================
+    case "GET_PAGE_INFO":{
+      if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       const { pageName, memo } = await getPageInfo( pageId );
       const staticChildren = await listStaticChildren( pageId );
@@ -324,8 +337,8 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
         "staticChildren_total": staticChildren.length,
         "views": views,
         "views_total": views.length,
-        "copyingPageId": null,
-        "cuttingPageId": null
+        "copyingPageId": await getCopyingPage(),
+        "cuttingPageId": await getCuttingPage()
       };
     }
     //======================================================================
@@ -338,7 +351,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
 
 // 連想配列をクエリパラメータに変換
 export async function convertQuery_core( obj ){
-  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
   return Object.keys(obj)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
     .join('&');
