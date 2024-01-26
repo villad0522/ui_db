@@ -713,16 +713,24 @@ export async function pastePage( parentPageId, afterPageId ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( typeof result !== "number" ){
+  if( typeof result !== "object" ){
     if( !result ){
       throw new Error(`resultがNULLです。\nレイヤー : pages\n関数 : pastePage`);
     }
     else{
-      throw new Error(`resultが数値ではありません。\nレイヤー : pages\n関数 : pastePage`);
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : pages\n関数 : pastePage`);
     }
   }
-  else if( isNaN(result) ){
-    throw new Error(`resultが数値ではありません。\nレイヤー : pages\n関数 : pastePage`);
+  if( typeof result.pageId !== "number" ){
+    if( !result.pageId ){
+      throw new Error(`result.pageIdがNULLです。\nレイヤー : pages\n関数 : pastePage`);
+    }
+    else{
+      throw new Error(`result.pageIdが数値ではありません。\nレイヤー : pages\n関数 : pastePage`);
+    }
+  }
+  else if( isNaN(result.pageId) ){
+    throw new Error(`result.pageIdが数値ではありません。\nレイヤー : pages\n関数 : pastePage`);
   }
   //
   //--------------------------------------------------------------------------

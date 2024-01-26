@@ -710,6 +710,9 @@ export async function pastePage_core( newParentId, afterPageId ){
     //
     // 下層の関数を呼び出す
     const result = await pastePage( newParentId, afterPageId );
+    if(! result.pageId ){
+        throw `result.pageIdがNULLです。`;
+    }
     //
     if( pastParentId !== newParentId ){
         if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）

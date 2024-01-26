@@ -521,13 +521,17 @@ export async function pastePage_core( parentPageId, afterPageId ){
     if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
     // ページをコピーする場合
     await _copyPage( copyingPageId, parentPageId, afterPageId );
-    return copyingPageId;
+    return {
+      "pageId":copyingPageId
+    };
   }
   else if( cuttingPageId ){
     if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
     // 事前に切り取ったページを貼り付ける場合
     await _movePage_core( cuttingPageId, parentPageId, afterPageId );
-    return cuttingPageId;
+    return {
+      "pageId":cuttingPageId
+    };
   }
   else{
     throw new Error(`貼り付け操作を行う前に、切り取り または コピーを行ってください。`);
