@@ -177,7 +177,7 @@ export async function startUp_core( localUrl, isDebug ){
         {},
     );
     //
-    await reserveWord("excel_sheets"); // 予約語に登録
+    /*await reserveWord("excel_sheets"); // 予約語に登録
     await runSqlWriteOnly(
         `CREATE TABLE IF NOT EXISTS excel_sheets (
             "sheet_id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -188,7 +188,7 @@ export async function startUp_core( localUrl, isDebug ){
             FOREIGN KEY (page_id) REFERENCES views(page_id)
         );`,
         {},
-    );
+    );*/
 }
 
 

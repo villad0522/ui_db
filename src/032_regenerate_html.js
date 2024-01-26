@@ -670,7 +670,7 @@ export async function deletePage_core( pageId ){
     // 下層の関数を呼び出す
     const result = await deletePage( pageId );
     // 子ページの一覧を取得する
-    const children = await listChildrenPage_core( pageId );
+    const children = await listChildrenPage( pageId );
     // 子ページを削除する
     //  （子→親の順番になるように削除する）
     for( let i=children.length-1; i>=0; i-- ){

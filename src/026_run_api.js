@@ -289,9 +289,13 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     case "DELETE_PAGE":{
       if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
+      const newQueryParameters = {
+        ...queryParameters,
+        "page_id": await getParentPage(pageId),
+      };
       await deletePage( pageId );
       return {
-        "nextUrl": "./?" + await convertQuery_core(queryParameters),
+        "nextUrl": `/default/page_editor/index.html?` + await convertQuery_core(newQueryParameters),
       };
     }
     //======================================================================
