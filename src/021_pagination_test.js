@@ -175,7 +175,9 @@ export async function test021() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+await startUp("http://localhost:3000/", true);
   await getEndpointInfo( "/default/tables", true, true );
   await runApi("GET","/default/tables",{},{},true,true);
+  await close();
 
 }

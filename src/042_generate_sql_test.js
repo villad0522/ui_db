@@ -171,13 +171,13 @@ async function _test(){
   );
   const matrix = await runSqlReadOnly(sql,parameters);
   if( matrix.length !== 1 ){
-    throw "テスト結果が想定とは異なります。";
+    throw new Error(`テスト結果が想定とは異なります。\n現状: matrix = ${JSON.stringify(matrix,null,2)}`);
   }
   if( matrix[0]['学年'] !== 3 ){
-    throw "テスト結果が想定とは異なります。";
+    throw new Error(`テスト結果が想定とは異なります。\n現状: matrix = ${JSON.stringify(matrix,null,2)}`);
   }
   if( matrix[0]['氏名'] !== "田中太郎" ){
-    throw "テスト結果が想定とは異なります。";
+    throw new Error(`テスト結果が想定とは異なります。\n現状: matrix = ${JSON.stringify(matrix,null,2)}`);
   }
   const { sql: sql2, parameters: parameters2 } = await generateSQL(
     tableId1,
@@ -199,7 +199,6 @@ async function _test(){
     []
   );
   const matrix2 = await runSqlReadOnly( sql2, parameters2 );
-  console.log(matrix2);
   await close();
 
 }

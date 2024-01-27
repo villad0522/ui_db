@@ -184,11 +184,11 @@ async function _test(){
     });
     //
     // ページを作成
-    const { pageId: pageId1 } = await createPage( null, "ページ１", false );
+    const { pageId: pageId1 } = await createPage( 1 );
     //
     // ページに動的リストを追加
     const { viewId: viewId1 } = await createView( pageId1, tableId2 );
-    await regenerateHTML( pageId1 );
+    await regeneratePage( pageId1 );
     await close();
 
 }

@@ -579,10 +579,10 @@ export async function createPage_core( parentPageId ){
 
 
 // ビューを作成
-export async function createView_core( pageId, tableId, sqlQuery ){
+export async function createView_core( pageId, tableId ){
   if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
-    const result = await createPage( parentPageId, pageName );
-    await regeneratePage_core( result.pageId );
+    const result = await createView( pageId, tableId );
+    await regeneratePage_core( pageId );
     return result;
 }
 

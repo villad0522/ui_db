@@ -375,6 +375,6 @@ export async function reload_core(  ){
         if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
         const tableId = "t" + String(tableNumber);
         cacheData1[tableId] = tableName;
-        cacheData2[tableId] = new RegExp(`(?<=^|[^a-zA-Z0-9])${tableName}(?=\$|[^a-zA-Z0-9])`, "g");
+        cacheData2[tableId] = new RegExp(`(?<!')(?<=(^|[^a-zA-Z0-9]))${tableName}(?!')(?=\$|[^a-zA-Z0-9])`, "g");
     }
 }

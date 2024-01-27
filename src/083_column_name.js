@@ -98,6 +98,12 @@ let cacheData3 = {
     // "c8": "t1"
 };
 
+let cacheData4 = {
+    // データの例
+    // "t1": new RegExp(`(?<=^|[^a-zA-Z0-9])\bカラム名1\b(?=\$|[^a-zA-Z0-9])`, "g"),
+    // "t2": new RegExp(`(?<=^|[^a-zA-Z0-9])\bカラム名2\b(?=\$|[^a-zA-Z0-9])`, "g"),
+};
+
 //【サブ関数】メモリに再読み込み
 async function _reload() {
     const matrix = await runSqlReadOnly(
@@ -113,6 +119,7 @@ async function _reload() {
     cacheData1 = {};
     cacheData2 = {};
     cacheData3 = {};
+    cacheData4 = {};
     for (const { columnNumber, columnName, tableId } of matrix) {
         const columnId = "c" + String(columnNumber);
         cacheData1[columnId] = columnName;
@@ -125,6 +132,7 @@ async function _reload() {
             "name": columnName,
             "dataType": await getDataType(columnId),
         });
+        cacheData4[columnId] = new RegExp(`(?<!')(?<=(^|[^a-zA-Z0-9]))${columnName}(?!')(?=\$|[^a-zA-Z0-9])`, "g");
     }
 }
 
@@ -410,8 +418,10 @@ export async function runSqlReadOnly_core( sql, params ){
     //入力パラメータに含まれるカラム名をIDに置き換える
     for( const columnId in cacheData1 ){
         if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
-        const columnName = cacheData1[columnId];
-        const regexp = new RegExp(`(?<=[^a-zA-Z0-9])${columnName}(?=[^a-zA-Z0-9])`, "g");
+        const regexp = cacheData4[columnId];
+        if(!regexp){
+            throw `正規表現が見つかりません`;
+        }
         sql = sql.replaceAll( regexp, columnId );
     }
     return await runSqlReadOnly( sql, params );  // 下層の関数を実行する
@@ -423,8 +433,10 @@ export async function runSqlWriteOnly_core( sql, params ){
     //入力パラメータに含まれるカラム名をIDに置き換える
     for( const columnId in cacheData1 ){
         if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
-        const columnName = cacheData1[columnId];
-        const regexp = new RegExp(`(?<=[^a-zA-Z0-9])${columnName}(?=[^a-zA-Z0-9])`, "g");
+        const regexp = cacheData4[columnId];
+        if(!regexp){
+            throw `正規表現が見つかりません`;
+        }
         sql = sql.replaceAll( regexp, columnId );
     }
     return await runSqlReadOnly( sql, params );  // 下層の関数を実行する
