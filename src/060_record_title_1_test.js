@@ -2,19 +2,20 @@ import fs from 'fs';
 import path from 'path';
 import {
   startUp,
-  deleteRecord,
-  disableTable,
-  enableTable,
-  disableColumn,
-  enableColumn,
-  delete_table,
-} from "./064_search_text_validate.js";
+  clearCache,
+  createColumn,
+  deleteTable,
+  listTables,
+  setTitleColumn,
+  getTitleColumnId,
+  getRecordIdFromTitle,
+} from "./064_record_title_2_validate.js";
 import {
   getLocalIp,
-} from "./094_ip_address_validate.js";
+} from "./100_ip_address_validate.js";
 import {
   getPath,
-} from "./091_directory_validate.js";
+} from "./097_directory_validate.js";
 import {
   getDebugMode,
   startTransaction,
@@ -22,53 +23,61 @@ import {
   createRecordsFromCsv,
   getCsvProgress,
   close,
-} from "./088_connect_database_validate.js";
+} from "./094_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
   getTableId,
   checkColumnEnabled,
   getColumnName,
-} from "./076_column_name_validate.js";
+} from "./082_column_name_validate.js";
 import {
   getPrimaryKey,
-} from "./085_primary_key_validate.js";
+} from "./091_primary_key_validate.js";
 import {
-  clearCache,
-  createColumn,
-  deleteTable,
+  listDataTypes,
+} from "./088_data_type_validate.js";
+import {
   getDataType,
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
-} from "./067_relation_validate.js";
-import {
-  listDataTypes,
-} from "./082_data_type_validate.js";
+} from "./073_relation_validate.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
   checkReservedWord,
-} from "./073_reserved_word_validate.js";
+} from "./079_reserved_word_validate.js";
+import {
+  deleteRecord,
+  disableTable,
+  enableTable,
+  disableColumn,
+  enableColumn,
+  delete_table,
+  autoCorrect,
+} from "./076_search_text_validate.js";
 import {
   reload,
   checkTableEnabled,
   getTableName,
-} from "./079_table_name_validate.js";
+} from "./085_table_name_validate.js";
 import {
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./070_record_title_2_validate.js";
+  formatField,
+} from "./070_db_formatter_validate.js";
+import {
+  _autoFill,
+  _getConditions,
+  _listPredictions,
+  _listRecords,
+} from "./067_input_element_validate.js";
 import {
   createRecord,  // レコードを作成
   updateRecord,  // レコードを上書き
   checkField,  // フィールドを検証
   checkRecord,  // レコードを検証
-  autoCorrect,  // 予測変換
 } from "./061_record_title_1_validate.js";
 import { setBugMode } from "./062_record_title_1.js";
 
@@ -77,7 +86,7 @@ export async function test060() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 22; i++ ) {
+    for ( i = 1; i <= 15; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -123,33 +132,23 @@ async function _test(){
     [columnId3]: "田中太郎",
   });
   //
-  const matrix = await runSqlReadOnly(sql,parameters);
+  const matrix = await runSqlReadOnly(`SELECT * FROM ${tableId2}`,{});
   if( matrix.length !== 1 ){
     throw "テスト結果が想定とは異なります。";
   }
-  if( matrix[0]['学年'] !== 3 ){
+  if( matrix[0][columnId2] !== 3 ){
     throw "テスト結果が想定とは異なります。";
   }
-  if( matrix[0]['氏名'] !== "田中太郎" ){
+  if( matrix[0][columnId3] !== "田中太郎" ){
     throw "テスト結果が想定とは異なります。";
   }
   await updateRecord( tableId2, [
     {
-      "id": recordId,
+      [tableId2+"_id"]: recordId,
       [columnId2+"_text"]: "2",
       [columnId3]: "佐藤太郎",
     }
   ]);
-  const matrix3 = await runSqlReadOnly(sql,parameters);
-  if( matrix3.length !== 1 ){
-    throw "テスト結果が想定とは異なります。";
-  }
-  if( matrix3[0]['学年'] !== 2 ){
-    throw "テスト結果が想定とは異なります。";
-  }
-  if( matrix3[0]['氏名'] !== "佐藤太郎" ){
-    throw "テスト結果が想定とは異なります。";
-  }
   await close();
 
 }

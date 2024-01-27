@@ -100,9 +100,19 @@
     "layerNameEN": "record_title_1"
   },
   {
-    "layerId": "01HM1S7MRXG1TPKCR514Y0SS5J",
-    "layerNameJP": "文字列検索",
-    "layerNameEN": "search_text"
+    "layerId": "01HM7EY8CJGHQ1YBC7NCFA5BH3",
+    "layerNameJP": "レコードの見出し2",
+    "layerNameEN": "record_title_2"
+  },
+  {
+    "layerId": "01HN4KGF1ZJF46FT532P593SXR",
+    "layerNameJP": "入力要素",
+    "layerNameEN": "input_element"
+  },
+  {
+    "layerId": "01HN4M30MXQ37JVP8S24T77SFC",
+    "layerNameJP": "DBフォーマッタ―",
+    "layerNameEN": "db_formatter"
   },
   {
     "layerId": "01HM63PB1G602AZ8FNS545P6DY",
@@ -110,9 +120,9 @@
     "layerNameEN": "relation"
   },
   {
-    "layerId": "01HM7EY8CJGHQ1YBC7NCFA5BH3",
-    "layerNameJP": "レコードの見出し2",
-    "layerNameEN": "record_title_2"
+    "layerId": "01HM1S7MRXG1TPKCR514Y0SS5J",
+    "layerNameJP": "文字列検索",
+    "layerNameEN": "search_text"
   },
   {
     "layerId": "01HM5YDWDRQGWAF3EKKWMW7985",

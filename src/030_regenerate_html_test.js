@@ -6,35 +6,35 @@ import {
 } from "./034_frontend_files_validate.js";
 import {
   getLocalIp,
-} from "./094_ip_address_validate.js";
+} from "./100_ip_address_validate.js";
 import {
   getPath,
-} from "./091_directory_validate.js";
+} from "./097_directory_validate.js";
 import {
   getDebugMode,
   startTransaction,
   endTransaction,
   createRecordsFromCsv,
   getCsvProgress,
-} from "./088_connect_database_validate.js";
+} from "./094_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
   getTableId,
   checkColumnEnabled,
   getColumnName,
-} from "./076_column_name_validate.js";
+} from "./082_column_name_validate.js";
 import {
   getPrimaryKey,
-} from "./085_primary_key_validate.js";
+} from "./091_primary_key_validate.js";
 import {
   clearCache,
   deleteTable,
-  getDataType,
-  listColumnsForGUI,
-  listColumnsAll,
-  getParentTableId,
-} from "./067_relation_validate.js";
+  listTables,
+  setTitleColumn,
+  getTitleColumnId,
+  getRecordIdFromTitle,
+} from "./064_record_title_2_validate.js";
 import {
   createColumn,
   generateSQL,
@@ -43,13 +43,12 @@ import {
 } from "./037_view_validate.js";
 import {
   listDataTypes,
-} from "./082_data_type_validate.js";
+} from "./088_data_type_validate.js";
 import {
   createRecord,
   updateRecord,
   checkField,
   checkRecord,
-  autoCorrect,
 } from "./061_record_title_1_validate.js";
 import {
   createTable,
@@ -57,7 +56,13 @@ import {
   updateColumnName,
   reserveWord,
   checkReservedWord,
-} from "./073_reserved_word_validate.js";
+} from "./079_reserved_word_validate.js";
+import {
+  getDataType,
+  listColumnsForGUI,
+  listColumnsAll,
+  getParentTableId,
+} from "./073_relation_validate.js";
 import {
   deleteRecord,
   disableTable,
@@ -65,18 +70,22 @@ import {
   disableColumn,
   enableColumn,
   delete_table,
-} from "./064_search_text_validate.js";
+  autoCorrect,
+} from "./076_search_text_validate.js";
 import {
   reload,
   checkTableEnabled,
   getTableName,
-} from "./079_table_name_validate.js";
+} from "./085_table_name_validate.js";
 import {
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./070_record_title_2_validate.js";
+  formatField,
+} from "./070_db_formatter_validate.js";
+import {
+  _autoFill,
+  _getConditions,
+  _listPredictions,
+  _listRecords,
+} from "./067_input_element_validate.js";
 import {
   getPathLength,
   slicePath,

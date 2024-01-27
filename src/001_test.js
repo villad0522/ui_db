@@ -1,15 +1,17 @@
 
-import { test093 } from "./093_ip_address_test.js";
-import { test090 } from "./090_directory_test.js";
-import { test087 } from "./087_connect_database_test.js";
-import { test084 } from "./084_primary_key_test.js";
-import { test081 } from "./081_data_type_test.js";
-import { test078 } from "./078_table_name_test.js";
-import { test075 } from "./075_column_name_test.js";
-import { test072 } from "./072_reserved_word_test.js";
-import { test069 } from "./069_record_title_2_test.js";
-import { test066 } from "./066_relation_test.js";
-import { test063 } from "./063_search_text_test.js";
+import { test099 } from "./099_ip_address_test.js";
+import { test096 } from "./096_directory_test.js";
+import { test093 } from "./093_connect_database_test.js";
+import { test090 } from "./090_primary_key_test.js";
+import { test087 } from "./087_data_type_test.js";
+import { test084 } from "./084_table_name_test.js";
+import { test081 } from "./081_column_name_test.js";
+import { test078 } from "./078_reserved_word_test.js";
+import { test075 } from "./075_search_text_test.js";
+import { test072 } from "./072_relation_test.js";
+import { test069 } from "./069_db_formatter_test.js";
+import { test066 } from "./066_input_element_test.js";
+import { test063 } from "./063_record_title_2_test.js";
 import { test060 } from "./060_record_title_1_test.js";
 import { test057 } from "./057_sort_test.js";
 import { test054 } from "./054_columnPath_test.js";
@@ -37,6 +39,8 @@ async function test() {
     if( process.argv.length < 3 ){
       // testNumberが指定されていない場合
       console.log("全てのレイヤーの動作テストを行います。");
+      await test099();
+      await test096();
       await test093();
       await test090();
       await test087();
@@ -75,6 +79,12 @@ async function test() {
     const testNumber = Number(process.argv[2]);
     console.log(`テストコード${ testNumber }を実行します。`);
     switch( testNumber ){
+      case 99:
+        await test099();
+        break;
+      case 96:
+        await test096();
+        break;
       case 93:
         await test093();
         break;
