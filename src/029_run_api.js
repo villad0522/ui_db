@@ -91,6 +91,7 @@ import {
   checkTableEnabled,
   getTableName,
   listTableNamesAll,
+  getTableIdFromName,
 } from "./091_table_name_validate.js";
 import {
   formatField,
@@ -354,7 +355,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
         "breadcrumbs_total": breadcrumbs.length,
         "staticChildren": staticChildren,
         "staticChildren_total": staticChildren.length,
-        "tables_option": await listTableNamesAll(),
+        "tableName_option": await listTableNamesAll(),
         "views": views,
         "views_total": views.length,
         "copyingPageId": await getCopyingPage(),
@@ -378,6 +379,16 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       );
     }
     //======================================================================
+    case "CREATE_VIEW":{
+      if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+      const pageId = Number(queryParameters["page_id"]);
+      const tableName = requestBody["tableName"];
+      await  createView( pageId, tableName );
+      return {
+        "nextUrl": "./?" + await convertQuery_core(queryParameters),
+      };
+    }
+    //======================================================================
     default:
       throw `サポートされていないAPIコマンドです。\ncommandName = ${apiInfo.commandName}`;
   }
@@ -387,7 +398,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
 
 // 連想配列をクエリパラメータに変換
 export async function convertQuery_core( obj ){
-  if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
   return Object.keys(obj)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
     .join('&');

@@ -91,6 +91,7 @@ import {
   checkTableEnabled,
   getTableName,
   listTableNamesAll,
+  getTableIdFromName,
 } from "./091_table_name_validate.js";
 import {
   formatField,
@@ -158,7 +159,7 @@ export async function test027() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 20; i++ ) {
+    for ( i = 1; i <= 21; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

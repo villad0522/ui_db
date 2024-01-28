@@ -118,21 +118,38 @@ window.myFetch = myFetch;
 // フォームデータを画面に反映させる関数
 function _setFormData(formData) {
     formData.forEach((value, key) => {
-        // name属性の値が変数keyと等しいHTML要素を探す。
-        const elements = document.getElementsByName(key);
-        if (elements.length === 0) {
-            return;
-        }
-        const element = elements[0];
-        // フォームに値を設定
-        if (element.type === 'checkbox' || element.type === 'radio') {
-            elements[0].checked = (value.toLowerCase() === "true") || (value === "1");
-        }
-        else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-            element.value = value ?? "";
+        if (String(key).includes("_option")) {
+            key = key.split("_option")[0];
+            // name属性の値が変数keyと等しいHTML要素を探す。
+            const elements = document.getElementsByName(key);
+            if (elements.length === 0) {
+                return;
+            }
+            console.log(key);
+            const element = elements[0];
+            // 予測変換を設定
+            const optionElement = document.createElement("option");
+            optionElement.value = value;
+            optionElement.innerText = value;
+            element.appendChild(optionElement);
         }
         else {
-            element.innerText = value ?? "";
+            // name属性の値が変数keyと等しいHTML要素を探す。
+            const elements = document.getElementsByName(key);
+            if (elements.length === 0) {
+                return;
+            }
+            const element = elements[0];
+            // フォームに値を設定
+            if (element.type === 'checkbox' || element.type === 'radio') {
+                elements[0].checked = (value.toLowerCase() === "true") || (value === "1");
+            }
+            else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.value = value ?? "";
+            }
+            else {
+                element.innerText = value ?? "";
+            }
         }
     });
 }

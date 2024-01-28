@@ -82,6 +82,12 @@ let cacheData2 = {
     // "t2": new RegExp(`(?<=^|[^a-zA-Z0-9])\bテーブル名2\b(?=\$|[^a-zA-Z0-9])`, "g"),
 };
 
+let cacheData3 = {
+    // データの例
+    // "テーブル名１": "t2",
+    // "テーブル名２": "t8"
+};
+
 // インメモリキャッシュを削除する
 export async function clearCache_core(  ){
   if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -371,10 +377,12 @@ export async function reload_core(  ){
     );
     cacheData1 = {};
     cacheData2 = {};
+    cacheData3 = {};
     for (const { tableNumber, tableName } of matrix) {
         if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
         const tableId = "t" + String(tableNumber);
         cacheData1[tableId] = tableName;
+        cacheData3[tableName] = tableId;
         cacheData2[tableId] = new RegExp(`(?<!')(?<=(^|[^a-zA-Z0-9]))${tableName}(?!')(?=\$|[^a-zA-Z0-9])`, "g");
     }
 }
@@ -383,4 +391,10 @@ export async function reload_core(  ){
 export async function listTableNamesAll_core(  ){
   if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
   return Object.values(cacheData1);
+}
+
+// テーブル名からIDを取得
+export async function getTableIdFromName_core( tableName ){
+  if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+  return cacheData3[tableName];
 }

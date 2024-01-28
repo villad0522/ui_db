@@ -13,6 +13,7 @@ import {
   getTableName_core,  // IDからテーブル名を取得
   reload_core,  // 【サブ関数】メモリに再読み込み
   listTableNamesAll_core,  // テーブルの一覧を取得（高速）
+  getTableIdFromName_core,  // テーブル名からIDを取得
 } from "./092_table_name.js";
 
 
@@ -771,6 +772,50 @@ export async function listTableNamesAll(  ){
         throw new Error(`result[${i}]が文字列ではありません。\nレイヤー : table_name\n関数 : listTableNamesAll`);
       }
     }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「getTableIdFromName_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function getTableIdFromName( tableName ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableName !== "string" ){
+    if( !tableName ){
+      throw new Error(`tableNameがNULLです。\nレイヤー : table_name\n関数 : getTableIdFromName`);
+    }
+    else{
+      throw new Error(`tableNameが文字列ではありません。\nレイヤー : table_name\n関数 : getTableIdFromName`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await getTableIdFromName_core( tableName );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : table_name\n関数 : getTableIdFromName`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( (result===null) || (result===undefined) ){
+    // resultは空欄OK。
+  }
+  else if( typeof result !== "string" ){
+    throw new Error(`resultが文字列ではありません。\nレイヤー : table_name\n関数 : getTableIdFromName`);
   }
   //
   //--------------------------------------------------------------------------

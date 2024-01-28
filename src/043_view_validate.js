@@ -58,7 +58,7 @@ export async function startUp( localUrl, isDebug ){
 //#######################################################################################
 // 関数「createView_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function createView( pageId, tableId ){
+export async function createView( pageId, tableName ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof pageId !== "number" ){
@@ -72,12 +72,12 @@ export async function createView( pageId, tableId ){
   else if( isNaN(pageId) ){
     throw new Error(`pageIdが数値ではありません。\nレイヤー : view\n関数 : createView`);
   }
-  if( typeof tableId !== "string" ){
-    if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : view\n関数 : createView`);
+  if( typeof tableName !== "string" ){
+    if( !tableName ){
+      throw new Error(`tableNameがNULLです。\nレイヤー : view\n関数 : createView`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : view\n関数 : createView`);
+      throw new Error(`tableNameが文字列ではありません。\nレイヤー : view\n関数 : createView`);
     }
   }
   //
@@ -85,7 +85,7 @@ export async function createView( pageId, tableId ){
   // メイン処理を実行
   let result;
   try{
-    result = await createView_core( pageId, tableId );
+    result = await createView_core( pageId, tableName );
   }
   catch(error){
     if( typeof error === "string" ){

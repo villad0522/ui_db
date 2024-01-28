@@ -94,6 +94,7 @@ import {
   checkTableEnabled,
   getTableName,
   listTableNamesAll,
+  getTableIdFromName,
 } from "./091_table_name_validate.js";
 import {
   formatField,
@@ -193,8 +194,9 @@ export async function startUp_core( localUrl, isDebug ){
 
 
 // ビューを作成
-export async function createView_core( pageId, tableId ){
+export async function createView_core( pageId, tableName ){
   if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+    const tableId = await getTableIdFromName(tableName);
     const result = await createView( pageId, tableId );  // 下層の関数を実行する
     //
     // 自動的に列を表示設定にしてあげる

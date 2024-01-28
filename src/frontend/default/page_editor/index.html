@@ -89,18 +89,17 @@
                 <button onclick="myFetch('./rename_page/json');" type="button" class="btn btn-primary">
                     保存
                 </button>
-            </form>
-            <br>
-            <br>
-            <br>
-            <!--  -->
-            <!--  -->
-            <!-- 子ページへのリンクここから -->
-            <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
-                <script>
-                    let htmlText = "";
-                    for (let i = 0; i < 35; i++) {
-                        htmlText += `
+                <br>
+                <br>
+                <br>
+                <!--  -->
+                <!--  -->
+                <!-- 子ページへのリンクここから -->
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+                    <script>
+                        let htmlText = "";
+                        for (let i = 0; i < 35; i++) {
+                            htmlText += `
                 <div>
                     <input name="staticChildren${i}_pageId" style="display: none;">
                     <!--  -->
@@ -132,39 +131,55 @@
                         <br>
                     </div>
                 </div>`;
-                    }
-                    document.write(htmlText);
-                </script>
-                <div style="text-align: center;">
-                    <div class="tile_add" onclick="myFetch('./create_page/json')">
-                        <i class="bi bi-plus" style="font-size: 70px; position: relative; top: -5px;"></i>
-                        <br>
-                        子ページを追加
-                        <br>
+                        }
+                        document.write(htmlText);
+                    </script>
+                    <div style="text-align: center;">
+                        <div class="tile_add" onclick="myFetch('./create_page/json')">
+                            <i class="bi bi-plus" style="font-size: 70px; position: relative; top: -5px;"></i>
+                            <br>
+                            子ページを追加
+                            <br>
+                        </div>
+                        <button onclick="myFetch('./paste_page/json?after_id=0');" type="button" class="btn btn-outline-warning btn-sm">
+                            末尾に貼り付け
+                        </button>
                     </div>
-                    <button onclick="myFetch('./paste_page/json?after_id=0');" type="button" class="btn btn-outline-warning btn-sm">
-                        末尾に貼り付け
-                    </button>
+                    <div class="tile_empty"></div>
+                    <div class="tile_empty"></div>
+                    <div class="tile_empty"></div>
+                    <div class="tile_empty"></div>
+                    <div class="tile_empty"></div>
+                    <div class="tile_empty"></div>
+                    <div class="tile_empty"></div>
+                    <div class="tile_empty"></div>
                 </div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-            </div>
-            <!--  -->
-            <!--  -->
-            <!-- 基本データここから -->
-            <br>
-            <br>
-            <br>
-            <br>
-            <button onclick="myFetch('./regenerate_page/json');" type="button" class="btn btn-outline-dark">
-                ページを再生成
-            </button>
+                <br>
+                <br>
+                <!--  -->
+                <!--  -->
+                <!-- ビュー新規作成フォーム -->
+                <div class="card">
+                    <div class="card-body row">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <select name="tableName" class="form-select" aria-label="テーブルを選択してください">
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <button onclick="myFetch('./create_view/json')" type="button" class="btn btn-primary">
+                                ビューを作成
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <button onclick="myFetch('./regenerate_page/json');" type="button" class="btn btn-outline-dark">
+                    ページを再生成
+                </button>
+            </form>
         </main>
     </body>
 

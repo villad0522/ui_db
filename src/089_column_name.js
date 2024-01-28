@@ -15,6 +15,7 @@ import {
   checkTableEnabled,
   getTableName,
   listTableNamesAll,
+  getTableIdFromName,
 } from "./091_table_name_validate.js";
 import {
   getLocalIp,
@@ -473,13 +474,15 @@ export async function checkColumnEnabled_core( columnId ){
 export async function listColumnsAll_core( tableId ){
   if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
     if(!cacheData2[tableId]){
-        throw "指定されたテーブルIDは存在しません。";
+        if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+        // カラムが１つも無いテーブルの場合は、ここに到達する
+        return [];
     }
     return structuredClone( cacheData2[tableId] );
 }
 
 // IDからカラム名を取得
 export async function getColumnName_core( columnId ){
-  if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData1[columnId];
 }

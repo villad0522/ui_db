@@ -90,6 +90,7 @@ import {
   checkTableEnabled,
   getTableName,
   listTableNamesAll,
+  getTableIdFromName,
 } from "./091_table_name_validate.js";
 import {
   formatField,
@@ -213,7 +214,7 @@ function _convertResponseData({ endpointPath, endpointInfo, response }) {
         }
         for (let i = 0; i < parentValue.length; i++) {
             const childValue = parentValue[i];
-            const newKey = parentKey.replace( "_option", i + "_option" );
+            const newKey = parentKey.replace( "_option","_option"+i );
             response2[newKey] = childValue;
         }
     }
@@ -251,7 +252,7 @@ function _convertResponseInfo({ endpointPath, oldResponseInfo }) {
         }
         // 予測変換の場合
         for (let i = 0; i < 10; i++) {
-            const newKey = parentKey.replace( "_option", i + "_option" );
+            const newKey = parentKey.replace( "_option", "_option"+i );
             newResponseInfo[newKey] = parentInfo;
         }
     }

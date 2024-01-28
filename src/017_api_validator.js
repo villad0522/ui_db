@@ -90,6 +90,7 @@ import {
   checkTableEnabled,
   getTableName,
   listTableNamesAll,
+  getTableIdFromName,
 } from "./091_table_name_validate.js";
 import {
   formatField,
@@ -280,7 +281,9 @@ function _validatorArray({ array, parentKey, arrayInfo, allData, endpointPath })
             if( childKey.endsWith("_option") ){
                 // 予測変換の候補の場合
                 const childValue = array[i][childKey];
-                newArray[i][childKey] = childValue;
+                if(childValue){
+                    newArray[i][childKey] = childValue;
+                }
                 continue;
             }
             const childInfo = arrayInfo.children[childKey];
@@ -309,6 +312,8 @@ function _validatorArray({ array, parentKey, arrayInfo, allData, endpointPath })
     }
     return newArray;
 }
+
+
 
 function _validator({ value, dataType, isRequired }) {
     switch (dataType) {
@@ -354,7 +359,8 @@ function _validator({ value, dataType, isRequired }) {
             if (value) {
                 // 空欄ではない場合
                 // 文字列に変換して、前後の空白を切り取って、よく確かめる。
-                if (String(value).trim()) {
+                value = String(value).trim();
+                if (value) {
                     // やっぱり空欄ではない場合
                     return String(value);
                 }
@@ -411,9 +417,11 @@ function _validateResponseData({ endpointPath, endpointInfo, response }) {
         if (!parentInfo || typeof parentInfo !== 'object') {
             throw `レスポンスデータの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}"`;
         }
-        if( parentKey.endsWith("_option") ){
+        if( parentKey.includes("_option") ){
             // 予測変換の候補の場合
-            response2[parentKey] = parentValue;
+            if(parentValue){
+                response2[parentKey] = parentValue;
+            }
             continue;
         }
         if (parentInfo.isArray) {

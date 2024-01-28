@@ -23,7 +23,7 @@
             "example": "○○を入力する際は、○○してください。",
             "isRequired": false
         },
-        "tables_option": {
+        "tableName_option": {
             "description": "テーブル名の候補",
             "dataType": "TEXT",
             "example": "名簿"
@@ -96,11 +96,6 @@
                     "dataType": "TEXT",
                     "description": "テーブルID",
                     "example": "t4"
-                },
-                "sqlQuery": {
-                    "dataType": "TEXT",
-                    "description": "SQLクエリ",
-                    "example": "SELECT * FROM ○○;"
                 },
                 "onePageMaxSize": {
                     "dataType": "INTEGER",

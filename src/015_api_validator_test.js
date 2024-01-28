@@ -90,6 +90,7 @@ import {
   checkTableEnabled,
   getTableName,
   listTableNamesAll,
+  getTableIdFromName,
 } from "./091_table_name_validate.js";
 import {
   formatField,
@@ -195,7 +196,6 @@ async function _test(){
     await createTable("テーブル２");
     await createTable("テーブル３");
     const result = await runApi("GET","/default/page_editor",{"page_id":1 },{},true,true);
-    console.log(result);
     await close();
 
 }

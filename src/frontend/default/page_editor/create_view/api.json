@@ -1,0 +1,28 @@
+{
+    "httpMethod": "POST",
+    "description": "ページを作成します。",
+    "commandName": "CREATE_VIEW",
+    "queryParameters": {
+        "page_id": {
+            "dataType": "NUMBER",
+            "description": "ページID",
+            "isRequired": true,
+            "example": 1
+        }
+    },
+    "requestBody": {
+        "tableName": {
+            "dataType": "TEXT",
+            "description": "テーブル名",
+            "isRequired": true,
+            "example": "名簿"
+        }
+    },
+    "response": {
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "./"
+        }
+    }
+}
