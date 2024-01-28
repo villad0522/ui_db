@@ -27,7 +27,7 @@ window.backButton = function () {
         }
     }
     // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
-    window.location.href = "../index.html" + window.location.search;
+    window.location.href = "/default/tables/index.html" + window.location.search;
 }
 //
 //###############################################################

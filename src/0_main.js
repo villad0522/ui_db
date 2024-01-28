@@ -2,7 +2,15 @@
 import express from 'express';
 import cors from 'cors';
 import opener from "opener";
-import { runApi, startUp, getLocalIp, getPath, close } from "./002_index.js";
+import multer from "multer";
+import {
+    runApi,
+    startUp,
+    getLocalIp,
+    getPath,
+    close,
+    createRecordsFromCsv,
+} from "./002_index.js";
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -70,13 +78,40 @@ function _launchServer(app, hostname, startPort, maxPort) {
 }
 //============================================================
 
+// ファイルの保存先ディレクトリを指定
+const storage = multer.diskStorage({
+    destination: async function (req, file, cb) {
+        const cacheDirPath = await getPath("CACHE");
+        // 保存先ディレクトリを指定
+        cb(null, cacheDirPath);
+    },
+    filename: function (req, file, cb) {
+        // 保存されるファイル名を指定
+        cb(null, "upload.csv");
+    }
+});
 
+// アップロードを制限する場合は、fileFilterなどを使用して設定できます
+
+// Multerのインスタンスを生成
+const upload = multer({ storage: storage });
+
+// アップロードされたファイルを処理するエンドポイント
+app.post('/upload', upload.single('input_file'), async (req, res) => {
+    // ファイルが正常にアップロードされた場合の処理
+    res.send('ファイルがアップロードされました。');
+    try {
+        await createRecordsFromCsv(req.file.path);
+    }
+    catch (err) {
+        console.error(err);
+    }
+});
 
 app.get('*/json', _api);
 app.get('*/form', _api);
 app.post('*/json', _api);
 app.post('*/form', _api);
-
 
 
 //============================================================

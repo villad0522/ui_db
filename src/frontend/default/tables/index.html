@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" data-bs-theme="dark">
 
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>システム管理</title>
+        <title>データ本体</title>
         <!--  -->
         <!-- bootstrap5.3を読み込む -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -16,19 +16,34 @@
         <script src="./script.js" type="module"></script>
     </head>
 
-    <body style="background: #eee;">
-        <header style="position: sticky; top: 0; padding: 5px; width: max-content; box-sizing: border-box; background: #eee; z-index: 999;">
-            <a href="../" class="btn btn-outline-primary">
-                戻る
-            </a>
-        </header>
+    <body>
+        <nav class="navbar navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a href="/custom/1/index.html" class="btn btn-light me-2">
+                    戻る
+                </a>
+            </div>
+        </nav>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/custom/1/index.html">
+                        トップ
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    本体データ
+                </li>
+            </ol>
+        </nav>
         <main class="container">
+            <br>
+            <br>
             <form>
-                <br>
                 <div class="row">
                     <div class="col-sm-4">
                         <h3 style="display: inline-block;">
-                            表の一覧
+                            本体データ
                         </h3>
                         （<span name="tables_total"></span>件）
                     </div>
@@ -43,7 +58,7 @@
                 </div>
                 <div class="row">
                     <div class="col-6 col-sm-4 col-md-3 col-lg-2" style="margin-top: 30px">
-                        <div class="card" style="background: #f0f0f0;">
+                        <div class="card">
                             <div class="card-img-top" style="padding: 15% 20% 0 20%;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
@@ -54,7 +69,7 @@
                                     表を作成
                                 </a>
                                 <div style="padding-top: 10px;"></div>
-                                <a href="./csv.html" class="btn btn-primary btn-sm" style="display: block; width: 100%;">
+                                <a href="/default/uploader/" class="btn btn-primary btn-sm" style="display: block; width: 100%;">
                                     CSV取り込み
                                 </a>
                             </div>
@@ -141,9 +156,19 @@
                         <input name="tables_pageLast" type="text" style="display: none;">
                     </ul>
                 </div>
-                <br>
-                <br>
             </form>
+            <br>
+            <br>
+            <br>
+            <br>
+            <a href="/default/api_doc/" class="btn btn-primary">
+                API仕様書
+            </a>
+            <button onclick="myFetch('/default/clear_cache/json');" type="button" class="btn btn-outline-primary">
+                キャッシュデータを削除
+            </button>
+            <br>
+            <br>
         </main>
     </body>
 

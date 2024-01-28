@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>API仕様書</title>
+        <title>CSVアップロード</title>
         <!--  -->
         <!-- bootstrap5.3を読み込む -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -12,14 +12,18 @@
         <!-- bootstrapのドキュメントはこちら -->
         <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->
         <!--  -->
+        <!--  -->
+        <!-- bootstrapのアイコンを読み込む -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <!--  -->
+        <!-- 自作CSSを読み込む -->
         <link rel="stylesheet" href="./style.css" type="text/css">
-        <script src="script.js" defer></script>
     </head>
 
     <body>
         <nav class="navbar navbar-dark bg-primary">
             <div class="container-fluid">
-                <a href="/default/tables/index.html" class="btn btn-light me-2">
+                <a href="./index.html" class="btn btn-light me-2">
                     戻る
                 </a>
             </div>
@@ -27,27 +31,28 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="/custom/1/index.html">
-                        トップ
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
                     <a href="/default/tables/index.html">
-                        本体データ
+                        テーブル一覧
                     </a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    API仕様書
+                    CSVアップロード
                 </li>
             </ol>
         </nav>
         <main class="container">
-            <br>
-            <h3>APIエンドポイント一覧</h3>
-            <br>
-            <div id="my_list" class="row"></div>
-            <br>
-            <br>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <br>
+                <br>
+                <br>
+                <br>
+                <label for="formFile" class="form-label">
+                    CSVファイルを選択してください
+                </label>
+                <input class="form-control" type="file" id="formFile" name="input_file">
+                <br>
+                <input class="btn btn-primary" type="submit" value="送信">
+            </form>
         </main>
     </body>
 

@@ -10,13 +10,13 @@
 /* クリックできるカード */
 
 .clickable {
-    background: #fafafa;
+    background: #333;
     cursor: pointer;
     box-shadow: 0 10px 10px -6px rgba(0, 0, 0, 0.3);
 }
 
 .clickable:hover {
-    background: #fff;
+    background: #444;
 }
 
 /* テーブル名を表示するinput要素 */
