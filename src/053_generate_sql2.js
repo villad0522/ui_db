@@ -114,13 +114,14 @@ export function setBugMode( mode ){
 }
 
 
+
+
 // SQLクエリを生成
 export async function generateSQLwithoutDuplication_core( tableId, selectData, joinData, whereData, orderData ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   const primaryKey = await getPrimaryKey( tableId );
   //
   let sql = "";
-  const parameters = {};
   //===================================================================================
   if(selectData.length===0){
     throw "SELECT句の長さがゼロです。";
@@ -178,7 +179,6 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
   const whereList = [];
   for( const { viewColumnId, conditionalExpression, joinId, columnName, conditionValue } of whereData ){
     if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
-    parameters[":"+viewColumnId] = conditionValue;
     switch(conditionalExpression.trim()){
       case "=":
         if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -241,8 +241,5 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
   }
   //===================================================================================
   //
-  return {
-    sql: sql,
-    parameters: parameters,
-  };
+  return sql;
 }

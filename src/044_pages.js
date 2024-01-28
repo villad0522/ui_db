@@ -152,7 +152,6 @@ export async function startUp_core( localUrl, isDebug ){
       "view_name" TEXT NOT NULL,
       "page_id" INTEGER NOT NULL,
       "table_id" TEXT NOT NULL,
-      "sql_query" TEXT NOT NULL,
       "one_page_max_size" NUMBER NOT NULL DEFAULT 23,
       "view_type" TEXT NOT NULL DEFAULT 'TABLE',
       "sort_number" REAL NOT NULL DEFAULT 64,
@@ -332,7 +331,7 @@ export async function getTableFromView_core( viewId ){
 
 
 // ビューを作成
-export async function createView_core( pageId, tableId, sqlQuery ){
+export async function createView_core( pageId, tableId ){
   if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
   const tableName = await getTableName( tableId );
   if(!tableName){
@@ -340,13 +339,12 @@ export async function createView_core( pageId, tableId, sqlQuery ){
   }
   const timestamp = new Date().getTime();
   await runSqlWriteOnly(
-    `INSERT INTO views( view_name, page_id, table_id, sql_query, created_at )
-        VALUES ( :viewName, :pageId, :tableId, :sqlQuery, :createdAt );`,
+    `INSERT INTO views( view_name, page_id, table_id, created_at )
+        VALUES ( :viewName, :pageId, :tableId, :createdAt );`,
     {
       ":viewName": tableName,
       ":pageId": pageId,
       ":tableId": tableId,
-      ":sqlQuery": sqlQuery,
       ":createdAt": timestamp,    // 作成日時
     },
   );
@@ -614,7 +612,6 @@ export async function listChildrenView_core( pageId ){
         pages.page_name AS pageName,
         views.view_id AS viewId,
         views.table_id AS tableId,
-        views.sql_query AS sqlQuery,
         views.one_page_max_size AS onePageMaxSize,
         views.view_type AS viewType
       FROM pages

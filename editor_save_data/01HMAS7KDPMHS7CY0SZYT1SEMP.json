@@ -1,1 +1,66 @@
-[{"functionId":"test","functionNameJP":"テストコード","functionNameEN":"test","beforeCode":"","innerCode":"\n","afterCode":"","parametersName":[],"parametersDataType":[],"returnValue":"void"},{"functionNameJP":"SQLクエリを生成","functionNameEN":"generateSQLwithoutDuplication","parametersName":["tableId","selectData","joinData","whereData","orderData"],"parametersDataType":["string",[{"viewColumnId":"string","viewColumnType":"string","joinId":"string","columnName":"string","viewColumnName":"string"}],[{"fromJoinId":"string","fromColumnName":"string","toJoinId":"string","toTableName":"string","toColumnName":"string"}],[{"viewColumnId":"string","conditionalExpression":"string","joinId":"string","columnName":"string","viewColumnName":"string"}],[{"joinId":"string","columnName":"string","isAscending":"boolean"}]],"returnValue":{"sql":"string","parameters":"any"},"functionId":"01HMASY3YGYY8KNJ1KW0KJM985","beforeCode":"\n","innerCode":"\n  const primaryKey = await getPrimaryKey( tableId );\n  //\n  let sql = \"\";\n  const parameters = {};\n  //===================================================================================\n  if(selectData.length===0){\n    throw \"SELECT句の長さがゼロです。\";\n  }\n  const selectList = [];\n  for( const { viewColumnId, viewColumnType, joinId, columnName, viewColumnName } of selectData ){\n    switch(viewColumnType){\n      case \"RAW\":\n        selectList.push(`${columnName} AS '${viewColumnName}'`);\n        break;\n      case \"SUM\":\n        selectList.push(`SUM(${columnName}) AS '${viewColumnName}'`);\n        break;\n      case \"MAX\":\n        selectList.push(`MAX(${columnName}) AS '${viewColumnName}'`);\n        break;\n      case \"MIN\":\n        selectList.push(`MIN(${columnName}) AS '${viewColumnName}'`);\n        break;\n      case \"AVG\":\n        selectList.push(`AVG(${columnName}) AS '${viewColumnName}'`);\n        break;\n      case \"COUNT\":\n        selectList.push(`COUNT(${columnName}) AS '${viewColumnName}'`);\n        break;\n      default:\n        throw `サポートされていない集合関数が指定されました。viewColumnType=${viewColumnType}`;\n    }\n  }\n  sql += `SELECT ${selectList.join(\",\\n  \")}\\n`;\n  sql += `\\n`;\n  //===================================================================================\n  sql += `FROM ${tableId}\\n`;\n  sql += `  LEFT OUTER JOIN sort_numbers AS sort_main\\n`;\n  sql += `    ON ( ${primaryKey} = sort_main.record_id ) AND ( sort_main.table_id = '${tableId}' )\\n`;\n  //\n  for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnName } of joinData ){\n    sql += `  \\n`;\n    sql += `  LEFT OUTER JOIN ${toTableName}\\n`;\n    sql += `    ON ${fromColumnName} = ${toColumnName}\\n`;\n    //\n    sql += `  LEFT OUTER JOIN sort_numbers AS sort_${toJoinId}\\n`;\n    sql += `    ON ( ${toColumnName} = sort_${toJoinId}.record_id ) AND ( sort_${toJoinId}.table_id = '${toTableName}' )\\n`;\n  }\n  sql += `\\n`;\n  //===================================================================================\n  const whereList = [];\n  for( const { viewColumnId, conditionalExpression, joinId, columnName, conditionValue } of whereData ){\n    parameters[\":\"+viewColumnId] = conditionValue;\n    switch(conditionalExpression.trim()){\n      case \"=\":\n        whereList.push(`( ${columnName} = :${viewColumnId} )`);\n        break;\n      case \"!=\":\n        whereList.push(`( ${columnName} != :${viewColumnId} )`);\n        break;\n      case \">\":\n        whereList.push(`( ${columnName} > :${viewColumnId} )`);\n        break;\n      case \"<\":\n        whereList.push(`( ${columnName} < :${viewColumnId} )`);\n        break;\n      case \">=\":\n        whereList.push(`( ${columnName} >= :${viewColumnId} )`);\n        break;\n      case \"<=\":\n        whereList.push(`( ${columnName} <= :${viewColumnId} )`);\n        break;\n      default:\n        throw `サポートされていない条件演算子が指定されました。conditionalExpression = ${conditionalExpression}`;\n    }\n    parameterCount++;\n  }\n  if( whereList.length > 0 ){\n    sql += `WHERE ${whereList.join(\"\\n  AND \")}\\n`;\n    sql += `\\n`;\n  }\n  //===================================================================================\n  sql += `GROUP BY ${primaryKey}\\n`;\n  sql += `\\n`;\n  //===================================================================================\n  const orderByList = [];\n  for( const { joinId, columnName, isAscending } of orderData ){\n    if(isAscending){\n      orderByList.push(`${columnName} ASC`);\n    }\n    else{\n      orderByList.push(`${columnName} DESC`);\n    }\n  }\n  for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnId } of joinData ){\n    orderByList.push(`sort_${toJoinId}.sort_number ASC`);\n  }\n  if( orderByList.length > 0 ){\n    sql += `ORDER BY ${orderByList.join(\",\\n  \")}\\n`;\n    sql += `\\n`;\n  }\n  //===================================================================================\n  //\n  return {\n    sql: sql,\n    parameters: parameters,\n  };\n","afterCode":"\n"}]
+[
+    {
+        "functionId": "test",
+        "functionNameJP": "テストコード",
+        "functionNameEN": "test",
+        "beforeCode": "",
+        "innerCode": "\n",
+        "afterCode": "",
+        "parametersName": [],
+        "parametersDataType": [],
+        "returnValue": "void"
+    },
+    {
+        "functionNameJP": "SQLクエリを生成",
+        "functionNameEN": "generateSQLwithoutDuplication",
+        "parametersName": [
+            "tableId",
+            "selectData",
+            "joinData",
+            "whereData",
+            "orderData"
+        ],
+        "parametersDataType": [
+            "string",
+            [
+                {
+                    "viewColumnId": "string",
+                    "viewColumnType": "string",
+                    "joinId": "string",
+                    "columnName": "string",
+                    "viewColumnName": "string"
+                }
+            ],
+            [
+                {
+                    "fromJoinId": "string",
+                    "fromColumnName": "string",
+                    "toJoinId": "string",
+                    "toTableName": "string",
+                    "toColumnName": "string"
+                }
+            ],
+            [
+                {
+                    "viewColumnId": "string",
+                    "conditionalExpression": "string",
+                    "joinId": "string",
+                    "columnName": "string",
+                    "viewColumnName": "string"
+                }
+            ],
+            [
+                {
+                    "joinId": "string",
+                    "columnName": "string",
+                    "isAscending": "boolean"
+                }
+            ]
+        ],
+        "returnValue": "string",
+        "functionId": "01HMASY3YGYY8KNJ1KW0KJM985",
+        "beforeCode": "\n\n\n",
+        "innerCode": "\n  const primaryKey = await getPrimaryKey( tableId );\n  //\n  let sql = \"\";\n  //===================================================================================\n  if(selectData.length===0){\n    throw \"SELECT句の長さがゼロです。\";\n  }\n  const selectList = [];\n  for( const { viewColumnId, viewColumnType, joinId, columnName, viewColumnName } of selectData ){\n    switch(viewColumnType){\n      case \"RAW\":\n        selectList.push(`${columnName} AS '${viewColumnName}'`);\n        break;\n      case \"SUM\":\n        selectList.push(`SUM(${columnName}) AS '${viewColumnName}'`);\n        break;\n      case \"MAX\":\n        selectList.push(`MAX(${columnName}) AS '${viewColumnName}'`);\n        break;\n      case \"MIN\":\n        selectList.push(`MIN(${columnName}) AS '${viewColumnName}'`);\n        break;\n      case \"AVG\":\n        selectList.push(`AVG(${columnName}) AS '${viewColumnName}'`);\n        break;\n      case \"COUNT\":\n        selectList.push(`COUNT(${columnName}) AS '${viewColumnName}'`);\n        break;\n      default:\n        throw `サポートされていない集合関数が指定されました。viewColumnType=${viewColumnType}`;\n    }\n  }\n  sql += `SELECT ${selectList.join(\",\\n  \")}\\n`;\n  sql += `\\n`;\n  //===================================================================================\n  sql += `FROM ${tableId}\\n`;\n  sql += `  LEFT OUTER JOIN sort_numbers AS sort_main\\n`;\n  sql += `    ON ( ${primaryKey} = sort_main.record_id ) AND ( sort_main.table_id = '${tableId}' )\\n`;\n  //\n  for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnName } of joinData ){\n    sql += `  \\n`;\n    sql += `  LEFT OUTER JOIN ${toTableName}\\n`;\n    sql += `    ON ${fromColumnName} = ${toColumnName}\\n`;\n    //\n    sql += `  LEFT OUTER JOIN sort_numbers AS sort_${toJoinId}\\n`;\n    sql += `    ON ( ${toColumnName} = sort_${toJoinId}.record_id ) AND ( sort_${toJoinId}.table_id = '${toTableName}' )\\n`;\n  }\n  sql += `\\n`;\n  //===================================================================================\n  const whereList = [];\n  for( const { viewColumnId, conditionalExpression, joinId, columnName, conditionValue } of whereData ){\n    switch(conditionalExpression.trim()){\n      case \"=\":\n        whereList.push(`( ${columnName} = :${viewColumnId} )`);\n        break;\n      case \"!=\":\n        whereList.push(`( ${columnName} != :${viewColumnId} )`);\n        break;\n      case \">\":\n        whereList.push(`( ${columnName} > :${viewColumnId} )`);\n        break;\n      case \"<\":\n        whereList.push(`( ${columnName} < :${viewColumnId} )`);\n        break;\n      case \">=\":\n        whereList.push(`( ${columnName} >= :${viewColumnId} )`);\n        break;\n      case \"<=\":\n        whereList.push(`( ${columnName} <= :${viewColumnId} )`);\n        break;\n      default:\n        throw `サポートされていない条件演算子が指定されました。conditionalExpression = ${conditionalExpression}`;\n    }\n    parameterCount++;\n  }\n  if( whereList.length > 0 ){\n    sql += `WHERE ${whereList.join(\"\\n  AND \")}\\n`;\n    sql += `\\n`;\n  }\n  //===================================================================================\n  sql += `GROUP BY ${primaryKey}\\n`;\n  sql += `\\n`;\n  //===================================================================================\n  const orderByList = [];\n  for( const { joinId, columnName, isAscending } of orderData ){\n    if(isAscending){\n      orderByList.push(`${columnName} ASC`);\n    }\n    else{\n      orderByList.push(`${columnName} DESC`);\n    }\n  }\n  for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnId } of joinData ){\n    orderByList.push(`sort_${toJoinId}.sort_number ASC`);\n  }\n  if( orderByList.length > 0 ){\n    sql += `ORDER BY ${orderByList.join(\",\\n  \")}\\n`;\n    sql += `\\n`;\n  }\n  //===================================================================================\n  //\n  return sql;\n",
+        "afterCode": "\n"
+    }
+]

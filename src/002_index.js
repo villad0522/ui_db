@@ -42,7 +42,6 @@ import {
   createColumn,
   generateSQL,
   addViewColumn,
-  getSimpleSQL,
 } from "./040_view_validate.js";
 import {
   listDataTypes,
@@ -259,7 +258,6 @@ export {
   _generatePageSortNumber,
   _copyPage,
   addViewColumn,
-  getSimpleSQL,
   getPageData,
   createDirectories,
   regeneratePage,

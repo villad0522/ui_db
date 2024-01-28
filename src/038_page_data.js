@@ -7,7 +7,6 @@ import {
   generateSQL,
   createView,
   addViewColumn,
-  getSimpleSQL,
 } from "./040_view_validate.js";
 import {
   getLocalIp,
@@ -153,10 +152,12 @@ export function setBugMode( mode ){
 export async function getPageData_core( pageId, queryParameters ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   const results = {};
-  const views = listChildrenView( pageId );
+  const views = await listChildrenView( pageId );
   for( const { viewId } of views ){
     if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    const { sql, parameters } = await generateSQL( viewId, columnIdList );
+    const { sql, parameters } = await generateSQL( viewId, queryParameters );
     const matrix = await runSqlReadOnly(sql,parameters);
+    results["v"+viewId] = matrix;
   }
+  return results;
 }

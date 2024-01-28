@@ -125,7 +125,6 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
   const primaryKey = await getPrimaryKey( tableId );
   //
   let sql = "";
-  const parameters = {};
   //===================================================================================
   if(selectData.length===0){
     throw "SELECT句の長さがゼロです。";
@@ -183,7 +182,6 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
   const whereList = [];
   for( const { viewColumnId, conditionalExpression, joinId, columnName, conditionValue } of whereData ){
     if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
-    parameters[":"+viewColumnId] = conditionValue;
     switch(conditionalExpression.trim()){
       case "=":
         if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -246,8 +244,5 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
   }
   //===================================================================================
   //
-  return {
-    sql: sql,
-    parameters: parameters,
-  };
+  return sql;
 }

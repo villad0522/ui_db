@@ -133,7 +133,6 @@ import {
   generateSQL,  // SQLクエリを生成
   createColumn,  // カラムを作成
   addViewColumn,  // 結合済み列を作成
-  getSimpleSQL,  // 最低限のSQLクエリを生成する
 } from "./040_view_validate.js";
 import { setBugMode } from "./041_view.js";
 
@@ -142,7 +141,7 @@ export async function test039() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 22; i++ ) {
+    for ( i = 1; i <= 25; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -189,9 +188,13 @@ async function _test(){
   // ページに動的リストを追加
   const { viewId: viewId1 } = await createView( pageId1, tableId2 );
   //
-  const { sql, parameters } = await generateSQL( viewId1 );
+  const { sql, parameters } = await generateSQL(
+    viewId1,
+    {
+        ["p5"+columnId2]: recordId,
+    }
+  );
   const matrix = await runSqlReadOnly(sql,parameters);
-  console.log( matrix );
   if( matrix.length !== 1 ){
     throw "テスト結果が想定とは異なります。";
   }

@@ -194,8 +194,7 @@ export async function startUp_core( localUrl, isDebug ){
 // ビューを作成
 export async function createView_core( pageId, tableId ){
   if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    const sqlQuery = await getSimpleSQL_core( tableId );
-    const result = await createView( pageId, tableId, sqlQuery );  // 下層の関数を実行する
+    const result = await createView( pageId, tableId );  // 下層の関数を実行する
     //
     // 自動的に列を表示設定にしてあげる
     await _deleteViewColumns( result.viewId );
@@ -307,7 +306,7 @@ export async function generateSQL_core( viewId, queryParameters ){
     if( !tableId ){
         throw `指定されたページには、動的リストが登録されていません。\nviewId = ${viewId}`;
     }
-    const viewColumns = await runSqlReadOnly(
+    let viewColumns = await runSqlReadOnly(
         `SELECT
             "d" || view_column_id AS viewColumnId,
             view_column_type AS viewColumnType,
@@ -321,20 +320,64 @@ export async function generateSQL_core( viewId, queryParameters ){
             ":viewId": viewId,
         },
     );
-    const columns = {
+    for( let i=0; i<viewColumns.length; i++ ){
+        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+        const columnPath = viewColumns[i].columnPath;
+        viewColumns[i].pathLength = await getPathLength(columnPath);
+        viewColumns[i].columnId = await pathToColumnId(columnPath);
+    }
+    viewColumns = viewColumns.sort((a,b)=>{
+        if( a.pathLength > b.pathLength ){
+            if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+            return 1;
+        }
+        else{
+            if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+            return -1;
+        }
+    });
+    const buf = {
         //  "c78": [ "d45", "d99" ],
         //  "c6": [ "d12" ],
     };
-    for( const { viewColumnId, columnPath } of viewColumns ){
-        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-        const pathLength = await getPathLength(columnPath);
-        const columnId = await pathToColumnId(columnPath);
+    for( const { viewColumnId, columnId } of viewColumns ){
+        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+        if( !buf[columnId] ){
+            if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+            buf[columnId] = [];
+        }
+        buf[columnId].push(viewColumnId);
+    }
+    console.log(buf);
+    const parameters = {};
+    for( const key in queryParameters ){
+        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+        // クエリパラメータ―のキーは「p4c8」などの形式。
+        if (!/^p(\d+)c(\d+)$/.test(key)) continue;
+        const match = key.match(/\d+/g);
+        if (!match || match.length!==2)continue;
+        const pageNumber = parseInt(match[0], 10);
+        const columnNumber = parseInt(match[1], 10);
+        const columnId = "c" + columnNumber;
+        if( !buf[columnId] ) continue;
+        if( !Array.isArray(buf[columnId]) ) continue;
+        const viewColumnId = buf[columnId][0];
+        buf[columnId].shift();  // 先頭を削除
+        const inputText = queryParameters[key];
+        const value = await formatField( inputText, columnId, false );
+        parameters[viewColumnId] = value;
+        conditionInfoList.push({
+            "viewColumnId" : viewColumnId,
+            "conditionalExpression": "=",
+        });
     }
     const conditionInfoList = await runSqlReadOnly(
         `SELECT
             "d" || conditions.view_column_id AS viewColumnId,
             conditions.conditional_expression AS conditionalExpression,
-            conditions.conditional_value AS conditionalValue
+            conditions.conditional_value AS conditionalValue,
+            view_columns.view_column_type AS viewColumnType,
+            view_columns.column_path AS columnPath
         FROM conditions
         INNER JOIN view_columns
             ON conditions.view_column_id = view_columns.view_column_id
@@ -343,18 +386,20 @@ export async function generateSQL_core( viewId, queryParameters ){
             ":viewId": viewId,
         },
     );
-    for( const key in queryParameters ){
-        if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
-        // クエリパラメータ―のキーは「p4c8」などの形式。
-        if (!/^p(\d+)c(\d+)$/.test(key)) continue;
-        const match = key.match(/\d+/g);
-        if (!match || match.length!==2)continue;
-        const pageNumber = parseInt(match[0], 10);
-        const columnNumber = parseInt(match[1], 10);
-        conditionInfoList.push({
-            "viewColumnId" : "d3",
-            "conditionalExpression": "="
-        });
+    for( const { viewColumnId, conditionalValue, viewColumnType, columnPath } of conditionInfoList ){
+        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        if( viewColumnType==="RAW" ){
+            if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+            const columnId = await pathToColumnId(columnPath);
+            const value = await formatField( conditionalValue, columnId, false );
+            parameters[viewColumnId] = value;
+        }
+        else{
+            if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+            // MAX や SUM などの集合関数の場合
+            if(isNaN(conditionalValue))continue;
+            parameters[viewColumnId] = Number(conditionalValue);
+        }
     }
     const sortOrders = await runSqlReadOnly(
         `SELECT
@@ -368,7 +413,7 @@ export async function generateSQL_core( viewId, queryParameters ){
             ":viewId": viewId,
         },
     );
-    const { sql, parameters } = await generateSQL(
+    const sql = await generateSQL(
         tableId,
         viewColumns,
         conditionInfoList,
@@ -380,15 +425,15 @@ export async function generateSQL_core( viewId, queryParameters ){
 
 // カラムを作成
 export async function createColumn_core( tableId, columnName, dataType, parentTableId ){
-  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     const result = await createColumn( tableId, columnName, dataType, parentTableId );    // 下層の関数を呼び出す
     //
     const viewIdList = await listViewsFromTableId( tableId );
     if( dataType !== "POINTER" ){
-        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
         // 列を表示設定にする
         for( const viewId of viewIdList ){
-            if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
             await addViewColumn_core({ 
                 viewId: viewId,
                 viewColumnType: "RAW",
@@ -400,13 +445,13 @@ export async function createColumn_core( tableId, columnName, dataType, parentTa
     }
     const parentColumnId = await getTitleColumnId( parentTableId );
     if(!parentColumnId){
-        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
         console.error(`タイトル列が設定されていません。${parentTableId}`);
         return result;
     }
     // 列を表示設定にする
     for( const viewId of viewIdList ){
-        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
         await addViewColumn_core({ 
             viewId: viewId,
             viewColumnType: "RAW",
@@ -421,7 +466,7 @@ export async function createColumn_core( tableId, columnName, dataType, parentTa
 
 // 結合済み列を作成
 export async function addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName ){
-  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
     if( typeof viewId !== "number" || isNaN(viewId) ){
         throw `ページIDが数値ではありません`;
     }
@@ -438,14 +483,14 @@ export async function addViewColumn_core( viewId, viewColumnType, columnPath, vi
     );
     const numbers = new Set();
     for( const { excelColumnIndex } of matrix ){
-        if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
         numbers.add( excelColumnIndex );
     }
     let excelColumnIndex;
     for( let i=0; i<=numbers.size; i++ ){
-        if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
         if(!numbers.has(i)){
-            if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
             excelColumnIndex = i;
             break;
         }
@@ -473,50 +518,4 @@ export async function addViewColumn_core( viewId, viewColumnType, columnPath, vi
             ":excelColumnIndex": excelColumnIndex,
         },
     );
-}
-
-
-
-// 最低限のSQLクエリを生成する
-export async function getSimpleSQL_core( tableId ){
-  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
-    // SQLクエリを生成する
-    const viewColumns = [];
-    const columns = await listColumnsAll( tableId );
-    for( let i=0; i<columns.length; i++ ){
-        if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
-        const { id, name, dataType, parentTableId } = columns[i];
-        //
-        // 文字列からアンダーバー（_）以降を切り取る
-        const columnName = _cutStringAfterUnderscore(name);
-        if( dataType !== "POINTER" ){
-            if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
-            // 列を表示設定にする
-            viewColumns.push({
-                viewColumnId: "d"+i,
-                viewColumnType: "RAW",
-                columnPath: `main.${id}`,
-                viewColumnName: columnName,
-            });
-            continue;
-        }
-        if( !parentTableId ){
-            throw `親テーブルが不明です。\nテーブルID=${tableId}\nカラムID=${id}`;
-        }
-        const parentColumnId = await getTitleColumnId( parentTableId );
-        if(!parentColumnId){
-            if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
-            console.error(`createView > タイトル列が設定されていません。${parentTableId}`);
-            continue;
-        }
-        // 列を表示設定にする
-        viewColumns.push({
-            viewColumnId: "d"+i,
-            viewColumnType: "RAW",
-            columnPath: `main.${id} > ${parentColumnId}`,
-            viewColumnName: columnName,
-        });
-    }
-    const { sql: sqlQuery } = await generateSQL( tableId, viewColumns, [], [] );
-    return sqlQuery;
 }

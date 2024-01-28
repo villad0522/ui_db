@@ -7,7 +7,6 @@ import {
   generateSQL,
   createView,
   addViewColumn,
-  getSimpleSQL,
 } from "./040_view_validate.js";
 import {
   getLocalIp,
@@ -166,5 +165,46 @@ export async function test036() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+  await startUp("http://localhost:3000/", true);
+  //
+  const { tableId: tableId1 } = await createTable("学年");
+  const { columnId: columnId1 } = await createColumn( tableId1, "学年", "INTEGER", null );
+  // 見出しの役割を果たすカラムを登録する
+  await setTitleColumn( columnId1 );
+  const { recordId: recordId } = await createRecord( tableId1, {
+    [columnId1]: 3,
+  });
+  //
+  const { tableId: tableId2 } = await createTable("名簿");
+  const { columnId: columnId2  } = await createColumn( tableId2, "学年", "POINTER", tableId1 );
+  const { columnId: columnId3  } = await createColumn( tableId2, "氏名", "TEXT", null );
+  await createRecord( tableId2, {
+    [columnId2]: recordId,
+    [columnId3]: "田中太郎",
+  });
+  //
+  // ページを作成
+  const { pageId: pageId1 } = await createPage( 1, "ページ１" );
+  //
+  // ページに動的リストを追加
+  const { viewId: viewId1 } = await createView( pageId1, tableId2 );
+  //
+  const pageData = await getPageData(
+    pageId1,
+    {
+        ["p5"+columnId2]: recordId,
+    }
+  );
+  const matrix = pageData["v"+viewId1];
+  if( matrix.length !== 1 ){
+    throw "テスト結果が想定とは異なります。";
+  }
+  if( matrix[0]['学年'] !== 3 ){
+    throw "テスト結果が想定とは異なります。";
+  }
+  if( matrix[0]['氏名'] !== "田中太郎" ){
+    throw "テスト結果が想定とは異なります。";
+  }
+  await close();
 
 }

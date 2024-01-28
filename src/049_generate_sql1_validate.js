@@ -254,20 +254,12 @@ export async function generateSQLwithDuplication( tableId, selectData, joinData,
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( typeof result !== "object" ){
+  if( typeof result !== "string" ){
     if( !result ){
       throw new Error(`resultがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
     }
     else{
-      throw new Error(`resultがオブジェクトではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
-    }
-  }
-  if( typeof result.sql !== "string" ){
-    if( !result.sql ){
-      throw new Error(`result.sqlがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
-    }
-    else{
-      throw new Error(`result.sqlが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+      throw new Error(`resultが文字列ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
     }
   }
   //

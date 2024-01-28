@@ -5,7 +5,6 @@ import {
   generateSQL_core,  // SQLクエリを生成
   createColumn_core,  // カラムを作成
   addViewColumn_core,  // 結合済み列を作成
-  getSimpleSQL_core,  // 最低限のSQLクエリを生成する
 } from "./041_view.js";
 
 
@@ -360,52 +359,6 @@ export async function addViewColumn( viewId, viewColumnType, columnPath, viewCol
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「getSimpleSQL_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function getSimpleSQL( tableId ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  if( typeof tableId !== "string" ){
-    if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : view\n関数 : getSimpleSQL`);
-    }
-    else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : view\n関数 : getSimpleSQL`);
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await getSimpleSQL_core( tableId );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : view\n関数 : getSimpleSQL`);
-    }
-    else{
-      throw error;
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
-  if( typeof result !== "string" ){
-    if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : view\n関数 : getSimpleSQL`);
-    }
-    else{
-      throw new Error(`resultが文字列ではありません。\nレイヤー : view\n関数 : getSimpleSQL`);
-    }
-  }
   //
   //--------------------------------------------------------------------------
   return result;

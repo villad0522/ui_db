@@ -373,7 +373,7 @@ export async function getTableFromView( viewId ){
 //#######################################################################################
 // 関数「createView_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function createView( pageId, tableId, sqlQuery ){
+export async function createView( pageId, tableId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof pageId !== "number" ){
@@ -395,20 +395,12 @@ export async function createView( pageId, tableId, sqlQuery ){
       throw new Error(`tableIdが文字列ではありません。\nレイヤー : pages\n関数 : createView`);
     }
   }
-  if( typeof sqlQuery !== "string" ){
-    if( !sqlQuery ){
-      throw new Error(`sqlQueryがNULLです。\nレイヤー : pages\n関数 : createView`);
-    }
-    else{
-      throw new Error(`sqlQueryが文字列ではありません。\nレイヤー : pages\n関数 : createView`);
-    }
-  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await createView_core( pageId, tableId, sqlQuery );
+    result = await createView_core( pageId, tableId );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -1033,14 +1025,6 @@ export async function listChildrenView( pageId ){
       }
       else{
         throw new Error(`result[${i}].tableIdが文字列ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
-      }
-    }
-    if( typeof result[i].sqlQuery !== "string" ){
-      if( !result[i].sqlQuery ){
-        throw new Error(`result[${i}].sqlQueryがNULLです。\nレイヤー : pages\n関数 : listChildrenView`);
-      }
-      else{
-        throw new Error(`result[${i}].sqlQueryが文字列ではありません。\nレイヤー : pages\n関数 : listChildrenView`);
       }
     }
     if( typeof result[i].onePageMaxSize !== "number" ){

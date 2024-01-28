@@ -6,7 +6,6 @@ import {
   generateSQL,
   createView,
   addViewColumn,
-  getSimpleSQL,
 } from "./040_view_validate.js";
 import {
   getLocalIp,

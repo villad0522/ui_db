@@ -50,7 +50,6 @@ import {
   createColumn,
   generateSQL,
   addViewColumn,
-  getSimpleSQL,
 } from "./040_view_validate.js";
 import {
   listDataTypes,
