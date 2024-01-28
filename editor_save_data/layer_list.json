@@ -1,5 +1,10 @@
 [
   {
+    "layerId": "01HN7Z9DASN481SVT7C8MQPBZY",
+    "layerNameJP": "新しいレイヤー",
+    "layerNameEN": "layerName"
+  },
+  {
     "layerId": "01HMNZ8SGAZXY68HQTQN230ZHH",
     "layerNameJP": "テンプレート管理",
     "layerNameEN": "excel_template"

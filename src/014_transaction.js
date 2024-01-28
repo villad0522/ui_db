@@ -1,12 +1,16 @@
-
+// トランザクション処理
+//
 import {
   startUp,
-  createTemplate,
-  deleteTemplate,
-  updateTemplateName,
-  listTemplates,
-  getTemplateName,
-} from "./007_excel_template_validate.js";
+  deleteView,
+  createPage,
+  updatePageName,
+  createView,
+  deletePage,
+  pastePage,
+  regeneratePage,
+  escapeHTML,
+} from "./037_regenerate_html_validate.js";
 import {
   getLocalIp,
 } from "./109_ip_address_validate.js";
@@ -103,16 +107,6 @@ import {
   _fillMasterData,
 } from "./076_input_element_validate.js";
 import {
-  deleteView,
-  createPage,
-  updatePageName,
-  createView,
-  deletePage,
-  pastePage,
-  regeneratePage,
-  escapeHTML,
-} from "./037_regenerate_html_validate.js";
-import {
   getPathLength,
   slicePath,
   checkPath,
@@ -158,123 +152,40 @@ import {
 } from "./022_auto_correct_validate.js";
 import {
   runApi,
-} from "./013_transaction_validate.js";
+} from "./016_api_document_validate.js";
 import {
   convertQuery,
 } from "./031_run_api_validate.js";
-import {
-  updateExcel,
-  openExcel,
-} from "./010_excel_edit_validate.js";
+
+
+//【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
+let bugMode = 0;
+//           0 : バグを混入させない（通常動作）
+//     1,2,3.. : 意図的にバグを混入させる
+
+
+export function setBugMode( mode ){
+    bugMode = mode;
+}
+
+
+
+
 
 export {
   startUp,
   getLocalIp,
   getPath,
   getDebugMode,
-  startTransaction,
-  endTransaction,
-  runSqlReadOnly,
-  runSqlWriteOnly,
-  createRecordsFromCsv,
-  getCsvProgress,
   close,
-  getPrimaryKey,
-  clearCache,
-  createColumn,
-  listDataTypes,
-  createRecord,
-  updateRecord,
-  checkField,
-  checkRecord,
-  createTable,
-  deleteTable,
-  getDataType,
-  deleteRecord,
-  reload,
-  disableTable,
-  enableTable,
-  updateTableName,
-  listTables,
-  checkTableEnabled,
-  getTableName,
-  listTableNamesAll,
-  getTableIdFromName,
-  disableColumn,
-  enableColumn,
-  updateColumnName,
-  listColumnsForGUI,
-  getTableId,
-  checkColumnEnabled,
-  listColumnsAll,
-  getColumnName,
-  reserveWord,
-  checkReservedWord,
-  delete_table,
-  autoCorrect,
-  getParentTableId,
-  formatField,
-  autoFill,
-  _autoFill,
-  _getConditions,
-  _listPredictions,
-  _listRecords,
-  createInputGroup,
-  createInputElement,
-  deleteView,
-  changeInputType,
-  _fillMasterData,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-  getPathLength,
-  slicePath,
-  checkPath,
-  pathToColumnId,
-  getJoinIdMap,
-  checkTableDuplication,
-  getSelectData,
-  getJoinData,
-  getWhereData,
-  getOrderData,
-  generateSQLwithoutDuplication,
-  generateSQLwithDuplication,
-  generateSQL,
-  createPage,
-  updatePageName,
-  getPageInfo,
-  listViewsFromTableId,
-  getTableFromView,
-  createView,
-  deletePage,
-  getBreadcrumbs,
-  cutPage,
-  copyPage,
-  pastePage,
-  getCuttingPage,
-  getCopyingPage,
-  listAllPages,
-  listStaticChildren,
-  listChildrenView,
-  getParentPage,
-  listChildrenPage,
-  _movePage,
-  _generatePageSortNumber,
-  _copyPage,
-  addViewColumn,
-  getPageData,
-  createDirectories,
-  regeneratePage,
-  escapeHTML,
-  getEndpointInfo,
-  listEndpoints,
-  runApi,
-  convertQuery,
-  updateExcel,
-  openExcel,
-  createTemplate,
-  deleteTemplate,
-  updateTemplateName,
-  listTemplates,
-  getTemplateName,
+  runApi
 };
+
+// APIを実行する関数
+export async function runApi_core( httpMethod, endpointPath, queryParameters, requestBody, isRequestFormData, isResponseFormData ){
+  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
+  await startTransaction();
+  const result = await runApi( httpMethod, endpointPath, queryParameters, requestBody, isRequestFormData, isResponseFormData );
+  await endTransaction();
+  return result;
+}

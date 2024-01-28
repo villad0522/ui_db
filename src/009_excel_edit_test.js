@@ -1,12 +1,16 @@
-
+import fs from 'fs';
+import path from 'path';
 import {
   startUp,
-  createTemplate,
-  deleteTemplate,
-  updateTemplateName,
-  listTemplates,
-  getTemplateName,
-} from "./007_excel_template_validate.js";
+  deleteView,
+  createPage,
+  updatePageName,
+  createView,
+  deletePage,
+  pastePage,
+  regeneratePage,
+  escapeHTML,
+} from "./037_regenerate_html_validate.js";
 import {
   getLocalIp,
 } from "./109_ip_address_validate.js";
@@ -103,16 +107,6 @@ import {
   _fillMasterData,
 } from "./076_input_element_validate.js";
 import {
-  deleteView,
-  createPage,
-  updatePageName,
-  createView,
-  deletePage,
-  pastePage,
-  regeneratePage,
-  escapeHTML,
-} from "./037_regenerate_html_validate.js";
-import {
   getPathLength,
   slicePath,
   checkPath,
@@ -163,118 +157,38 @@ import {
   convertQuery,
 } from "./031_run_api_validate.js";
 import {
-  updateExcel,
-  openExcel,
+  updateExcel,  // エクセルファイルを更新する関数
+  openExcel,  // Excelファイルを開く関数
 } from "./010_excel_edit_validate.js";
+import { setBugMode } from "./011_excel_edit.js";
 
-export {
-  startUp,
-  getLocalIp,
-  getPath,
-  getDebugMode,
-  startTransaction,
-  endTransaction,
-  runSqlReadOnly,
-  runSqlWriteOnly,
-  createRecordsFromCsv,
-  getCsvProgress,
-  close,
-  getPrimaryKey,
-  clearCache,
-  createColumn,
-  listDataTypes,
-  createRecord,
-  updateRecord,
-  checkField,
-  checkRecord,
-  createTable,
-  deleteTable,
-  getDataType,
-  deleteRecord,
-  reload,
-  disableTable,
-  enableTable,
-  updateTableName,
-  listTables,
-  checkTableEnabled,
-  getTableName,
-  listTableNamesAll,
-  getTableIdFromName,
-  disableColumn,
-  enableColumn,
-  updateColumnName,
-  listColumnsForGUI,
-  getTableId,
-  checkColumnEnabled,
-  listColumnsAll,
-  getColumnName,
-  reserveWord,
-  checkReservedWord,
-  delete_table,
-  autoCorrect,
-  getParentTableId,
-  formatField,
-  autoFill,
-  _autoFill,
-  _getConditions,
-  _listPredictions,
-  _listRecords,
-  createInputGroup,
-  createInputElement,
-  deleteView,
-  changeInputType,
-  _fillMasterData,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-  getPathLength,
-  slicePath,
-  checkPath,
-  pathToColumnId,
-  getJoinIdMap,
-  checkTableDuplication,
-  getSelectData,
-  getJoinData,
-  getWhereData,
-  getOrderData,
-  generateSQLwithoutDuplication,
-  generateSQLwithDuplication,
-  generateSQL,
-  createPage,
-  updatePageName,
-  getPageInfo,
-  listViewsFromTableId,
-  getTableFromView,
-  createView,
-  deletePage,
-  getBreadcrumbs,
-  cutPage,
-  copyPage,
-  pastePage,
-  getCuttingPage,
-  getCopyingPage,
-  listAllPages,
-  listStaticChildren,
-  listChildrenView,
-  getParentPage,
-  listChildrenPage,
-  _movePage,
-  _generatePageSortNumber,
-  _copyPage,
-  addViewColumn,
-  getPageData,
-  createDirectories,
-  regeneratePage,
-  escapeHTML,
-  getEndpointInfo,
-  listEndpoints,
-  runApi,
-  convertQuery,
-  updateExcel,
-  openExcel,
-  createTemplate,
-  deleteTemplate,
-  updateTemplateName,
-  listTemplates,
-  getTemplateName,
-};
+
+export async function test009() {
+    setBugMode(0);    // バグを混入させない（通常動作）
+    await _test();  // テストを実行（意図的にバグを混入させない）
+    let i;
+    for ( i = 1; i <= 8; i++ ) {
+        setBugMode(i);      // 意図的にバグを混入させる
+        try {
+            await _test();  // 意図的にバグを混入させてテストを実行
+        }
+        catch (err) {
+            continue;   // 意図的に埋め込んだバグを正常に検出できた場合
+        }
+        // 意図的に埋め込んだバグを検出できなかった場合
+        setBugMode(0);    // 意図的なバグの発生を止める
+        console.log(`レイヤー「excel_edit」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
+        return;
+    }
+    // 意図的に埋め込んだ全てのバグを、正常に検出できた
+    setBugMode(0);    // 意図的なバグの発生を止める
+    console.log(`レイヤー「excel_edit」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
+    return;
+}
+
+
+// このレイヤーの動作テストを実行する関数
+async function _test(){
+    
+
+}
