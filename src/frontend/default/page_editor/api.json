@@ -23,6 +23,11 @@
             "example": "○○を入力する際は、○○してください。",
             "isRequired": false
         },
+        "tables_option": {
+            "description": "テーブル名の候補",
+            "dataType": "TEXT",
+            "example": "名簿"
+        },
         "breadcrumbs": {
             "title": "パンくずリストに表示する親ページの一覧",
             "isArray": true,

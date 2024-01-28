@@ -25,6 +25,11 @@
     "layerNameEN": "api_validator"
   },
   {
+    "layerId": "01HN7F6HCXJ0YHCW5CA0E7ENNK",
+    "layerNameJP": "予測変換",
+    "layerNameEN": "auto_correct"
+  },
+  {
     "layerId": "01HMKSCCJ6ZEY2ZWMT7BWRB49E",
     "layerNameJP": "配列変換",
     "layerNameEN": "convert_array"
