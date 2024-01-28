@@ -121,6 +121,20 @@ export async function autoFill( viewId, inputTexts, isClick ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( result===null || result===undefined ){
+    throw new Error(`resultがNULLです。\nレイヤー : input_element\n関数 : autoFill`);
+  }
+  else if( typeof result !== "object" ){
+    throw new Error(`resultがオブジェクトではありません。\nレイヤー : input_element\n関数 : autoFill`);
+  }
+  else if( result.constructor !== Object ){
+    throw new Error(`resultが辞書型ではありません。\nレイヤー : input_element\n関数 : autoFill`);
+  }
+  for( const i in result ){
+    if( typeof i !== "string" ){
+      throw new Error(`resultのキーが文字列ではありません。\nレイヤー : input_element\n関数 : autoFill`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;

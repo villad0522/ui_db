@@ -85,7 +85,7 @@ export async function test066() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 37; i++ ) {
+    for ( i = 1; i <= 39; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -119,18 +119,56 @@ async function _test(){
   const { tableId: tableId2 } = await createTable("名簿");
   const { columnId: columnId2  } = await createColumn( tableId2, "学年", "POINTER", tableId1 );
   const { columnId: columnId3  } = await createColumn( tableId2, "氏名", "TEXT", null );
-  await createRecord( tableId2, {
+  const { recordId: recordId2 } = await createRecord( tableId2, {
     [columnId2]: recordId,
     [columnId3]: "田中太郎",
   });
+  //
+  const { tableId: tableId3 } = await createTable("成績表");
+  const { columnId: columnId4  } = await createColumn( tableId3, "学生", "POINTER", tableId2 );
+  const { columnId: columnId5  } = await createColumn( tableId3, "科目", "TEXT", null );
+  const { columnId: columnId6  } = await createColumn( tableId3, "得点", "INTEGER", null );
+  await createRecord( tableId3, {
+    [columnId4]: recordId2,
+    [columnId5]: "国語",
+    [columnId6]: 34,
+  });
+  //
+  // 入力グループを作成（成績表）
+  await createInputGroup(
+    "group3", // inputGroupId
+    89, // viewId
+    tableId3, // tableId
+    null, // nextGroupId
+    null, // nextColumnId
+    3 // processingOrder
+  );
+  //
+  // 入力要素を作成（科目）
+  await createInputElement(
+    8, // viewColumnId
+    "group3", // inputGroupId
+    columnId5, // columnId
+    "TEXTBOX", // inputType
+  );
+  //
+  // 入力要素を作成（得点）
+  await createInputElement(
+    7, // viewColumnId
+    "group3", // inputGroupId
+    columnId6, // columnId
+    "TEXTBOX", // inputType
+  );
+  //
+  //===================================
   //
   // 入力グループを作成（名簿）
   await createInputGroup(
     "group1", // inputGroupId
     89, // viewId
     tableId2, // tableId
-    null, // nextGroupId
-    null, // nextColumnId
+    "group3", // nextGroupId
+    columnId4, // nextColumnId
     2 // processingOrder
   );
   //
@@ -141,6 +179,8 @@ async function _test(){
     columnId3, // columnId
     "TEXTBOX", // inputType
   );
+  //
+  //===================================
   //
   // 入力グループを作成（学年）
   await createInputGroup(
@@ -160,18 +200,8 @@ async function _test(){
     "TEXTBOX", // inputType
   );
   //
-  /* const result1 = await autoFill(
-    89, // viewId
-    {
-      "vc9": "田",
-      "vc10": 3,
-    },
-    true,// isClick
-  );*/
-  
-  
-  
-  const result1 = _autoFill({ 
+  /*
+  const result1 = await _autoFill({ 
     viewColumnIdList: [10],
     isClick: true,
     tableId: tableId1,
@@ -179,9 +209,10 @@ async function _test(){
       "vc10": 3,
     },
     conditions:{},
+    isAutoFill: true,
   });
   if( result1.recordId !== recordId ){
-    throw `実行結果が想定外です。`;
+    throw new Error(`実行結果が想定外です。\n${JSON.stringify(result1, null, 2)}`);
   }
   //
   const result2 = await _autoFill({ 
@@ -194,7 +225,18 @@ async function _test(){
     conditions:{
       [columnId2]: recordId,
     },
+    isAutoFill: true,
   });
+  */
+  const result3 = await autoFill(
+    89, // viewId
+    {
+      "vc9": "田",
+      "vc10": 3,
+    },
+    true,// isClick
+  );
+  console.log(result3);
   //
   // 入力要素を削除
   await deleteView( 89 );
