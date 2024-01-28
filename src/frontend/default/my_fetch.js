@@ -125,7 +125,6 @@ function _setFormData(formData) {
         }
         const element = elements[0];
         // フォームに値を設定
-        console.log(key, typeof value);
         if (element.type === 'checkbox' || element.type === 'radio') {
             elements[0].checked = (value.toLowerCase() === "true") || (value === "1");
         }

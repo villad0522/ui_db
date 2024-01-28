@@ -197,9 +197,10 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
             },
             requestFormExample: _getExampleUrlencoded(infoForm.requestBody),
             //-------------------------------------------------------
-            responseJson: {
-                ...infoJson.response,
-            },
+            responseJson: _convertResponseInfo({
+                endpointPath,
+                oldResponseInfo: infoJson.response,
+            }),
             responseJsonExample: _getExampleJson(infoJson.response),
             //-------------------------------------------------------
             responseForm: {
@@ -230,7 +231,14 @@ function _getExampleJson(info) {
     const exampleJson = {};
     for (const parentKey in info) {
         const parentInfo = info[parentKey];
-        if (parentInfo.isArray) {
+        if (parentKey.endsWith("_option")) {
+            exampleJson[parentKey] = [
+                parentInfo.example,
+                parentInfo.example,
+                parentInfo.example,
+            ];
+        }
+        else if (parentInfo.isArray) {
             exampleJson[parentKey] = [
                 {},
             ];
@@ -269,4 +277,43 @@ function _getExampleUrlencoded(info) {
         rows.push(text);
     }
     return rows.join("\n&");
+}
+
+
+function _convertResponseInfo({ endpointPath, oldResponseInfo }) {
+    const newResponseInfo = {};
+    for (const parentKey in oldResponseInfo) {
+        const parentInfo = oldResponseInfo[parentKey];
+        if (!parentInfo || typeof parentInfo !== 'object') {
+            throw `レスポンスの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}"`;
+        }
+        if( parentKey.endsWith("_option") ){
+            // 予測変換の場合
+            newResponseInfo[parentKey] = {
+                ...parentInfo,
+                dataType: parentInfo.dataType + "の配列",
+            };
+            continue;
+        }
+        if (!parentInfo.isArray) {
+            // 配列ではない場合
+            newResponseInfo[parentKey] = parentInfo;
+            continue;
+        }
+        // 配列の場合
+        if (!parentInfo.children || typeof parentInfo.children !== 'object') {
+            throw `レスポンスデータの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}.children"`;
+        }
+        for (const childKey in parentInfo.children) {
+            const childInfo = parentInfo.children[childKey];
+            if( childKey.endsWith("_option") ){
+                // 予測変換の場合
+                newResponseInfo[parentKey][childKey] = {
+                    ...childInfo,
+                    dataType: childInfo.dataType + "の配列",
+                };
+            }
+        }
+    }
+    return newResponseInfo;
 }

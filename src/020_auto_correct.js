@@ -192,7 +192,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
 function _convertResponseData({ endpointPath, endpointInfo, response }) {
     // response を response2 に変換する
     const response2 = {};
-    for (let parentKey in endpointInfo.response) {
+    for (const parentKey in endpointInfo.response) {
         const parentInfo = endpointInfo.response[parentKey];
         if (!parentInfo || typeof parentInfo !== 'object') {
             throw `レスポンスの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}"`;
@@ -211,10 +211,9 @@ function _convertResponseData({ endpointPath, endpointInfo, response }) {
         if (!Array.isArray(parentValue)) {
             throw `想定外のレスポンスデータを返そうとしました。本来は配列です。endpointPath=${endpointPath} key=${parentKey}`;
         }
-        parentKey = parentKey.replace("_option");
         for (let i = 0; i < parentValue.length; i++) {
             const childValue = parentValue[i];
-            const newKey = String(parentKey) + String(i) + "_option";
+            const newKey = parentKey.replace( "_option", i + "_option" );
             response2[newKey] = childValue;
         }
     }
@@ -240,7 +239,7 @@ export async function getEndpointInfo_core( endpointPath, isRequestFormData, isR
 
 function _convertResponseInfo({ endpointPath, oldResponseInfo }) {
     const newResponseInfo = {};
-    for (let parentKey in oldResponseInfo) {
+    for (const parentKey in oldResponseInfo) {
         const parentInfo = oldResponseInfo[parentKey];
         if (!parentInfo || typeof parentInfo !== 'object') {
             throw `レスポンスの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}"`;
@@ -251,9 +250,8 @@ function _convertResponseInfo({ endpointPath, oldResponseInfo }) {
             continue;
         }
         // 予測変換の場合
-        parentKey = parentKey.replace("_option");
         for (let i = 0; i < 10; i++) {
-            const newKey = String(parentKey) + String(i) + "_option";
+            const newKey = parentKey.replace( "_option", i + "_option" );
             newResponseInfo[newKey] = parentInfo;
         }
     }

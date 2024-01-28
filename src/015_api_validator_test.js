@@ -190,7 +190,12 @@ async function _test(){
     await getEndpointInfo( "/default/tables", true, true );
     await getEndpointInfo( "/default/page_editor", true, true );
     await runApi("GET","/default/tables",{},{},true,true);
-    await runApi("GET","/default/page_editor",{"page_id":1 },{},true,true);
+    //
+    await createTable("テーブル１");
+    await createTable("テーブル２");
+    await createTable("テーブル３");
+    const result = await runApi("GET","/default/page_editor",{"page_id":1 },{},true,true);
+    console.log(result);
     await close();
 
 }
