@@ -13,31 +13,31 @@ import {
 } from "./031_regenerate_html_validate.js";
 import {
   getLocalIp,
-} from "./100_ip_address_validate.js";
+} from "./103_ip_address_validate.js";
 import {
   getPath,
-} from "./097_directory_validate.js";
+} from "./100_directory_validate.js";
 import {
   getDebugMode,
   startTransaction,
   endTransaction,
   createRecordsFromCsv,
   getCsvProgress,
-} from "./094_connect_database_validate.js";
+} from "./097_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
   getTableId,
   checkColumnEnabled,
   getColumnName,
-} from "./082_column_name_validate.js";
+} from "./085_column_name_validate.js";
 import {
   close,
   createDirectories,
 } from "./034_frontend_files_validate.js";
 import {
   getPrimaryKey,
-} from "./091_primary_key_validate.js";
+} from "./094_primary_key_validate.js";
 import {
   clearCache,
   getEndpointInfo,
@@ -48,36 +48,36 @@ import {
   generateSQL,
   addViewColumn,
   getSimpleSQL,
-} from "./037_view_validate.js";
+} from "./040_view_validate.js";
 import {
   listDataTypes,
-} from "./088_data_type_validate.js";
+} from "./091_data_type_validate.js";
 import {
   createRecord,
   updateRecord,
   checkField,
   checkRecord,
-} from "./061_record_title_1_validate.js";
+} from "./064_record_title_1_validate.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
   checkReservedWord,
-} from "./079_reserved_word_validate.js";
+} from "./082_reserved_word_validate.js";
 import {
   deleteTable,
   listTables,
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
-} from "./064_record_title_2_validate.js";
+} from "./067_record_title_2_validate.js";
 import {
   getDataType,
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
-} from "./073_relation_validate.js";
+} from "./076_relation_validate.js";
 import {
   deleteRecord,
   disableTable,
@@ -86,15 +86,15 @@ import {
   enableColumn,
   delete_table,
   autoCorrect,
-} from "./076_search_text_validate.js";
+} from "./079_search_text_validate.js";
 import {
   reload,
   checkTableEnabled,
   getTableName,
-} from "./085_table_name_validate.js";
+} from "./088_table_name_validate.js";
 import {
   formatField,
-} from "./070_db_formatter_validate.js";
+} from "./073_db_formatter_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -105,13 +105,13 @@ import {
   createInputElement,
   changeInputType,
   _fillMasterData,
-} from "./067_input_element_validate.js";
+} from "./070_input_element_validate.js";
 import {
   getPathLength,
   slicePath,
   checkPath,
   pathToColumnId,
-} from "./055_columnPath_validate.js";
+} from "./058_columnPath_validate.js";
 import {
   getJoinIdMap,
   checkTableDuplication,
@@ -119,13 +119,13 @@ import {
   getJoinData,
   getWhereData,
   getOrderData,
-} from "./052_convert_sql_data_validate.js";
+} from "./055_convert_sql_data_validate.js";
 import {
   generateSQLwithoutDuplication,
-} from "./049_generate_sql2_validate.js";
+} from "./052_generate_sql2_validate.js";
 import {
   generateSQLwithDuplication,
-} from "./046_generate_sql1_validate.js";
+} from "./049_generate_sql1_validate.js";
 import {
   getPageInfo,
   listViewsFromTableId,
@@ -143,7 +143,10 @@ import {
   _movePage,
   _generatePageSortNumber,
   _copyPage,
-} from "./040_pages_validate.js";
+} from "./043_pages_validate.js";
+import {
+  getPageData,
+} from "./037_page_data_validate.js";
 import {
   runApi,  // APIを実行する関数
   convertQuery,  // 連想配列をクエリパラメータに変換
@@ -155,7 +158,7 @@ export async function test024() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 19; i++ ) {
+    for ( i = 1; i <= 20; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
