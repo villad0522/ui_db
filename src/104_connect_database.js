@@ -280,17 +280,27 @@ export async function createRecordsFromCsv_core( filePath ){
     if(!parserStream) {
       throw "処理が中断されました";
     }
+    let array = [];
     try {
-      const array = line.split(",");
+      array = parseCsv(line);
       // データベースに挿入する処理
       await stmt.run(array);
     }
     catch (err) {
-      errorCount++;
+      if( array.length !== columnSize ){
+        if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+        console.error(`\n本来の列のサイズと異なります。\n現状: ${array.length}\n本来: ${columnSize}`);
+        console.error(array);
+      }
+      else{
+        if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+        console.error(`\nエラー`);
+        console.error(line);
+      }
     }
     allCount++;
     if (allCount % 1000 === 0) {
-      if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
       progressMessage = `【処理中】現時点までにデータベースに送った命令が、全て実行されるのを待っています。`;
       await stmt.finalize();
       // トランザクション処理で処理を高速化する。
@@ -316,9 +326,23 @@ export async function createRecordsFromCsv_core( filePath ){
   progressMessage = `完了しました。`;
 }
 
+
+const parseCsv = csv => csv.replace(/\r/g, '').split('\n').reduce(([data, isInQuotes], line) => {
+  const [datum, newIsInQuotes] = ((isInQuotes ? '"' : '') + line).split(',').reduce(([datum, isInQuotes], text) => {
+    const match = isInQuotes || text.match(/^(\"?)((.*?)(\"*))$/)
+    if (isInQuotes) datum[datum.length - 1] += ',' + text.replace(/\"+/g, m => '"'.repeat(m.length / 2))
+    else datum.push(match[1] ? match[2].replace(/\"+/g, m => '"'.repeat(m.length / 2)) : match[2])
+    return [datum, isInQuotes ? !(text.match(/\"*$/)[0].length % 2) : match[1] && !(match[4].length % 2)]
+  }, [[]])
+  if (isInQuotes) data[data.length - 1].push(data[data.length - 1].pop() + '\n' + datum[0], ...datum.slice(1))
+  else data.push(datum)
+  return [data, newIsInQuotes]
+}, [[]])[0]
+
+
 // インポートの進捗状況を取得する関数
 export async function getCsvProgress_core(  ){
-  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
   return {
     "progressMessage": progressMessage,
     "successCount": allCount - errorCount,
@@ -329,15 +353,15 @@ export async function getCsvProgress_core(  ){
 
 // バックエンドプログラム終了
 export async function close_core(  ){
-  if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
   if(parserStream){
-    if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
     // ストリームを中断・破棄
     parserStream.destroy();
     parserStream = null;
   }
   if (isConnect === true) {
-    if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
     await db.close();
     isConnect = false;
   }
@@ -346,13 +370,15 @@ export async function close_core(  ){
 
 // インポートを中断する関数
 export async function destroyCSV_core(  ){
-  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
-  errorCount = 0;
-  allCount = 0;
-  csvSize = 0;
-  progressMessage = "何も処理をしていません";
+  if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+  setTimeout(()=>{
+    errorCount = 0;
+    allCount = 0;
+    csvSize = 0;
+    progressMessage = "何も処理をしていません";
+  },500);
   if(parserStream){
-    if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
     // ストリームを中断・破棄
     parserStream.pause();
     parserStream.resume();
@@ -361,7 +387,7 @@ export async function destroyCSV_core(  ){
     return "CSVのアップロード処理を中断しました。";
   }
   else{
-    if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
     return "現在、何も実行されていません。";
   }
 }
