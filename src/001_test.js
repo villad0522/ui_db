@@ -1,40 +1,41 @@
 
-import { test108 } from "./108_ip_address_test.js";
-import { test105 } from "./105_directory_test.js";
-import { test102 } from "./102_connect_database_test.js";
-import { test099 } from "./099_primary_key_test.js";
-import { test096 } from "./096_data_type_test.js";
-import { test093 } from "./093_table_name_test.js";
-import { test090 } from "./090_column_name_test.js";
-import { test087 } from "./087_reserved_word_test.js";
-import { test084 } from "./084_search_text_test.js";
-import { test081 } from "./081_relation_test.js";
-import { test078 } from "./078_db_formatter_test.js";
-import { test075 } from "./075_input_element_test.js";
-import { test072 } from "./072_record_title_2_test.js";
-import { test069 } from "./069_record_title_1_test.js";
-import { test066 } from "./066_sort_test.js";
-import { test063 } from "./063_columnPath_test.js";
-import { test060 } from "./060_convert_sql_data_test.js";
-import { test057 } from "./057_generate_sql2_test.js";
-import { test054 } from "./054_generate_sql1_test.js";
-import { test051 } from "./051_generate_sql_test.js";
-import { test048 } from "./048_pages_test.js";
-import { test045 } from "./045_view_test.js";
-import { test042 } from "./042_page_data_test.js";
-import { test039 } from "./039_frontend_files_test.js";
-import { test036 } from "./036_regenerate_html_test.js";
-import { test033 } from "./033_api_info_test.js";
-import { test030 } from "./030_run_api_test.js";
-import { test027 } from "./027_pagination_test.js";
-import { test024 } from "./024_convert_array_test.js";
-import { test021 } from "./021_auto_correct_test.js";
-import { test018 } from "./018_api_validator_test.js";
-import { test015 } from "./015_api_document_test.js";
-import { test012 } from "./012_transaction_test.js";
-import { test009 } from "./009_excel_edit_test.js";
-import { test006 } from "./006_excel_template_test.js";
-import { test003 } from "./003_layerName_test.js";
+import { test111 } from "./111_ip_address_test.js";
+import { test108 } from "./108_directory_test.js";
+import { test105 } from "./105_connect_database_test.js";
+import { test102 } from "./102_transaction_lower_test.js";
+import { test099 } from "./099_csv_test.js";
+import { test096 } from "./096_primary_key_test.js";
+import { test093 } from "./093_data_type_test.js";
+import { test090 } from "./090_table_name_test.js";
+import { test087 } from "./087_column_name_test.js";
+import { test084 } from "./084_reserved_word_test.js";
+import { test081 } from "./081_search_text_test.js";
+import { test078 } from "./078_relation_test.js";
+import { test075 } from "./075_db_formatter_test.js";
+import { test072 } from "./072_input_element_test.js";
+import { test069 } from "./069_record_title_2_test.js";
+import { test066 } from "./066_record_title_1_test.js";
+import { test063 } from "./063_sort_test.js";
+import { test060 } from "./060_columnPath_test.js";
+import { test057 } from "./057_convert_sql_data_test.js";
+import { test054 } from "./054_generate_sql2_test.js";
+import { test051 } from "./051_generate_sql1_test.js";
+import { test048 } from "./048_generate_sql_test.js";
+import { test045 } from "./045_pages_test.js";
+import { test042 } from "./042_view_test.js";
+import { test039 } from "./039_page_data_test.js";
+import { test036 } from "./036_frontend_files_test.js";
+import { test033 } from "./033_regenerate_html_test.js";
+import { test030 } from "./030_api_info_test.js";
+import { test027 } from "./027_run_api_test.js";
+import { test024 } from "./024_pagination_test.js";
+import { test021 } from "./021_convert_array_test.js";
+import { test018 } from "./018_auto_correct_test.js";
+import { test015 } from "./015_api_validator_test.js";
+import { test012 } from "./012_api_document_test.js";
+import { test009 } from "./009_transaction_upper_test.js";
+import { test006 } from "./006_excel_edit_test.js";
+import { test003 } from "./003_excel_template_test.js";
 
 
 async function test() {
@@ -42,6 +43,7 @@ async function test() {
     if( process.argv.length < 3 ){
       // testNumberが指定されていない場合
       console.log("全てのレイヤーの動作テストを行います。");
+      await test111();
       await test108();
       await test105();
       await test102();
@@ -85,6 +87,9 @@ async function test() {
     const testNumber = Number(process.argv[2]);
     console.log(`テストコード${ testNumber }を実行します。`);
     switch( testNumber ){
+      case 111:
+        await test111();
+        break;
       case 108:
         await test108();
         break;
