@@ -10,6 +10,7 @@ import {
   createRecordsFromCsv,
   getCsvProgress,
   close,
+  destroyCSV,
 } from "./103_connect_database_validate.js";
 import {
   getLocalIp,

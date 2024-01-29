@@ -16,6 +16,7 @@ import {
   createRecordsFromCsv,  // CSVファイルインポート
   getCsvProgress,  // インポートの進捗状況を取得する関数
   close,  // バックエンドプログラム終了
+  destroyCSV,  // インポートを中断する関数
 } from "./103_connect_database_validate.js";
 import { setBugMode } from "./104_connect_database.js";
 
@@ -24,7 +25,7 @@ export async function test102() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 26; i++ ) {
+    for ( i = 1; i <= 32; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

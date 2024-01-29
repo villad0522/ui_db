@@ -17,6 +17,7 @@ import {
   endTransaction,
   createRecordsFromCsv,
   getCsvProgress,
+  destroyCSV,
 } from "./103_connect_database_validate.js";
 import {
   runSqlReadOnly,

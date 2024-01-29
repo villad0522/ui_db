@@ -1,0 +1,29 @@
+{
+    "httpMethod": "GET",
+    "description": "CSVファイルをデータベースに書き込む際の、進捗を取得します。",
+    "commandName": "GET_CSV_PROGRESS",
+    "queryParameters": {},
+    "requestBody": {},
+    "response": {
+        "progressMessage": {
+            "dataType": "TEXT",
+            "description": "進捗を表すメッセージ",
+            "example": "アップロードが完了しました"
+        },
+        "successCount": {
+            "dataType": "INTEGER",
+            "description": "アップロードに成功した行数",
+            "example": 148
+        },
+        "errorCount": {
+            "dataType": "INTEGER",
+            "description": "アップロードに失敗した行数",
+            "example": 3
+        },
+        "csvSize": {
+            "dataType": "INTEGER",
+            "description": "CSVファイルの行数",
+            "example": 29274
+        }
+    }
+}

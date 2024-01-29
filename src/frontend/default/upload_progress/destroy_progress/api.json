@@ -1,0 +1,14 @@
+{
+    "httpMethod": "POST",
+    "description": "CSVファイルのアップロード処理を中止します。再開はできません。",
+    "commandName": "DESTROY_CSV_PROGRESS",
+    "queryParameters": {},
+    "requestBody": {},
+    "response": {
+        "userMessage": {
+            "dataType": "TEXT",
+            "description": "完了を表すメッセージ",
+            "example": "アップロードを中止しました"
+        }
+    }
+}

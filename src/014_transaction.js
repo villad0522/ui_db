@@ -23,6 +23,7 @@ import {
   endTransaction,
   createRecordsFromCsv,
   getCsvProgress,
+  destroyCSV,
 } from "./103_connect_database_validate.js";
 import {
   runSqlReadOnly,
@@ -185,7 +186,13 @@ export {
 export async function runApi_core( httpMethod, endpointPath, queryParameters, requestBody, isRequestFormData, isResponseFormData ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   await startTransaction();
-  const result = await runApi( httpMethod, endpointPath, queryParameters, requestBody, isRequestFormData, isResponseFormData );
-  await endTransaction();
-  return result;
+  try{
+    const result = await runApi( httpMethod, endpointPath, queryParameters, requestBody, isRequestFormData, isResponseFormData );
+    await endTransaction();
+    return result;
+  }
+  catch(err){
+    await endTransaction();
+    throw err;
+  }
 }

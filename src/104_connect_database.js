@@ -26,6 +26,7 @@ import path from 'path';
 import sqlite3 from 'sqlite3'
 import csvParser from 'csv-parser';
 import iconv from 'iconv-lite';
+import readline from 'readline';
 import { Database } from 'sqlite'
 import fs from 'fs';
 
@@ -129,6 +130,7 @@ export async function endTransaction_core(  ){
   }
   if(isTransaction===true){
     if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+    // ↓この順序が大切
     isTransaction = false;
     await db.run("COMMIT TRANSACTION;");
   }
@@ -193,99 +195,173 @@ export async function runSqlWriteOnly_core( sql, params ){
 
 
 //【グローバル変数】CSVファイルを読み込む進捗
-let progressCSV = 0;
+let errorCount = 0;
+let allCount = 0;
+let csvSize = 0;
+let progressMessage = "何も処理をしていません";
+let parserStream;
 
 // CSVファイルインポート
 export async function createRecordsFromCsv_core( filePath ){
   if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+  if (!fs.existsSync(filePath)) {
+    throw 'ファイルが見つかりません。';
+  }
+  //==============================================================================
   if(!db){
     throw "データベースオブジェクト(db)がNULLです。";
   }
-  // CSVファイルを読み込む
-  const fileStream1 = fs.createReadStream(filePath);
-  const parser1 = fileStream1
-            .pipe(iconv.decodeStream('Shift_JIS'))
-            .pipe(csvParser());
-  const firstRow = await new Promise((resolve, reject) => {
-    parser1.once( 'data', (row) => resolve(row) );
+  errorCount = 0;
+  allCount = 0;
+  progressMessage = `【処理中】トランザクション処理を開始しています。`;
+  await startTransaction_core();  // 開始
+  //
+  //==============================================================================
+  // CSVファイルの行数と列数を調べる
+  progressMessage = `【処理中】CSVファイルの行数と列数を調べています。`;
+  let readline1 = readline.createInterface({
+    input: fs.createReadStream(filePath),
+    crlfDelay: Infinity   // 改行が見つかるまで待機
   });
-  const columnSize = Object.keys(firstRow).length;
-  if(columnSize===0){
+  csvSize = 0;      // 行のサイズ
+  let columnSize = 0;   // 列のサイズ
+  let isFirstLine = true; 
+  for await (const line of readline1) {
+    if(line.trim() === "") continue; // 空白をトリムしてから比較
+    if(isFirstLine){
+      if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+      columnSize = Object.keys(line.split(",")).length;
+      isFirstLine = false;
+    }
+    csvSize++;
+  }
+  if(csvSize===0){
+    if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+    await endTransaction_core();    // 終了
+    throw "CSVがゼロ行です。";
+  }
+  if (columnSize === 0) {
+    if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+    await endTransaction_core();    // 終了
     throw `CSVファイルを読み込もうとしましたが、列が存在しません。`;
   }
+  readline1.close();
+  readline1 = null;       // メモリを開放する
   //
+  //==============================================================================
+  // テーブルを作り直す
+  progressMessage = `【処理中】表「csv_data」を作り直しています。`;
   await db.run(`DROP TABLE IF EXISTS csv_data;`);
   const columnNames = [];
   for (let i = 0; i < columnSize; i++) {
-    if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
     columnNames.push(`"c${i}"`);
   }
-  const sql = `CREATE TABLE IF NOT EXISTS csv_data( ${columnNames.join(", ")} );`;
-  await db.run(sql);
+  await db.run(`CREATE TABLE IF NOT EXISTS csv_data( ${columnNames.join(", ")} );`);
   //
-  const headers = [];
-  for (let i = 0; i < columnSize; i++) {
-      if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
-      headers.push(":" + String(i));
-  }
-  // 配列「headers」には :0, :1, :2... が格納されているはず
   //
-  const fileStream2 = fs.createReadStream(filePath);
-  const parser2 = fileStream2
-            .pipe(iconv.decodeStream('Shift_JIS'))
-            .pipe(csvParser({ headers: headers }));
-  //
-  // CSVファイルの行数を調べる
-  const fileContent = await fs.promises.readFile(filePath, 'utf8');
-  const csvSize = fileContent.split('\n').length;
-  //
-  // CSVファイルからデータベースへ移行する
-  const stmt = await db.prepare(`INSERT INTO csv_data VALUES ( ${headers.join(", ")} )`);
-  let errorCount = 0;
-  let allCount = 0;
-  await new Promise((resolve, reject) => {
-    parser2.on('data', async (row) => {
-      try {
-        // データベースに挿入する処理
-        await stmt.run(row);
-      }
-      catch (err) {
-          errorCount++;
-          console.error("失敗");
-      }
-      allCount++;
-      if (allCount % 10000 === 0) {
-        if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
-        progressCSV = Math.floor(allCount / csvSize * 100);
-        console.log(`${progressCSV}%`);
-        //
-        // トランザクション処理で処理を高速化する。
-        //   開始と終了は、0200_transaction.jsに記述してあるので、
-        //   ここでは１万行ごとの再接続のみを行う。
-        await db.run("COMMIT TRANSACTION;");    // 終了
-        await db.run("BEGIN TRANSACTION;");     // 開始
-      }
-    }).on('end', () => {
-        resolve();
-    });
+  //==============================================================================
+  // データ移行の準備を行う
+  progressMessage = `【処理中】ファイルストリームを準備しています。`;
+  parserStream = fs.createReadStream(filePath)
+    .pipe(iconv.decodeStream('Shift_JIS'));
+  const readline2 = readline.createInterface({
+    input: parserStream,
+    crlfDelay: Infinity   // 改行が見つかるまで待機
   });
+  progressMessage = `【処理中】SQLの命令文を準備しています。`;
+  const sql = `INSERT INTO csv_data VALUES ( ${new Array(columnSize).fill("?").join(", ")} )`;
+  let stmt = await db.prepare(sql);
+  //
+  //==============================================================================
+  // CSVファイルからデータベースへ移行する
+  progressMessage = `【処理中】データベースに命令しています。`;
+  for await (const line of readline2) {
+    if(!parserStream) {
+      throw "処理が中断されました";
+    }
+    try {
+      const array = line.split(",");
+      // データベースに挿入する処理
+      await stmt.run(array);
+    }
+    catch (err) {
+      errorCount++;
+    }
+    allCount++;
+    if (allCount % 1000 === 0) {
+      if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+      progressMessage = `【処理中】現時点までにデータベースに送った命令が、全て実行されるのを待っています。`;
+      await stmt.finalize();
+      // トランザクション処理で処理を高速化する。
+      //   開始と終了は、先頭と末尾に記述してあるので、
+      //   ここでは１万行ごとの再接続のみを行う。
+      progressMessage = `【処理中】トランザクション処理を終了しています。のちに再開する予定です。`;
+      await endTransaction_core();    // 終了
+      progressMessage = `【処理中】トランザクション処理を開始しています。`;
+      await startTransaction_core();  // 開始
+      progressMessage = `【処理中】SQLの命令文を準備しています。`;
+      stmt = await db.prepare(sql);
+      progressMessage = `【処理中】データベースに命令しています。`;
+    }
+  }
+  //==============================================================================
+  progressMessage = `【処理中】命令が全て実行されるのを待っています。`;
   await stmt.finalize();
-  const successCount = allCount - errorCount;
-  return `CSVファイルの内容を、データベースに追記しました。${successCount}件の追記に成功して、${errorCount}件の追記に失敗しました。`;
+  progressMessage = `【処理中】ファイルストリームを破棄しています。`;
+  parserStream.destroy();
+  parserStream = null;
+  progressMessage = `【処理中】トランザクション処理を終了しています。`;
+  await endTransaction_core();    // 終了
+  progressMessage = `完了しました。`;
 }
 
 // インポートの進捗状況を取得する関数
 export async function getCsvProgress_core(  ){
-  if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
-  return progressCSV;
+  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+  return {
+    "progressMessage": progressMessage,
+    "successCount": allCount - errorCount,
+    "errorCount": errorCount,
+    "csvSize": csvSize,
+  }
 }
 
 // バックエンドプログラム終了
 export async function close_core(  ){
-  if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(parserStream){
+    if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+    // ストリームを中断・破棄
+    parserStream.destroy();
+    parserStream = null;
+  }
   if (isConnect === true) {
-    if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
     await db.close();
     isConnect = false;
+  }
+}
+
+
+// インポートを中断する関数
+export async function destroyCSV_core(  ){
+  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+  errorCount = 0;
+  allCount = 0;
+  csvSize = 0;
+  progressMessage = "何も処理をしていません";
+  if(parserStream){
+    if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+    // ストリームを中断・破棄
+    parserStream.pause();
+    parserStream.resume();
+    parserStream.destroy();
+    parserStream = null;
+    return "CSVのアップロード処理を中断しました。";
+  }
+  else{
+    if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+    return "現在、何も実行されていません。";
   }
 }

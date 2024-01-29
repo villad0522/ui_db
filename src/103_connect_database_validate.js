@@ -8,6 +8,7 @@ import {
   createRecordsFromCsv_core,  // CSVファイルインポート
   getCsvProgress_core,  // インポートの進捗状況を取得する関数
   close_core,  // バックエンドプログラム終了
+  destroyCSV_core,  // インポートを中断する関数
 } from "./104_connect_database.js";
 
 
@@ -319,14 +320,6 @@ export async function createRecordsFromCsv( filePath ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( typeof result !== "string" ){
-    if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : connect_database\n関数 : createRecordsFromCsv`);
-    }
-    else{
-      throw new Error(`resultが文字列ではありません。\nレイヤー : connect_database\n関数 : createRecordsFromCsv`);
-    }
-  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -357,16 +350,54 @@ export async function getCsvProgress(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( typeof result !== "number" ){
+  if( typeof result !== "object" ){
     if( !result ){
       throw new Error(`resultがNULLです。\nレイヤー : connect_database\n関数 : getCsvProgress`);
     }
     else{
-      throw new Error(`resultが数値ではありません。\nレイヤー : connect_database\n関数 : getCsvProgress`);
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : connect_database\n関数 : getCsvProgress`);
     }
   }
-  else if( isNaN(result) ){
-    throw new Error(`resultが数値ではありません。\nレイヤー : connect_database\n関数 : getCsvProgress`);
+  if( typeof result.progressMessage !== "string" ){
+    if( !result.progressMessage ){
+      throw new Error(`result.progressMessageがNULLです。\nレイヤー : connect_database\n関数 : getCsvProgress`);
+    }
+    else{
+      throw new Error(`result.progressMessageが文字列ではありません。\nレイヤー : connect_database\n関数 : getCsvProgress`);
+    }
+  }
+  if( typeof result.successCount !== "number" ){
+    if( !result.successCount ){
+      throw new Error(`result.successCountがNULLです。\nレイヤー : connect_database\n関数 : getCsvProgress`);
+    }
+    else{
+      throw new Error(`result.successCountが数値ではありません。\nレイヤー : connect_database\n関数 : getCsvProgress`);
+    }
+  }
+  else if( isNaN(result.successCount) ){
+    throw new Error(`result.successCountが数値ではありません。\nレイヤー : connect_database\n関数 : getCsvProgress`);
+  }
+  if( typeof result.errorCount !== "number" ){
+    if( !result.errorCount ){
+      throw new Error(`result.errorCountがNULLです。\nレイヤー : connect_database\n関数 : getCsvProgress`);
+    }
+    else{
+      throw new Error(`result.errorCountが数値ではありません。\nレイヤー : connect_database\n関数 : getCsvProgress`);
+    }
+  }
+  else if( isNaN(result.errorCount) ){
+    throw new Error(`result.errorCountが数値ではありません。\nレイヤー : connect_database\n関数 : getCsvProgress`);
+  }
+  if( typeof result.csvSize !== "number" ){
+    if( !result.csvSize ){
+      throw new Error(`result.csvSizeがNULLです。\nレイヤー : connect_database\n関数 : getCsvProgress`);
+    }
+    else{
+      throw new Error(`result.csvSizeが数値ではありません。\nレイヤー : connect_database\n関数 : getCsvProgress`);
+    }
+  }
+  else if( isNaN(result.csvSize) ){
+    throw new Error(`result.csvSizeが数値ではありません。\nレイヤー : connect_database\n関数 : getCsvProgress`);
   }
   //
   //--------------------------------------------------------------------------
@@ -398,6 +429,44 @@ export async function close(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「destroyCSV_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function destroyCSV(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await destroyCSV_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : connect_database\n関数 : destroyCSV`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : connect_database\n関数 : destroyCSV`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : connect_database\n関数 : destroyCSV`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;

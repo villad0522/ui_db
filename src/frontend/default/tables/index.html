@@ -36,6 +36,29 @@
                 </li>
             </ol>
         </nav>
+        <!--  -->
+        <!-- CSVアップロードのダイアログ -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasCSV" aria-labelledby="offcanvasCSVLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasCSVLabel">
+                    CSVファイルをデータベースに取り込む
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    <br>
+                    <label for="formFile" class="form-label">
+                        CSVファイルを選択してください
+                    </label>
+                    <input class="form-control" type="file" id="formFile" name="input_file">
+                    <br>
+                    <input class="btn btn-primary" type="submit" value="OK">
+                </form>
+            </div>
+        </div>
+        <!--  -->
+        <!-- メインコンテンツ -->
         <main class="container">
             <br>
             <br>
@@ -69,9 +92,9 @@
                                     表を作成
                                 </a>
                                 <div style="padding-top: 10px;"></div>
-                                <a href="/default/uploader/" class="btn btn-primary btn-sm" style="display: block; width: 100%;">
+                                <button class="btn btn-primary btn-sm" style="display: block; width: 100%;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCSV" aria-controls="offcanvasCSV">
                                     CSV取り込み
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>

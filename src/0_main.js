@@ -99,7 +99,7 @@ const upload = multer({ storage: storage });
 // アップロードされたファイルを処理するエンドポイント
 app.post('/upload', upload.single('input_file'), async (req, res) => {
     // ファイルが正常にアップロードされた場合の処理
-    res.send('ファイルがアップロードされました。');
+    res.redirect("/default/upload_progress/index.html");
     try {
         await createRecordsFromCsv(req.file.path);
     }
@@ -178,7 +178,7 @@ async function _api(req, res) {
         }
     }
     catch (err) {
-        console.error(String(err));
+        console.error(err);
         res.status(500).type("text/plain").send(String(err));
     }
 }
