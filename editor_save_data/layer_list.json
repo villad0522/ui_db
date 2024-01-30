@@ -72,12 +72,17 @@
   {
     "layerId": "01HMP19J9MP2XK0MN03KMVTWP0",
     "layerNameJP": "テーブル結合",
-    "layerNameEN": "view"
+    "layerNameEN": "joinedTable"
+  },
+  {
+    "layerId": "01HND1HRYNST6CSZA3CEAXBQH9",
+    "layerNameJP": "ビューカラム",
+    "layerNameEN": "view_column"
   },
   {
     "layerId": "01HMMRXX42FSBM04FQ4QMB44H3",
-    "layerNameJP": "ページの管理",
-    "layerNameEN": "pages"
+    "layerNameJP": "ページとビュー",
+    "layerNameEN": "page_and_view"
   },
   {
     "layerId": "01HM5T8G9WJWNKEMEGBYP29CKA",

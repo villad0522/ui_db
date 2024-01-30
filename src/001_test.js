@@ -1,28 +1,29 @@
 
-import { test114 } from "./114_ip_address_test.js";
-import { test111 } from "./111_directory_test.js";
-import { test108 } from "./108_connect_database_test.js";
-import { test105 } from "./105_transaction_lower_test.js";
-import { test102 } from "./102_csv_test.js";
-import { test099 } from "./099_primary_key_test.js";
-import { test096 } from "./096_data_type_test.js";
-import { test093 } from "./093_table_name_test.js";
-import { test090 } from "./090_column_name_test.js";
-import { test087 } from "./087_reserved_word_test.js";
-import { test084 } from "./084_search_text_test.js";
-import { test081 } from "./081_relation_test.js";
-import { test078 } from "./078_db_formatter_test.js";
-import { test075 } from "./075_input_element_test.js";
-import { test072 } from "./072_record_title_2_test.js";
-import { test069 } from "./069_record_title_1_test.js";
-import { test066 } from "./066_sort_test.js";
-import { test063 } from "./063_columnPath_test.js";
-import { test060 } from "./060_convert_sql_data_test.js";
-import { test057 } from "./057_generate_sql2_test.js";
-import { test054 } from "./054_generate_sql1_test.js";
-import { test051 } from "./051_generate_sql_test.js";
-import { test048 } from "./048_pages_test.js";
-import { test045 } from "./045_view_test.js";
+import { test117 } from "./117_ip_address_test.js";
+import { test114 } from "./114_directory_test.js";
+import { test111 } from "./111_connect_database_test.js";
+import { test108 } from "./108_transaction_lower_test.js";
+import { test105 } from "./105_csv_test.js";
+import { test102 } from "./102_primary_key_test.js";
+import { test099 } from "./099_data_type_test.js";
+import { test096 } from "./096_table_name_test.js";
+import { test093 } from "./093_column_name_test.js";
+import { test090 } from "./090_reserved_word_test.js";
+import { test087 } from "./087_search_text_test.js";
+import { test084 } from "./084_relation_test.js";
+import { test081 } from "./081_db_formatter_test.js";
+import { test078 } from "./078_input_element_test.js";
+import { test075 } from "./075_record_title_2_test.js";
+import { test072 } from "./072_record_title_1_test.js";
+import { test069 } from "./069_sort_test.js";
+import { test066 } from "./066_columnPath_test.js";
+import { test063 } from "./063_convert_sql_data_test.js";
+import { test060 } from "./060_generate_sql2_test.js";
+import { test057 } from "./057_generate_sql1_test.js";
+import { test054 } from "./054_generate_sql_test.js";
+import { test051 } from "./051_page_and_view_test.js";
+import { test048 } from "./048_view_column_test.js";
+import { test045 } from "./045_joinedTable_test.js";
 import { test042 } from "./042_page_data_test.js";
 import { test039 } from "./039_frontend_files_test.js";
 import { test036 } from "./036_regenerate_view_html_test.js";
@@ -44,6 +45,7 @@ async function test() {
     if( process.argv.length < 3 ){
       // testNumberが指定されていない場合
       console.log("全てのレイヤーの動作テストを行います。");
+      await test117();
       await test114();
       await test111();
       await test108();
@@ -89,6 +91,9 @@ async function test() {
     const testNumber = Number(process.argv[2]);
     console.log(`テストコード${ testNumber }を実行します。`);
     switch( testNumber ){
+      case 117:
+        await test117();
+        break;
       case 114:
         await test114();
         break;
