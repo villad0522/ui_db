@@ -1,39 +1,39 @@
-// HTML
+// HTML(全体)
 //
 import {
   startUp,
   close,
   createDirectories,
-} from "./037_frontend_files_validate.js";
+} from "./040_frontend_files_validate.js";
 import {
   getLocalIp,
-} from "./112_ip_address_validate.js";
+} from "./115_ip_address_validate.js";
 import {
   getPath,
-} from "./109_directory_validate.js";
+} from "./112_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./106_connect_database_validate.js";
+} from "./109_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
   getTableId,
   checkColumnEnabled,
   getColumnName,
-} from "./088_column_name_validate.js";
+} from "./091_column_name_validate.js";
 import {
   startTransaction,
   endTransaction,
-} from "./103_transaction_lower_validate.js";
+} from "./106_transaction_lower_validate.js";
 import {
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./100_csv_validate.js";
+} from "./103_csv_validate.js";
 import {
   getPrimaryKey,
-} from "./097_primary_key_validate.js";
+} from "./100_primary_key_validate.js";
 import {
   clearCache,
   deleteTable,
@@ -41,36 +41,36 @@ import {
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
-} from "./070_record_title_2_validate.js";
+} from "./073_record_title_2_validate.js";
 import {
   createColumn,
   deleteView,
   generateSQL,
   createView,
   addViewColumn,
-} from "./043_view_validate.js";
+} from "./046_view_validate.js";
 import {
   listDataTypes,
-} from "./094_data_type_validate.js";
+} from "./097_data_type_validate.js";
 import {
   createRecord,
   updateRecord,
   checkField,
   checkRecord,
-} from "./067_record_title_1_validate.js";
+} from "./070_record_title_1_validate.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
   checkReservedWord,
-} from "./085_reserved_word_validate.js";
+} from "./088_reserved_word_validate.js";
 import {
   getDataType,
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
-} from "./079_relation_validate.js";
+} from "./082_relation_validate.js";
 import {
   deleteRecord,
   disableTable,
@@ -79,17 +79,17 @@ import {
   enableColumn,
   delete_table,
   autoCorrect,
-} from "./082_search_text_validate.js";
+} from "./085_search_text_validate.js";
 import {
   reload,
   checkTableEnabled,
   getTableName,
   listTableNamesAll,
   getTableIdFromName,
-} from "./091_table_name_validate.js";
+} from "./094_table_name_validate.js";
 import {
   formatField,
-} from "./076_db_formatter_validate.js";
+} from "./079_db_formatter_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -100,13 +100,13 @@ import {
   createInputElement,
   changeInputType,
   _fillMasterData,
-} from "./073_input_element_validate.js";
+} from "./076_input_element_validate.js";
 import {
   getPathLength,
   slicePath,
   checkPath,
   pathToColumnId,
-} from "./061_columnPath_validate.js";
+} from "./064_columnPath_validate.js";
 import {
   getJoinIdMap,
   checkTableDuplication,
@@ -114,13 +114,13 @@ import {
   getJoinData,
   getWhereData,
   getOrderData,
-} from "./058_convert_sql_data_validate.js";
+} from "./061_convert_sql_data_validate.js";
 import {
   generateSQLwithoutDuplication,
-} from "./055_generate_sql2_validate.js";
+} from "./058_generate_sql2_validate.js";
 import {
   generateSQLwithDuplication,
-} from "./052_generate_sql1_validate.js";
+} from "./055_generate_sql1_validate.js";
 import {
   createPage,
   updatePageName,
@@ -142,10 +142,13 @@ import {
   _movePage,
   _generatePageSortNumber,
   _copyPage,
-} from "./046_pages_validate.js";
+} from "./049_pages_validate.js";
 import {
   getPageData,
-} from "./040_page_data_validate.js";
+} from "./043_page_data_validate.js";
+import {
+  generateViewHTML,
+} from "./037_regenerate_view_html_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
@@ -332,217 +335,19 @@ export async function regeneratePage_core( pageId ){
                         <input type="text" class="form-control" id="inputZip" disabled>
                     </div>
                 </div>
-                <div class="row">
-                    <!-- リンク集 -->
-                    <a href=""></a>
-                    <a href=""></a>
-                    <a href=""></a>
-                </div>
-                <hr>
                 <!-- 基本データここまで -->
                 <!--  -->
-                <!--  -->
-                <div class="collapse" id="search_block">
-                    <h4>抽出／並び替え</h4>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="inputEmail4" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="inputEmail4">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputPassword4" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="inputPassword4">
-                        </div>
-                        <div class="col-12">
-                            <label for="inputAddress" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-                        </div>
-                        <div class="col-12">
-                            <label for="inputAddress2" class="form-label">Address 2</label>
-                            <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputCity" class="form-label">City</label>
-                            <input type="text" class="form-control" id="inputCity">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="inputState" class="form-label">State</label>
-                            <select id="inputState" class="form-select">
-                                <option selected>Choose...</option>
-                                <option>...</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="inputZip" class="form-label">Zip</label>
-                            <input type="text" class="form-control" id="inputZip">
-                        </div>
-                    </div>
-                    <br>
-                    <div style="text-align: right;">
-                        <button type="button" class="btn btn-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                            </svg>
-                            検索
-                        </button>
-                    </div>
-                    <hr>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h4 style="display: inline-block;">検索結果</h4>
-                        （
-                        <input type="number" id="inputEmail4" disabled style="background: none; border: none; width: 50px;">
-                        件）
-                    </div>
-                    <div class="col-sm-6" style="text-align: right;">
-                        <button data-bs-toggle="collapse" data-bs-target="#search_block" class="btn btn-outline-primary" type="button">
-                            抽出／並び替え
-                        </button>
-                        <button onclick="overwriteButton();" type="button" class="btn btn-outline-primary">
-                            上書き
-                        </button>
-                        <button onclick="addButton();" class="btn btn-primary" type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                            </svg>
-                            追加
-                        </button>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-md-6">
-                            <label for="inputEmail4" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="inputEmail4" disabled>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputPassword4" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="inputPassword4" disabled>
-                        </div>
-                        <div class="col-12">
-                            <label for="inputAddress" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" disabled>
-                        </div>
-                        <div class="col-12">
-                            <label for="inputAddress2" class="form-label">Address 2</label>
-                            <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor" disabled>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputCity" class="form-label">City</label>
-                            <input type="text" class="form-control" id="inputCity" disabled>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="inputState" class="form-label">State</label>
-                            <select id="inputState" class="form-select" disabled>
-                                <option selected>Choose...</option>
-                                <option>...</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="inputZip" class="form-label">Zip</label>
-                            <input type="text" class="form-control" id="inputZip" disabled>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="gridCheck" disabled>
-                                <label class="form-check-label" for="gridCheck">
-                                    Check me out
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12" style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                削除
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <br>
-                <br>
-                <br>
+                <!--  -->`;
+    //
+    for( const { viewId, tableId, onePageMaxSize, viewType, childPageId } of views ){
+        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+        switch( viewType ){
+            default:
+                mainHtmlText += await generateViewHTML( viewId, tableId, onePageMaxSize, childPageId );
+        }
+    }
+    //
+    mainHtmlText += `
             </form>
         </main>
         <footer>
@@ -579,7 +384,7 @@ function _getBreadcrumbHTML({ breadcrumbs, pageId }){
 
 // ページを作成
 export async function createPage_core( parentPageId ){
-  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
     const result = await createPage( parentPageId );
     //
     // 作ったばかりの子ページのHTMLを生成する
@@ -595,7 +400,7 @@ export async function createPage_core( parentPageId ){
 
 // ビューを作成
 export async function createView_core( pageId, tableName ){
-  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
     const result = await createView( pageId, tableName );
     await regeneratePage_core( pageId );
     return result;
@@ -604,13 +409,13 @@ export async function createView_core( pageId, tableName ){
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
-  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
     //
     const customDirPath = await getPath("FRONTEND_CUSTOM");
     const customFilePath = path.join(customDirPath, "1.html");
     if ( !fs.existsSync(customFilePath)) {
-        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
         // ./src/frontend/custom/1.html が存在しない場合
         await regeneratePage_core( 1 );
     }
@@ -622,7 +427,7 @@ export async function startUp_core( localUrl, isDebug ){
 
 // HTMLエスケープ
 export async function escapeHTML_core( text ){
-  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
   return text.replace(/[&'`"<>]/g, function(match) {
     return {
       '&': '&amp;',
@@ -638,7 +443,7 @@ export async function escapeHTML_core( text ){
 
 // ページ名やメモを変更
 export async function updatePageName_core( pageId, pageName, memo ){
-  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
     // 下層の関数を呼び出す
     const result = await updatePageName( pageId, pageName, memo );
     //
@@ -648,14 +453,14 @@ export async function updatePageName_core( pageId, pageName, memo ){
     // 親ページのHTMLを再生成する
     const parentPageId = await getParentPage( pageId );
     if( parentPageId >= 1 ){
-        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
         await regeneratePage_core( parentPageId );
     }
     //
     // 子ページのHTMLを再生成する（パンくずリストに表示されるため）
     const children = await listChildrenPage( pageId );
     for( const pageId of children ){
-        if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
         await regeneratePage_core( pageId );
     }
     //
@@ -666,7 +471,7 @@ export async function updatePageName_core( pageId, pageName, memo ){
 
 // ビューを削除
 export async function deleteView_core( viewId ){
-  if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
     // 下層の関数を呼び出す
     const result = await deleteView( viewId );
     //
@@ -680,7 +485,7 @@ export async function deleteView_core( viewId ){
         },
     );
     for( const { pageId } of pages ){
-        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
         // 子ページを再帰的に削除する
         await deletePage_core( pageId );
     }
@@ -690,7 +495,7 @@ export async function deleteView_core( viewId ){
 
 // ページを再帰的に削除
 export async function deletePage_core( pageId ){
-  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
     // 下層の関数を呼び出す
     const result = await deletePage( pageId );
     // 子ページの一覧を取得する
@@ -698,7 +503,7 @@ export async function deletePage_core( pageId ){
     // 子ページを削除する
     //  （子→親の順番になるように削除する）
     for( let i=children.length-1; i>=0; i-- ){
-        if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
         await _deletePageFolder( children[i] );
     }
     // 対象のページを削除する
@@ -722,13 +527,13 @@ async function _deletePageFolder( pageId ){
 
 // ページを貼り付ける
 export async function pastePage_core( newParentId, afterPageId ){
-  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
     //
     // 親ページ（切り取り元）を調べる
     const cuttingPageId = await getCuttingPage();
     let pastParentId = null;
     if(cuttingPageId){
-        if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
         pastParentId = await getParentPage( cuttingPageId );
     }
     //
@@ -739,10 +544,10 @@ export async function pastePage_core( newParentId, afterPageId ){
     }
     //
     if( pastParentId !== newParentId ){
-        if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
         // 親ページ（切り取り元）のHTMLを再生成する
         if( pastParentId >= 1 ){
-            if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
             await regeneratePage_core( pastParentId );
         }
     }
@@ -756,7 +561,7 @@ export async function pastePage_core( newParentId, afterPageId ){
     // 子ページのHTMLを再生成する（パンくずリストを更新するため）
     const children = await listChildrenPage( result.pageId );
     for( const pageId of children ){
-        if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
         await regeneratePage_core( pageId );
     }
     //

@@ -77,16 +77,6 @@
             "isArray": true,
             "onePageMaxSize": 5,
             "children": {
-                "pageId": {
-                    "dataType": "INTEGER",
-                    "description": "子ページのID",
-                    "example": 12
-                },
-                "pageName": {
-                    "dataType": "TEXT",
-                    "description": "子ページの名前",
-                    "example": "○○管理画面"
-                },
                 "viewId": {
                     "dataType": "INTEGER",
                     "description": "ビューのID",
@@ -101,6 +91,11 @@
                     "dataType": "INTEGER",
                     "description": "ビューに一度に表示できる最大レコード数",
                     "example": 5
+                },
+                "childPageId": {
+                    "dataType": "INTEGER",
+                    "description": "子ページのID",
+                    "example": 12
                 },
                 "viewType": {
                     "dataType": "TEXT",

@@ -51,8 +51,13 @@
   },
   {
     "layerId": "01HMWEPGB1WN73RY4BK4R0QSJ8",
-    "layerNameJP": "HTML",
+    "layerNameJP": "HTML(全体)",
     "layerNameEN": "regenerate_html"
+  },
+  {
+    "layerId": "01HNCZ8C3ZMC435QBNC7Z0YB8N",
+    "layerNameJP": "HTML(ビュー)",
+    "layerNameEN": "regenerate_view_html"
   },
   {
     "layerId": "01HMK8T5KJMT7KBEVASQCSQGTN",
