@@ -83,7 +83,7 @@ import {
   _listRecords,
   createInputGroup,
   createInputElement,
-  deleteView,
+  deleteViewInput,
   changeInputType,
   _fillMasterData,
 } from "./079_input_element_validate.js";

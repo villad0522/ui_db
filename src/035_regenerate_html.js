@@ -50,6 +50,8 @@ import {
   listViewColumns,
   _deleteViewColumns,
   listViewColumnsForExcel,
+  regenerateInputElements,
+  _addViewColumn,
 } from "./049_view_column_validate.js";
 import {
   listDataTypes,
@@ -100,13 +102,10 @@ import {
   _listRecords,
   createInputGroup,
   createInputElement,
+  deleteViewInput,
   changeInputType,
   _fillMasterData,
 } from "./079_input_element_validate.js";
-import {
-  deleteView,
-  generateSQL,
-} from "./046_joinedTable_validate.js";
 import {
   getPathLength,
   slicePath,
@@ -127,6 +126,10 @@ import {
 import {
   generateSQLwithDuplication,
 } from "./058_generate_sql1_validate.js";
+import {
+  generateSQL,
+  deleteView,
+} from "./046_joinedTable_validate.js";
 import {
   createPage,
   updatePageName,

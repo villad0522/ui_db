@@ -50,6 +50,8 @@ import {
   listViewColumns,
   _deleteViewColumns,
   listViewColumnsForExcel,
+  regenerateInputElements,
+  _addViewColumn,
 } from "./049_view_column_validate.js";
 import {
   listDataTypes,
@@ -100,13 +102,10 @@ import {
   _listRecords,
   createInputGroup,
   createInputElement,
+  deleteViewInput,
   changeInputType,
   _fillMasterData,
 } from "./079_input_element_validate.js";
-import {
-  deleteView,
-  generateSQL,
-} from "./046_joinedTable_validate.js";
 import {
   getPathLength,
   slicePath,
@@ -127,6 +126,10 @@ import {
 import {
   generateSQLwithDuplication,
 } from "./058_generate_sql1_validate.js";
+import {
+  generateSQL,
+  deleteView,
+} from "./046_joinedTable_validate.js";
 import {
   createPage,
   updatePageName,
@@ -171,6 +174,7 @@ export function setBugMode( mode ){
 // ビューのHTMLを生成
 export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, childPageId ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
+    const viewColumns = await listViewColumns( viewId );
     let mainHtmlText = "";
     mainHtmlText += `
         <hr>
@@ -243,7 +247,18 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
             </div>
         </div>
         <div class="card">
-            <div class="card-body row">
+            <div class="card-body row">`;
+    //
+    for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
+        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+        mainHtmlText += `
+                <div class="col-md-6">
+                    <label for="inputEmail4" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="inputEmail4" disabled>
+                </div>`;
+    }
+    //
+    mainHtmlText += `
                 <div class="col-md-6">
                     <label for="inputEmail4" class="form-label">Email</label>
                     <input type="email" class="form-control" id="inputEmail4" disabled>

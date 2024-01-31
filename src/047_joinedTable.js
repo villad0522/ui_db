@@ -3,13 +3,15 @@
 import {
   startUp,
   createColumn,
-  deleteView,
   createView,
+  deleteView,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,
   _deleteViewColumns,
   listViewColumnsForExcel,
+  regenerateInputElements,
+  _addViewColumn,
 } from "./049_view_column_validate.js";
 import {
   getLocalIp,
@@ -98,6 +100,7 @@ import {
   _listRecords,
   createInputGroup,
   createInputElement,
+  deleteViewInput,
   changeInputType,
   _fillMasterData,
 } from "./079_input_element_validate.js";

@@ -91,7 +91,7 @@ import {
   _listRecords,
   createInputGroup,
   createInputElement,
-  deleteView,
+  deleteViewInput,
   changeInputType,
   _fillMasterData,
 } from "./079_input_element_validate.js";
@@ -418,7 +418,7 @@ export async function deleteView_core( viewId ){
       ":viewId": viewId,
     },
   );
-  await deleteView( viewId ); // 下層の関数を呼び出す
+  await deleteViewInput( viewId ); // 下層の関数を呼び出す
 }
 
 

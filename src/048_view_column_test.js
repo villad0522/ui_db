@@ -109,6 +109,7 @@ import {
   _listRecords,
   createInputGroup,
   createInputElement,
+  deleteViewInput,
   changeInputType,
   _fillMasterData,
 } from "./079_input_element_validate.js";
@@ -145,6 +146,8 @@ import {
   deleteView,  // ビューを削除
   _deleteViewColumns,  // 【サブ関数】ビューカラムを一括削除
   listViewColumnsForExcel,  // ビューカラムの一覧を取得(Excel向け)
+  regenerateInputElements,  // 【サブ関数】入力要素を全て作り直す
+  _addViewColumn,  // 【サブ関数】ビューカラムを作成
 } from "./049_view_column_validate.js";
 import { setBugMode } from "./050_view_column.js";
 
@@ -153,7 +156,7 @@ export async function test048() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;
-    for ( i = 1; i <= 25; i++ ) {
+    for ( i = 1; i <= 33; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -178,33 +181,100 @@ async function _test(){
     
     await startUp("http://localhost:3000/", true);
     //
-    const { tableId: tableId1 } = await createTable("学年");
+    const { tableId: tableId1 } = await createTable("学年テーブル");
     const { columnId: columnId1 } = await createColumn( tableId1, "学年", "INTEGER", null );
-    // 見出しの役割を果たすカラムを登録する
-    await setTitleColumn( columnId1 );
+    await setTitleColumn( columnId1 );    // 見出しの役割を果たすカラムを登録する
+    const { recordId: recordId } = await createRecord( tableId1, {
+        [columnId1]: 3,
+    });
     //
-    const { tableId: tableId2 } = await createTable("名簿");
+    const { tableId: tableId2 } = await createTable("名簿テーブル");
     const { columnId: columnId2  } = await createColumn( tableId2, "学年", "POINTER", tableId1 );
     const { columnId: columnId3  } = await createColumn( tableId2, "氏名", "TEXT", null );
+    await setTitleColumn( columnId3 );    // 見出しの役割を果たすカラムを登録する
+    const { recordId: recordId2 } = await createRecord( tableId2, {
+        [columnId2]: recordId,
+        [columnId3]: "田中太郎",
+    });
     //
-    // ページを作成
-    const { pageId: pageId1 } = await createPage( 1, "ページ１" );
+    const { tableId: tableId3 } = await createTable("成績表テーブル");
+    const { columnId: columnId4  } = await createColumn( tableId3, "学生", "POINTER", tableId2 );
+    const { columnId: columnId5  } = await createColumn( tableId3, "科目", "TEXT", null );
+    const { columnId: columnId6  } = await createColumn( tableId3, "得点", "INTEGER", null );
+    await createRecord( tableId3, {
+        [columnId4]: recordId2,
+        [columnId5]: "国語",
+        [columnId6]: 34,
+    });
+    //
+    // ページを作成（親ページのIDを指定する。この場合はトップページ。）
+    const { pageId: pageId3 } = await createPage( 1 );
     //
     // ページにビューを追加
-    const { viewId: viewId1 } = await createView( pageId1, "名簿" );
+    const { viewId: viewId3 } = await createView( pageId3, "成績表テーブル" );
     //
-    const columns = await listColumnsAll( tableId2 );
-    if( columns.length !== 2 ){
-        console.error(columns);
-        throw `カラムの個数が想定外です`;
-    }
+    // ビューカラムを追加
+    await addViewColumn(
+        viewId3,
+        "RAW",  // viewColumnType
+        `main.${columnId4} > ${columnId2}`,     // columnPath
+        "学年",   // viewColumnName
+    );
     //
     // ビューカラムの一覧を取得
-    const viewColumns = await listViewColumns( viewId1 );
-    if( viewColumns.length !== 2 ){
-        console.error(viewColumns);
+    const viewColumns3 = await listViewColumns( viewId3 );
+    if( viewColumns3.length !== 4 ){
+        console.error(viewColumns3);
         throw `ビューカラムの個数が想定外です`;
     }
+    console.log( viewColumns3 );
+    //
+    // 予測変換
+    const result3 = await autoFill(
+        viewId3,
+        {
+            "d3": "田",
+            "d4": 3,
+        },
+        true, // isClick
+    );
+    /*
+    これが返ってくるはず。
+    {
+        d9: '田中太郎',
+        d10: 3,
+        d10_autocorrection: [ 3 ],
+        d9_autocorrection: [ '田中太郎' ],
+        d7: '',
+        d8: '',
+        d7_autocorrection: [ 34 ],
+        d8_autocorrection: [ '国語' ]
+    }  */
+    if( result3["d9"]!=="田中太郎" ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    }
+    if( result3["d10"]!==3 ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    }
+    if( result3["d10_autocorrection"][0]!==3 ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    }
+    if( result3["d9_autocorrection"][0]!=="田中太郎" ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    }
+    if( result3["d7"]!=="" ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    }
+    if( result3["d8"]!=="" ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    }
+    if( result3["d7_autocorrection"][0]!==34 ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    }
+    if( result3["d8_autocorrection"][0]!=="国語" ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    }
+    //
     //
     await close();
 

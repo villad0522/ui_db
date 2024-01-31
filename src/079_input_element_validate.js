@@ -8,7 +8,7 @@ import {
   clearCache_core,  // インメモリキャッシュを削除する
   createInputGroup_core,  // 入力グループを作成
   createInputElement_core,  // 入力要素を作成
-  deleteView_core,  // ビューを削除
+  deleteViewInput_core,  // ビューを削除
   changeInputType_core,  // 入力方式を変更
   _fillMasterData_core,  // 【サブ関数】マスターデータの入力欄を埋める
 } from "./080_input_element.js";
@@ -164,16 +164,13 @@ export async function _autoFill( params ){
     }
   }
   for( let i=0; i<params.viewColumnIdList.length; i++ ){
-    if( typeof params.viewColumnIdList[i] !== "number" ){
+    if( typeof params.viewColumnIdList[i] !== "string" ){
       if( !params.viewColumnIdList[i] ){
         throw new Error(`params.viewColumnIdList[${i}]がNULLです。\nレイヤー : input_element\n関数 : _autoFill`);
       }
       else{
-        throw new Error(`params.viewColumnIdList[${i}]が数値ではありません。\nレイヤー : input_element\n関数 : _autoFill`);
+        throw new Error(`params.viewColumnIdList[${i}]が文字列ではありません。\nレイヤー : input_element\n関数 : _autoFill`);
       }
-    }
-    else if( isNaN(params.viewColumnIdList[i]) ){
-      throw new Error(`params.viewColumnIdList[${i}]が数値ではありません。\nレイヤー : input_element\n関数 : _autoFill`);
     }
   }
   if( typeof params.tableId !== "string" ){
@@ -312,16 +309,13 @@ export async function _getConditions( params ){
     }
   }
   for( let i=0; i<params.viewColumnIdList.length; i++ ){
-    if( typeof params.viewColumnIdList[i] !== "number" ){
+    if( typeof params.viewColumnIdList[i] !== "string" ){
       if( !params.viewColumnIdList[i] ){
         throw new Error(`params.viewColumnIdList[${i}]がNULLです。\nレイヤー : input_element\n関数 : _getConditions`);
       }
       else{
-        throw new Error(`params.viewColumnIdList[${i}]が数値ではありません。\nレイヤー : input_element\n関数 : _getConditions`);
+        throw new Error(`params.viewColumnIdList[${i}]が文字列ではありません。\nレイヤー : input_element\n関数 : _getConditions`);
       }
-    }
-    else if( isNaN(params.viewColumnIdList[i]) ){
-      throw new Error(`params.viewColumnIdList[${i}]が数値ではありません。\nレイヤー : input_element\n関数 : _getConditions`);
     }
   }
   if( params.inputTexts===null || params.inputTexts===undefined ){
@@ -665,16 +659,13 @@ export async function createInputGroup( inputGroupId, viewId, tableId, nextGroup
 export async function createInputElement( viewColumnId, inputGroupId, columnId, inputType ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( typeof viewColumnId !== "number" ){
+  if( typeof viewColumnId !== "string" ){
     if( !viewColumnId ){
       throw new Error(`viewColumnIdがNULLです。\nレイヤー : input_element\n関数 : createInputElement`);
     }
     else{
-      throw new Error(`viewColumnIdが数値ではありません。\nレイヤー : input_element\n関数 : createInputElement`);
+      throw new Error(`viewColumnIdが文字列ではありません。\nレイヤー : input_element\n関数 : createInputElement`);
     }
-  }
-  else if( isNaN(viewColumnId) ){
-    throw new Error(`viewColumnIdが数値ではありません。\nレイヤー : input_element\n関数 : createInputElement`);
   }
   if( typeof inputGroupId !== "string" ){
     if( !inputGroupId ){
@@ -725,32 +716,32 @@ export async function createInputElement( viewColumnId, inputGroupId, columnId, 
 
 
 //#######################################################################################
-// 関数「deleteView_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「deleteViewInput_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function deleteView( viewId ){
+export async function deleteViewInput( viewId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewId !== "number" ){
     if( !viewId ){
-      throw new Error(`viewIdがNULLです。\nレイヤー : input_element\n関数 : deleteView`);
+      throw new Error(`viewIdがNULLです。\nレイヤー : input_element\n関数 : deleteViewInput`);
     }
     else{
-      throw new Error(`viewIdが数値ではありません。\nレイヤー : input_element\n関数 : deleteView`);
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : input_element\n関数 : deleteViewInput`);
     }
   }
   else if( isNaN(viewId) ){
-    throw new Error(`viewIdが数値ではありません。\nレイヤー : input_element\n関数 : deleteView`);
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : input_element\n関数 : deleteViewInput`);
   }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await deleteView_core( viewId );
+    result = await deleteViewInput_core( viewId );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : input_element\n関数 : deleteView`);
+      throw new Error(`${error}\nレイヤー : input_element\n関数 : deleteViewInput`);
     }
     else{
       throw error;

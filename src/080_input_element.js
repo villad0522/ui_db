@@ -103,7 +103,7 @@ export async function startUp_core( localUrl, isDebug ){
       table_id TEXT NOT NULL,
       next_group_id TEXT,
       next_column_id TEXT,
-      processing_order INTEGER NOT NULL,
+      processing_order REAL NOT NULL,
       UNIQUE (view_id, processing_order),
       UNIQUE (next_group_id, next_column_id),
       FOREIGN KEY (next_group_id) REFERENCES input_group(input_group_id)
@@ -114,7 +114,7 @@ export async function startUp_core( localUrl, isDebug ){
   await reserveWord("input_elements"); // 予約語に登録
   await runSqlWriteOnly(
     `CREATE TABLE IF NOT EXISTS input_elements (
-      view_column_id INTEGER PRIMARY KEY,
+      view_column_id TEXT PRIMARY KEY,
       input_group_id TEXT NOT NULL,
       column_id TEXT NOT NULL,
       input_type TEXT NOT NULL,
@@ -139,7 +139,7 @@ let cacheData2 = {
   //  32: [
   //    {
   //      inputGroupId: "main.c8",
-  //      viewColumnIdList: [5,2,83,66],
+  //      viewColumnIdList: [ "d5", "d2", "d83", "d66" ],
   //      tableId: "t7",
   //      nextGroupId: "main",
   //      nextColumnId: "c8"
@@ -280,14 +280,14 @@ export async function _autoFill_core( params ){
   let { viewColumnIdList, tableId, isClick, inputTexts, conditions, isAutoFill } = params;
   //
   const results = {
-    //  "vc8": "a",
-    //  "vc8_autocorrection": [ "aaa", "aaaaaa" ],
+    //  "d8": "a",
+    //  "d8_autocorrection": [ "aaa", "aaaaaa" ],
   };
   //
   // 入力項目ごとに繰り返す（列ごとに繰り返す）
   for(let viewColumnId of viewColumnIdList){
     if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-    results[ "vc" + viewColumnId ] = inputTexts[ "vc" + viewColumnId ] ?? "";  // 結果
+    results[viewColumnId ] = inputTexts[viewColumnId ] ?? "";  // 結果
   }
   //
   // 絞り込み条件を生成する
@@ -304,7 +304,7 @@ export async function _autoFill_core( params ){
       throw `columnIdがNULLです。`;
     }
     const dataType = await getDataType( columnId );
-    const inputText = inputTexts[ "vc" + viewColumnId ];
+    const inputText = inputTexts[ viewColumnId ];
     if( dataType==="FILE" || dataType==="BOOL" || dataType==="POINTER" ){
       if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
       continue; // 予測変換を生成しない
@@ -322,7 +322,7 @@ export async function _autoFill_core( params ){
       columnId,
       conditions: newConditions,
     });
-    results[ "vc" + viewColumnId + "_autocorrection" ] = predictions;  // 結果
+    results[ viewColumnId + "_autocorrection" ] = predictions;  // 結果
     //
     if( predictions.length===1 ){
       if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -365,7 +365,7 @@ export async function _autoFill_core( params ){
     if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
     const columnId = cacheData1[viewColumnId];
     // 自動入力を行う
-    results[ "vc" + viewColumnId ] = records[0][columnId];  // 結果
+    results[ viewColumnId ] = records[0][columnId];  // 結果
   }
   return {
     inputTextsAndAutocorrection: results,
@@ -390,7 +390,7 @@ export async function _getConditions_core( params ){
     if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     const columnId = cacheData1[viewColumnId];
     const dataType = await getDataType( columnId );
-    const inputText = inputTexts[ "vc" + viewColumnId ];
+    const inputText = inputTexts[ viewColumnId ];
     if( dataType==="FILE" ){
       if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
       continue; // 条件には含めない
@@ -534,6 +534,18 @@ export async function createInputGroup_core( inputGroupId, viewId, tableId, next
 // 入力要素を作成
 export async function createInputElement_core( viewColumnId, inputGroupId, columnId, inputType ){
   if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+  const inputGroups = await runSqlReadOnly(
+    `SELECT *
+      FROM input_group
+      WHERE input_group_id = :inputGroupId
+      LIMIT 1;`,
+    {
+      ":inputGroupId": inputGroupId,
+    },
+  );
+  if( inputGroups.length===0 ){
+    throw `入力要素を作り直そうとしましたが、所属している入力グループが見つかりません。\ninputGroupId = ${inputGroupId}`;
+  }
   await runSqlWriteOnly(
     `INSERT INTO input_elements (
       view_column_id,
@@ -559,7 +571,7 @@ export async function createInputElement_core( viewColumnId, inputGroupId, colum
 
 
 // ビューを削除
-export async function deleteView_core( viewId ){
+export async function deleteViewInput_core( viewId ){
   if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
   const inputGroups = await runSqlReadOnly(
     `SELECT *

@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  deleteView,
   generateSQL,
+  deleteView,
 } from "./046_joinedTable_validate.js";
 import {
   getLocalIp,
@@ -49,6 +49,8 @@ import {
   listViewColumns,
   _deleteViewColumns,
   listViewColumnsForExcel,
+  regenerateInputElements,
+  _addViewColumn,
 } from "./049_view_column_validate.js";
 import {
   listDataTypes,
@@ -99,6 +101,7 @@ import {
   _listRecords,
   createInputGroup,
   createInputElement,
+  deleteViewInput,
   changeInputType,
   _fillMasterData,
 } from "./079_input_element_validate.js";

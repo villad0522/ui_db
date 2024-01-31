@@ -82,7 +82,7 @@ import {
   clearCache,  // インメモリキャッシュを削除する
   createInputGroup,  // 入力グループを作成
   createInputElement,  // 入力要素を作成
-  deleteView,  // ビューを削除
+  deleteViewInput,  // ビューを削除
   changeInputType,  // 入力方式を変更
   _fillMasterData,  // 【サブ関数】マスターデータの入力欄を埋める
 } from "./079_input_element_validate.js";
@@ -154,7 +154,7 @@ async function _test(){
   //
   // 入力要素を作成（科目）
   await createInputElement(
-    8, // viewColumnId
+    "d8", // viewColumnId
     "group3", // inputGroupId
     columnId5, // columnId
     "TEXTBOX", // inputType
@@ -162,7 +162,7 @@ async function _test(){
   //
   // 入力要素を作成（得点）
   await createInputElement(
-    7, // viewColumnId
+    "d7", // viewColumnId
     "group3", // inputGroupId
     columnId6, // columnId
     "TEXTBOX", // inputType
@@ -182,7 +182,7 @@ async function _test(){
   //
   // 入力要素を作成（氏名）
   await createInputElement(
-    9, // viewColumnId
+    "d9", // viewColumnId
     "group1", // inputGroupId
     columnId3, // columnId
     "TEXTBOX", // inputType
@@ -202,18 +202,18 @@ async function _test(){
   //
   // 入力要素を作成（学年）
   await createInputElement(
-    10, // viewColumnId
+    "d10", // viewColumnId
     "group2", // inputGroupId
     columnId1, // columnId
     "TEXTBOX", // inputType
   );
   //
   const result1 = await _autoFill({ 
-    viewColumnIdList: [10],
+    viewColumnIdList: ["d10"],
     isClick: true,
     tableId: tableId1,
     inputTexts: {
-      "vc10": 3,
+      "d10": 3,
     },
     conditions:{},
     isAutoFill: true,
@@ -223,11 +223,11 @@ async function _test(){
   }
   //
   const result2 = await _autoFill({ 
-    viewColumnIdList: [9],
+    viewColumnIdList: ["d9"],
     isClick: true,
     tableId: tableId2,
     inputTexts: {
-      "vc9": "田",
+      "d9": "田",
     },
     conditions:{
       [columnId2]: recordId,
@@ -237,50 +237,50 @@ async function _test(){
   const result3 = await autoFill(
     89, // viewId
     {
-      "vc9": "田",
-      "vc10": 3,
+      "d9": "田",
+      "d10": 3,
     },
     true,// isClick
   );
   /*
   これが返ってくるはず。
   {
-    vc9: '田中太郎',
-    vc10: 3,
-    vc10_autocorrection: [ 3 ],
-    vc9_autocorrection: [ '田中太郎' ],
-    vc7: '',
-    vc8: '',
-    vc7_autocorrection: [ 34 ],
-    vc8_autocorrection: [ '国語' ]
+    d9: '田中太郎',
+    d10: 3,
+    d10_autocorrection: [ 3 ],
+    d9_autocorrection: [ '田中太郎' ],
+    d7: '',
+    d8: '',
+    d7_autocorrection: [ 34 ],
+    d8_autocorrection: [ '国語' ]
   }  */
-  if( result3["vc9"]!=="田中太郎" ){
+  if( result3["d9"]!=="田中太郎" ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
-  if( result3["vc10"]!==3 ){
+  if( result3["d10"]!==3 ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
-  if( result3["vc10_autocorrection"][0]!==3 ){
+  if( result3["d10_autocorrection"][0]!==3 ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
-  if( result3["vc9_autocorrection"][0]!=="田中太郎" ){
+  if( result3["d9_autocorrection"][0]!=="田中太郎" ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
-  if( result3["vc7"]!=="" ){
+  if( result3["d7"]!=="" ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
-  if( result3["vc8"]!=="" ){
+  if( result3["d8"]!=="" ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
-  if( result3["vc7_autocorrection"][0]!==34 ){
+  if( result3["d7_autocorrection"][0]!==34 ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
-  if( result3["vc8_autocorrection"][0]!=="国語" ){
+  if( result3["d8_autocorrection"][0]!=="国語" ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
   //
   // 入力要素を削除
-  await deleteView( 89 );
+  await deleteViewInput( 89 );
   await close();
 
 }
