@@ -9,7 +9,7 @@ import {
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
-} from "./076_record_title_2_validate.js";
+} from "./082_record_title_2_validate.js";
 import {
   getLocalIp,
 } from "./118_ip_address_validate.js";
@@ -73,30 +73,15 @@ import {
   getTableIdFromName,
 } from "./097_table_name_validate.js";
 import {
-  formatField,
-} from "./082_db_formatter_validate.js";
-import {
-  autoFill,
-  _autoFill,
-  _getConditions,
-  _listPredictions,
-  _listRecords,
-  createInputGroup,
-  createInputElement,
-  deleteViewInput,
-  changeInputType,
-  _fillMasterData,
-} from "./079_input_element_validate.js";
-import {
   createRecord,  // レコードを作成
   updateRecord,  // レコードを上書き
   checkField,  // フィールドを検証
   checkRecord,  // レコードを検証
-} from "./073_record_title_1_validate.js";
-import { setBugMode } from "./074_record_title_1.js";
+} from "./079_record_title_1_validate.js";
+import { setBugMode } from "./080_record_title_1.js";
 
 
-export async function test072() {
+export async function test078() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;

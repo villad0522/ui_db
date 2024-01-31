@@ -383,6 +383,9 @@ export async function enableColumn_core( columnId ){
 // 予測変換
 export async function autoCorrect_core( tableId, columnId, inputText, conditions ){
   if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+  if( tableId !== await getTableId(columnId) ){
+    throw `指定されたテーブルIDとカラムIDの辻褄が合いません。`;
+  }
   const primaryKey = await getPrimaryKey( tableId );
   //
   // 文字列から名刺を抽出して、カタカナに変換する

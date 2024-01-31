@@ -3,7 +3,7 @@ import {
   updateRecord_core,  // レコードを上書き
   checkField_core,  // フィールドを検証
   checkRecord_core,  // レコードを検証
-} from "./074_record_title_1.js";
+} from "./080_record_title_1.js";
 
 
 //#######################################################################################

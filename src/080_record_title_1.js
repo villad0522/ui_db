@@ -9,7 +9,7 @@ import {
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
-} from "./076_record_title_2_validate.js";
+} from "./082_record_title_2_validate.js";
 import {
   getLocalIp,
 } from "./118_ip_address_validate.js";
@@ -76,21 +76,6 @@ import {
   listTableNamesAll,
   getTableIdFromName,
 } from "./097_table_name_validate.js";
-import {
-  formatField,
-} from "./082_db_formatter_validate.js";
-import {
-  autoFill,
-  _autoFill,
-  _getConditions,
-  _listPredictions,
-  _listRecords,
-  createInputGroup,
-  createInputElement,
-  deleteViewInput,
-  changeInputType,
-  _fillMasterData,
-} from "./079_input_element_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）

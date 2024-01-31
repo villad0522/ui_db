@@ -35,12 +35,17 @@ import {
 } from "./103_primary_key_validate.js";
 import {
   clearCache,
-  deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./076_record_title_2_validate.js";
+  autoFill,
+  _autoFill,
+  _getConditions,
+  _listPredictions,
+  _listRecords,
+  createInputGroup,
+  createInputElement,
+  deleteViewInput,
+  changeInputType,
+  _fillMasterData,
+} from "./073_input_element_validate.js";
 import {
   createColumn,
   createView,
@@ -60,7 +65,7 @@ import {
   updateRecord,
   checkField,
   checkRecord,
-} from "./073_record_title_1_validate.js";
+} from "./079_record_title_1_validate.js";
 import {
   createTable,
   updateTableName,
@@ -68,6 +73,13 @@ import {
   reserveWord,
   checkReservedWord,
 } from "./091_reserved_word_validate.js";
+import {
+  deleteTable,
+  listTables,
+  setTitleColumn,
+  getTitleColumnId,
+  getRecordIdFromTitle,
+} from "./082_record_title_2_validate.js";
 import {
   getDataType,
   listColumnsForGUI,
@@ -92,19 +104,7 @@ import {
 } from "./097_table_name_validate.js";
 import {
   formatField,
-} from "./082_db_formatter_validate.js";
-import {
-  autoFill,
-  _autoFill,
-  _getConditions,
-  _listPredictions,
-  _listRecords,
-  createInputGroup,
-  createInputElement,
-  deleteViewInput,
-  changeInputType,
-  _fillMasterData,
-} from "./079_input_element_validate.js";
+} from "./076_db_formatter_validate.js";
 import {
   getPathLength,
   slicePath,

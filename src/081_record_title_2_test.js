@@ -1,17 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  autoFill,
-  _autoFill,
-  _getConditions,
-  _listPredictions,
-  _listRecords,
-  createInputGroup,
-  createInputElement,
-  deleteViewInput,
-  changeInputType,
-  _fillMasterData,
-} from "./079_input_element_validate.js";
+  createRecord,
+  updateRecord,
+  checkField,
+  checkRecord,
+  getDataType,
+  listColumnsForGUI,
+  listColumnsAll,
+  getParentTableId,
+} from "./085_relation_validate.js";
 import {
   getLocalIp,
 } from "./118_ip_address_validate.js";
@@ -43,16 +41,6 @@ import {
   getPrimaryKey,
 } from "./103_primary_key_validate.js";
 import {
-  createRecord,
-  updateRecord,
-  checkField,
-  checkRecord,
-  getDataType,
-  listColumnsForGUI,
-  listColumnsAll,
-  getParentTableId,
-} from "./085_relation_validate.js";
-import {
   listDataTypes,
 } from "./100_data_type_validate.js";
 import {
@@ -79,9 +67,6 @@ import {
   getTableIdFromName,
 } from "./097_table_name_validate.js";
 import {
-  formatField,
-} from "./082_db_formatter_validate.js";
-import {
   startUp,  // プログラム起動
   setTitleColumn,  // 見出しの役割を果たすカラムを登録する
   getTitleColumnId,  // 見出しの役割を果たすカラムを取得する
@@ -90,11 +75,11 @@ import {
   clearCache,  // インメモリキャッシュを削除する
   getRecordIdFromTitle,  // 文字列からレコードIDを取得
   createColumn,  // カラムを作成
-} from "./076_record_title_2_validate.js";
-import { setBugMode } from "./077_record_title_2.js";
+} from "./082_record_title_2_validate.js";
+import { setBugMode } from "./083_record_title_2.js";
 
 
-export async function test075() {
+export async function test081() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     let i;

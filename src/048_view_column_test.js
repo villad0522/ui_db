@@ -54,12 +54,24 @@ import {
 } from "./103_primary_key_validate.js";
 import {
   clearCache,
+  autoFill,
+  _autoFill,
+  _getConditions,
+  _listPredictions,
+  _listRecords,
+  createInputGroup,
+  createInputElement,
+  deleteViewInput,
+  changeInputType,
+  _fillMasterData,
+} from "./073_input_element_validate.js";
+import {
   deleteTable,
   listTables,
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
-} from "./076_record_title_2_validate.js";
+} from "./082_record_title_2_validate.js";
 import {
   listDataTypes,
 } from "./100_data_type_validate.js";
@@ -68,7 +80,7 @@ import {
   updateRecord,
   checkField,
   checkRecord,
-} from "./073_record_title_1_validate.js";
+} from "./079_record_title_1_validate.js";
 import {
   createTable,
   updateTableName,
@@ -100,19 +112,7 @@ import {
 } from "./097_table_name_validate.js";
 import {
   formatField,
-} from "./082_db_formatter_validate.js";
-import {
-  autoFill,
-  _autoFill,
-  _getConditions,
-  _listPredictions,
-  _listRecords,
-  createInputGroup,
-  createInputElement,
-  deleteViewInput,
-  changeInputType,
-  _fillMasterData,
-} from "./079_input_element_validate.js";
+} from "./076_db_formatter_validate.js";
 import {
   getPathLength,
   slicePath,
@@ -217,7 +217,7 @@ async function _test(){
     await addViewColumn(
         viewId3,
         "RAW",  // viewColumnType
-        `main.${columnId4} > ${columnId2}`,     // columnPath
+        `main.${columnId4} > ${columnId2} > ${columnId1}`,     // columnPath
         "学年",   // viewColumnName
     );
     //
@@ -250,29 +250,29 @@ async function _test(){
         d7_autocorrection: [ 34 ],
         d8_autocorrection: [ '国語' ]
     }  */
-    if( result3["d9"]!=="田中太郎" ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    if( result3["d3"]!=="田中太郎" ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
     }
-    if( result3["d10"]!==3 ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    if( result3["d4"]!==3 ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
     }
-    if( result3["d10_autocorrection"][0]!==3 ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    if( result3["d4_autocorrection"][0]!==3 ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
     }
-    if( result3["d9_autocorrection"][0]!=="田中太郎" ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    if( result3["d3_autocorrection"][0]!=="田中太郎" ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
     }
-    if( result3["d7"]!=="" ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    if( result3["d1"]!=="" ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
     }
-    if( result3["d8"]!=="" ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    if( result3["d2"]!=="" ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
     }
-    if( result3["d7_autocorrection"][0]!==34 ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    if( result3["d1_autocorrection"][0]!==34 ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
     }
-    if( result3["d8_autocorrection"][0]!=="国語" ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
+    if( result3["d2_autocorrection"][0]!=="国語" ){
+        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
     }
     //
     //
