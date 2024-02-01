@@ -7,7 +7,7 @@ import {
   clearCache_core,  // インメモリキャッシュを削除する
   getRecordIdFromTitle_core,  // 文字列からレコードIDを取得
   createColumn_core,  // カラムを作成
-} from "./083_record_title_2.js";
+} from "./077_record_title_2.js";
 
 
 //#######################################################################################

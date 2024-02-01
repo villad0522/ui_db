@@ -3,17 +3,17 @@
 import {
   startUp,
   clearCache,
-  createColumn,
-  createRecord,
-  updateRecord,
-  checkField,
-  checkRecord,
-  deleteTable,
-  getDataType,
-  listColumnsForGUI,
-  listColumnsAll,
-  getParentTableId,
-} from "./085_relation_validate.js";
+  autoFill,
+  _autoFill,
+  _getConditions,
+  _listPredictions,
+  _listRecords,
+  createInputGroup,
+  createInputElement,
+  deleteViewInput,
+  changeInputType,
+  _fillMasterData,
+} from "./079_input_element_validate.js";
 import {
   getLocalIp,
 } from "./118_ip_address_validate.js";
@@ -45,6 +45,18 @@ import {
   getPrimaryKey,
 } from "./103_primary_key_validate.js";
 import {
+  createColumn,
+  createRecord,
+  updateRecord,
+  checkField,
+  checkRecord,
+  deleteTable,
+  getDataType,
+  listColumnsForGUI,
+  listColumnsAll,
+  getParentTableId,
+} from "./085_relation_validate.js";
+import {
   listDataTypes,
 } from "./100_data_type_validate.js";
 import {
@@ -71,6 +83,9 @@ import {
   listTableNamesAll,
   getTableIdFromName,
 } from "./097_table_name_validate.js";
+import {
+  formatField,
+} from "./082_db_formatter_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）

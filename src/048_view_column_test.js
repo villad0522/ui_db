@@ -54,24 +54,12 @@ import {
 } from "./103_primary_key_validate.js";
 import {
   clearCache,
-  autoFill,
-  _autoFill,
-  _getConditions,
-  _listPredictions,
-  _listRecords,
-  createInputGroup,
-  createInputElement,
-  deleteViewInput,
-  changeInputType,
-  _fillMasterData,
-} from "./073_input_element_validate.js";
-import {
   deleteTable,
   listTables,
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
-} from "./082_record_title_2_validate.js";
+} from "./076_record_title_2_validate.js";
 import {
   listDataTypes,
 } from "./100_data_type_validate.js";
@@ -80,7 +68,7 @@ import {
   updateRecord,
   checkField,
   checkRecord,
-} from "./079_record_title_1_validate.js";
+} from "./073_record_title_1_validate.js";
 import {
   createTable,
   updateTableName,
@@ -112,7 +100,19 @@ import {
 } from "./097_table_name_validate.js";
 import {
   formatField,
-} from "./076_db_formatter_validate.js";
+} from "./082_db_formatter_validate.js";
+import {
+  autoFill,
+  _autoFill,
+  _getConditions,
+  _listPredictions,
+  _listRecords,
+  createInputGroup,
+  createInputElement,
+  deleteViewInput,
+  changeInputType,
+  _fillMasterData,
+} from "./079_input_element_validate.js";
 import {
   getPathLength,
   slicePath,
@@ -237,7 +237,6 @@ async function _test(){
         console.error(viewColumns3);
         throw `ビューカラムの個数が想定外です`;
     }
-    console.log( viewColumns3 );
     //
     // 予測変換
     const result3 = await autoFill(

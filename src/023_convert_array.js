@@ -66,7 +66,7 @@ import {
   updateRecord,
   checkField,
   checkRecord,
-} from "./079_record_title_1_validate.js";
+} from "./073_record_title_1_validate.js";
 import {
   createTable,
   updateTableName,
@@ -80,7 +80,7 @@ import {
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
-} from "./082_record_title_2_validate.js";
+} from "./076_record_title_2_validate.js";
 import {
   getDataType,
   listColumnsForGUI,
@@ -105,7 +105,7 @@ import {
 } from "./097_table_name_validate.js";
 import {
   formatField,
-} from "./076_db_formatter_validate.js";
+} from "./082_db_formatter_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -117,7 +117,7 @@ import {
   deleteViewInput,
   changeInputType,
   _fillMasterData,
-} from "./073_input_element_validate.js";
+} from "./079_input_element_validate.js";
 import {
   getPathLength,
   slicePath,

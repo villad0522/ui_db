@@ -2,12 +2,16 @@ import fs from 'fs';
 import path from 'path';
 import {
   createColumn,
+  createRecord,
+  updateRecord,
+  checkField,
+  checkRecord,
   deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./082_record_title_2_validate.js";
+  getDataType,
+  listColumnsForGUI,
+  listColumnsAll,
+  getParentTableId,
+} from "./085_relation_validate.js";
 import {
   getLocalIp,
 } from "./118_ip_address_validate.js";
@@ -42,24 +46,12 @@ import {
   listDataTypes,
 } from "./100_data_type_validate.js";
 import {
-  createRecord,
-  updateRecord,
-  checkField,
-  checkRecord,
-} from "./079_record_title_1_validate.js";
-import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
   checkReservedWord,
 } from "./091_reserved_word_validate.js";
-import {
-  getDataType,
-  listColumnsForGUI,
-  listColumnsAll,
-  getParentTableId,
-} from "./085_relation_validate.js";
 import {
   deleteRecord,
   disableTable,
@@ -71,6 +63,7 @@ import {
 } from "./088_search_text_validate.js";
 import {
   reload,
+  listTables,
   checkTableEnabled,
   getTableName,
   listTableNamesAll,
@@ -78,7 +71,7 @@ import {
 } from "./097_table_name_validate.js";
 import {
   formatField,
-} from "./076_db_formatter_validate.js";
+} from "./082_db_formatter_validate.js";
 import {
   startUp,  // プログラム起動
   autoFill,  // 自動入力
@@ -92,11 +85,11 @@ import {
   deleteViewInput,  // ビューを削除
   changeInputType,  // 入力方式を変更
   _fillMasterData,  // 【サブ関数】マスターデータの入力欄を埋める
-} from "./073_input_element_validate.js";
-import { setBugMode } from "./074_input_element.js";
+} from "./079_input_element_validate.js";
+import { setBugMode } from "./080_input_element.js";
 
 
-export async function test072() {
+export async function test078() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();

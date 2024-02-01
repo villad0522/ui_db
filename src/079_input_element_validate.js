@@ -11,7 +11,7 @@ import {
   deleteViewInput_core,  // ビューを削除
   changeInputType_core,  // 入力方式を変更
   _fillMasterData_core,  // 【サブ関数】マスターデータの入力欄を埋める
-} from "./074_input_element.js";
+} from "./080_input_element.js";
 
 
 //#######################################################################################

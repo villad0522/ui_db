@@ -1,15 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  startUp,
-  clearCache,
-  createColumn,
-  deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./082_record_title_2_validate.js";
+  autoFill,
+  _autoFill,
+  _getConditions,
+  _listPredictions,
+  _listRecords,
+  createInputGroup,
+  createInputElement,
+  deleteViewInput,
+  changeInputType,
+  _fillMasterData,
+} from "./079_input_element_validate.js";
 import {
   getLocalIp,
 } from "./118_ip_address_validate.js";
@@ -41,14 +43,18 @@ import {
   getPrimaryKey,
 } from "./103_primary_key_validate.js";
 import {
-  listDataTypes,
-} from "./100_data_type_validate.js";
-import {
   createRecord,
   updateRecord,
   checkField,
   checkRecord,
-} from "./079_record_title_1_validate.js";
+  getDataType,
+  listColumnsForGUI,
+  listColumnsAll,
+  getParentTableId,
+} from "./085_relation_validate.js";
+import {
+  listDataTypes,
+} from "./100_data_type_validate.js";
 import {
   createTable,
   updateTableName,
@@ -56,12 +62,6 @@ import {
   reserveWord,
   checkReservedWord,
 } from "./091_reserved_word_validate.js";
-import {
-  getDataType,
-  listColumnsForGUI,
-  listColumnsAll,
-  getParentTableId,
-} from "./085_relation_validate.js";
 import {
   deleteRecord,
   disableTable,
@@ -79,9 +79,19 @@ import {
   getTableIdFromName,
 } from "./097_table_name_validate.js";
 import {
-  formatField,  // データを整形
-} from "./076_db_formatter_validate.js";
-import { setBugMode } from "./077_db_formatter.js";
+  formatField,
+} from "./082_db_formatter_validate.js";
+import {
+  startUp,  // プログラム起動
+  setTitleColumn,  // 見出しの役割を果たすカラムを登録する
+  getTitleColumnId,  // 見出しの役割を果たすカラムを取得する
+  listTables,  // テーブルの一覧を取得(重)
+  deleteTable,  // 不可逆的にテーブルを削除
+  clearCache,  // インメモリキャッシュを削除する
+  getRecordIdFromTitle,  // 文字列からレコードIDを取得
+  createColumn,  // カラムを作成
+} from "./076_record_title_2_validate.js";
+import { setBugMode } from "./077_record_title_2.js";
 
 
 export async function test075() {
@@ -89,7 +99,7 @@ export async function test075() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 25; i++ ) {
+    for ( i = 1; i <= 13; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -108,12 +118,12 @@ export async function test075() {
         }
         // 意図的に埋め込んだバグを検出できなかった場合
         setBugMode(0);    // 意図的なバグの発生を止める
-        console.log(`レイヤー「db_formatter」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
+        console.log(`レイヤー「record_title_2」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
         return;
     }
     // 意図的に埋め込んだ全てのバグを、正常に検出できた
     setBugMode(0);    // 意図的なバグの発生を止める
-    console.log(`レイヤー「db_formatter」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
+    console.log(`レイヤー「record_title_2」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
     return;
 }
 
@@ -121,5 +131,9 @@ export async function test075() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+  await startUp("http://localhost:3000/", true);
+  await createTable("クラス一覧");
+  await listTables( 1, 35, false );
+  await close();
 
 }
