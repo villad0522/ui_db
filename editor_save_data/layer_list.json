@@ -46,11 +46,21 @@
   },
   {
     "layerId": "01HMKK8S7PGCR0QNGHBVKVWPXB",
-    "layerNameJP": "API情報",
-    "layerNameEN": "api_info"
+    "layerNameJP": "API情報を取得",
+    "layerNameEN": "get_api_info"
   },
   {
     "layerId": "01HMWEPGB1WN73RY4BK4R0QSJ8",
+    "layerNameJP": "ページを再生成",
+    "layerNameEN": "regenerate_page"
+  },
+  {
+    "layerId": "01HNHWRZBZV7JMN0C44Q5CSSM3",
+    "layerNameJP": "API情報を生成",
+    "layerNameEN": "regenerate_api_info"
+  },
+  {
+    "layerId": "01HNHWY4FKNPP3J4GP3VT2QEZM",
     "layerNameJP": "HTML(全体)",
     "layerNameEN": "regenerate_html"
   },

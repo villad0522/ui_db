@@ -1,0 +1,13 @@
+[
+    {
+        "functionId": "test",
+        "functionNameJP": "テストコード",
+        "functionNameEN": "test",
+        "beforeCode": "",
+        "innerCode": "\n",
+        "afterCode": "",
+        "parametersName": [],
+        "parametersDataType": [],
+        "returnValue": "void"
+    }
+]

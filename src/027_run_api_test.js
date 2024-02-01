@@ -9,46 +9,45 @@ import {
   deletePage,
   pastePage,
   regeneratePage,
-  escapeHTML,
-} from "./034_regenerate_html_validate.js";
+} from "./034_regenerate_page_validate.js";
 import {
   getLocalIp,
-} from "./118_ip_address_validate.js";
+} from "./124_ip_address_validate.js";
 import {
   close,
   createDirectories,
-} from "./040_frontend_files_validate.js";
+} from "./046_frontend_files_validate.js";
 import {
   getPath,
-} from "./115_directory_validate.js";
+} from "./121_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./112_connect_database_validate.js";
+} from "./118_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
   getTableId,
   checkColumnEnabled,
   getColumnName,
-} from "./094_column_name_validate.js";
+} from "./100_column_name_validate.js";
 import {
   startTransaction,
   endTransaction,
-} from "./109_transaction_lower_validate.js";
+} from "./115_transaction_lower_validate.js";
 import {
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./106_csv_validate.js";
+} from "./112_csv_validate.js";
 import {
   getPrimaryKey,
-} from "./103_primary_key_validate.js";
+} from "./109_primary_key_validate.js";
 import {
   clearCache,
   getEndpointInfo,
   listEndpoints,
-} from "./031_api_info_validate.js";
+} from "./031_get_api_info_validate.js";
 import {
   createColumn,
   _generateViewColumnSortNumber,
@@ -58,36 +57,36 @@ import {
   listViewColumnsForExcel,
   regenerateInputElements,
   _addViewColumn,
-} from "./049_view_column_validate.js";
+} from "./055_view_column_validate.js";
 import {
   listDataTypes,
-} from "./100_data_type_validate.js";
+} from "./106_data_type_validate.js";
 import {
   createRecord,
   updateRecord,
   checkField,
   checkRecord,
-} from "./073_record_title_1_validate.js";
+} from "./079_record_title_1_validate.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
   checkReservedWord,
-} from "./091_reserved_word_validate.js";
+} from "./097_reserved_word_validate.js";
 import {
   deleteTable,
   listTables,
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
-} from "./076_record_title_2_validate.js";
+} from "./082_record_title_2_validate.js";
 import {
   getDataType,
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
-} from "./085_relation_validate.js";
+} from "./091_relation_validate.js";
 import {
   deleteRecord,
   disableTable,
@@ -96,17 +95,17 @@ import {
   enableColumn,
   delete_table,
   autoCorrect,
-} from "./088_search_text_validate.js";
+} from "./094_search_text_validate.js";
 import {
   reload,
   checkTableEnabled,
   getTableName,
   listTableNamesAll,
   getTableIdFromName,
-} from "./097_table_name_validate.js";
+} from "./103_table_name_validate.js";
 import {
   formatField,
-} from "./082_db_formatter_validate.js";
+} from "./088_db_formatter_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -118,13 +117,14 @@ import {
   deleteViewInput,
   changeInputType,
   _fillMasterData,
-} from "./079_input_element_validate.js";
+  getInputType,
+} from "./085_input_element_validate.js";
 import {
   getPathLength,
   slicePath,
   checkPath,
   pathToColumnId,
-} from "./067_columnPath_validate.js";
+} from "./073_columnPath_validate.js";
 import {
   getJoinIdMap,
   checkTableDuplication,
@@ -132,16 +132,16 @@ import {
   getJoinData,
   getWhereData,
   getOrderData,
-} from "./064_convert_sql_data_validate.js";
+} from "./070_convert_sql_data_validate.js";
 import {
   generateSQLwithoutDuplication,
-} from "./061_generate_sql2_validate.js";
+} from "./067_generate_sql2_validate.js";
 import {
   generateSQLwithDuplication,
-} from "./058_generate_sql1_validate.js";
+} from "./064_generate_sql1_validate.js";
 import {
   generateSQL,
-} from "./046_joinedTable_validate.js";
+} from "./052_joinedTable_validate.js";
 import {
   getPageInfo,
   listViewsFromTableId,
@@ -159,13 +159,17 @@ import {
   _movePage,
   _generatePageSortNumber,
   _copyPage,
-} from "./052_page_and_view_validate.js";
+} from "./058_page_and_view_validate.js";
 import {
   getPageData,
-} from "./043_page_data_validate.js";
+} from "./049_page_data_validate.js";
 import {
   generateViewHTML,
-} from "./037_regenerate_view_html_validate.js";
+} from "./043_regenerate_view_html_validate.js";
+import {
+  regenerateHTML,
+  escapeHTML,
+} from "./040_regenerate_html_validate.js";
 import {
   runApi,  // APIを実行する関数
   convertQuery,  // 連想配列をクエリパラメータに変換
