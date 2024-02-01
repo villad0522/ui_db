@@ -2,6 +2,7 @@
 //
 import {
   startUp,
+  close,
   getPath,
 } from "./115_directory_validate.js";
 import {

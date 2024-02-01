@@ -47,3 +47,8 @@ export async function getLocalIp_core(  ){
     }
     throw `ローカルIPアドレスを取得できませんでした`;
 }
+
+// バックエンドプログラム終了
+export async function close_core(  ){
+  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+}

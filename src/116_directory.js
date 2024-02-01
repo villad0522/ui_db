@@ -3,6 +3,7 @@
 import {
   startUp,
   getLocalIp,
+  close,
 } from "./118_ip_address_validate.js";
 
 
@@ -176,4 +177,8 @@ function _isDevelop() {
     else {
         return true;    // 開発環境
     }
+}
+// バックエンドプログラム終了
+export async function close_core(  ){
+  if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
 }

@@ -16,6 +16,12 @@ import {
   getLocalIp,
 } from "./118_ip_address_validate.js";
 import {
+  close,
+  createRecordsFromCsv,
+  getCsvProgress,
+  destroyCSV,
+} from "./106_csv_validate.js";
+import {
   getPath,
 } from "./115_directory_validate.js";
 import {
@@ -33,12 +39,6 @@ import {
   listColumnsAll,
   getColumnName,
 } from "./094_column_name_validate.js";
-import {
-  close,
-  createRecordsFromCsv,
-  getCsvProgress,
-  destroyCSV,
-} from "./106_csv_validate.js";
 import {
   startTransaction,
   endTransaction,

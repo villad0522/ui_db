@@ -8,6 +8,11 @@ import {
   getLocalIp,
 } from "./118_ip_address_validate.js";
 import {
+  createRecordsFromCsv,
+  getCsvProgress,
+  destroyCSV,
+} from "./106_csv_validate.js";
+import {
   getPath,
 } from "./115_directory_validate.js";
 import {
@@ -21,11 +26,6 @@ import {
   checkColumnEnabled,
   getColumnName,
 } from "./094_column_name_validate.js";
-import {
-  createRecordsFromCsv,
-  getCsvProgress,
-  destroyCSV,
-} from "./106_csv_validate.js";
 import {
   startTransaction,
   endTransaction,
@@ -161,6 +161,7 @@ import { setBugMode } from "./041_frontend_files.js";
 export async function test039() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
+    await close();
     let i;
     for ( i = 1; i <= 8; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
@@ -168,7 +169,16 @@ export async function test039() {
             await _test();  // 意図的にバグを混入させてテストを実行
         }
         catch (err) {
-            continue;   // 意図的に埋め込んだバグを正常に検出できた場合
+            // 意図的に埋め込んだバグを正常に検出できた場合。
+            while(true){
+                try{
+                    // 次のテストに影響を与えないように、データベースを閉じる。
+                    await close();
+                }
+                catch(err) {}
+                break;
+            }
+            continue;
         }
         // 意図的に埋め込んだバグを検出できなかった場合
         setBugMode(0);    // 意図的なバグの発生を止める

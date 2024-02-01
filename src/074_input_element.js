@@ -14,6 +14,12 @@ import {
   getLocalIp,
 } from "./118_ip_address_validate.js";
 import {
+  close,
+  createRecordsFromCsv,
+  getCsvProgress,
+  destroyCSV,
+} from "./106_csv_validate.js";
+import {
   getPath,
 } from "./115_directory_validate.js";
 import {
@@ -27,12 +33,6 @@ import {
   checkColumnEnabled,
   getColumnName,
 } from "./094_column_name_validate.js";
-import {
-  close,
-  createRecordsFromCsv,
-  getCsvProgress,
-  destroyCSV,
-} from "./106_csv_validate.js";
 import {
   startTransaction,
   endTransaction,
@@ -312,6 +312,7 @@ export async function _autoFill_core( params ){
     ...conditions,
     ...await _getConditions_core({ viewColumnIdList, inputTexts }),
   });
+  // 別のテーブルの条件を除外する
   for( const columnId in newConditions ){
     if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     if( tableId !== await getTableId(columnId) ){
@@ -466,6 +467,7 @@ export async function _listPredictions_core( params ){
   }
   //
   const newConditions = structuredClone(conditions);
+  // 別のテーブルの条件を除外する
   for( const columnId in newConditions ){
     if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
     if( tableId !== await getTableId(columnId) ){

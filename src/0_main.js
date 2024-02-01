@@ -180,6 +180,15 @@ async function _api(req, res) {
     catch (err) {
         console.error(err);
         res.status(500).type("text/plain").send(String(err));
+        //
+        console.log(`\n\n次の処理に影響を与えないように、データベースを再起動します。`);
+        try {
+            await close();
+            await startUp(null, false);
+        }
+        catch (err) {
+            console.error(err);
+        }
     }
 }
 

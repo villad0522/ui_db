@@ -6,6 +6,7 @@ import {
 import {
   getPath,  // ディレクトリのパスを提供する関数
   startUp,  // プログラム起動
+  close,  // バックエンドプログラム終了
 } from "./115_directory_validate.js";
 import { setBugMode } from "./116_directory.js";
 
@@ -13,14 +14,24 @@ import { setBugMode } from "./116_directory.js";
 export async function test114() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
+    await close();
     let i;
-    for ( i = 1; i <= 28; i++ ) {
+    for ( i = 1; i <= 29; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
         }
         catch (err) {
-            continue;   // 意図的に埋め込んだバグを正常に検出できた場合
+            // 意図的に埋め込んだバグを正常に検出できた場合。
+            while(true){
+                try{
+                    // 次のテストに影響を与えないように、データベースを閉じる。
+                    await close();
+                }
+                catch(err) {}
+                break;
+            }
+            continue;
         }
         // 意図的に埋め込んだバグを検出できなかった場合
         setBugMode(0);    // 意図的なバグの発生を止める

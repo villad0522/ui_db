@@ -1,6 +1,7 @@
 import {
   getPath_core,  // ディレクトリのパスを提供する関数
   startUp_core,  // プログラム起動
+  close_core,  // バックエンドプログラム終了
 } from "./116_directory.js";
 
 
@@ -72,6 +73,36 @@ export async function startUp( localUrl ){
   catch(error){
     if( typeof error === "string" ){
       throw new Error(`${error}\nレイヤー : directory\n関数 : startUp`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「close_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function close(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await close_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : directory\n関数 : close`);
     }
     else{
       throw error;

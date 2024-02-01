@@ -2,10 +2,10 @@
 //
 import {
   startUp,
+  close,
   getDebugMode,
   runSqlReadOnly,
   runSqlWriteOnly,
-  close,
   getDB,
 } from "./112_connect_database_validate.js";
 import {
@@ -45,16 +45,16 @@ let transactionMode = OFF;
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
-  if (transactionMode === ON) {
+  let buf = transactionMode;
+  if( transactionMode===ON ){
     if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    const db = await getDB();
-    await db.run("COMMIT TRANSACTION;");
+    await endTransaction_core();
   }
   await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
-  if (transactionMode === ON) {
+  transactionMode = OFF;
+  if (buf === ON) {
     if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
-    const db = await getDB();
-    await db.run("BEGIN TRANSACTION;");
+    await startTransaction_core();
   }
 }
 
@@ -79,9 +79,15 @@ export async function startTransaction_core(  ){
   if( transactionMode!==OFF ){
     throw "トランザクションモードが想定外です。";
   }
-  transactionMode = BEGIN;
-  await db.run("BEGIN TRANSACTION;");
-  transactionMode = ON;
+  try{
+    transactionMode = BEGIN;
+    await db.run("BEGIN TRANSACTION;");
+    transactionMode = ON;
+  }
+  catch(err){
+    console.error(err);
+    throw new Error(`トランザクション処理を開始しようとしましたが、エラーが発生しました。`);
+  }
 }
 
 
@@ -104,9 +110,15 @@ export async function endTransaction_core(  ){
   if( transactionMode!==ON ){
     throw "トランザクションモードが想定外です。";
   }
-  transactionMode = COMMIT;
-  await db.run("COMMIT TRANSACTION;");
-  transactionMode = OFF;
+  try{
+    transactionMode = COMMIT;
+    await db.run("COMMIT TRANSACTION;");
+    transactionMode = OFF;
+  }
+  catch(err){
+    console.error(err);
+    throw new Error(`トランザクション処理を終了しようとしましたが、エラーが発生しました。`);
+  }
 }
 
 
@@ -116,4 +128,5 @@ export async function close_core(  ){
   if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
   transactionMode = OFF;
   await close();
+  transactionMode = OFF;
 }

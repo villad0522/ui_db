@@ -48,13 +48,16 @@ let allCount = 0;
 let csvSize = 0;
 let progressMessage = "何も処理をしていません";
 let parserStream;
-
+let stmt;
 
 
 
 // CSVファイルインポート
 export async function createRecordsFromCsv_core( filePath ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
+  if( parserStream ){
+    throw `既に別の処理が動いています`;
+  }
   if (!fs.existsSync(filePath)) {
     throw 'ファイルが見つかりません。';
   }
@@ -124,36 +127,37 @@ export async function createRecordsFromCsv_core( filePath ){
   async function intervalFunc(){
     progressMessage = `【処理中】トランザクション処理を開始しています。`;
     await startTransaction();  // 開始
+    if(stmt){
+      if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+      progressMessage = `【処理中】データベースに送信した命令の完了を待っています。`;
+      await stmt.finalize();
+    }
     progressMessage = `【処理中】SQLの命令文を準備しています。`;
-    const stmt = await db.prepare(sql);
+    stmt = await db.prepare(sql);
     progressMessage = `【処理中】データベースに命令を送信しています。`;
     const buf = datas;
     datas = [];       // グローバル変数に代入
     //
     // データベースに挿入する処理
-    const funcs = [];
-    async function func(cells){
+    for( const cells of buf ){
+      if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
       await stmt.run(cells);
       successCount++;
     }
-    for( const cells of buf ){
-      if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-      funcs.push(func(cells));
-    }
-    await Promise.all(funcs);
     progressMessage = `【処理中】データベースに送信した${buf.length}件の命令の完了を待っています。`;
     await stmt.finalize();
+    stmt = null;
     progressMessage = `【処理中】トランザクション処理を確定させています。`;
     await endTransaction();    // 終了
     isInterval = false;
     if(parserStream){
-      if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
       progressMessage = `【処理中】CSVファイルからの読み出しを再開しています。`;
       parserStream.resume();
       progressMessage = `【処理中】CSVファイルから読み出しています。`;
     }
     else{
-      if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
       // 処理が中断された場合
       errorCount = 0;
       allCount = 0;
@@ -169,14 +173,14 @@ export async function createRecordsFromCsv_core( filePath ){
   function oneLine(lineText){
     const matrix = parseCsv(lineText);
     for(const cells of matrix){
-      if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
       try{
         if( cells.length === columnSize ){
-          if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+          if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
           datas.push(cells);
         }
         else{
-          if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+          if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
           console.error(`\n本来の列のサイズと異なります。\n現状: ${cells.length}\n本来: ${columnSize}`);
           console.error(cells);
           errorCount++;
@@ -190,7 +194,7 @@ export async function createRecordsFromCsv_core( filePath ){
       }
       allCount++;
       if (allCount % 1000 === 0) {
-        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
         // 1000行に一度、実行する
         if( isInterval === true ) continue;
         if( datas.length===0 ) continue;
@@ -209,7 +213,7 @@ export async function createRecordsFromCsv_core( filePath ){
   await new Promise((resolve, reject) => {
     parserStream.on('data', (text1) => {
       if(!parserStream) {
-        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
         console.error("処理が中断されました");
         return;
       }
@@ -221,7 +225,7 @@ export async function createRecordsFromCsv_core( filePath ){
     });
   });
   if( rest.length > 0 ){
-    if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
     oneLine( rest );
   }
   //==============================================================================
@@ -230,7 +234,7 @@ export async function createRecordsFromCsv_core( filePath ){
   parserStream.destroy();
   parserStream = null;
   if( datas.length>0 ){
-    if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
     await intervalFunc();
   }
   progressMessage = `完了しました。`;
@@ -269,7 +273,7 @@ function splitLastNewline(inputString) {
 
 // インポートの進捗状況を取得する関数
 export async function getCsvProgress_core(  ){
-  if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
   return {
     "progressMessage": progressMessage,
     "successCount": successCount,
@@ -281,7 +285,7 @@ export async function getCsvProgress_core(  ){
 
 // インポートを中断する関数
 export async function destroyCSV_core(  ){
-  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
   setTimeout(()=>{
     errorCount = 0;
     allCount = 0;
@@ -290,7 +294,7 @@ export async function destroyCSV_core(  ){
     progressMessage = "何も処理をしていません";
   },500);
   if(parserStream){
-    if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     // ストリームを中断・破棄
     parserStream.pause();
     parserStream.resume();
@@ -299,7 +303,7 @@ export async function destroyCSV_core(  ){
     return "CSVのアップロード処理を中断しました。";
   }
   else{
-    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
     return "現在、何も実行されていません。";
   }
 }
@@ -307,19 +311,25 @@ export async function destroyCSV_core(  ){
 
 // バックエンドプログラム終了
 export async function close_core(  ){
-  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
-  errorCount = 0;
-  allCount = 0;
-  successCount = 0;
-  csvSize = 0;
-  progressMessage = "何も処理をしていません";
+  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
   if(parserStream){
-    if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
     // ストリームを中断・破棄
     parserStream.pause();
     parserStream.resume();
     parserStream.destroy();
     parserStream = null;
   }
+  if(stmt){
+    if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+    progressMessage = `【処理中】データベースに送信した命令の完了を待っています。`;
+    await stmt.finalize();
+    stmt = null;
+  }
   await close();   // 下層の関数を呼び出す
+  errorCount = 0;
+  allCount = 0;
+  successCount = 0;
+  csvSize = 0;
+  progressMessage = "何も処理をしていません";
 }
