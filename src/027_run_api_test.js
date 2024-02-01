@@ -171,6 +171,9 @@ import {
   escapeHTML,
 } from "./040_regenerate_html_validate.js";
 import {
+  regenerateAPI_autoCorrect,
+} from "./037_regenerate_api_info_validate.js";
+import {
   runApi,  // APIを実行する関数
   convertQuery,  // 連想配列をクエリパラメータに変換
 } from "./028_run_api_validate.js";

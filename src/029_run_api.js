@@ -170,6 +170,9 @@ import {
   regenerateHTML,
   escapeHTML,
 } from "./040_regenerate_html_validate.js";
+import {
+  regenerateAPI_autoCorrect,
+} from "./037_regenerate_api_info_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
@@ -397,12 +400,11 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       };
     }
     //======================================================================
-    case "AUTO_FILL":{
+    case "AUTO_CORRECT":{
       if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
-      const viewId = Number(queryParameters["view_id"]);
       const isClick = queryParameters["is_click"] ? true : false;
       return await autoFill(
-        viewId,
+        apiInfo.viewId,
         {
           //  入力例
           //  "vc9": "田",

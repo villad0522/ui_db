@@ -89,6 +89,7 @@ export function setBugMode( mode ){
 
 
 
+
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -300,7 +301,7 @@ export async function _autoFill_core( params ){
   //
   const results = {
     //  "d8": "a",
-    //  "d8_autocorrection": [ "aaa", "aaaaaa" ],
+    //  "d8_option": [ "aaa", "aaaaaa" ],
   };
   //
   // 入力項目ごとに繰り返す（列ごとに繰り返す）
@@ -352,7 +353,7 @@ export async function _autoFill_core( params ){
       columnId,
       conditions: newConditions,
     });
-    results[ viewColumnId + "_autocorrection" ] = predictions;  // 結果
+    results[ viewColumnId + "_option" ] = predictions;  // 結果
     //
     if( predictions.length===1 ){
       if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）

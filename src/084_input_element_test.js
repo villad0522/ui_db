@@ -262,12 +262,12 @@ async function _test(){
   {
     d9: '田中太郎',
     d10: 3,
-    d10_autocorrection: [ 3 ],
-    d9_autocorrection: [ '田中太郎' ],
+    d10_option: [ 3 ],
+    d9_option: [ '田中太郎' ],
     d7: '',
     d8: '',
-    d7_autocorrection: [ 34 ],
-    d8_autocorrection: [ '国語' ]
+    d7_option: [ 34 ],
+    d8_option: [ '国語' ]
   }  */
   if( result3["d9"]!=="田中太郎" ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
@@ -275,10 +275,10 @@ async function _test(){
   if( result3["d10"]!==3 ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
-  if( result3["d10_autocorrection"][0]!==3 ){
+  if( result3["d10_option"][0]!==3 ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
-  if( result3["d9_autocorrection"][0]!=="田中太郎" ){
+  if( result3["d9_option"][0]!=="田中太郎" ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
   if( result3["d7"]!=="" ){
@@ -287,10 +287,10 @@ async function _test(){
   if( result3["d8"]!=="" ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
-  if( result3["d7_autocorrection"][0]!==34 ){
+  if( result3["d7_option"][0]!==34 ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
-  if( result3["d8_autocorrection"][0]!=="国語" ){
+  if( result3["d8_option"][0]!=="国語" ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
   //

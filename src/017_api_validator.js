@@ -170,6 +170,9 @@ import {
   escapeHTML,
 } from "./040_regenerate_html_validate.js";
 import {
+  regenerateAPI_autoCorrect,
+} from "./037_regenerate_api_info_validate.js";
+import {
   getEndpointInfo,
   runApi,
 } from "./019_auto_correct_validate.js";
@@ -390,7 +393,7 @@ function _validator({ value, dataType, isRequired }) {
             // 空欄の場合
             if (isRequired === false) {
                 // 空欄OKの場合
-                return null;
+                return "";
             }
             throw "必須項目が空欄です。";
         case "BOOL":

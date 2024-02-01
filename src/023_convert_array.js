@@ -170,6 +170,9 @@ import {
   escapeHTML,
 } from "./040_regenerate_html_validate.js";
 import {
+  regenerateAPI_autoCorrect,
+} from "./037_regenerate_api_info_validate.js";
+import {
   getEndpointInfo,
   runApi,
 } from "./025_pagination_validate.js";

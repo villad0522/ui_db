@@ -175,3 +175,43 @@ export function setBugMode( mode ){
     bugMode = mode;
 }
 
+
+
+
+// 予測変換のAPIを再生成
+export async function regenerateAPI_autoCorrect_core( viewId ){
+  if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
+    const viewColumns = await listViewColumns( viewId );
+    const requestBody = {};
+    const response = {};
+    for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
+        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+        requestBody[viewColumnId] = {
+            "dataType": "TEXT",
+            "description": viewColumnName,
+            "isRequired": false,
+            "example": "---"
+        };
+        response[viewColumnId] = {
+            "dataType": "TEXT",
+            "description": viewColumnName,
+            "isRequired": false,
+            "example": "---"
+        };
+        response[viewColumnId+"_option"] = {
+            "dataType": "TEXT",
+            "description": viewColumnName,
+            "isRequired": false,
+            "example": "---"
+        };
+    }
+    return {
+        "viewId": viewId,
+        "httpMethod": "POST",
+        "description": "予測変換を取得します。",
+        "commandName": "AUTO_CORRECT",
+        "queryParameters": {},
+        "requestBody": requestBody,
+        "response": response
+    };
+}

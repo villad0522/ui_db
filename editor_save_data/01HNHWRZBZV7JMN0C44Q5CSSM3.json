@@ -1,13 +1,1 @@
-[
-    {
-        "functionId": "test",
-        "functionNameJP": "テストコード",
-        "functionNameEN": "test",
-        "beforeCode": "",
-        "innerCode": "\n",
-        "afterCode": "",
-        "parametersName": [],
-        "parametersDataType": [],
-        "returnValue": "void"
-    }
-]
+[{"functionId":"test","functionNameJP":"テストコード","functionNameEN":"test","beforeCode":"","innerCode":"\n","afterCode":"","parametersName":[],"parametersDataType":[],"returnValue":"void"},{"functionNameJP":"予測変換のAPIを再生成","functionNameEN":"regenerateAPI_autoCorrect","parametersName":["viewId"],"parametersDataType":["number"],"returnValue":{"viewId":"number","httpMethod":"string","description":"string","commandName":"string","queryParameters":{"string":{"dataType":"string_nullable","description":"string_nullable","isRequired":"boolean_nullable","example":"any","title":"string_nullable","isArray":"boolean_nullable","onePageMaxSize":"number_nullable","children":"any"}},"requestBody":{"string":{"dataType":"string_nullable","description":"string_nullable","isRequired":"boolean_nullable","example":"any","title":"string_nullable","isArray":"boolean_nullable","onePageMaxSize":"number_nullable","children":"any"}},"response":{"string":{"dataType":"string_nullable","description":"string_nullable","example":"any","title":"string_nullable","isArray":"boolean_nullable","onePageMaxSize":"number_nullable","children":"any"}}},"functionId":"01HNHXV97R3V15YY83Q3G55X1X","beforeCode":"\n\n\n","innerCode":"\n    const viewColumns = await listViewColumns( viewId );\n    const requestBody = {};\n    const response = {};\n    for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){\n        requestBody[viewColumnId] = {\n            \"dataType\": \"TEXT\",\n            \"description\": viewColumnName,\n            \"isRequired\": false,\n            \"example\": \"---\"\n        };\n        response[viewColumnId] = {\n            \"dataType\": \"TEXT\",\n            \"description\": viewColumnName,\n            \"isRequired\": false,\n            \"example\": \"---\"\n        };\n        response[viewColumnId+\"_option\"] = {\n            \"dataType\": \"TEXT\",\n            \"description\": viewColumnName,\n            \"isRequired\": false,\n            \"example\": \"---\"\n        };\n    }\n    return {\n        \"viewId\": viewId,\n        \"httpMethod\": \"POST\",\n        \"description\": \"予測変換を取得します。\",\n        \"commandName\": \"AUTO_CORRECT\",\n        \"queryParameters\": {},\n        \"requestBody\": requestBody,\n        \"response\": response\n    };\n","afterCode":""}]

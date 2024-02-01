@@ -45,6 +45,15 @@ export async function getEndpointInfo( endpointPath ){
       throw new Error(`resultがオブジェクトではありません。\nレイヤー : get_api_info\n関数 : getEndpointInfo`);
     }
   }
+  if( (result.viewId===null) || (result.viewId===undefined) ){
+    // result.viewIdは空欄OK。
+  }
+  else if( typeof result.viewId !== "number" ){
+    throw new Error(`result.viewIdが数値ではありません。\nレイヤー : get_api_info\n関数 : getEndpointInfo`);
+  }
+  else if( isNaN(result.viewId) ){
+    throw new Error(`result.viewIdが数値ではありません。\nレイヤー : get_api_info\n関数 : getEndpointInfo`);
+  }
   if( typeof result.httpMethod !== "string" ){
     if( !result.httpMethod ){
       throw new Error(`result.httpMethodがNULLです。\nレイヤー : get_api_info\n関数 : getEndpointInfo`);

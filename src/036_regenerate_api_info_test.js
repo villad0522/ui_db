@@ -164,6 +164,7 @@ import {
   escapeHTML,
 } from "./040_regenerate_html_validate.js";
 import {
+  regenerateAPI_autoCorrect,  // 予測変換のAPIを再生成
 } from "./037_regenerate_api_info_validate.js";
 import { setBugMode } from "./038_regenerate_api_info.js";
 
@@ -173,7 +174,7 @@ export async function test036() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 0; i++ ) {
+    for ( i = 1; i <= 2; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

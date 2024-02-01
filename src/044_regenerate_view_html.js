@@ -242,7 +242,7 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
             </div>
         </div>
         <div class="card">
-            <div class="card-body row">`;
+            <div class="card-body row" oninput="myFetch('./auto_correct_${viewId}/form')">`;
     //
     for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
         if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -346,7 +346,7 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                         </svg>
-                        追加
+                        登録
                     </button>
                 </div>
             </div>

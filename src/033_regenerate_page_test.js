@@ -157,6 +157,9 @@ import {
   escapeHTML,
 } from "./040_regenerate_html_validate.js";
 import {
+  regenerateAPI_autoCorrect,
+} from "./037_regenerate_api_info_validate.js";
+import {
   regeneratePage,  // ページを再生成する
   createPage,  // ページを作成
   createView,  // ビューを作成
@@ -174,7 +177,7 @@ export async function test033() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 18; i++ ) {
+    for ( i = 1; i <= 20; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -225,11 +228,11 @@ async function _test(){
     });
     //
     // ページを作成
-    const { pageId: pageId1 } = await createPage( 1 );
+    const { pageId: pageId2 } = await createPage( 1 );
     //
     // ページに動的リストを追加
-    const { viewId: viewId1 } = await createView( pageId1, "名簿" );
-    await regeneratePage( pageId1 );
+    const { viewId: viewId1 } = await createView( pageId2, "名簿" );
+    await regeneratePage( pageId2 );
     //
     //await close();
 
