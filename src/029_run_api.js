@@ -12,18 +12,18 @@ import {
 } from "./034_regenerate_page_validate.js";
 import {
   getLocalIp,
-} from "./124_ip_address_validate.js";
+} from "./127_ip_address_validate.js";
 import {
   close,
   createDirectories,
 } from "./046_frontend_files_validate.js";
 import {
   getPath,
-} from "./121_directory_validate.js";
+} from "./124_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./118_connect_database_validate.js";
+} from "./121_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -34,15 +34,18 @@ import {
 import {
   startTransaction,
   endTransaction,
-} from "./115_transaction_lower_validate.js";
+} from "./118_transaction_lower_validate.js";
 import {
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./112_csv_validate.js";
+} from "./115_csv_validate.js";
 import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
+} from "./112_primary_key_validate.js";
+import {
+  deleteRecords,
+} from "./109_delete_record_validate.js";
 import {
   clearCache,
   getEndpointInfo,
@@ -118,6 +121,9 @@ import {
   changeInputType,
   _fillMasterData,
   getInputType,
+  updateRecords,
+  createRecordFromView,
+  _convertToRecord,
 } from "./085_input_element_validate.js";
 import {
   getPathLength,
@@ -159,6 +165,7 @@ import {
   _movePage,
   _generatePageSortNumber,
   _copyPage,
+  getViewInfo,
 } from "./058_page_and_view_validate.js";
 import {
   getPageData,
@@ -172,6 +179,11 @@ import {
 } from "./040_regenerate_html_validate.js";
 import {
   regenerateAPI_autoCorrect,
+  _getExample,
+  regenerateAPI_create,
+  regenerateAPI_read,
+  regenerateAPI_update,
+  regenerateAPI_delete,
 } from "./037_regenerate_api_info_validate.js";
 
 
@@ -400,8 +412,49 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       };
     }
     //======================================================================
-    case "AUTO_CORRECT":{
+    case "CREATE_RECORD":{
       if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+      return await createRecordFromView(
+        apiInfo.viewId,
+        {
+          //  入力例
+          //  "vc9": "田",
+          //  "vc10": 3,
+          ...requestBody,
+        }
+      );
+    }
+    //======================================================================
+    case "UPDATE_RECORDS":{
+      if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+      return await updateRecords(
+        apiInfo.viewId,
+        [
+          //  入力例
+          //  "id": 23,
+          //  "vc9": "田",
+          //  "vc10": 3,
+          ...requestBody["view" + viewId + "_"],
+        ]
+      );
+    }
+    //======================================================================
+    case "DELETE_RECORDS":{
+      if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+      return await deleteRecords(
+        apiInfo.tableId,
+        [
+          //  入力例
+          //  "id": 23,
+          //  "vc9": "田",
+          //  "vc10": 3,
+          ...requestBody["view" + viewId + "_"],
+        ]
+      );
+    }
+    //======================================================================
+    case "AUTO_CORRECT":{
+      if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
       const isClick = queryParameters["is_click"] ? true : false;
       return await autoFill(
         apiInfo.viewId,
@@ -416,7 +469,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CREATE_VIEW":{
-      if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       const tableName = requestBody["tableName"];
       await  createView( pageId, tableName );
@@ -434,7 +487,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
 
 // 連想配列をクエリパラメータに変換
 export async function convertQuery_core( obj ){
-  if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
   return Object.keys(obj)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
     .join('&');

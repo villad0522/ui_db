@@ -5,19 +5,19 @@ import {
   close,
   startTransaction,
   endTransaction,
-} from "./115_transaction_lower_validate.js";
+} from "./118_transaction_lower_validate.js";
 import {
   getLocalIp,
-} from "./124_ip_address_validate.js";
+} from "./127_ip_address_validate.js";
 import {
   getPath,
-} from "./121_directory_validate.js";
+} from "./124_directory_validate.js";
 import {
   getDebugMode,
   runSqlReadOnly,
   runSqlWriteOnly,
   getDB,
-} from "./118_connect_database_validate.js";
+} from "./121_connect_database_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）

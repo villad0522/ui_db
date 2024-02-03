@@ -5,20 +5,20 @@ import {
 } from "./076_sort_validate.js";
 import {
   getLocalIp,
-} from "./124_ip_address_validate.js";
+} from "./127_ip_address_validate.js";
 import {
   close,
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./112_csv_validate.js";
+} from "./115_csv_validate.js";
 import {
   getPath,
-} from "./121_directory_validate.js";
+} from "./124_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./118_connect_database_validate.js";
+} from "./121_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -29,10 +29,13 @@ import {
 import {
   startTransaction,
   endTransaction,
-} from "./115_transaction_lower_validate.js";
+} from "./118_transaction_lower_validate.js";
 import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
+} from "./112_primary_key_validate.js";
+import {
+  deleteRecords,
+} from "./109_delete_record_validate.js";
 import {
   clearCache,
   createColumn,
@@ -95,6 +98,9 @@ import {
   changeInputType,
   _fillMasterData,
   getInputType,
+  updateRecords,
+  createRecordFromView,
+  _convertToRecord,
 } from "./085_input_element_validate.js";
 import {
   getPathLength,  // カラムパスの長さを取得する

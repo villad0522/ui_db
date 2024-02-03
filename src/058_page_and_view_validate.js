@@ -22,6 +22,8 @@ import {
   _movePage_core,  // 【サブ関数】ページを移動する
   _generatePageSortNumber_core,  // 【サブ関数】ソート番号を発行する
   _copyPage_core,  // 【サブ関数】ページをコピーする
+  getViewInfo_core,  // ビューの情報を取得
+  clearCache_core,  // インメモリキャッシュを削除する
 } from "./059_page_and_view.js";
 
 
@@ -1326,6 +1328,123 @@ export async function _copyPage( pageId, destParentPageId, destAfterPageId ){
   catch(error){
     if( typeof error === "string" ){
       throw new Error(`${error}\nレイヤー : page_and_view\n関数 : _copyPage`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「getViewInfo_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function getViewInfo( viewId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await getViewInfo_core( viewId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "object" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
+  if( typeof result.childPageId !== "number" ){
+    if( !result.childPageId ){
+      throw new Error(`result.childPageIdがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`result.childPageIdが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
+  else if( isNaN(result.childPageId) ){
+    throw new Error(`result.childPageIdが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+  }
+  if( typeof result.tableId !== "string" ){
+    if( !result.tableId ){
+      throw new Error(`result.tableIdがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`result.tableIdが文字列ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
+  if( typeof result.onePageMaxSize !== "number" ){
+    if( !result.onePageMaxSize ){
+      throw new Error(`result.onePageMaxSizeがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`result.onePageMaxSizeが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
+  else if( isNaN(result.onePageMaxSize) ){
+    throw new Error(`result.onePageMaxSizeが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+  }
+  if( typeof result.viewType !== "string" ){
+    if( !result.viewType ){
+      throw new Error(`result.viewTypeがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`result.viewTypeが文字列ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「clearCache_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function clearCache(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await clearCache_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : page_and_view\n関数 : clearCache`);
     }
     else{
       throw error;

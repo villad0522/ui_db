@@ -7,14 +7,14 @@ import {
 } from "./046_frontend_files_validate.js";
 import {
   getLocalIp,
-} from "./124_ip_address_validate.js";
+} from "./127_ip_address_validate.js";
 import {
   getPath,
-} from "./121_directory_validate.js";
+} from "./124_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./118_connect_database_validate.js";
+} from "./121_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -25,23 +25,42 @@ import {
 import {
   startTransaction,
   endTransaction,
-} from "./115_transaction_lower_validate.js";
+} from "./118_transaction_lower_validate.js";
 import {
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./112_csv_validate.js";
+} from "./115_csv_validate.js";
 import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
+} from "./112_primary_key_validate.js";
+import {
+  deleteRecords,
+} from "./109_delete_record_validate.js";
 import {
   clearCache,
-  deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./082_record_title_2_validate.js";
+  createPage,
+  updatePageName,
+  getPageInfo,
+  listViewsFromTableId,
+  getTableFromView,
+  deletePage,
+  getBreadcrumbs,
+  cutPage,
+  copyPage,
+  pastePage,
+  getCuttingPage,
+  getCopyingPage,
+  listAllPages,
+  listStaticChildren,
+  listChildrenView,
+  getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
+  _copyPage,
+  getViewInfo,
+} from "./058_page_and_view_validate.js";
 import {
   createColumn,
   createView,
@@ -69,6 +88,13 @@ import {
   reserveWord,
   checkReservedWord,
 } from "./097_reserved_word_validate.js";
+import {
+  deleteTable,
+  listTables,
+  setTitleColumn,
+  getTitleColumnId,
+  getRecordIdFromTitle,
+} from "./082_record_title_2_validate.js";
 import {
   getDataType,
   listColumnsForGUI,
@@ -106,6 +132,9 @@ import {
   changeInputType,
   _fillMasterData,
   getInputType,
+  updateRecords,
+  createRecordFromView,
+  _convertToRecord,
 } from "./085_input_element_validate.js";
 import {
   getPathLength,
@@ -131,28 +160,6 @@ import {
   generateSQL,
   deleteView,
 } from "./052_joinedTable_validate.js";
-import {
-  createPage,
-  updatePageName,
-  getPageInfo,
-  listViewsFromTableId,
-  getTableFromView,
-  deletePage,
-  getBreadcrumbs,
-  cutPage,
-  copyPage,
-  pastePage,
-  getCuttingPage,
-  getCopyingPage,
-  listAllPages,
-  listStaticChildren,
-  listChildrenView,
-  getParentPage,
-  listChildrenPage,
-  _movePage,
-  _generatePageSortNumber,
-  _copyPage,
-} from "./058_page_and_view_validate.js";
 import {
   getPageData,
 } from "./049_page_data_validate.js";
@@ -342,7 +349,7 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
                     </div>
                 </div>
                 <div class="col-12" style="text-align: right;">
-                    <button onclick="addButton();" class="btn btn-primary" type="button">
+                    <button onclick="myFetch('./create_1/form');" class="btn btn-primary" type="button">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                         </svg>
@@ -352,7 +359,7 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
             </div>
         </div>`;
     //
-    for( let i=0; i<35; i++ ){
+    for( let i=0; i<onePageMaxSize; i++ ){
         if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
         mainHtmlText += `
         <div class="card">

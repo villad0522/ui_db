@@ -7,14 +7,14 @@ import {
 } from "./046_frontend_files_validate.js";
 import {
   getLocalIp,
-} from "./124_ip_address_validate.js";
+} from "./127_ip_address_validate.js";
 import {
   getPath,
-} from "./121_directory_validate.js";
+} from "./124_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./118_connect_database_validate.js";
+} from "./121_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -25,23 +25,42 @@ import {
 import {
   startTransaction,
   endTransaction,
-} from "./115_transaction_lower_validate.js";
+} from "./118_transaction_lower_validate.js";
 import {
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./112_csv_validate.js";
+} from "./115_csv_validate.js";
 import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
+} from "./112_primary_key_validate.js";
+import {
+  deleteRecords,
+} from "./109_delete_record_validate.js";
 import {
   clearCache,
-  deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./082_record_title_2_validate.js";
+  createPage,
+  updatePageName,
+  getPageInfo,
+  listViewsFromTableId,
+  getTableFromView,
+  deletePage,
+  getBreadcrumbs,
+  cutPage,
+  copyPage,
+  pastePage,
+  getCuttingPage,
+  getCopyingPage,
+  listAllPages,
+  listStaticChildren,
+  listChildrenView,
+  getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
+  _copyPage,
+  getViewInfo,
+} from "./058_page_and_view_validate.js";
 import {
   createColumn,
   createView,
@@ -69,6 +88,13 @@ import {
   reserveWord,
   checkReservedWord,
 } from "./097_reserved_word_validate.js";
+import {
+  deleteTable,
+  listTables,
+  setTitleColumn,
+  getTitleColumnId,
+  getRecordIdFromTitle,
+} from "./082_record_title_2_validate.js";
 import {
   getDataType,
   listColumnsForGUI,
@@ -106,6 +132,9 @@ import {
   changeInputType,
   _fillMasterData,
   getInputType,
+  updateRecords,
+  createRecordFromView,
+  _convertToRecord,
 } from "./085_input_element_validate.js";
 import {
   getPathLength,
@@ -132,28 +161,6 @@ import {
   deleteView,
 } from "./052_joinedTable_validate.js";
 import {
-  createPage,
-  updatePageName,
-  getPageInfo,
-  listViewsFromTableId,
-  getTableFromView,
-  deletePage,
-  getBreadcrumbs,
-  cutPage,
-  copyPage,
-  pastePage,
-  getCuttingPage,
-  getCopyingPage,
-  listAllPages,
-  listStaticChildren,
-  listChildrenView,
-  getParentPage,
-  listChildrenPage,
-  _movePage,
-  _generatePageSortNumber,
-  _copyPage,
-} from "./058_page_and_view_validate.js";
-import {
   getPageData,
 } from "./049_page_data_validate.js";
 import {
@@ -165,6 +172,11 @@ import {
 } from "./040_regenerate_html_validate.js";
 import {
   regenerateAPI_autoCorrect,
+  _getExample,
+  regenerateAPI_create,
+  regenerateAPI_read,
+  regenerateAPI_update,
+  regenerateAPI_delete,
 } from "./037_regenerate_api_info_validate.js";
 
 
@@ -222,7 +234,8 @@ export async function regeneratePage_core( pageId ){
     for( const { viewId, tableId, onePageMaxSize, viewType, childPageId } of views ){
         if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
         //
-        const apiInfoAutoCorrect = await regenerateAPI_autoCorrect( viewId );
+        // 予測変換
+        const apiInfoAutoCorrect = await regenerateAPI_autoCorrect( viewId, tableId, onePageMaxSize, childPageId );
         const dirPathAutoCorrect = path.join( pagePath, `./auto_correct_${viewId}/` );
         if( !fs.existsSync(dirPathAutoCorrect) ){
             if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -231,28 +244,52 @@ export async function regeneratePage_core( pageId ){
         const apiPathAutoCorrect = path.join( dirPathAutoCorrect, `api.json` );
         await fs.promises.writeFile( apiPathAutoCorrect, JSON.stringify( apiInfoAutoCorrect, null, 2 ) );
         //
-        /*const apiInfoCreate = await regenerateAPI_create( viewId );
-        const apiPathCreate = path.join( pagePath, `./create/api.json` );
+        // 作成
+        const apiInfoCreate = await regenerateAPI_create( viewId, tableId, onePageMaxSize, childPageId );
+        const dirPathCreate = path.join( pagePath, `./create_${viewId}/` );
+        if( !fs.existsSync(dirPathCreate) ){
+            if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+            await fs.promises.mkdir(dirPathCreate);
+        }
+        const apiPathCreate = path.join( dirPathCreate, `api.json` );
         await fs.promises.writeFile( apiPathCreate, JSON.stringify( apiInfoCreate, null, 2 ) );
         //
-        const apiInfoRead = await regenerateAPI_read( viewId );
-        const apiPathRead = path.join( pagePath, `./read/api.json` );
+        // 取得
+        const apiInfoRead = await regenerateAPI_read( viewId, tableId, onePageMaxSize, childPageId );
+        const dirPathRead = path.join( pagePath, `./read_${viewId}/` );
+        if( !fs.existsSync(dirPathRead) ){
+            if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+            await fs.promises.mkdir(dirPathRead);
+        }
+        const apiPathRead = path.join( dirPathRead, `api.json` );
         await fs.promises.writeFile( apiPathRead, JSON.stringify( apiInfoRead, null, 2 ) );
         //
-        const apiInfoUpdate = await regenerateAPI_update( viewId );
-        const apiPathUpdate = path.join( pagePath, `./update/api.json` );
+        // 上書き
+        const apiInfoUpdate = await regenerateAPI_update( viewId, tableId, onePageMaxSize, childPageId );
+        const dirPathUpdate = path.join( pagePath, `./update_${viewId}/` );
+        if( !fs.existsSync(dirPathUpdate) ){
+            if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+            await fs.promises.mkdir(dirPathUpdate);
+        }
+        const apiPathUpdate = path.join( dirPathUpdate, `api.json` );
         await fs.promises.writeFile( apiPathUpdate, JSON.stringify( apiInfoUpdate, null, 2 ) );
         //
-        const apiInfoDelete = await regenerateAPI_delete( viewId );
-        const apiPathDelete = path.join( pagePath, `./delete/api.json` );
-        await fs.promises.writeFile( apiPathDelete, JSON.stringify( apiInfoDelete, null, 2 ) );*/
+        // 削除
+        const apiInfoDelete = await regenerateAPI_delete( viewId, tableId, onePageMaxSize, childPageId );
+        const dirPathDelete = path.join( pagePath, `./delete_${viewId}/` );
+        if( !fs.existsSync(dirPathDelete) ){
+            if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+            await fs.promises.mkdir(dirPathDelete);
+        }
+        const apiPathDelete = path.join( dirPathDelete, `api.json` );
+        await fs.promises.writeFile( apiPathDelete, JSON.stringify( apiInfoDelete, null, 2 ) );
     }
 }
 
 
 // ページを作成
 export async function createPage_core( parentPageId ){
-  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
     const result = await createPage( parentPageId );
     //
     // 作ったばかりの子ページのHTMLを生成する
@@ -268,7 +305,7 @@ export async function createPage_core( parentPageId ){
 
 // ビューを作成
 export async function createView_core( pageId, tableName ){
-  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
     const result = await createView( pageId, tableName );
     await regeneratePage_core( pageId );
     return result;
@@ -277,13 +314,13 @@ export async function createView_core( pageId, tableName ){
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
-  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
     await startUp( localUrl, isDebug );   // 下層の関数を呼び出す
     //
     const customDirPath = await getPath("FRONTEND_CUSTOM");
     const customFilePath = path.join(customDirPath, "1.html");
     if ( !fs.existsSync(customFilePath)) {
-        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
         // ./src/frontend/custom/1.html が存在しない場合
         await regeneratePage_core( 1 );
     }
@@ -292,7 +329,7 @@ export async function startUp_core( localUrl, isDebug ){
 
 // ページ名やメモを変更
 export async function updatePageName_core( pageId, pageName, memo ){
-  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
     // 下層の関数を呼び出す
     const result = await updatePageName( pageId, pageName, memo );
     //
@@ -302,14 +339,14 @@ export async function updatePageName_core( pageId, pageName, memo ){
     // 親ページのHTMLを再生成する
     const parentPageId = await getParentPage( pageId );
     if( parentPageId >= 1 ){
-        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
         await regeneratePage_core( parentPageId );
     }
     //
     // 子ページのHTMLを再生成する（パンくずリストに表示されるため）
     const children = await listChildrenPage( pageId );
     for( const pageId of children ){
-        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
         await regeneratePage_core( pageId );
     }
     //
@@ -320,7 +357,7 @@ export async function updatePageName_core( pageId, pageName, memo ){
 
 // ビューを削除
 export async function deleteView_core( viewId ){
-  if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
     // 下層の関数を呼び出す
     const result = await deleteView( viewId );
     //
@@ -334,7 +371,7 @@ export async function deleteView_core( viewId ){
         },
     );
     for( const { pageId } of pages ){
-        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
         // 子ページを再帰的に削除する
         await deletePage_core( pageId );
     }
@@ -344,7 +381,7 @@ export async function deleteView_core( viewId ){
 
 // ページを再帰的に削除
 export async function deletePage_core( pageId ){
-  if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
     // 下層の関数を呼び出す
     const result = await deletePage( pageId );
     // 子ページの一覧を取得する
@@ -352,7 +389,7 @@ export async function deletePage_core( pageId ){
     // 子ページを削除する
     //  （子→親の順番になるように削除する）
     for( let i=children.length-1; i>=0; i-- ){
-        if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
         await _deletePageFolder( children[i] );
     }
     // 対象のページを削除する
@@ -376,13 +413,13 @@ async function _deletePageFolder( pageId ){
 
 // ページを貼り付ける
 export async function pastePage_core( newParentId, afterPageId ){
-  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
     //
     // 親ページ（切り取り元）を調べる
     const cuttingPageId = await getCuttingPage();
     let pastParentId = null;
     if(cuttingPageId){
-        if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
         pastParentId = await getParentPage( cuttingPageId );
     }
     //
@@ -393,10 +430,10 @@ export async function pastePage_core( newParentId, afterPageId ){
     }
     //
     if( pastParentId !== newParentId ){
-        if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
         // 親ページ（切り取り元）のHTMLを再生成する
         if( pastParentId >= 1 ){
-            if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
             await regeneratePage_core( pastParentId );
         }
     }
@@ -410,7 +447,7 @@ export async function pastePage_core( newParentId, afterPageId ){
     // 子ページのHTMLを再生成する（パンくずリストを更新するため）
     const children = await listChildrenPage( result.pageId );
     for( const pageId of children ){
-        if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
         await regeneratePage_core( pageId );
     }
     //

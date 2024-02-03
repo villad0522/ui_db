@@ -1,7 +1,4 @@
 
-import myFetch from "/default/my_fetch.js";
-
-
 // 一か所でも編集されたかどうかを記録する変数
 let isEdit = false;
 //
@@ -21,7 +18,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 //###############################################################
 // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する関数
-window.jumpWithQuery = function(url) {
+window.jumpWithQuery = function (url) {
     if (isEdit) {
         if (confirm("編集内容は破棄されます。よろしいですか？") == false) {
             return;
@@ -52,20 +49,6 @@ window.handleEditSwitch = function (event) {
     // ↑ この処理の意義は、
     // 「編集内容は破棄されます。よろしいですか？」に
     // Noと答えた場合に、スイッチを戻すため。
-}
-//
-//###############################################################
-// 「キャンセル」ボタンがクリックされたときに実行する関数
-window.cancelButton = function () {
-    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
-    window.location.href = "../index.html" + window.location.search;
-}
-//
-//###############################################################
-// 「表の名前を変更」ボタンがクリックされたときに実行する関数
-window.renameButton = function () {
-    // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する
-    window.location.href = "./rename" + window.location.search;
 }
 //
 //###############################################################

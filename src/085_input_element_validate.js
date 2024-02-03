@@ -12,6 +12,9 @@ import {
   changeInputType_core,  // 入力方式を変更
   _fillMasterData_core,  // 【サブ関数】マスターデータの入力欄を埋める
   getInputType_core,  // 入力方式を取得
+  updateRecords_core,  // レコードを上書き
+  createRecordFromView_core,  // レコードを追加
+  _convertToRecord_core,  // 【サブ関数】入力データをレコードに変換
 } from "./086_input_element.js";
 
 
@@ -918,6 +921,195 @@ export async function getInputType( viewColumnId ){
     }
     else{
       throw new Error(`resultが文字列ではありません。\nレイヤー : input_element\n関数 : getInputType`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「updateRecords_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function updateRecords( viewId, records ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : input_element\n関数 : updateRecords`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : input_element\n関数 : updateRecords`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : input_element\n関数 : updateRecords`);
+  }
+  if( !Array.isArray(records) ){
+    if( !records ){
+      throw new Error(`recordsがNULLです。\nレイヤー : input_element\n関数 : updateRecords`);
+    }
+    else{
+      throw new Error(`recordsが配列ではありません。\nレイヤー : input_element\n関数 : updateRecords`);
+    }
+  }
+  for( let i=0; i<records.length; i++ ){
+    if( records[i]===null || records[i]===undefined ){
+      throw new Error(`records[${i}]がNULLです。\nレイヤー : input_element\n関数 : updateRecords`);
+    }
+    else if( typeof records[i] !== "object" ){
+      throw new Error(`records[${i}]がオブジェクトではありません。\nレイヤー : input_element\n関数 : updateRecords`);
+    }
+    else if( records[i].constructor !== Object ){
+      throw new Error(`records[${i}]が辞書型ではありません。\nレイヤー : input_element\n関数 : updateRecords`);
+    }
+    for( const j in records[i] ){
+      if( typeof j !== "string" ){
+        throw new Error(`records[${i}]のキーが文字列ではありません。\nレイヤー : input_element\n関数 : updateRecords`);
+      }
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await updateRecords_core( viewId, records );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : input_element\n関数 : updateRecords`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「createRecordFromView_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function createRecordFromView( viewId, recordData ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : input_element\n関数 : createRecordFromView`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : input_element\n関数 : createRecordFromView`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : input_element\n関数 : createRecordFromView`);
+  }
+  if( recordData===null || recordData===undefined ){
+    throw new Error(`recordDataがNULLです。\nレイヤー : input_element\n関数 : createRecordFromView`);
+  }
+  else if( typeof recordData !== "object" ){
+    throw new Error(`recordDataがオブジェクトではありません。\nレイヤー : input_element\n関数 : createRecordFromView`);
+  }
+  else if( recordData.constructor !== Object ){
+    throw new Error(`recordDataが辞書型ではありません。\nレイヤー : input_element\n関数 : createRecordFromView`);
+  }
+  for( const i in recordData ){
+    if( typeof i !== "string" ){
+      throw new Error(`recordDataのキーが文字列ではありません。\nレイヤー : input_element\n関数 : createRecordFromView`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await createRecordFromView_core( viewId, recordData );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : input_element\n関数 : createRecordFromView`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「_convertToRecord_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function _convertToRecord( viewId, inputTexts ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : input_element\n関数 : _convertToRecord`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : input_element\n関数 : _convertToRecord`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : input_element\n関数 : _convertToRecord`);
+  }
+  if( inputTexts===null || inputTexts===undefined ){
+    throw new Error(`inputTextsがNULLです。\nレイヤー : input_element\n関数 : _convertToRecord`);
+  }
+  else if( typeof inputTexts !== "object" ){
+    throw new Error(`inputTextsがオブジェクトではありません。\nレイヤー : input_element\n関数 : _convertToRecord`);
+  }
+  else if( inputTexts.constructor !== Object ){
+    throw new Error(`inputTextsが辞書型ではありません。\nレイヤー : input_element\n関数 : _convertToRecord`);
+  }
+  for( const i in inputTexts ){
+    if( typeof i !== "string" ){
+      throw new Error(`inputTextsのキーが文字列ではありません。\nレイヤー : input_element\n関数 : _convertToRecord`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await _convertToRecord_core( viewId, inputTexts );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : input_element\n関数 : _convertToRecord`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( result===null || result===undefined ){
+    throw new Error(`resultがNULLです。\nレイヤー : input_element\n関数 : _convertToRecord`);
+  }
+  else if( typeof result !== "object" ){
+    throw new Error(`resultがオブジェクトではありません。\nレイヤー : input_element\n関数 : _convertToRecord`);
+  }
+  else if( result.constructor !== Object ){
+    throw new Error(`resultが辞書型ではありません。\nレイヤー : input_element\n関数 : _convertToRecord`);
+  }
+  for( const i in result ){
+    if( typeof i !== "string" ){
+      throw new Error(`resultのキーが文字列ではありません。\nレイヤー : input_element\n関数 : _convertToRecord`);
     }
   }
   //

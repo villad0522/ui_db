@@ -3,7 +3,7 @@ import {
   startTransaction_core,  // トランザクション処理開始
   endTransaction_core,  // トランザクション処理終了
   close_core,  // バックエンドプログラム終了
-} from "./116_transaction_lower.js";
+} from "./119_transaction_lower.js";
 
 
 //#######################################################################################

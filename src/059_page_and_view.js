@@ -5,20 +5,20 @@ import {
 } from "./076_sort_validate.js";
 import {
   getLocalIp,
-} from "./124_ip_address_validate.js";
+} from "./127_ip_address_validate.js";
 import {
   close,
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./112_csv_validate.js";
+} from "./115_csv_validate.js";
 import {
   getPath,
-} from "./121_directory_validate.js";
+} from "./124_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./118_connect_database_validate.js";
+} from "./121_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -29,10 +29,13 @@ import {
 import {
   startTransaction,
   endTransaction,
-} from "./115_transaction_lower_validate.js";
+} from "./118_transaction_lower_validate.js";
 import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
+} from "./112_primary_key_validate.js";
+import {
+  deleteRecords,
+} from "./109_delete_record_validate.js";
 import {
   clearCache,
   createColumn,
@@ -95,6 +98,9 @@ import {
   changeInputType,
   _fillMasterData,
   getInputType,
+  updateRecords,
+  createRecordFromView,
+  _convertToRecord,
 } from "./085_input_element_validate.js";
 import {
   getPathLength,
@@ -610,12 +616,19 @@ export async function listStaticChildren_core( pageId ){
 }
 
 
-
+let cacheViews = {
+  // viewId: {
+  //   childPageId,
+  //   tableId,
+  //   onePageMaxSize,
+  //   viewType
+  // }
+};
 
 // ビューの一覧を取得
 export async function listChildrenView_core( pageId ){
   if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
-  return await runSqlReadOnly(
+  const views = await runSqlReadOnly(
     `SELECT 
         pages.page_id AS childPageId,
         views.view_id AS viewId,
@@ -631,13 +644,18 @@ export async function listChildrenView_core( pageId ){
       ":parentPageId": pageId,
     },
   );
+  for( const viewInfo of views ){
+    if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+    cacheViews[viewInfo.viewId] = viewInfo;
+  }
+  return views;
 }
 
 
 
 // 親ページのIDを取得
 export async function getParentPage_core( pageId ){
-  if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
   const pages = await runSqlReadOnly(
     `SELECT 
         pages.page_name AS pageName,
@@ -662,11 +680,11 @@ export async function getParentPage_core( pageId ){
     throw `ページIDの循環参照が発生しました。\npageId = ${pageId}`;
   }
   if(parentPageId1){
-    if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
     return parentPageId1;
   }
   else if(parentPageId2){
-    if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
     return parentPageId2;
   }
   return 0;
@@ -674,10 +692,10 @@ export async function getParentPage_core( pageId ){
 
 // 子ページの一覧を再帰的に取得
 export async function listChildrenPage_core( parentId ){
-  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
   // 戻り値はページIDの配列。親→子の順番になるように配列を構築する。
   if( !parentId ){
-    if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
     return [];
   }
   const pages = await runSqlReadOnly(
@@ -693,12 +711,12 @@ export async function listChildrenPage_core( parentId ){
     },
   );
   if(pages.length===0){
-    if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
     return [];
   }
   const pageIds = [];
   for( const {childId} of pages ){
-    if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
     if( parentId===childId ){
       throw `ページIDの循環参照が発生しました。\npageId = ${parentId}`;
     }
@@ -709,7 +727,7 @@ export async function listChildrenPage_core( parentId ){
     // 関数を再帰呼び出し
     const list = await listChildrenPage_core( childId );
     for( const pageId of list ){
-      if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
       if( pageIds.includes(pageId)){
         throw `子ページの重複が発生しました。\npageId = ${pageId}`;
       }
@@ -724,7 +742,7 @@ export async function listChildrenPage_core( parentId ){
 
 // 【サブ関数】ページを移動する
 export async function _movePage_core( pageId, destParentPageId, destAfterPageId ){
-  if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
   // ソート番号を何にするべきか決める
   const sortNumber = await _generatePageSortNumber_core( destParentPageId, destAfterPageId );
   await runSqlWriteOnly(
@@ -744,9 +762,9 @@ export async function _movePage_core( pageId, destParentPageId, destAfterPageId 
 
 // 【サブ関数】ソート番号を発行する
 export async function _generatePageSortNumber_core( destParentPageId, destAfterPageId ){
-  if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
   if( destAfterPageId ){
-    if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
     // 特定のページの直前に挿入する場合
     const pages = await runSqlReadOnly(
       `SELECT sort_number AS sortNumber
@@ -761,7 +779,7 @@ export async function _generatePageSortNumber_core( destParentPageId, destAfterP
       },
     );
     if( pages.length===2 ){
-      if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
       // 移動先の、直前と直後のページが両方取得できた場合
       const sortNumberBefore = pages[1]["sortNumber"];
       const sortNumberAfter = pages[0]["sortNumber"];
@@ -771,7 +789,7 @@ export async function _generatePageSortNumber_core( destParentPageId, destAfterP
       return sortNumberBefore + ((sortNumberAfter-sortNumberBefore)/2);
     }
     else if( pages.length===1 ){
-      if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
       // 移動先の直後のページしか取得できなかった場合
       // （先頭に挿入する場合）
       const sortNumberAfter = pages[0]["sortNumber"];
@@ -785,7 +803,7 @@ export async function _generatePageSortNumber_core( destParentPageId, destAfterP
     }
   }
   else{
-    if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
     // 末尾に追加する場合
     const pages = await runSqlReadOnly(
       `SELECT sort_number AS sortNumber
@@ -798,13 +816,13 @@ export async function _generatePageSortNumber_core( destParentPageId, destAfterP
       },
     );
     if( pages.length===0 ){
-      if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
       // 兄弟が存在しない場合
       // （空のページに挿入する場合）
       return 64;
     }
     else{
-      if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
       // 既に兄弟が存在する場合
       const sortNumberBefore = pages[0]["sortNumber"];
       return sortNumberBefore + 8;
@@ -815,8 +833,23 @@ export async function _generatePageSortNumber_core( destParentPageId, destAfterP
 
 // 【サブ関数】ページをコピーする
 export async function _copyPage_core( pageId, destParentPageId, destAfterPageId ){
-  if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
   // ソート番号を何にするべきか決める
   const sortNumber = await _generatePageSortNumber_core( destParentPageId, destAfterPageId );
   throw "この関数は未実装です。";
+}
+
+
+
+// ビューの情報を取得
+export async function getViewInfo_core( viewId ){
+  if(bugMode === 45) throw "MUTATION45";  // 意図的にバグを混入させる（ミューテーション解析）
+  return cacheViews[viewId];
+}
+
+// インメモリキャッシュを削除する
+export async function clearCache_core(  ){
+  if(bugMode === 46) throw "MUTATION46";  // 意図的にバグを混入させる（ミューテーション解析）
+  await clearCache();
+  cacheViews = {};
 }

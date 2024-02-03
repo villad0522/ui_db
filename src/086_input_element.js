@@ -16,20 +16,20 @@ import {
 } from "./091_relation_validate.js";
 import {
   getLocalIp,
-} from "./124_ip_address_validate.js";
+} from "./127_ip_address_validate.js";
 import {
   close,
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./112_csv_validate.js";
+} from "./115_csv_validate.js";
 import {
   getPath,
-} from "./121_directory_validate.js";
+} from "./124_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./118_connect_database_validate.js";
+} from "./121_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -40,10 +40,13 @@ import {
 import {
   startTransaction,
   endTransaction,
-} from "./115_transaction_lower_validate.js";
+} from "./118_transaction_lower_validate.js";
 import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
+} from "./112_primary_key_validate.js";
+import {
+  deleteRecords,
+} from "./109_delete_record_validate.js";
 import {
   listDataTypes,
 } from "./106_data_type_validate.js";
@@ -312,8 +315,8 @@ export async function _autoFill_core( params ){
   //
   // 絞り込み条件を生成する
   const newConditions = structuredClone({
-    ...conditions,
-    ...await _getConditions_core({ viewColumnIdList, inputTexts }),
+    ...conditions,  // 前の入力グループから引き継いだ条件
+    ...await _getConditions_core({ viewColumnIdList, inputTexts }), // 入力された文字列から生成した条件
   });
   // 別のテーブルの条件を除外する
   for( const columnId in newConditions ){
@@ -707,4 +710,124 @@ export async function _fillMasterData_core( viewId, childGroupId, childRecordDat
 export async function getInputType_core( viewColumnId ){
   if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData3[viewColumnId];
+}
+
+
+// レコードを上書き
+export async function updateRecords_core( viewId, records ){
+  if(bugMode === 45) throw "MUTATION45";  // 意図的にバグを混入させる（ミューテーション解析）
+  const conditions = {
+    // 代入例
+    // inputGroupId: {
+    //   columnId: マスターデータのレコードID
+    //   "c7": 87
+    // },
+    // "main.c6": {
+    //   "c99": 7
+    // }
+  };
+  const inputGroups = cacheData2[viewId];
+  if(!Array.isArray(inputGroups)){
+    throw `ビューの情報が見つかりません。`;
+  }
+  //
+  // 行ごとに繰り返す
+  for( let i=0; i<records.length; i++ ){
+    if(bugMode === 46) throw "MUTATION46";  // 意図的にバグを混入させる（ミューテーション解析）
+    // 入力グループごとに繰り返す
+    const recordData = await _convertToRecord_core(  );
+  }
+}
+
+
+// レコードを追加
+export async function createRecordFromView_core( viewId, recordData ){
+  if(bugMode === 47) throw "MUTATION47";  // 意図的にバグを混入させる（ミューテーション解析）
+  throw "この関数は未実装です。";
+}
+
+
+
+// 【サブ関数】入力データをレコードに変換
+export async function _convertToRecord_core( viewId, inputTexts ){
+  if(bugMode === 48) throw "MUTATION48";  // 意図的にバグを混入させる（ミューテーション解析）
+  const conditions = {
+    // 代入例
+    // inputGroupId: {
+    //   columnId: マスターデータのレコードID
+    //   "c7": 87
+    // },
+    // "main.c6": {
+    //   "c99": 7
+    // }
+  };
+  const inputGroups = cacheData2[viewId];
+  if(!Array.isArray(inputGroups)){
+    throw `ビューの情報が見つかりません。`;
+  }
+  //
+  // 入力グループごとに繰り返す（最後の一つ手前まで）
+  for( let j=0; j<inputGroups.length-1; j++ ){
+    if(bugMode === 49) throw "MUTATION49";  // 意図的にバグを混入させる（ミューテーション解析）
+    const {
+      inputGroupId,
+      viewColumnIdList,
+      tableId,
+      nextGroupId,
+      nextColumnId
+    } = inputGroups[j];
+    //
+    if( !conditions[inputGroupId] ){
+      if(bugMode === 50) throw "MUTATION50";  // 意図的にバグを混入させる（ミューテーション解析）
+      conditions[inputGroupId] = {};
+    }
+    //
+    // 絞り込み条件を生成する
+    const conditionThisGroup = structuredClone({
+      ...conditions[inputGroupId],  // 前の入力グループから引き継いだ条件
+      ...await _getConditions_core({ viewColumnIdList, inputTexts }), // 入力された文字列から生成した条件
+    });
+    //
+    const records = await _listRecords_core( tableId, conditionThisGroup, 1 );
+    console.log(tableName);
+    if( records.length === 0 ){
+      if(bugMode === 51) throw "MUTATION51";  // 意図的にバグを混入させる（ミューテーション解析）
+      // 合致するデータが見つからない場合、上書きしない
+      console.error(conditionThisGroup);
+    const tableName = await getTableName( tableId );
+      return {
+        userMessage: `表「${tableName}」から一致するデータを見つけられません。`,
+      };
+    }
+    // 合致するデータが１件以上存在する場合
+    const primaryKey = await getPrimaryKey( tableId );
+    const recordId = records[0][primaryKey];
+    //
+    // 子に情報を伝える
+    if(!nextGroupId || !nextColumnId) continue; 
+    if( !conditions[nextGroupId] ){
+      if(bugMode === 52) throw "MUTATION52";  // 意図的にバグを混入させる（ミューテーション解析）
+      conditions[nextGroupId] = {};
+    }
+    conditions[nextGroupId][nextColumnId] = recordId;
+  }
+  const {
+    inputGroupId,
+    viewColumnIdList,
+    tableId,
+  } = inputGroups[inputGroups.length-1];
+  if( !conditions[inputGroupId] ){
+    if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
+    conditions[inputGroupId] = {};
+  }
+  const results = conditions[inputGroupId];  // 前の入力グループから引き継いだ条件
+  //
+  // 入力項目ごとに繰り返す（列ごとに繰り返す）
+  for(let viewColumnId of viewColumnIdList){
+    if(bugMode === 54) throw "MUTATION54";  // 意図的にバグを混入させる（ミューテーション解析）
+    const columnId = cacheData1[viewColumnId];
+    if( tableId !== await getTableId( columnId ) ) continue;
+    results[columnId] = inputTexts[viewColumnId];
+  }
+  return results;
 }

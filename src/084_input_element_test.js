@@ -14,20 +14,20 @@ import {
 } from "./091_relation_validate.js";
 import {
   getLocalIp,
-} from "./124_ip_address_validate.js";
+} from "./127_ip_address_validate.js";
 import {
   close,
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./112_csv_validate.js";
+} from "./115_csv_validate.js";
 import {
   getPath,
-} from "./121_directory_validate.js";
+} from "./124_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./118_connect_database_validate.js";
+} from "./121_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -38,10 +38,13 @@ import {
 import {
   startTransaction,
   endTransaction,
-} from "./115_transaction_lower_validate.js";
+} from "./118_transaction_lower_validate.js";
 import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
+} from "./112_primary_key_validate.js";
+import {
+  deleteRecords,
+} from "./109_delete_record_validate.js";
 import {
   listDataTypes,
 } from "./106_data_type_validate.js";
@@ -86,6 +89,9 @@ import {
   changeInputType,  // 入力方式を変更
   _fillMasterData,  // 【サブ関数】マスターデータの入力欄を埋める
   getInputType,  // 入力方式を取得
+  updateRecords,  // レコードを上書き
+  createRecordFromView,  // レコードを追加
+  _convertToRecord,  // 【サブ関数】入力データをレコードに変換
 } from "./085_input_element_validate.js";
 import { setBugMode } from "./086_input_element.js";
 
@@ -95,7 +101,7 @@ export async function test084() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 44; i++ ) {
+    for ( i = 1; i <= 54; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -293,6 +299,16 @@ async function _test(){
   if( result3["d8_option"][0]!=="国語" ){
     throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result1, null, 2));
   }
+  const recordData = await _convertToRecord(
+    89, // viewId
+    {
+      "d7": 99,
+      "d8": "国語",
+      "d9": "鈴木信也",
+      "d10": 3,
+    },
+  );
+  console.log(recordData);
   //
   // 入力要素を削除
   await deleteViewInput( 89 );
