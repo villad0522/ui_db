@@ -145,27 +145,27 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
     switch(viewColumnType){
       case "RAW":
         if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
-        selectList.push(`${columnName} AS '${viewColumnName}'`);
+        selectList.push(`${columnName} AS '${viewColumnId}'`);
         break;
       case "SUM":
         if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-        selectList.push(`SUM(${columnName}) AS '${viewColumnName}'`);
+        selectList.push(`SUM(${columnName}) AS '${viewColumnId}'`);
         break;
       case "MAX":
         if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-        selectList.push(`MAX(${columnName}) AS '${viewColumnName}'`);
+        selectList.push(`MAX(${columnName}) AS '${viewColumnId}'`);
         break;
       case "MIN":
         if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
-        selectList.push(`MIN(${columnName}) AS '${viewColumnName}'`);
+        selectList.push(`MIN(${columnName}) AS '${viewColumnId}'`);
         break;
       case "AVG":
         if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-        selectList.push(`AVG(${columnName}) AS '${viewColumnName}'`);
+        selectList.push(`AVG(${columnName}) AS '${viewColumnId}'`);
         break;
       case "COUNT":
         if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-        selectList.push(`COUNT(${columnName}) AS '${viewColumnName}'`);
+        selectList.push(`COUNT(${columnName}) AS '${viewColumnId}'`);
         break;
       default:
         throw `サポートされていない集合関数が指定されました。viewColumnType=${viewColumnType}`;

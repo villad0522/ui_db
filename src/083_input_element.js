@@ -719,10 +719,11 @@ export async function updateRecordsFromView_core( viewId, inputTexts ){
   const recordDatas = [];
   let tableId2;
   let isSuccess = true;
-  const outputTexts = structuredClone(inputTexts);
+  const outputTexts = [];
   // 行ごとに繰り返す
   for( let i=0; i<inputTexts.length; i++ ){
     if(bugMode === 46) throw "MUTATION46";  // 意図的にバグを混入させる（ミューテーション解析）
+    outputTexts[i] = {};
     if(!inputTexts[i]["id"]){
       throw "上書き対象のプライマリキー「id」が指定されていません";
     }
@@ -734,10 +735,7 @@ export async function updateRecordsFromView_core( viewId, inputTexts ){
     } = await _convertToRecord_core( viewId, inputTexts[i] );
     if( flag===false ){
       if(bugMode === 47) throw "MUTATION47";  // 意図的にバグを混入させる（ミューテーション解析）
-      outputTexts[i] = {
-        ...outputTexts[i],
-        ...messages,
-      };
+      outputTexts[i] = messages;
       isSuccess = false;
       continue;
     }
@@ -754,7 +752,7 @@ export async function updateRecordsFromView_core( viewId, inputTexts ){
     }
     return {
       "isSuccess": true,
-      "outputTexts": inputTexts,
+      "outputTexts": outputTexts,
       "userMessage": await updateRecords( tableId2, recordDatas ),
     };
   }
@@ -783,7 +781,7 @@ export async function createRecordFromView_core( viewId, inputTexts ){
     return {
       ...await createRecord( tableId, recordData ),
       "isSuccess": true,
-      "outputTexts": inputTexts,
+      "outputTexts": {},
     };
   }
   else{
@@ -817,7 +815,7 @@ export async function _convertToRecord_core( viewId, inputTexts ){
   }
   //
   // 入力フォームに表示する値
-  const outputTexts = structuredClone(inputTexts);
+  const outputTexts = {};
   let isSuccess = true;
   //
   // 入力グループごとに繰り返す（最後の一つ手前まで）
@@ -895,7 +893,6 @@ export async function _convertToRecord_core( viewId, inputTexts ){
       isSuccess = false;
       continue;
     }
-    outputTexts[viewColumnId] = value;
     results[columnId] = value;
     //
     // フィールドを検証する

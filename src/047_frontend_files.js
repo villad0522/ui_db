@@ -250,7 +250,7 @@ export async function startUp_core( localUrl, isDebug ){
     });
     watcher.on('unlink', function (filePath) {
       //console.log(`\nフロントエンドのファイルが削除されました。\n${filePath}`);
-      //_refleshFrontEndDB();
+      _refleshFrontEndDB();
     });
     watcher.on('addDir', function (path) {
       //console.log(`\nフロントエンドにフォルダが追加されました。\n${path}`);
@@ -258,7 +258,7 @@ export async function startUp_core( localUrl, isDebug ){
     });
     watcher.on('unlinkDir', function (path) {
       //console.log(`\nフロントエンドのフォルダが削除されました。\n${path}`);
-      //_refleshFrontEndDB();
+      _refleshFrontEndDB();
     });
     watcher.on('error', function (path) {
       //console.error(`\nフロントエンドフォルダの監視中にエラーが発生しました。\n${path}`);

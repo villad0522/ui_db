@@ -247,21 +247,30 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
             </div>
         </div>
         <div class="card">
-            <div class="card-body row" oninput="myFetch('./auto_correct_${viewId}/form')">`;
+            <div class="card-body row" oninput="myFetch('./auto_correct_view${viewId}/form')">`;
     //
     for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
         if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-        if( viewColumnType!=="RAW" ) continue;
-        let subHtmlText = "";
-        const placeholder = ""; // 入力例（未実装）
-        const inputType = await getInputType( viewColumnId );
-        subHtmlText = `
+        if( viewColumnType!=="RAW" ) {
+            if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+            mainHtmlText += `
+                <div class="col-xl-6 row mb-3">
                     <label for="${viewColumnId}" class="col-md-3 form-label d-md-none">
                         ${viewColumnName}
                     </label>
                     <label for="${viewColumnId}" class="col-md-3 form-label d-none d-md-block text-end">
                         ${viewColumnName}
                     </label>
+                    <div class="col-md-9">
+                        <input type="text" readonly class="form-control-plaintext" name="${viewColumnId}" id="${viewColumnId}">
+                    </div>
+                </div>`;
+            continue;
+        }
+        let subHtmlText = "";
+        const placeholder = ""; // 入力例（未実装）
+        const inputType = await getInputType( viewColumnId );
+        subHtmlText = `
                     <div class="col-md-9">
                         <input name="${viewColumnId}" type="email" placeholder="${placeholder}" class="form-control" id="${viewColumnId}" list="${viewColumnId}_options">
                         <datalist id="${viewColumnId}_options">
@@ -271,17 +280,13 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
         /*
         switch( inputType ){
             case "TEXTBOX":
-                if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
                 subHtmlText = `
-                    <label for="inputEmail4" class="form-label">Email</label>
                     <input type="email" class="form-control" id="inputEmail4" disabled>`;
                 break;
             case "EMAIL":
-                if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
                 subHtmlText = `
-                    <label for="${viewColumnId}" class="form-label">
-                        ${viewColumnName}
-                    </label>
                     <div class="col-sm-10">
                         <input name="${viewColumnId}" type="email" placeholder="${placeholder}" class="form-control" id="${viewColumnId}" list="${viewColumnId}_options">
                         <datalist id="${viewColumnId}_options">
@@ -290,23 +295,29 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
                     </div>`;
                 break;
             case "TEXTAREA":
-                if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-                break;
-            case "SELECT":
                 if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
                 break;
-            case "NUMBER":
+            case "SELECT":
                 if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
                 break;
-            case "DATE":
+            case "NUMBER":
                 if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+                break;
+            case "DATE":
+                if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
                 break;
             default:
                 throw `サポートされていない入力方式です。\ninputType = ${inputType}`;
         }
         */
         mainHtmlText += `
-                <div class="col-xl-6 row mb-3">${subHtmlText}
+                <div class="col-xl-6 row mb-3">
+                    <label for="${viewColumnId}" class="col-md-3 form-label d-md-none">
+                        ${viewColumnName}
+                    </label>
+                    <label for="${viewColumnId}" class="col-md-3 form-label d-none d-md-block text-end">
+                        ${viewColumnName}
+                    </label>${subHtmlText}
                 </div>`;
     }
     //
@@ -347,7 +358,7 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
                     </div>
                 </div>
                 <div class="col-12" style="text-align: right;">
-                    <button onclick="myFetch('./create_1/form');" class="btn btn-primary" type="button">
+                    <button onclick="myFetch('./create_from_view${viewId}/form');" class="btn btn-primary" type="button">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                         </svg>
@@ -358,14 +369,16 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
         </div>`;
     //
     for( let i=0; i<onePageMaxSize; i++ ){
-        if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
         mainHtmlText += `
         <div class="card">
             <div class="card-body row">`;
         for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
-            if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
             const elementName = `view${viewId}_${i}_${viewColumnId}`;
-            mainHtmlText += `
+            if( viewColumnType!=="RAW" ) {
+                if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+                mainHtmlText += `
                 <div class="col-xl-6 row mb-3">
                     <label for="${elementName}" class="col-md-3 form-label d-md-none">
                         ${viewColumnName}
@@ -376,6 +389,64 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
                     <div class="col-md-9">
                         <input type="text" readonly class="form-control-plaintext" name="${elementName}" id="${elementName}">
                     </div>
+                </div>`;
+                continue;
+            }
+            let subHtmlText = "";
+            const placeholder = ""; // 入力例（未実装）
+            const inputType = await getInputType( viewColumnId );
+            subHtmlText = `
+                    <div class="col-md-9">
+                        <input name="${elementName}" type="email" placeholder="${placeholder}" class="form-control" id="${elementName}" list="${elementName}_options">
+                        <datalist id="${elementName}_options">
+                            <option value="読み込み中...">
+                        </datalist>
+                    </div>`;
+            /*
+            switch( inputType ){
+                case "TEXTBOX":
+                    if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+                    subHtmlText = `
+                    <label for="inputEmail4" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="inputEmail4" disabled>`;
+                    break;
+                case "EMAIL":
+                    if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+                    subHtmlText = `
+                    <label for="${viewColumnId}" class="form-label">
+                        ${viewColumnName}
+                    </label>
+                    <div class="col-sm-10">
+                        <input name="${viewColumnId}" type="email" placeholder="${placeholder}" class="form-control" id="${viewColumnId}" list="${viewColumnId}_options">
+                        <datalist id="${viewColumnId}_options">
+                            <option value="読み込み中...">
+                        </datalist>
+                    </div>`;
+                    break;
+                case "TEXTAREA":
+                    if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+                    break;
+                case "SELECT":
+                    if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+                    break;
+                case "NUMBER":
+                    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+                    break;
+                case "DATE":
+                    if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+                    break;
+                default:
+                    throw `サポートされていない入力方式です。\ninputType = ${inputType}`;
+            }
+            */
+            mainHtmlText += `
+                <div class="col-xl-6 row mb-3">
+                    <label for="${elementName}" class="col-md-3 form-label d-md-none">
+                        ${viewColumnName}
+                    </label>
+                    <label for="${elementName}" class="col-md-3 form-label d-none d-md-block text-end">
+                        ${viewColumnName}
+                    </label>${subHtmlText}
                 </div>`;
         }
         mainHtmlText += `

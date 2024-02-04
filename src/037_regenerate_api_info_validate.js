@@ -672,56 +672,26 @@ export async function regenerateAPI_create( viewId, tableId, onePageMaxSize, chi
 //#######################################################################################
 // 関数「regenerateAPI_read_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function regenerateAPI_read( viewId, tableId, onePageMaxSize, childPageId ){
+export async function regenerateAPI_read( pageId ){
   //--------------------------------------------------------------------------
   // 引数を検証
-  if( typeof viewId !== "number" ){
-    if( !viewId ){
-      throw new Error(`viewIdがNULLです。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
+  if( typeof pageId !== "number" ){
+    if( !pageId ){
+      throw new Error(`pageIdがNULLです。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
     }
     else{
-      throw new Error(`viewIdが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
     }
   }
-  else if( isNaN(viewId) ){
-    throw new Error(`viewIdが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
-  }
-  if( typeof tableId !== "string" ){
-    if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
-    }
-    else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
-    }
-  }
-  if( typeof onePageMaxSize !== "number" ){
-    if( !onePageMaxSize ){
-      throw new Error(`onePageMaxSizeがNULLです。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
-    }
-    else{
-      throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
-    }
-  }
-  else if( isNaN(onePageMaxSize) ){
-    throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
-  }
-  if( typeof childPageId !== "number" ){
-    if( !childPageId ){
-      throw new Error(`childPageIdがNULLです。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
-    }
-    else{
-      throw new Error(`childPageIdが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
-    }
-  }
-  else if( isNaN(childPageId) ){
-    throw new Error(`childPageIdが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
+  else if( isNaN(pageId) ){
+    throw new Error(`pageIdが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
   }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await regenerateAPI_read_core( viewId, tableId, onePageMaxSize, childPageId );
+    result = await regenerateAPI_read_core( pageId );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -742,16 +712,16 @@ export async function regenerateAPI_read( viewId, tableId, onePageMaxSize, child
       throw new Error(`resultがオブジェクトではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
     }
   }
-  if( typeof result.viewId !== "number" ){
-    if( !result.viewId ){
-      throw new Error(`result.viewIdがNULLです。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
+  if( typeof result.pageId !== "number" ){
+    if( !result.pageId ){
+      throw new Error(`result.pageIdがNULLです。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
     }
     else{
-      throw new Error(`result.viewIdが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
+      throw new Error(`result.pageIdが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
     }
   }
-  else if( isNaN(result.viewId) ){
-    throw new Error(`result.viewIdが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
+  else if( isNaN(result.pageId) ){
+    throw new Error(`result.pageIdが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_read`);
   }
   if( typeof result.httpMethod !== "string" ){
     if( !result.httpMethod ){

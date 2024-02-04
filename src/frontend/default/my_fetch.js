@@ -134,6 +134,7 @@ function _setFormData(formData) {
             element.appendChild(optionElement);
         }
         else {
+            console.log(key, value);
             // name属性の値が変数keyと等しいHTML要素を探す。
             const elements = document.getElementsByName(key);
             if (elements.length === 0) {

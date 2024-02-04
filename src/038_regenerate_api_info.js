@@ -251,9 +251,9 @@ export async function regenerateAPI_create_core( viewId, tableId, onePageMaxSize
         // レスポンス（エラーメッセージ）
         response[viewColumnId+"_message"] = {
             "dataType": "TEXT",
-            "description": viewColumnName,
+            "description": "入力に不備があった際に、テキストボックスの下に表示するメッセージ。",
             "isRequired": false,
-            "example": await _getExample_core( viewId, viewColumnId ),
+            "example": "数字ではありません",
         };
     }
     return {
@@ -265,11 +265,29 @@ export async function regenerateAPI_create_core( viewId, tableId, onePageMaxSize
         "requestBody": requestBody,
         "response": {
             ...response,
+            "recordId": {
+                "dataType": "INTEGER",
+                "description": "新しく生成したレコードのID",
+                "example": 230,
+                "isRequired": true,
+            },
+            "userMessage": {
+                "dataType": "TEXT",
+                "description": "成否を表すメッセージ",
+                "example": "入力内容に不備があったため、登録できませんでした。",
+                "isRequired": false,
+            },
             "nextUrl": {
                 "dataType": "TEXT",
                 "description": "完了した場合に、移動すべきURL",
                 "example": "../",
                 "isRequired": false,
+            },
+            "isSuccess": {
+                "dataType": "BOOL",
+                "description": "レコードの追加に成功したか否か",
+                "example": true,
+                "isRequired": true,
             }
         },
     };
@@ -277,37 +295,83 @@ export async function regenerateAPI_create_core( viewId, tableId, onePageMaxSize
 
 
 // APIを再生成(READ)
-export async function regenerateAPI_read_core( viewId, tableId, onePageMaxSize, childPageId ){
+export async function regenerateAPI_read_core( pageId ){
   if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+    const response = {};
+    //
+    // ビューの一覧
+    const views = await listChildrenView( pageId );
+    //
+    for( const { viewId, tableId, onePageMaxSize, viewType, childPageId } of views ){
+        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+        const viewColumns = await listViewColumns( viewId );
+        const children = {};
+        for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
+            if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+            // レスポンス
+            children[viewColumnId] = {
+                "dataType": "TEXT",
+                "description": viewColumnName,
+                "isRequired": false,
+                "example": await _getExample_core( viewId, viewColumnId ),
+            };
+        }
+        response["view" + viewId + "_"] = {
+            "title": "レコードの一覧",
+            "isArray": true,
+            "onePageMaxSize": onePageMaxSize,
+            "children": {
+                ...children,
+                "id": {
+                    "dataType": "INTEGER",
+                    "description": "レコードID",
+                    "example": 2,
+                    "isRequired": true,
+                }
+            }
+        };
+        response["view" + viewId + "__total"] = {
+            "dataType": "INTEGER",
+            "description": `view${viewId}の件数`,
+            "example": 2000,
+            "isRequired": true,
+        };
+    }
     return {
-        "viewId": viewId,
-        "httpMethod": "POST",
+        "pageId": pageId,
+        "httpMethod": "GET",
         "description": "レコードを複数取得します。",
         "commandName": "LIST_RECORDS",
         "queryParameters": {},
         "requestBody": {},
-        "response": {
-            ["view" + viewId + "_"]: {
-                "title": "レコードの一覧",
-                "isArray": true,
-                "onePageMaxSize": onePageMaxSize,
-                "children": {
-                    "id": {
-                        "dataType": "INTEGER",
-                        "description": "レコードID",
-                        "example": 2,
-                        "isRequired": true,
-                    }
-                }
-            },
-        },
+        "response": response,
     };
 }
 
 
 // APIを再生成(UPDATE)
 export async function regenerateAPI_update_core( viewId, tableId, onePageMaxSize, childPageId ){
-  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+    const viewColumns = await listViewColumns( viewId );
+    const requestBody = {};
+    const response = {};
+    for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
+        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+        // リクエストボディ
+        requestBody[viewColumnId] = {
+            "dataType": "TEXT",
+            "description": viewColumnName,
+            "isRequired": false,
+            "example": await _getExample_core( viewId, viewColumnId ),
+        };
+        // レスポンス（エラーメッセージ）
+        response[viewColumnId+"_message"] = {
+            "dataType": "TEXT",
+            "description": "入力に不備があった際に、テキストボックスの下に表示するメッセージ。",
+            "isRequired": false,
+            "example": "数字ではありません",
+        };
+    }
     return {
         "viewId": viewId,
         "httpMethod": "POST",
@@ -320,6 +384,7 @@ export async function regenerateAPI_update_core( viewId, tableId, onePageMaxSize
                 "isArray": true,
                 "onePageMaxSize": onePageMaxSize,
                 "children": {
+                    ...requestBody,
                     "id": {
                         "dataType": "INTEGER",
                         "description": "レコードID",
@@ -330,6 +395,26 @@ export async function regenerateAPI_update_core( viewId, tableId, onePageMaxSize
             },
         },
         "response": {
+            ["view" + viewId + "_"]: {
+                "title": "レコードの一覧",
+                "isArray": true,
+                "onePageMaxSize": onePageMaxSize,
+                "children": {
+                    ...response,
+                    "id": {
+                        "dataType": "INTEGER",
+                        "description": "レコードID",
+                        "example": 2,
+                        "isRequired": true,
+                    }
+                }
+            },
+            ["view" + viewId + "__total"]: {
+                "dataType": "INTEGER",
+                "description": `view${viewId}の件数`,
+                "example": onePageMaxSize,
+                "isRequired": true,
+            },
             "userMessage": {
                 "dataType": "TEXT",
                 "description": "完了メッセージ",
@@ -349,7 +434,7 @@ export async function regenerateAPI_update_core( viewId, tableId, onePageMaxSize
 
 // APIを再生成(DELETE)
 export async function regenerateAPI_delete_core( viewId, tableId, onePageMaxSize, childPageId ){
-  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
     return {
         "tableId": tableId,
         "httpMethod": "POST",

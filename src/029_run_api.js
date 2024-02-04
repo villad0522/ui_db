@@ -412,33 +412,40 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     //======================================================================
     case "CREATE_RECORD":{
       if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
-      return await createRecordFromView(
-        apiInfo.viewId,
-        {
-          //  入力例
-          //  "vc9": "田",
-          //  "vc10": 3,
-          ...requestBody,
-        }
-      );
+      const result = await createRecordFromView( apiInfo.viewId, requestBody );
+      let nextUrl = null;
+      if(result.isSuccess){
+        if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+        nextUrl = "./?" + await convertQuery_core(queryParameters);
+      }
+      return {
+        ...result.outputTexts,
+        "isSuccess": result.isSuccess,
+        "recordId": result.recordId,
+        "userMessage": result.userMessage,
+        "nextUrl": nextUrl,
+      };
     }
     //======================================================================
     case "UPDATE_RECORDS":{
-      if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
-      return await updateRecordsFromView(
-        apiInfo.viewId,
-        [
-          //  入力例
-          //  "id": 23,
-          //  "vc9": "田",
-          //  "vc10": 3,
-          ...requestBody["view" + viewId + "_"],
-        ]
-      );
+      if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+      const result = await updateRecordsFromView( apiInfo.viewId, requestBody["view" + viewId + "_"] );
+      let nextUrl = null;
+      if(result.isSuccess){
+        if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+        nextUrl = "./?" + await convertQuery_core(queryParameters);
+      }
+      return {
+        ["view" + viewId + "_"]: result.outputTexts,
+        ["view" + viewId + "__total"]: result.outputTexts.length,
+        "isSuccess": result.isSuccess,
+        "userMessage": result.userMessage,
+        "nextUrl": nextUrl,
+      };
     }
     //======================================================================
     case "DELETE_RECORDS":{
-      if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
       return await deleteRecords(
         apiInfo.tableId,
         [
@@ -451,8 +458,13 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       );
     }
     //======================================================================
+    case "LIST_RECORDS":{
+      if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+      return await getPageData( apiInfo.pageId, queryParameters );
+    }
+    //======================================================================
     case "AUTO_CORRECT":{
-      if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
       const isClick = queryParameters["is_click"] ? true : false;
       return await autoFill(
         apiInfo.viewId,
@@ -467,7 +479,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CREATE_VIEW":{
-      if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       const tableName = requestBody["tableName"];
       await  createView( pageId, tableName );
@@ -485,7 +497,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
 
 // 連想配列をクエリパラメータに変換
 export async function convertQuery_core( obj ){
-  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
   return Object.keys(obj)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
     .join('&');

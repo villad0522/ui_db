@@ -179,7 +179,8 @@ export async function getPageData_core( pageId, queryParameters ){
   for( const { viewId } of views ){
     if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     const { sql, parameters } = await generateSQL( viewId, queryParameters );
-    results["view" + viewId + "_"] = await runSqlReadOnly( sql, parameters );;
+    results["view" + viewId + "_"] = await runSqlReadOnly( sql, parameters );
+    results["view" + viewId + "__total"] = 1;
   }
   return results;
 }

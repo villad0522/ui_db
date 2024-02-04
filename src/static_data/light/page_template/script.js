@@ -1,11 +1,13 @@
 
+import myFetch from "/default/my_fetch.js";
+
 // 一か所でも編集されたかどうかを記録する変数
 let isEdit = false;
 //
 //###############################################################
 // ページを読み込んだら、はじめに実行する関数
 window.addEventListener('DOMContentLoaded', async () => {
-    //await myFetch("./form" + location.search, { method: "GET" });
+    await myFetch("./form" + location.search, { method: "GET" });
     //
     // 変更された項目を水色にする
     const formElements = document.querySelectorAll("form input, form select, form textarea");
