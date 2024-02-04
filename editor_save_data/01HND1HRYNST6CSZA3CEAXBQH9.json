@@ -1,1 +1,220 @@
-[{"functionId":"test","functionNameJP":"テストコード","functionNameEN":"test","beforeCode":"","innerCode":"\n    await startUp(\"http://localhost:3000/\", true);\n    //\n    const { tableId: tableId1 } = await createTable(\"学年テーブル\");\n    const { columnId: columnId1 } = await createColumn( tableId1, \"学年\", \"INTEGER\", null );\n    await setTitleColumn( columnId1 );    // 見出しの役割を果たすカラムを登録する\n    const { recordId: recordId } = await createRecord( tableId1, {\n        [columnId1]: 3,\n    });\n    //\n    const { tableId: tableId2 } = await createTable(\"名簿テーブル\");\n    const { columnId: columnId2  } = await createColumn( tableId2, \"学年\", \"POINTER\", tableId1 );\n    const { columnId: columnId3  } = await createColumn( tableId2, \"氏名\", \"TEXT\", null );\n    await setTitleColumn( columnId3 );    // 見出しの役割を果たすカラムを登録する\n    const { recordId: recordId2 } = await createRecord( tableId2, {\n        [columnId2]: recordId,\n        [columnId3]: \"田中太郎\",\n    });\n    //\n    const { tableId: tableId3 } = await createTable(\"成績表テーブル\");\n    const { columnId: columnId4  } = await createColumn( tableId3, \"学生\", \"POINTER\", tableId2 );\n    const { columnId: columnId5  } = await createColumn( tableId3, \"科目\", \"TEXT\", null );\n    const { columnId: columnId6  } = await createColumn( tableId3, \"得点\", \"INTEGER\", null );\n    await createRecord( tableId3, {\n        [columnId4]: recordId2,\n        [columnId5]: \"国語\",\n        [columnId6]: 34,\n    });\n    //\n    // ページを作成（親ページのIDを指定する。この場合はトップページ。）\n    const { pageId: pageId3 } = await createPage( 1 );\n    //\n    // ページにビューを追加\n    const { viewId: viewId3 } = await createView( pageId3, \"成績表テーブル\" );\n    //\n    // ビューカラムを追加\n    await addViewColumn(\n        viewId3,\n        \"RAW\",  // viewColumnType\n        `main.${columnId4} > ${columnId2} > ${columnId1}`,     // columnPath\n        \"学年\",   // viewColumnName\n    );\n    //\n    // ビューカラムの一覧を取得\n    const viewColumns3 = await listViewColumns( viewId3 );\n    if( viewColumns3.length !== 4 ){\n        console.error(viewColumns3);\n        throw `ビューカラムの個数が想定外です`;\n    }\n    //\n    // 予測変換\n    const result3 = await autoFill(\n        viewId3,\n        {\n            \"d3\": \"田\",\n            \"d4\": 3,\n        },\n        true, // isClick\n    );\n    /*\n    これが返ってくるはず。\n    {\n        d9: '田中太郎',\n        d10: 3,\n        d10_autocorrection: [ 3 ],\n        d9_autocorrection: [ '田中太郎' ],\n        d7: '',\n        d8: '',\n        d7_autocorrection: [ 34 ],\n        d8_autocorrection: [ '国語' ]\n    }  */\n    if( result3[\"d3\"]!==\"田中太郎\" ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d4\"]!==3 ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d4_autocorrection\"][0]!==3 ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d3_autocorrection\"][0]!==\"田中太郎\" ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d1\"]!==\"\" ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d2\"]!==\"\" ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d1_autocorrection\"][0]!==34 ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d2_autocorrection\"][0]!==\"国語\" ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    //\n    //\n    await close();\n","afterCode":"","parametersName":[],"parametersDataType":[],"returnValue":"void"},{"functionNameJP":"プログラム起動","functionNameEN":"startUp","parametersName":["localUrl","isDebug"],"parametersDataType":["string_nullable","boolean"],"returnValue":"void","functionId":"01HND4RF77E0JZT1DC776RWQ1C","beforeCode":"\n\n\n\n\n\n","innerCode":"\n    await startUp( localUrl, isDebug );   // 下層の関数を呼び出す\n    //\n    await reserveWord(\"view_columns\"); // 予約語に登録\n    await runSqlWriteOnly(\n        `CREATE TABLE IF NOT EXISTS view_columns (\n            \"view_column_id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n            \"view_id\" INTEGER NOT NULL,\n            \"view_column_type\" TEXT NOT NULL,\n            \"column_path\" TEXT NOT NULL,\n            \"view_column_name\" TEXT NOT NULL,\n            \"excel_column_index\" INTEGER NOT NULL,\n            \"sort_number\" REAL NOT NULL DEFAULT 64,\n            FOREIGN KEY (view_id) REFERENCES views(view_id),\n            UNIQUE (view_id, excel_column_index)\n        );`,\n        {},\n    );\n","afterCode":""},{"functionNameJP":"【サブ関数】ソート番号を発行する","functionNameEN":"_generateViewColumnSortNumber","parametersName":["viewId","afterViewColumnId"],"parametersDataType":["number","string_nullable"],"returnValue":"number","functionId":"01HND1HRYXR1TPQW21WYTTGRPS","beforeCode":"\n\n\n\n","innerCode":"\n    if( afterViewColumnId ){\n        // 特定のビューカラムの直前に挿入する場合\n        const viewColumns = await runSqlReadOnly(\n            `SELECT sort_number AS sortNumber\n                FROM view_columns\n                WHERE view_id = :viewId\n                AND sort_number <= ( SELECT sort_number FROM view_columns WHERE view_column_id = :afterId )\n                ORDER BY sort_number DESC\n                LIMIT 2;`,\n            {\n                \":afterId\" : afterViewColumnId,\n                \":viewId\": viewId,\n            },\n        );\n        if( viewColumns.length===2 ){\n            // 移動先の、直前と直後のビューカラムが両方取得できた場合\n            const sortNumberBefore = viewColumns[1][\"sortNumber\"];\n            const sortNumberAfter = viewColumns[0][\"sortNumber\"];\n            if( sortNumberBefore > sortNumberAfter ){\n                throw `ソート番号の大小関係が想定外です。`;\n            }\n            return sortNumberBefore + ((sortNumberAfter-sortNumberBefore)/2);\n        }\n        else if( viewColumns.length===1 ){\n            // 移動先の直後のページしか取得できなかった場合\n            // （先頭に挿入する場合）\n            const sortNumberAfter = viewColumns[0][\"sortNumber\"];\n            if( sortNumberAfter < 0 ){\n                throw `ソート番号が負の数です。`;\n            }\n            return sortNumberAfter / 2;\n        }\n        else{\n            throw `ソート番号を発行しようとしましたが、移動先が取得できませんでした。指定された viewId と afterViewColumnId が親子関係ではない可能性があります。\\nviewId = ${viewId}\\nafterViewColumnId = ${afterViewColumnId}`;\n        }\n    }\n    else{\n        // 末尾に追加する場合\n        const viewColumns = await runSqlReadOnly(\n            `SELECT sort_number AS sortNumber\n                FROM view_columns\n                WHERE view_id = :viewId\n                ORDER BY sort_number DESC\n                LIMIT 1;`,\n            {\n                \":viewId\": viewId,\n            },\n        );\n        if( viewColumns.length===0 ){\n            // 兄弟が存在しない場合\n            // （空のページに挿入する場合）\n            return 64;\n        }\n        else{\n            // 既に兄弟が存在する場合\n            const sortNumberBefore = viewColumns[0][\"sortNumber\"];\n            return sortNumberBefore + 8;\n        }\n    }\n","afterCode":""},{"functionNameJP":"ビューカラムを作成","functionNameEN":"addViewColumn","parametersName":["viewId","viewColumnType","columnPath","viewColumnName"],"parametersDataType":["number","string","string","string"],"returnValue":"void","functionId":"01HND5FBPF4PFEM8Q7R0SPY4Q6","beforeCode":"\n\n\n\n","innerCode":"\n    await _addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName );\n    if( viewColumnType===\"RAW\" ){\n        // 入力要素を再構築する\n        await regenerateInputElements_core( viewId );\n    }\n","afterCode":""},{"functionNameJP":"カラムを作成","functionNameEN":"createColumn","parametersName":["tableId","columnName","dataType","parentTableId"],"parametersDataType":["string","string","string","string_nullable"],"returnValue":{"message":"string","columnId":"string"},"functionId":"01HMTKZQT8DD7R8S03Q0EV0F0D","beforeCode":"\n\n\n// 文字列からアンダーバー（_）以降を切り取る関数\nfunction _cutStringAfterUnderscore(inputString) {\n    // アンダーバーのインデックスを検索\n    const underscoreIndex = inputString.indexOf('_');\n    // アンダーバーが見つかった場合\n    if (underscoreIndex !== -1) {\n        // アンダーバー以降の部分を取得して出力\n        const resultString = inputString.substring(underscoreIndex + 1);\n        return resultString;\n    } else {\n        // アンダーバーが見つからなかった場合はそのまま出力\n        return inputString;\n    }\n}\n\n\n\n","innerCode":"\n    const result = await createColumn( tableId, columnName, dataType, parentTableId );    // 下層の関数を呼び出す\n    //\n    const viewIdList = await listViewsFromTableId( tableId );\n    if( dataType !== \"POINTER\" ){\n        // 列を表示設定にする\n        for( const viewId of viewIdList ){\n            await _addViewColumn_core({ \n                viewId: viewId,\n                viewColumnType: \"RAW\",\n                columnPath: `main.${result.columnId}`,\n                viewColumnName: columnName,\n            });\n            // 入力要素を再構築する\n            await regenerateInputElements_core( viewId );\n        }\n        return result;\n    }\n    const parentColumnId = await getTitleColumnId( parentTableId );\n    if(!parentColumnId){\n        console.error(`タイトル列が設定されていません。${parentTableId}`);\n        return result;\n    }\n    // 列を表示設定にする\n    for( const viewId of viewIdList ){\n        await _addViewColumn_core({ \n            viewId: viewId,\n            viewColumnType: \"RAW\",\n            columnPath: `main.${result.columnId} > ${parentColumnId}`,\n            viewColumnName: columnName,\n        });\n        // 入力要素を再構築する\n        await regenerateInputElements_core( viewId );\n    }\n    return result;\n","afterCode":""},{"functionNameJP":"ビューを作成","functionNameEN":"createView","parametersName":["pageId","tableName"],"parametersDataType":["number","string"],"returnValue":"void","functionId":"01HM3FA7KYR69753F0SEZNV80C","beforeCode":"\n\n\n\n","innerCode":"\n    const tableId = await getTableIdFromName(tableName);\n    if(!tableId){\n        throw new Error(`指定されたテーブル名「${tableName}」は存在しません。`);\n    }\n    const result = await createView( pageId, tableId );  // 下層の関数を実行する\n    //\n    //\n    // 自動的に列を表示設定にしてあげる\n    await _deleteViewColumns_core( result.viewId );\n    const columns = await listColumnsAll( tableId );\n    for( const { id, name, dataType, parentTableId } of columns ){\n        // 文字列からアンダーバー（_）以降を切り取る\n        const columnName = _cutStringAfterUnderscore(name);\n        if( dataType !== \"POINTER\" ){\n            // 列を表示設定にする\n            await _addViewColumn_core(\n                result.viewId,\n                \"RAW\",\n                `main.${id}`,\n                columnName,\n            );\n            continue;\n        }\n        if( !parentTableId ){\n            throw `親テーブルが不明です。\\nテーブルID=${tableId}\\nカラムID=${id}`;\n        }\n        const parentColumnId = await getTitleColumnId( parentTableId );\n        if(!parentColumnId){\n            console.error(`createView > タイトル列が設定されていません。${parentTableId}`);\n            continue;\n        }\n        // 列を表示設定にする\n        await _addViewColumn_core(\n            result.viewId,\n            \"RAW\",\n            `main.${id} > ${parentColumnId}`,\n            columnName,\n        );\n    }\n    // 入力要素を再構築する\n    await regenerateInputElements_core( result.viewId );\n    return result;\n","afterCode":""},{"functionNameJP":"ビューカラムの一覧を取得","functionNameEN":"listViewColumns","parametersName":["viewId"],"parametersDataType":["number"],"returnValue":[{"viewColumnId":"string","viewColumnType":"string","columnPath":"string","viewColumnName":"string"}],"functionId":"01HND0SW6XW0NKKA7WD1D0ARJ6","beforeCode":"\n\n\n\n","innerCode":"\n    return await runSqlReadOnly(\n        `SELECT\n            \"d\" || view_column_id AS viewColumnId,\n            view_column_type AS viewColumnType,\n            column_path AS columnPath,\n            view_column_name AS viewColumnName\n        FROM view_columns\n        WHERE view_id = :viewId\n        ORDER BY sort_number ASC;`,\n        {\n            \":viewId\": viewId,\n        },\n    );\n","afterCode":""},{"functionNameJP":"ビューを削除","functionNameEN":"deleteView","parametersName":["viewId"],"parametersDataType":["number"],"returnValue":"void","functionId":"01HND69RB8G3ET01TVARSKC9AP","beforeCode":"\n\n","innerCode":"\n    await _deleteViewColumns_core( viewId );\n    return await deleteView( viewId );  // 下層の関数を実行する\n","afterCode":""},{"functionNameJP":"【サブ関数】ビューカラムを一括削除","functionNameEN":"_deleteViewColumns","parametersName":["viewId"],"parametersDataType":["number"],"returnValue":"void","functionId":"01HND6N7FWYDS9K2AWFEQYA6MA","beforeCode":"\n\n","innerCode":"\n    await runSqlWriteOnly(\n        `DELETE FROM view_columns\n            WHERE view_id = :viewId;`,\n        {\n            \":viewId\": viewId,\n        },\n    );\n    // 入力要素と入力グループを全て消し去る\n    await deleteViewInput(viewId);\n","afterCode":""},{"functionNameJP":"ビューカラムの一覧を取得(Excel向け)","functionNameEN":"listViewColumnsForExcel","parametersName":["viewId"],"parametersDataType":["number"],"returnValue":[{"viewColumnId":"string","viewColumnType":"string","columnPath":"string","viewColumnName":"string","excelColumnIndex":"number"}],"functionId":"01HNDAB0Z8084DMZ7PPFVB9YQT","beforeCode":"\n\n","innerCode":"\n    return await runSqlReadOnly(\n        `SELECT\n            \"d\" || view_column_id AS viewColumnId,\n            view_column_type AS viewColumnType,\n            column_path AS columnPath,\n            view_column_name AS viewColumnName,\n            excel_column_index AS excelColumnIndex\n        FROM view_columns\n        WHERE view_id = :viewId\n        ORDER BY excel_column_index ASC;`,\n        {\n            \":viewId\": viewId,\n        },\n    );\n","afterCode":""},{"functionNameJP":"【サブ関数】入力要素を全て作り直す","functionNameEN":"regenerateInputElements","parametersName":["viewId"],"parametersDataType":["number"],"returnValue":"void","functionId":"01HNDEE0FMYBQ2JJ9RNKYG5PZK","beforeCode":"\n\n","innerCode":"\n    // 入力要素と入力グループを全て消し去る\n    await deleteViewInput(viewId);\n    //\n    const mainTableId = await getTableFromView( viewId );\n    // 入力グループを作成\n    await createInputGroup(\n        \"main\",     // inputGroupId\n        viewId,\n        mainTableId,\n        null,   // nextGroupId\n        null,   // nextColumnId\n        100, // processingOrder\n    );\n    //\n    const viewColumns = await listViewColumns_core( viewId );\n    //\n    // 入力要素をグループ分けするために、外部キーの一覧を作成する（重複しないように）\n    const joinIdMap = await getJoinIdMap( viewColumns );\n    // 例\n    // joinIdMap = {\n    //   \"main.c45\" : \"j0\",\n    //   \"main.c45 > c88\" : \"j1\",\n    //   \"main.c2\" : \"j2\",\n    //   \"main.c2 > c53\" : \"j3\",\n    //   \"c89 > main\" : \"j4\",\n    // };\n    //\n    for( const columnPath in joinIdMap ){\n        const inputGroupId = joinIdMap[columnPath];\n        const columnId = await pathToColumnId( columnPath );\n        const tableId = await getParentTableId(columnId);\n        //\n        // 子（参照元）のグループID\n        let nextGroupId = null;\n        let nextColumnId = null;\n        const pathLength = await getPathLength( columnPath );\n        if( pathLength >= 2 ){\n            const childColumnPath = await slicePath( columnPath, pathLength-1 );\n            const childColumnId = await pathToColumnId( childColumnPath );\n            //\n            // 子（参照元）のグループID\n            nextGroupId = joinIdMap[childColumnPath];\n            nextColumnId = childColumnId;\n        }\n        else{\n            nextGroupId = \"main\";\n            nextColumnId = columnId;\n        }\n        //\n        // 処理順序を決める（入力フォームの解析の際には、親→子の順で処理する。）\n        const processingOrder = 100 - pathLength - 1;\n        //\n        // 入力グループを作成\n        await createInputGroup(\n            inputGroupId,\n            viewId,\n            tableId,\n            nextGroupId,\n            nextColumnId,\n            processingOrder\n        );\n    }\n    //\n    for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){\n        let inputGroupId = \"main\";\n        const pathLength = await getPathLength( columnPath );\n        if( pathLength >= 2 ){\n            // 子（参照元）のカラムパス\n            const childColumnPath = await slicePath( columnPath, pathLength-1 );\n            inputGroupId = joinIdMap[childColumnPath];\n            if( !inputGroupId ){\n                throw `入力要素を作り直そうとしましたが、所属している入力グループが見つかりません。\\ncolumnPath = ${columnPath}\\njoinIdMap = ${JSON.stringify(joinIdMap,null,2)}`;\n            }\n        }\n        const columnId = await pathToColumnId( columnPath );\n        //\n        // 入力要素を作成\n        await createInputElement(\n            viewColumnId,\n            inputGroupId,\n            columnId,\n            \"TEXTBOX\", // inputType\n        );\n    }\n","afterCode":""},{"functionNameJP":"【サブ関数】ビューカラムを作成","functionNameEN":"_addViewColumn","parametersName":["viewId","viewColumnType","columnPath","viewColumnName"],"parametersDataType":["number","string","string","string"],"returnValue":"void","functionId":"01HNEDET9NN7CK6GMEG55ZWKZ1","beforeCode":"\n\n\n\n","innerCode":"\n    if( typeof viewId !== \"number\" || isNaN(viewId) ){\n        throw `ページIDが数値ではありません`;\n    }\n    // RAW, SUM、MAX、MIN、AVG、COUNT \n    if( viewColumnType!==\"RAW\" && viewColumnType!==\"SUM\" && viewColumnType!==\"MAX\"\n        && viewColumnType!==\"MIN\" && viewColumnType!==\"AVG\" && viewColumnType!==\"COUNT\" ){\n        throw `サポートされていない集合関数です。\\nviewColumnType = ${viewColumnType}`;\n    }\n    // ソート番号を何にするべきか決める\n    const sortNumber = await _generateViewColumnSortNumber_core( viewId, null );\n    //\n    // excelの空いている列を見つける\n    const matrix = await runSqlReadOnly(\n        `SELECT excel_column_index AS excelColumnIndex\n            FROM view_columns\n            WHERE view_id = :viewId\n            ORDER BY excel_column_index ASC;`,\n        {\n            \":viewId\": viewId,\n        },\n    );\n    const numbers = new Set();\n    for( const { excelColumnIndex } of matrix ){\n        numbers.add( excelColumnIndex );\n    }\n    let excelColumnIndex;\n    for( let i=0; i<=numbers.size; i++ ){\n        if(!numbers.has(i)){\n            excelColumnIndex = i;\n            break;\n        }\n    }\n    // 列を表示設定にする\n    await runSqlWriteOnly(\n        `INSERT INTO view_columns(\n            view_id,\n            view_column_type,\n            column_path,\n            view_column_name,\n            excel_column_index,\n            sort_number\n        ) VALUES (\n            :viewId,\n            :viewColumnType,\n            :columnPath,\n            :viewColumnName,\n            :excelColumnIndex,\n            :sortNumber\n        );`,\n        {\n            \":viewId\": viewId,\n            \":viewColumnType\": viewColumnType,\n            \":columnPath\": columnPath,\n            \":viewColumnName\": viewColumnName,\n            \":excelColumnIndex\": excelColumnIndex,\n            \":sortNumber\": sortNumber,\n        },\n    );\n","afterCode":"\n"}]
+[
+    {
+        "functionId": "test",
+        "functionNameJP": "テストコード",
+        "functionNameEN": "test",
+        "beforeCode": "",
+        "innerCode": "\n    await startUp(\"http://localhost:3000/\", true);\n    //\n    const { tableId: tableId1 } = await createTable(\"学年テーブル\");\n    const { columnId: columnId1 } = await createColumn( tableId1, \"学年\", \"INTEGER\", null );\n    await setTitleColumn( columnId1 );    // 見出しの役割を果たすカラムを登録する\n    const { recordId: recordId } = await createRecord( tableId1, {\n        [columnId1]: 3,\n    });\n    //\n    const { tableId: tableId2 } = await createTable(\"名簿テーブル\");\n    const { columnId: columnId2  } = await createColumn( tableId2, \"学年\", \"POINTER\", tableId1 );\n    const { columnId: columnId3  } = await createColumn( tableId2, \"氏名\", \"TEXT\", null );\n    await setTitleColumn( columnId3 );    // 見出しの役割を果たすカラムを登録する\n    const { recordId: recordId2 } = await createRecord( tableId2, {\n        [columnId2]: recordId,\n        [columnId3]: \"田中太郎\",\n    });\n    //\n    const { tableId: tableId3 } = await createTable(\"成績表テーブル\");\n    const { columnId: columnId4  } = await createColumn( tableId3, \"学生\", \"POINTER\", tableId2 );\n    const { columnId: columnId5  } = await createColumn( tableId3, \"科目\", \"TEXT\", null );\n    const { columnId: columnId6  } = await createColumn( tableId3, \"得点\", \"INTEGER\", null );\n    await createRecord( tableId3, {\n        [columnId4]: recordId2,\n        [columnId5]: \"国語\",\n        [columnId6]: 34,\n    });\n    //\n    // ページを作成（親ページのIDを指定する。この場合はトップページ。）\n    const { pageId: pageId3 } = await createPage( 1 );\n    //\n    // ページにビューを追加\n    const { viewId: viewId3 } = await createView( pageId3, \"成績表テーブル\" );\n    //\n    // ビューカラムを追加\n    await addViewColumn(\n        viewId3,\n        \"RAW\",  // viewColumnType\n        `main.${columnId4} > ${columnId2} > ${columnId1}`,     // columnPath\n        \"学年\",   // viewColumnName\n    );\n    //\n    // ビューカラムの一覧を取得\n    const viewColumns3 = await listViewColumns( viewId3 );\n    if( viewColumns3.length !== 4 ){\n        console.error(viewColumns3);\n        throw `ビューカラムの個数が想定外です`;\n    }\n    //\n    // 予測変換\n    const result3 = await autoFill(\n        viewId3,\n        {\n            \"d3\": \"田\",\n            \"d4\": 3,\n        },\n        true, // isClick\n    );\n    /*\n    これが返ってくるはず。\n    {\n        \"d3\": \"田中太郎\",\n        \"d4\": 3,\n        \"d4_option\": [\n            3\n        ],\n        \"d3_option\": [\n            \"田中太郎\"\n        ],\n        \"d1\": \"\",\n        \"d2\": \"\",\n        \"d1_option\": [\n            34\n        ],\n        \"d2_option\": [\n            \"国語\"\n        ]\n    }  */\n    if( result3[\"d3\"]!==\"田中太郎\" ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d4\"]!==3 ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( !result3[\"d4_option\"] ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d4_option\"][0]!==3 ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d3_option\"][0]!==\"田中太郎\" ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d1\"]!==\"\" ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d2\"]!==\"\" ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d1_option\"][0]!==34 ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    if( result3[\"d2_option\"][0]!==\"国語\" ){\n        throw new Error(`実行結果が想定外です。\\n`+JSON.stringify(result3, null, 2));\n    }\n    //\n    //\n    await close();\n",
+        "afterCode": "",
+        "parametersName": [],
+        "parametersDataType": [],
+        "returnValue": "void"
+    },
+    {
+        "functionNameJP": "プログラム起動",
+        "functionNameEN": "startUp",
+        "parametersName": [
+            "localUrl",
+            "isDebug"
+        ],
+        "parametersDataType": [
+            "string_nullable",
+            "boolean"
+        ],
+        "returnValue": "void",
+        "functionId": "01HND4RF77E0JZT1DC776RWQ1C",
+        "beforeCode": "\n\n\n\n\n\n",
+        "innerCode": "\n    await startUp( localUrl, isDebug );   // 下層の関数を呼び出す\n    //\n    await reserveWord(\"view_columns\"); // 予約語に登録\n    await runSqlWriteOnly(\n        `CREATE TABLE IF NOT EXISTS view_columns (\n            \"view_column_id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n            \"view_id\" INTEGER NOT NULL,\n            \"view_column_type\" TEXT NOT NULL,\n            \"column_path\" TEXT NOT NULL,\n            \"view_column_name\" TEXT NOT NULL,\n            \"excel_column_index\" INTEGER NOT NULL,\n            \"sort_number\" REAL NOT NULL DEFAULT 64,\n            FOREIGN KEY (view_id) REFERENCES views(view_id),\n            UNIQUE (view_id, excel_column_index)\n        );`,\n        {},\n    );\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "【サブ関数】ソート番号を発行する",
+        "functionNameEN": "_generateViewColumnSortNumber",
+        "parametersName": [
+            "viewId",
+            "afterViewColumnId"
+        ],
+        "parametersDataType": [
+            "number",
+            "string_nullable"
+        ],
+        "returnValue": "number",
+        "functionId": "01HND1HRYXR1TPQW21WYTTGRPS",
+        "beforeCode": "\n\n\n\n",
+        "innerCode": "\n    if( afterViewColumnId ){\n        // 特定のビューカラムの直前に挿入する場合\n        const viewColumns = await runSqlReadOnly(\n            `SELECT sort_number AS sortNumber\n                FROM view_columns\n                WHERE view_id = :viewId\n                AND sort_number <= ( SELECT sort_number FROM view_columns WHERE view_column_id = :afterId )\n                ORDER BY sort_number DESC\n                LIMIT 2;`,\n            {\n                \":afterId\" : afterViewColumnId,\n                \":viewId\": viewId,\n            },\n        );\n        if( viewColumns.length===2 ){\n            // 移動先の、直前と直後のビューカラムが両方取得できた場合\n            const sortNumberBefore = viewColumns[1][\"sortNumber\"];\n            const sortNumberAfter = viewColumns[0][\"sortNumber\"];\n            if( sortNumberBefore > sortNumberAfter ){\n                throw `ソート番号の大小関係が想定外です。`;\n            }\n            return sortNumberBefore + ((sortNumberAfter-sortNumberBefore)/2);\n        }\n        else if( viewColumns.length===1 ){\n            // 移動先の直後のページしか取得できなかった場合\n            // （先頭に挿入する場合）\n            const sortNumberAfter = viewColumns[0][\"sortNumber\"];\n            if( sortNumberAfter < 0 ){\n                throw `ソート番号が負の数です。`;\n            }\n            return sortNumberAfter / 2;\n        }\n        else{\n            throw `ソート番号を発行しようとしましたが、移動先が取得できませんでした。指定された viewId と afterViewColumnId が親子関係ではない可能性があります。\\nviewId = ${viewId}\\nafterViewColumnId = ${afterViewColumnId}`;\n        }\n    }\n    else{\n        // 末尾に追加する場合\n        const viewColumns = await runSqlReadOnly(\n            `SELECT sort_number AS sortNumber\n                FROM view_columns\n                WHERE view_id = :viewId\n                ORDER BY sort_number DESC\n                LIMIT 1;`,\n            {\n                \":viewId\": viewId,\n            },\n        );\n        if( viewColumns.length===0 ){\n            // 兄弟が存在しない場合\n            // （空のページに挿入する場合）\n            return 64;\n        }\n        else{\n            // 既に兄弟が存在する場合\n            const sortNumberBefore = viewColumns[0][\"sortNumber\"];\n            return sortNumberBefore + 8;\n        }\n    }\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "ビューカラムを作成",
+        "functionNameEN": "addViewColumn",
+        "parametersName": [
+            "viewId",
+            "viewColumnType",
+            "columnPath",
+            "viewColumnName"
+        ],
+        "parametersDataType": [
+            "number",
+            "string",
+            "string",
+            "string"
+        ],
+        "returnValue": "void",
+        "functionId": "01HND5FBPF4PFEM8Q7R0SPY4Q6",
+        "beforeCode": "\n\n\n\n",
+        "innerCode": "\n    await _addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName );\n    if( viewColumnType===\"RAW\" ){\n        // 入力要素を再構築する\n        await regenerateInputElements_core( viewId );\n    }\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "カラムを作成",
+        "functionNameEN": "createColumn",
+        "parametersName": [
+            "tableId",
+            "columnName",
+            "dataType",
+            "parentTableId"
+        ],
+        "parametersDataType": [
+            "string",
+            "string",
+            "string",
+            "string_nullable"
+        ],
+        "returnValue": {
+            "message": "string",
+            "columnId": "string"
+        },
+        "functionId": "01HMTKZQT8DD7R8S03Q0EV0F0D",
+        "beforeCode": "\n\n\n// 文字列からアンダーバー（_）以降を切り取る関数\nfunction _cutStringAfterUnderscore(inputString) {\n    // アンダーバーのインデックスを検索\n    const underscoreIndex = inputString.indexOf('_');\n    // アンダーバーが見つかった場合\n    if (underscoreIndex !== -1) {\n        // アンダーバー以降の部分を取得して出力\n        const resultString = inputString.substring(underscoreIndex + 1);\n        return resultString;\n    } else {\n        // アンダーバーが見つからなかった場合はそのまま出力\n        return inputString;\n    }\n}\n\n\n\n",
+        "innerCode": "\n    const result = await createColumn( tableId, columnName, dataType, parentTableId );    // 下層の関数を呼び出す\n    //\n    const viewIdList = await listViewsFromTableId( tableId );\n    if( dataType !== \"POINTER\" ){\n        // 列を表示設定にする\n        for( const viewId of viewIdList ){\n            await _addViewColumn_core({ \n                viewId: viewId,\n                viewColumnType: \"RAW\",\n                columnPath: `main.${result.columnId}`,\n                viewColumnName: columnName,\n            });\n            // 入力要素を再構築する\n            await regenerateInputElements_core( viewId );\n        }\n        return result;\n    }\n    const parentColumnId = await getTitleColumnId( parentTableId );\n    if(!parentColumnId){\n        console.error(`タイトル列が設定されていません。${parentTableId}`);\n        return result;\n    }\n    // 列を表示設定にする\n    for( const viewId of viewIdList ){\n        await _addViewColumn_core({ \n            viewId: viewId,\n            viewColumnType: \"RAW\",\n            columnPath: `main.${result.columnId} > ${parentColumnId}`,\n            viewColumnName: columnName,\n        });\n        // 入力要素を再構築する\n        await regenerateInputElements_core( viewId );\n    }\n    return result;\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "ビューを作成",
+        "functionNameEN": "createView",
+        "parametersName": [
+            "pageId",
+            "tableName"
+        ],
+        "parametersDataType": [
+            "number",
+            "string"
+        ],
+        "returnValue": "void",
+        "functionId": "01HM3FA7KYR69753F0SEZNV80C",
+        "beforeCode": "\n\n\n\n",
+        "innerCode": "\n    const tableId = await getTableIdFromName(tableName);\n    if(!tableId){\n        throw new Error(`指定されたテーブル名「${tableName}」は存在しません。`);\n    }\n    const result = await createView( pageId, tableId );  // 下層の関数を実行する\n    //\n    //\n    // 自動的に列を表示設定にしてあげる\n    await _deleteViewColumns_core( result.viewId );\n    const columns = await listColumnsAll( tableId );\n    for( const { id, name, dataType, parentTableId } of columns ){\n        // 文字列からアンダーバー（_）以降を切り取る\n        const columnName = _cutStringAfterUnderscore(name);\n        if( dataType !== \"POINTER\" ){\n            // 列を表示設定にする\n            await _addViewColumn_core(\n                result.viewId,\n                \"RAW\",\n                `main.${id}`,\n                columnName,\n            );\n            continue;\n        }\n        if( !parentTableId ){\n            throw `親テーブルが不明です。\\nテーブルID=${tableId}\\nカラムID=${id}`;\n        }\n        const parentColumnId = await getTitleColumnId( parentTableId );\n        if(!parentColumnId){\n            console.error(`createView > タイトル列が設定されていません。${parentTableId}`);\n            continue;\n        }\n        // 列を表示設定にする\n        await _addViewColumn_core(\n            result.viewId,\n            \"RAW\",\n            `main.${id} > ${parentColumnId}`,\n            columnName,\n        );\n    }\n    // 入力要素を再構築する\n    await regenerateInputElements_core( result.viewId );\n    return result;\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "ビューカラムの一覧を取得",
+        "functionNameEN": "listViewColumns",
+        "parametersName": [
+            "viewId"
+        ],
+        "parametersDataType": [
+            "number"
+        ],
+        "returnValue": [
+            {
+                "viewColumnId": "string",
+                "viewColumnType": "string",
+                "columnPath": "string",
+                "viewColumnName": "string"
+            }
+        ],
+        "functionId": "01HND0SW6XW0NKKA7WD1D0ARJ6",
+        "beforeCode": "\n\n\n\n",
+        "innerCode": "\n    return await runSqlReadOnly(\n        `SELECT\n            \"d\" || view_column_id AS viewColumnId,\n            view_column_type AS viewColumnType,\n            column_path AS columnPath,\n            view_column_name AS viewColumnName\n        FROM view_columns\n        WHERE view_id = :viewId\n        ORDER BY sort_number ASC;`,\n        {\n            \":viewId\": viewId,\n        },\n    );\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "ビューを削除",
+        "functionNameEN": "deleteView",
+        "parametersName": [
+            "viewId"
+        ],
+        "parametersDataType": [
+            "number"
+        ],
+        "returnValue": "void",
+        "functionId": "01HND69RB8G3ET01TVARSKC9AP",
+        "beforeCode": "\n\n",
+        "innerCode": "\n    await _deleteViewColumns_core( viewId );\n    return await deleteView( viewId );  // 下層の関数を実行する\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "【サブ関数】ビューカラムを一括削除",
+        "functionNameEN": "_deleteViewColumns",
+        "parametersName": [
+            "viewId"
+        ],
+        "parametersDataType": [
+            "number"
+        ],
+        "returnValue": "void",
+        "functionId": "01HND6N7FWYDS9K2AWFEQYA6MA",
+        "beforeCode": "\n\n",
+        "innerCode": "\n    await runSqlWriteOnly(\n        `DELETE FROM view_columns\n            WHERE view_id = :viewId;`,\n        {\n            \":viewId\": viewId,\n        },\n    );\n    // 入力要素と入力グループを全て消し去る\n    await deleteViewInput(viewId);\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "ビューカラムの一覧を取得(Excel向け)",
+        "functionNameEN": "listViewColumnsForExcel",
+        "parametersName": [
+            "viewId"
+        ],
+        "parametersDataType": [
+            "number"
+        ],
+        "returnValue": [
+            {
+                "viewColumnId": "string",
+                "viewColumnType": "string",
+                "columnPath": "string",
+                "viewColumnName": "string",
+                "excelColumnIndex": "number"
+            }
+        ],
+        "functionId": "01HNDAB0Z8084DMZ7PPFVB9YQT",
+        "beforeCode": "\n\n",
+        "innerCode": "\n    return await runSqlReadOnly(\n        `SELECT\n            \"d\" || view_column_id AS viewColumnId,\n            view_column_type AS viewColumnType,\n            column_path AS columnPath,\n            view_column_name AS viewColumnName,\n            excel_column_index AS excelColumnIndex\n        FROM view_columns\n        WHERE view_id = :viewId\n        ORDER BY excel_column_index ASC;`,\n        {\n            \":viewId\": viewId,\n        },\n    );\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "【サブ関数】入力要素を全て作り直す",
+        "functionNameEN": "regenerateInputElements",
+        "parametersName": [
+            "viewId"
+        ],
+        "parametersDataType": [
+            "number"
+        ],
+        "returnValue": "void",
+        "functionId": "01HNDEE0FMYBQ2JJ9RNKYG5PZK",
+        "beforeCode": "\n\n",
+        "innerCode": "\n    // 入力要素と入力グループを全て消し去る\n    await deleteViewInput(viewId);\n    //\n    const mainTableId = await getTableFromView( viewId );\n    // 入力グループを作成\n    await createInputGroup(\n        \"main\",     // inputGroupId\n        viewId,\n        mainTableId,\n        null,   // nextGroupId\n        null,   // nextColumnId\n        100, // processingOrder\n    );\n    //\n    const viewColumns = await listViewColumns_core( viewId );\n    //\n    // 入力要素をグループ分けするために、外部キーの一覧を作成する（重複しないように）\n    const joinIdMap = await getJoinIdMap( viewColumns );\n    // 例\n    // joinIdMap = {\n    //   \"main.c45\" : \"j0\",\n    //   \"main.c45 > c88\" : \"j1\",\n    //   \"main.c2\" : \"j2\",\n    //   \"main.c2 > c53\" : \"j3\",\n    //   \"c89 > main\" : \"j4\",\n    // };\n    //\n    for( const columnPath in joinIdMap ){\n        const inputGroupId = joinIdMap[columnPath];\n        const columnId = await pathToColumnId( columnPath );\n        const tableId = await getParentTableId(columnId);\n        //\n        // 子（参照元）のグループID\n        let nextGroupId = null;\n        let nextColumnId = null;\n        const pathLength = await getPathLength( columnPath );\n        if( pathLength >= 2 ){\n            const childColumnPath = await slicePath( columnPath, pathLength-1 );\n            const childColumnId = await pathToColumnId( childColumnPath );\n            //\n            // 子（参照元）のグループID\n            nextGroupId = joinIdMap[childColumnPath];\n            nextColumnId = childColumnId;\n        }\n        else{\n            nextGroupId = \"main\";\n            nextColumnId = columnId;\n        }\n        //\n        // 処理順序を決める（入力フォームの解析の際には、親→子の順で処理する。）\n        const processingOrder = 100 - pathLength - 1;\n        //\n        // 入力グループを作成\n        await createInputGroup(\n            inputGroupId,\n            viewId,\n            tableId,\n            nextGroupId,\n            nextColumnId,\n            processingOrder\n        );\n    }\n    //\n    for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){\n        let inputGroupId = \"main\";\n        const pathLength = await getPathLength( columnPath );\n        if( pathLength >= 2 ){\n            // 子（参照元）のカラムパス\n            const childColumnPath = await slicePath( columnPath, pathLength-1 );\n            inputGroupId = joinIdMap[childColumnPath];\n            if( !inputGroupId ){\n                throw `入力要素を作り直そうとしましたが、所属している入力グループが見つかりません。\\ncolumnPath = ${columnPath}\\njoinIdMap = ${JSON.stringify(joinIdMap,null,2)}`;\n            }\n        }\n        const columnId = await pathToColumnId( columnPath );\n        //\n        // 入力要素を作成\n        await createInputElement(\n            viewColumnId,\n            inputGroupId,\n            columnId,\n            \"TEXTBOX\", // inputType\n        );\n    }\n",
+        "afterCode": ""
+    },
+    {
+        "functionNameJP": "【サブ関数】ビューカラムを作成",
+        "functionNameEN": "_addViewColumn",
+        "parametersName": [
+            "viewId",
+            "viewColumnType",
+            "columnPath",
+            "viewColumnName"
+        ],
+        "parametersDataType": [
+            "number",
+            "string",
+            "string",
+            "string"
+        ],
+        "returnValue": "void",
+        "functionId": "01HNEDET9NN7CK6GMEG55ZWKZ1",
+        "beforeCode": "\n\n\n\n",
+        "innerCode": "\n    if( typeof viewId !== \"number\" || isNaN(viewId) ){\n        throw `ページIDが数値ではありません`;\n    }\n    // RAW, SUM、MAX、MIN、AVG、COUNT \n    if( viewColumnType!==\"RAW\" && viewColumnType!==\"SUM\" && viewColumnType!==\"MAX\"\n        && viewColumnType!==\"MIN\" && viewColumnType!==\"AVG\" && viewColumnType!==\"COUNT\" ){\n        throw `サポートされていない集合関数です。\\nviewColumnType = ${viewColumnType}`;\n    }\n    // ソート番号を何にするべきか決める\n    const sortNumber = await _generateViewColumnSortNumber_core( viewId, null );\n    //\n    // excelの空いている列を見つける\n    const matrix = await runSqlReadOnly(\n        `SELECT excel_column_index AS excelColumnIndex\n            FROM view_columns\n            WHERE view_id = :viewId\n            ORDER BY excel_column_index ASC;`,\n        {\n            \":viewId\": viewId,\n        },\n    );\n    const numbers = new Set();\n    for( const { excelColumnIndex } of matrix ){\n        numbers.add( excelColumnIndex );\n    }\n    let excelColumnIndex;\n    for( let i=0; i<=numbers.size; i++ ){\n        if(!numbers.has(i)){\n            excelColumnIndex = i;\n            break;\n        }\n    }\n    // 列を表示設定にする\n    await runSqlWriteOnly(\n        `INSERT INTO view_columns(\n            view_id,\n            view_column_type,\n            column_path,\n            view_column_name,\n            excel_column_index,\n            sort_number\n        ) VALUES (\n            :viewId,\n            :viewColumnType,\n            :columnPath,\n            :viewColumnName,\n            :excelColumnIndex,\n            :sortNumber\n        );`,\n        {\n            \":viewId\": viewId,\n            \":viewColumnType\": viewColumnType,\n            \":columnPath\": columnPath,\n            \":viewColumnName\": viewColumnName,\n            \":excelColumnIndex\": excelColumnIndex,\n            \":sortNumber\": sortNumber,\n        },\n    );\n",
+        "afterCode": "\n"
+    }
+]

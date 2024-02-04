@@ -125,14 +125,9 @@
     "layerNameEN": "sort"
   },
   {
-    "layerId": "01HMK3QQV40SHFD77XNVCA8P2Y",
-    "layerNameJP": "レコードの見出し1",
-    "layerNameEN": "record_title_1"
-  },
-  {
     "layerId": "01HM7EY8CJGHQ1YBC7NCFA5BH3",
-    "layerNameJP": "レコードの見出し2",
-    "layerNameEN": "record_title_2"
+    "layerNameJP": "レコードの見出し",
+    "layerNameEN": "record_title"
   },
   {
     "layerId": "01HN4KGF1ZJF46FT532P593SXR",

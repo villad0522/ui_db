@@ -12,40 +12,40 @@ import {
 } from "./034_regenerate_page_validate.js";
 import {
   getLocalIp,
-} from "./127_ip_address_validate.js";
+} from "./124_ip_address_validate.js";
 import {
   close,
   createDirectories,
 } from "./046_frontend_files_validate.js";
 import {
   getPath,
-} from "./124_directory_validate.js";
+} from "./121_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./121_connect_database_validate.js";
+} from "./118_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
   getTableId,
   checkColumnEnabled,
   getColumnName,
-} from "./100_column_name_validate.js";
+} from "./097_column_name_validate.js";
 import {
   startTransaction,
   endTransaction,
-} from "./118_transaction_lower_validate.js";
+} from "./115_transaction_lower_validate.js";
 import {
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./115_csv_validate.js";
+} from "./112_csv_validate.js";
 import {
   getPrimaryKey,
-} from "./112_primary_key_validate.js";
+} from "./109_primary_key_validate.js";
 import {
   deleteRecords,
-} from "./109_delete_record_validate.js";
+} from "./106_delete_record_validate.js";
 import {
   clearCache,
   getPageInfo,
@@ -78,33 +78,31 @@ import {
 } from "./055_view_column_validate.js";
 import {
   listDataTypes,
-} from "./106_data_type_validate.js";
+} from "./103_data_type_validate.js";
 import {
   createRecord,
-  updateRecord,
+  updateRecords,
   checkField,
   checkRecord,
-} from "./079_record_title_1_validate.js";
+  getDataType,
+  listColumnsForGUI,
+  listColumnsAll,
+  getParentTableId,
+} from "./088_relation_validate.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
   checkReservedWord,
-} from "./097_reserved_word_validate.js";
+} from "./094_reserved_word_validate.js";
 import {
   deleteTable,
   listTables,
   setTitleColumn,
   getTitleColumnId,
   getRecordIdFromTitle,
-} from "./082_record_title_2_validate.js";
-import {
-  getDataType,
-  listColumnsForGUI,
-  listColumnsAll,
-  getParentTableId,
-} from "./091_relation_validate.js";
+} from "./079_record_title_validate.js";
 import {
   deleteRecord,
   disableTable,
@@ -113,17 +111,17 @@ import {
   enableColumn,
   delete_table,
   autoCorrect,
-} from "./094_search_text_validate.js";
+} from "./091_search_text_validate.js";
 import {
   reload,
   checkTableEnabled,
   getTableName,
   listTableNamesAll,
   getTableIdFromName,
-} from "./103_table_name_validate.js";
+} from "./100_table_name_validate.js";
 import {
   formatField,
-} from "./088_db_formatter_validate.js";
+} from "./085_db_formatter_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -136,10 +134,10 @@ import {
   changeInputType,
   _fillMasterData,
   getInputType,
-  updateRecords,
+  updateRecordsFromView,
   createRecordFromView,
   _convertToRecord,
-} from "./085_input_element_validate.js";
+} from "./082_input_element_validate.js";
 import {
   getPathLength,
   slicePath,
