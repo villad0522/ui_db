@@ -130,7 +130,7 @@ import {
   getTableFromView,  // viewIdからテーブルIDを取得する
   createView,  // ビューを作成
   deleteView,  // ビューを削除
-  deletePage,  // ページを再帰的に削除
+  deletePage,  // ページを削除
   getBreadcrumbs,  // パンくずリストを再帰的に取得
   cutPage,  // ページを切り取る
   copyPage,  // ページをコピーする
@@ -156,7 +156,7 @@ export async function test057() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 46; i++ ) {
+    for ( i = 1; i <= 48; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

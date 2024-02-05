@@ -165,28 +165,14 @@ export async function startUp_core( localUrl, isDebug ){
       "view_name" TEXT NOT NULL,
       "page_id" INTEGER NOT NULL,
       "table_id" TEXT NOT NULL,
-      "one_page_max_size" NUMBER NOT NULL DEFAULT 23,
+      "one_page_max_size" NUMBER NOT NULL DEFAULT 12,
       "view_type" TEXT NOT NULL DEFAULT 'TABLE',
       "sort_number" REAL NOT NULL DEFAULT 64,
       "created_at" INTEGER UNIQUE,
       FOREIGN KEY (page_id) REFERENCES pages(page_id)
     );`, {},
   );
-  const pages = await runSqlReadOnly(
-    `SELECT * FROM pages LIMIT 1;`, {},
-  );
-  if( pages.length===0 ){
-    if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    const timestamp = new Date().getTime();
-    // ページが１つも無い場合は、トップページを作成する
-    await runSqlWriteOnly(
-      `INSERT INTO pages( page_id, page_name, created_at )
-          VALUES ( 1, 'トップ', :createdAt );`,
-      {
-        ":createdAt": timestamp,    // 作成日時
-      },
-    );
-  }
+  await _checkTree();
 }
 
 
@@ -199,6 +185,20 @@ export async function startUp_core( localUrl, isDebug ){
 
 // 木構造の整合性を確認
 async function _checkTree(){
+  const pages = await runSqlReadOnly(
+    `SELECT * FROM pages LIMIT 1;`, {},
+  );
+  if( pages.length===0 ){
+    const timestamp = new Date().getTime();
+    // ページが１つも無い場合は、トップページを作成する
+    await runSqlWriteOnly(
+      `INSERT INTO pages( page_id, page_name, created_at )
+          VALUES ( 1, 'トップ', :createdAt );`,
+      {
+        ":createdAt": timestamp,    // 作成日時
+      },
+    );
+  }
   const matrix1 = await runSqlReadOnly(
     `SELECT * FROM pages
       WHERE static_parent_id IS NOT NULL
@@ -208,14 +208,28 @@ async function _checkTree(){
     console.error(`親を複数もつページがあります`);
   }
   const matrix2 = await runSqlReadOnly(
-    `SELECT *
+    `SELECT
+        view_id AS viewId,
+        table_id AS tableId
       FROM views
       LEFT OUTER JOIN pages
         ON views.view_id = pages.dynamic_parent_id
       WHERE pages.page_id IS NULL;`, {},
   );
   if(matrix2.length>0){
-    console.error(`子ページを持たないビューがあります`);
+    console.error(`子ページを持たないビューが見つかりました。子ページを作成します。`);
+    const tableId = matrix2[0]["tableId"];
+    const tableName = await getTableName(tableId);
+    const timestamp = new Date().getTime();
+    await runSqlWriteOnly(
+      `INSERT INTO pages( dynamic_parent_id, page_name, created_at )
+          VALUES ( :dynamicParentId, :pageName, :createdAt );`,
+      {
+        ":dynamicParentId": matrix2[0]["viewId"],
+        ":pageName": tableName,
+        ":createdAt": timestamp,    // 作成日時
+      },
+    );
   }
 }
 
@@ -223,7 +237,7 @@ async function _checkTree(){
 
 // ページを作成
 export async function createPage_core( parentPageId ){
-  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
   // ソート番号を何にするべきか決める
   const sortNumber = await _generatePageSortNumber_core( parentPageId, null );
   const timestamp = new Date().getTime();
@@ -262,7 +276,7 @@ export async function createPage_core( parentPageId ){
 
 // ページ名やメモを変更
 export async function updatePageName_core( pageId, pageName, memo ){
-  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
   await runSqlWriteOnly(
     `UPDATE pages
         SET page_name = :pageName,
@@ -281,7 +295,7 @@ export async function updatePageName_core( pageId, pageName, memo ){
 
 // １ページの情報を取得
 export async function getPageInfo_core( pageId ){
-  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
   if( !pageId ){
     throw `ページIDは1以上の整数を指定してください。\npageId = ${pageId}`;
   }
@@ -309,7 +323,7 @@ export async function getPageInfo_core( pageId ){
 
 // テーブルIDからviewIdを取得する
 export async function listViewsFromTableId_core( tableId ){
-  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
   const pages = await runSqlReadOnly(
     `SELECT view_id AS viewId
       FROM views
@@ -325,7 +339,7 @@ export async function listViewsFromTableId_core( tableId ){
 
 // viewIdからテーブルIDを取得する
 export async function getTableFromView_core( viewId ){
-  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
   const pages = await runSqlReadOnly(
     `SELECT table_id AS tableId
       FROM views
@@ -345,7 +359,7 @@ export async function getTableFromView_core( viewId ){
 
 // ビューを作成
 export async function createView_core( pageId, tableId ){
-  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
   const tableName = await getTableName( tableId );
   if(!tableName){
     throw `テーブル名を取得できません。\ntableId = ${tableId}`;
@@ -379,7 +393,6 @@ export async function createView_core( pageId, tableId ){
     throw "新しく発行されたviewIdが見つかりません。";
   }
   //
-  // 動的リストの子を作る
   await runSqlWriteOnly(
     `INSERT INTO pages( dynamic_parent_id, page_name, created_at )
         VALUES ( :dynamicParentId, :pageName, :createdAt );`,
@@ -400,7 +413,7 @@ export async function createView_core( pageId, tableId ){
 
 // ビューを削除
 export async function deleteView_core( viewId ){
-  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
   // 子ページを取得する（１個のはず）
   const pages = await runSqlReadOnly(
     `SELECT page_id AS pageId
@@ -411,7 +424,7 @@ export async function deleteView_core( viewId ){
     },
   );
   for( const { pageId } of pages ){
-    if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
     // 子ページを再帰的に削除する
     await deletePage_core( pageId );
   }
@@ -429,31 +442,35 @@ export async function deleteView_core( viewId ){
 
 
 
-// ページを再帰的に削除
+// ページを削除
 export async function deletePage_core( pageId ){
-  if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
   // 子ページの一覧を取得する
   const children = await listChildrenPage_core( pageId );
   // 子ページを削除する
   //  （子→親の順番になるように削除する）
   for( let i=children.length-1; i>=0; i-- ){
-    if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
-    await _deletePageInner( children[i] );
+    if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+    await deletePage_core( children[i] );
   }
-  // 対象のページを削除する
-  await _deletePageInner( pageId );
-}
-
-
-async function _deletePageInner( pageId ){
-  // 対象のページを削除する
-  await runSqlWriteOnly(
-    `DELETE FROM pages WHERE page_id = :pageId;`,
+  //
+  // ビューの一覧を取得する
+  const views = await runSqlReadOnly(
+    `SELECT 
+        view_id AS viewId
+      FROM views
+      WHERE page_id = :parentPageId;`,
     {
-      ":pageId": pageId,
+      ":parentPageId": pageId,
     },
   );
-  // もし親のビューが存在したら、削除する
+  // 子ページを削除する
+  //  （子→親の順番になるように削除する）
+  for( const { viewId } of views ){
+    if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+    await deleteView_core( viewId );
+  }
+  // 親のビューを取得
   const view = await runSqlReadOnly(
     `SELECT dynamic_parent_id AS viewId
       FROM pages
@@ -463,16 +480,30 @@ async function _deletePageInner( pageId ){
       ":pageId": pageId,
     },
   );
+  // 対象のページを削除する
+  await runSqlWriteOnly(
+    `DELETE FROM pages WHERE page_id = :pageId;`,
+    {
+      ":pageId": pageId,
+    },
+  );
+  // もし親のビューが存在したら、削除する
   if(view.length>=1){
-    await deleteView( view[0]["viewId"] );
+    if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+    const parentViewId = view[0]["viewId"];
+    if( parentViewId && !isNaN(parentViewId) ){
+      if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+      await deleteView_core( parentViewId );
+    }
   }
 }
 
+
 // パンくずリストを再帰的に取得
 export async function getBreadcrumbs_core( pageId ){
-  if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
   if( !pageId ){
-    if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
     return [];
   }
   const pages = await runSqlReadOnly(
@@ -500,12 +531,12 @@ export async function getBreadcrumbs_core( pageId ){
   }
   let list = [];
   if( parentPageId1 ){
-    if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     // 関数を再帰呼び出し
     list = await getBreadcrumbs_core( parentPageId1 );
   }
   else if( parentPageId2 ){
-    if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
     // 関数を再帰呼び出し
     list = await getBreadcrumbs_core( parentPageId2 );
   }
@@ -525,7 +556,7 @@ let copyingPageId = null;
 
 // ページを切り取る
 export async function cutPage_core( pageId ){
-  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
   cuttingPageId = pageId;
   copyingPageId = null;
 }
@@ -534,7 +565,7 @@ export async function cutPage_core( pageId ){
 
 // ページをコピーする
 export async function copyPage_core( pageId ){
-  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
   copyingPageId = pageId;
   cuttingPageId = null;
 }
@@ -544,9 +575,9 @@ export async function copyPage_core( pageId ){
 
 // ページを貼り付ける
 export async function pastePage_core( parentPageId, afterPageId ){
-  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
   if( copyingPageId ){
-    if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
     // ページをコピーする場合
     await _copyPage( copyingPageId, parentPageId, afterPageId );
     return {
@@ -554,7 +585,7 @@ export async function pastePage_core( parentPageId, afterPageId ){
     };
   }
   else if( cuttingPageId ){
-    if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
     // 事前に切り取ったページを貼り付ける場合
     await _movePage_core( cuttingPageId, parentPageId, afterPageId );
     return {
@@ -570,7 +601,7 @@ export async function pastePage_core( parentPageId, afterPageId ){
 
 // 切り取り中のページを取得する
 export async function getCuttingPage_core(  ){
-  if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
   return cuttingPageId;
 }
 
@@ -579,7 +610,7 @@ export async function getCuttingPage_core(  ){
 
 // コピー中のページを取得する
 export async function getCopyingPage_core(  ){
-  if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
   return copyingPageId;
 }
 
@@ -587,7 +618,7 @@ export async function getCopyingPage_core(  ){
 
 // ページを全て取得する関数
 export async function listAllPages_core(  ){
-  if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
   const matrix = await runSqlReadOnly(
     `SELECT page_id AS pageId FROM pages;`, {},
   );
@@ -599,7 +630,7 @@ export async function listAllPages_core(  ){
 
 // 子ページの一覧を取得
 export async function listStaticChildren_core( pageId ){
-  if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
   return await runSqlReadOnly(
     `SELECT 
         page_id AS pageId,
@@ -625,7 +656,7 @@ let cacheViews = {
 
 // ビューの一覧を取得
 export async function listChildrenView_core( pageId ){
-  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
   const views = await runSqlReadOnly(
     `SELECT 
         pages.page_id AS childPageId,
@@ -633,8 +664,8 @@ export async function listChildrenView_core( pageId ){
         views.table_id AS tableId,
         views.one_page_max_size AS onePageMaxSize,
         views.view_type AS viewType
-      FROM pages
-      INNER JOIN views
+      FROM views
+      INNER JOIN pages
         ON pages.dynamic_parent_id = views.view_id
       WHERE views.page_id = :parentPageId
       ORDER BY views.sort_number ASC;`,
@@ -643,7 +674,7 @@ export async function listChildrenView_core( pageId ){
     },
   );
   for( const viewInfo of views ){
-    if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
     cacheViews[viewInfo.viewId] = viewInfo;
   }
   return views;
@@ -653,7 +684,7 @@ export async function listChildrenView_core( pageId ){
 
 // 親ページのIDを取得
 export async function getParentPage_core( pageId ){
-  if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
   const pages = await runSqlReadOnly(
     `SELECT 
         pages.page_name AS pageName,
@@ -678,11 +709,11 @@ export async function getParentPage_core( pageId ){
     throw `ページIDの循環参照が発生しました。\npageId = ${pageId}`;
   }
   if(parentPageId1){
-    if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
     return parentPageId1;
   }
   else if(parentPageId2){
-    if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
     return parentPageId2;
   }
   return 0;
@@ -690,10 +721,10 @@ export async function getParentPage_core( pageId ){
 
 // 子ページの一覧を再帰的に取得
 export async function listChildrenPage_core( parentId ){
-  if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
   // 戻り値はページIDの配列。親→子の順番になるように配列を構築する。
   if( !parentId ){
-    if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
     return [];
   }
   const pages = await runSqlReadOnly(
@@ -709,12 +740,12 @@ export async function listChildrenPage_core( parentId ){
     },
   );
   if(pages.length===0){
-    if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
     return [];
   }
   const pageIds = [];
   for( const {childId} of pages ){
-    if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
     if( parentId===childId ){
       throw `ページIDの循環参照が発生しました。\npageId = ${parentId}`;
     }
@@ -725,7 +756,7 @@ export async function listChildrenPage_core( parentId ){
     // 関数を再帰呼び出し
     const list = await listChildrenPage_core( childId );
     for( const pageId of list ){
-      if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
       if( pageIds.includes(pageId)){
         throw `子ページの重複が発生しました。\npageId = ${pageId}`;
       }
@@ -740,7 +771,7 @@ export async function listChildrenPage_core( parentId ){
 
 // 【サブ関数】ページを移動する
 export async function _movePage_core( pageId, destParentPageId, destAfterPageId ){
-  if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
   // ソート番号を何にするべきか決める
   const sortNumber = await _generatePageSortNumber_core( destParentPageId, destAfterPageId );
   await runSqlWriteOnly(
@@ -760,9 +791,9 @@ export async function _movePage_core( pageId, destParentPageId, destAfterPageId 
 
 // 【サブ関数】ソート番号を発行する
 export async function _generatePageSortNumber_core( destParentPageId, destAfterPageId ){
-  if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
   if( destAfterPageId ){
-    if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
     // 特定のページの直前に挿入する場合
     const pages = await runSqlReadOnly(
       `SELECT sort_number AS sortNumber
@@ -777,7 +808,7 @@ export async function _generatePageSortNumber_core( destParentPageId, destAfterP
       },
     );
     if( pages.length===2 ){
-      if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
       // 移動先の、直前と直後のページが両方取得できた場合
       const sortNumberBefore = pages[1]["sortNumber"];
       const sortNumberAfter = pages[0]["sortNumber"];
@@ -787,7 +818,7 @@ export async function _generatePageSortNumber_core( destParentPageId, destAfterP
       return sortNumberBefore + ((sortNumberAfter-sortNumberBefore)/2);
     }
     else if( pages.length===1 ){
-      if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
       // 移動先の直後のページしか取得できなかった場合
       // （先頭に挿入する場合）
       const sortNumberAfter = pages[0]["sortNumber"];
@@ -801,7 +832,7 @@ export async function _generatePageSortNumber_core( destParentPageId, destAfterP
     }
   }
   else{
-    if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
     // 末尾に追加する場合
     const pages = await runSqlReadOnly(
       `SELECT sort_number AS sortNumber
@@ -814,13 +845,13 @@ export async function _generatePageSortNumber_core( destParentPageId, destAfterP
       },
     );
     if( pages.length===0 ){
-      if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
       // 兄弟が存在しない場合
       // （空のページに挿入する場合）
       return 64;
     }
     else{
-      if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 45) throw "MUTATION45";  // 意図的にバグを混入させる（ミューテーション解析）
       // 既に兄弟が存在する場合
       const sortNumberBefore = pages[0]["sortNumber"];
       return sortNumberBefore + 8;
@@ -831,7 +862,7 @@ export async function _generatePageSortNumber_core( destParentPageId, destAfterP
 
 // 【サブ関数】ページをコピーする
 export async function _copyPage_core( pageId, destParentPageId, destAfterPageId ){
-  if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 46) throw "MUTATION46";  // 意図的にバグを混入させる（ミューテーション解析）
   // ソート番号を何にするべきか決める
   const sortNumber = await _generatePageSortNumber_core( destParentPageId, destAfterPageId );
   throw "この関数は未実装です。";
@@ -841,13 +872,13 @@ export async function _copyPage_core( pageId, destParentPageId, destAfterPageId 
 
 // ビューの情報を取得
 export async function getViewInfo_core( viewId ){
-  if(bugMode === 45) throw "MUTATION45";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 47) throw "MUTATION47";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheViews[viewId];
 }
 
 // インメモリキャッシュを削除する
 export async function clearCache_core(  ){
-  if(bugMode === 46) throw "MUTATION46";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 48) throw "MUTATION48";  // 意図的にバグを混入させる（ミューテーション解析）
   await clearCache();
   cacheViews = {};
 }

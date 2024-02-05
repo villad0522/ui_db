@@ -7,7 +7,7 @@ import {
   getTableFromView_core,  // viewIdからテーブルIDを取得する
   createView_core,  // ビューを作成
   deleteView_core,  // ビューを削除
-  deletePage_core,  // ページを再帰的に削除
+  deletePage_core,  // ページを削除
   getBreadcrumbs_core,  // パンくずリストを再帰的に取得
   cutPage_core,  // ページを切り取る
   copyPage_core,  // ページをコピーする

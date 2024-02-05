@@ -156,12 +156,28 @@ export async function generateSQL( tableId, viewColumns, conditionInfoList, sort
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( typeof result !== "string" ){
+  if( typeof result !== "object" ){
     if( !result ){
       throw new Error(`resultがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
     }
     else{
-      throw new Error(`resultが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+    }
+  }
+  if( typeof result.normalSQL !== "string" ){
+    if( !result.normalSQL ){
+      throw new Error(`result.normalSQLがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
+    }
+    else{
+      throw new Error(`result.normalSQLが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+    }
+  }
+  if( typeof result.countSQL !== "string" ){
+    if( !result.countSQL ){
+      throw new Error(`result.countSQLがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
+    }
+    else{
+      throw new Error(`result.countSQLが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
     }
   }
   //

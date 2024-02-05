@@ -413,7 +413,13 @@ function _validator({ value, dataType, isRequired }) {
             else if (value === false) {
                 return false;
             }
-            if (String(value).toLowerCase() === "true") {
+            if (String(value).toLowerCase() === "on") {
+                return true;
+            }
+            else if (String(value).toLowerCase() === "off") {
+                return false;
+            }
+            else if (String(value).toLowerCase() === "true") {
                 return true;
             }
             else if (String(value).toLowerCase() === "false") {

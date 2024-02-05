@@ -7,7 +7,6 @@ import {
   getPageInfo,
   listViewsFromTableId,
   getTableFromView,
-  deletePage,
   getBreadcrumbs,
   cutPage,
   copyPage,
@@ -154,6 +153,7 @@ import {
   listViewColumnsForExcel,  // ビューカラムの一覧を取得(Excel向け)
   regenerateInputElements,  // 【サブ関数】入力要素を全て作り直す
   _addViewColumn,  // 【サブ関数】ビューカラムを作成
+  deletePage,  // ページを削除
 } from "./055_view_column_validate.js";
 import { setBugMode } from "./056_view_column.js";
 
@@ -163,7 +163,7 @@ export async function test054() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 33; i++ ) {
+    for ( i = 1; i <= 38; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

@@ -43,7 +43,6 @@ import {
   getPageInfo,
   listViewsFromTableId,
   getTableFromView,
-  deletePage,
   getBreadcrumbs,
   cutPage,
   copyPage,
@@ -63,6 +62,7 @@ import {
 import {
   createColumn,
   createView,
+  deletePage,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,

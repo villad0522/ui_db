@@ -45,7 +45,6 @@ import {
   getPageInfo,
   listViewsFromTableId,
   getTableFromView,
-  deletePage,
   getBreadcrumbs,
   cutPage,
   copyPage,
@@ -65,6 +64,7 @@ import {
 import {
   createColumn,
   createView,
+  deletePage,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,
@@ -178,9 +178,14 @@ export async function getPageData_core( pageId, queryParameters ){
   const views = await listChildrenView( pageId );
   for( const { viewId } of views ){
     if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    const { sql, parameters } = await generateSQL( viewId, queryParameters );
-    results["view" + viewId + "_"] = await runSqlReadOnly( sql, parameters );
-    results["view" + viewId + "__total"] = 1;
+    const { normalSQL, countSQL, parameters } = await generateSQL( viewId, queryParameters );
+    results["view" + viewId + "_"] = await runSqlReadOnly( normalSQL, parameters );
+    //
+    const [{ "total": total }] = await runSqlReadOnly( countSQL, parameters );
+    if( isNaN(total) ){
+      throw "件数を取得できません";
+    }
+    results["view" + viewId + "__total"] = total;
   }
   return results;
 }

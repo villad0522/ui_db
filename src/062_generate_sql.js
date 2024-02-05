@@ -191,16 +191,24 @@ export async function generateSQL_core( tableId, viewColumns, conditionInfoList,
   const whereData = await getWhereData( viewColumns, conditionInfoList, joinIdMap );
   const orderData = await getOrderData( viewColumns, sortOrder, joinIdMap );
   //
+  let normalSQL;
+  let countSQL;
   if( isDuplication === true ){
     if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
     // 重複しているテーブルを結合する場合、「テーブル名 AS 別名」と記入する必要がある。
-    return await generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData );
+    normalSQL = await generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData, false );
+    countSQL = await generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData, true );
   }
   else{
     if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
     // テーブルが重複していない場合
-    return await generateSQLwithoutDuplication( tableId, selectData, joinData, whereData, orderData );
+    normalSQL = await generateSQLwithoutDuplication( tableId, selectData, joinData, whereData, orderData, false );
+    countSQL = await generateSQLwithoutDuplication( tableId, selectData, joinData, whereData, orderData, true );
   }
+  return {
+    normalSQL,
+    countSQL
+  };
 }
 
 

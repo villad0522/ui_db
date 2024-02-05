@@ -429,7 +429,8 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     //======================================================================
     case "UPDATE_RECORDS":{
       if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
-      const result = await updateRecordsFromView( apiInfo.viewId, requestBody["view" + viewId + "_"] );
+      const viewId = Number(apiInfo.viewId);
+      const result = await updateRecordsFromView( viewId, requestBody["view" + viewId + "_"] );
       let nextUrl = null;
       if(result.isSuccess){
         if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）

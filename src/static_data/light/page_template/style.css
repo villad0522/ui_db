@@ -1,3 +1,4 @@
+/* 画面最上部の検索ボックス */
 .search_box {
     background: none;
 }
@@ -6,17 +7,44 @@
     color: #fff;
 }
 
+/* パンくずリスト */
 .breadcrumb-item {
     cursor: pointer;
 }
 
+
+/* 横線 */
 hr {
     margin: 50px 0;
 }
 
+/* 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される */
+.flag+* {
+    display: none;
+}
+
+.flag:checked+* {
+    display: block;
+}
+
+/* カード */
 .card {
     background: #fafafa;
     margin: 20px 0;
+}
+
+
+/* カードの左上のID */
+.id_box {
+    padding: 3px 0 0 5px;
+    font-size: 12px;
+    color: #555;
+}
+
+.id_box>input {
+    background: none;
+    border: none;
+    width: 70px;
 }
 
 .tile,

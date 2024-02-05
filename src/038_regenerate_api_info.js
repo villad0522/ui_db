@@ -44,7 +44,6 @@ import {
   getPageInfo,
   listViewsFromTableId,
   getTableFromView,
-  deletePage,
   getBreadcrumbs,
   cutPage,
   copyPage,
@@ -64,6 +63,7 @@ import {
 import {
   createColumn,
   createView,
+  deletePage,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,
@@ -426,6 +426,12 @@ export async function regenerateAPI_update_core( viewId, tableId, onePageMaxSize
                 "description": "完了した場合に、移動すべきURL",
                 "example": "../",
                 "isRequired": false,
+            },
+            "isSuccess": {
+                "dataType": "BOOL",
+                "description": "上書きに成功したか否か",
+                "example": true,
+                "isRequired": true,
             }
         },
     };

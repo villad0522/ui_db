@@ -44,7 +44,6 @@ import {
   getPageInfo,
   listViewsFromTableId,
   getTableFromView,
-  deletePage,
   getBreadcrumbs,
   cutPage,
   copyPage,
@@ -64,6 +63,7 @@ import {
 import {
   createColumn,
   createView,
+  deletePage,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,
@@ -183,69 +183,6 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
     const viewColumns = await listViewColumns( viewId );
     let mainHtmlText = "";
     mainHtmlText += `
-        <hr>
-        <div class="collapse" id="search_block_${ viewId }">
-            <h4>抽出／並び替え</h4>
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="inputEmail4" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="inputEmail4">
-                </div>
-                <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="inputPassword4">
-                </div>
-                <div class="col-12">
-                    <label for="inputAddress" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-                </div>
-                <div class="col-12">
-                    <label for="inputAddress2" class="form-label">Address 2</label>
-                    <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-                </div>
-                <div class="col-md-6">
-                    <label for="inputCity" class="form-label">City</label>
-                    <input type="text" class="form-control" id="inputCity">
-                </div>
-                <div class="col-md-4">
-                    <label for="inputState" class="form-label">State</label>
-                    <select id="inputState" class="form-select">
-                        <option selected>Choose...</option>
-                        <option>...</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="inputZip" class="form-label">Zip</label>
-                    <input type="text" class="form-control" id="inputZip">
-                </div>
-            </div>
-            <br>
-            <div style="text-align: right;">
-                <button type="button" class="btn btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                    </svg>
-                    検索
-                </button>
-            </div>
-            <hr>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <h4 style="display: inline-block;">検索結果</h4>
-                （
-                <input type="number" id="inputEmail4" disabled style="background: none; border: none; width: 50px;">
-                件）
-            </div>
-            <div class="col-sm-6" style="text-align: right;">
-                <button data-bs-toggle="collapse" data-bs-target="#search_block_${ viewId }" class="btn btn-outline-primary" type="button">
-                    抽出／並び替え
-                </button>
-                <button onclick="overwriteButton();" type="button" class="btn btn-outline-primary">
-                    上書き
-                </button>
-            </div>
-        </div>
         <div class="card">
             <div class="card-body row" oninput="myFetch('./auto_correct_view${viewId}/form')">`;
     //
@@ -366,12 +303,82 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
                     </button>
                 </div>
             </div>
+        </div>
+        <hr>
+        <div class="collapse" id="search_block_${ viewId }">
+            <h4>抽出／並び替え</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="inputEmail4" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="inputEmail4">
+                </div>
+                <div class="col-md-6">
+                    <label for="inputPassword4" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="inputPassword4">
+                </div>
+                <div class="col-12">
+                    <label for="inputAddress" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                </div>
+                <div class="col-12">
+                    <label for="inputAddress2" class="form-label">Address 2</label>
+                    <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+                </div>
+                <div class="col-md-6">
+                    <label for="inputCity" class="form-label">City</label>
+                    <input type="text" class="form-control" id="inputCity">
+                </div>
+                <div class="col-md-4">
+                    <label for="inputState" class="form-label">State</label>
+                    <select id="inputState" class="form-select">
+                        <option selected>Choose...</option>
+                        <option>...</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="inputZip" class="form-label">Zip</label>
+                    <input type="text" class="form-control" id="inputZip">
+                </div>
+            </div>
+            <br>
+            <div style="text-align: right;">
+                <button type="button" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                    </svg>
+                    検索
+                </button>
+            </div>
+            <hr>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <h4 style="display: inline-block;">検索結果</h4>
+                （
+                <input type="number" name="view${viewId}__total" disabled style="background: none; border: none; width: 50px;">
+                件）
+            </div>
+            <div class="col-sm-6" style="text-align: right;">
+                <button data-bs-toggle="collapse" data-bs-target="#search_block_${ viewId }" class="btn btn-outline-primary" type="button">
+                    抽出／並び替え
+                </button>
+                <button onclick="myFetch('./update_from_view${viewId}/form');" type="button" class="btn btn-outline-primary">
+                    上書き
+                </button>
+            </div>
         </div>`;
     //
     for( let i=0; i<onePageMaxSize; i++ ){
         if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
         mainHtmlText += `
+        <!--  -->
+        <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後のcard要素が表示される -->
+        <input name="view${viewId}_${i}_flag" class="flag" type="checkbox" style="display: none;">
         <div class="card">
+            <div class="id_box">
+                ID:
+                <input name="view${viewId}_${i}_id">
+            </div>
             <div class="card-body row">`;
         for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
             if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -460,6 +467,51 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
     }
     //
     mainHtmlText += `
+        <br>
+        <br>
+        <div style="position: sticky; bottom: 0; padding: 5px; width: max-content; box-sizing: border-box; margin: 0 auto; background: #eee;">
+            <ul class="pagination" style="margin-bottom: 3px;">
+                <!--  -->
+                <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                <input name="view${viewId}__pageFirst_flag" class="flag" type="checkbox" style="display: none;">
+                <li class="page-item">
+                    <button onclick="paginationButtonFirst()" type="button" class="page-link">
+                        <span aria-hidden="true">&laquo;</span>
+                    </button>
+                </li>
+                <!--  -->
+                <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                <input name="view${viewId}__pagePrev_flag" class="flag" type="checkbox" style="display: none;">
+                <li class="page-item">
+                    <button name="view${viewId}__pagePrev" onclick="paginationButtonPrev()" type="button" class="page-link">
+                    </button>
+                </li>
+                <!--  -->
+                <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                <input name="view${viewId}__pageNow_flag" class="flag" type="checkbox" style="display: none;">
+                <li class="page-item active">
+                    <span class="page-link" name="view${viewId}__pageNow"> </span>
+                </li>
+                <!--  -->
+                <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                <input name="view${viewId}__pageNext_flag" class="flag" type="checkbox" style="display: none;">
+                <li class="page-item">
+                    <button name="view${viewId}__pageNext" onclick="paginationButtonNext()" type="button" class="page-link">
+                    </button>
+                </li>
+                <!--  -->
+                <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                <input name="view${viewId}__pageLast_flag" class="flag" type="checkbox" style="display: none;">
+                <li class="page-item">
+                    <button onclick="paginationButtonLast()" type="button" class="page-link">
+                        <span aria-hidden="true">&raquo;</span>
+                    </button>
+                </li>
+                <!--  -->
+                <!-- 不可視のテキストボックス -->
+                <input name="view${viewId}__pageLast" type="text" style="display: none;">
+            </ul>
+        </div>
         <br>
         <br>
         <br>

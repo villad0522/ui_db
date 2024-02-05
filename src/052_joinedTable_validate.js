@@ -150,12 +150,34 @@ export async function generateSQL( viewId, queryParameters ){
       throw new Error(`resultがオブジェクトではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
     }
   }
-  if( typeof result.sql !== "string" ){
-    if( !result.sql ){
-      throw new Error(`result.sqlがNULLです。\nレイヤー : joinedTable\n関数 : generateSQL`);
+  if( typeof result.normalSQL !== "string" ){
+    if( !result.normalSQL ){
+      throw new Error(`result.normalSQLがNULLです。\nレイヤー : joinedTable\n関数 : generateSQL`);
     }
     else{
-      throw new Error(`result.sqlが文字列ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+      throw new Error(`result.normalSQLが文字列ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+    }
+  }
+  if( typeof result.countSQL !== "string" ){
+    if( !result.countSQL ){
+      throw new Error(`result.countSQLがNULLです。\nレイヤー : joinedTable\n関数 : generateSQL`);
+    }
+    else{
+      throw new Error(`result.countSQLが文字列ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+    }
+  }
+  if( result.parameters===null || result.parameters===undefined ){
+    throw new Error(`result.parametersがNULLです。\nレイヤー : joinedTable\n関数 : generateSQL`);
+  }
+  else if( typeof result.parameters !== "object" ){
+    throw new Error(`result.parametersがオブジェクトではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+  }
+  else if( result.parameters.constructor !== Object ){
+    throw new Error(`result.parametersが辞書型ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+  }
+  for( const i in result.parameters ){
+    if( typeof i !== "string" ){
+      throw new Error(`result.parametersのキーが文字列ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
     }
   }
   //

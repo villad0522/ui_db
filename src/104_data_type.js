@@ -296,7 +296,7 @@ export async function updateRecords_core( tableId, records ){
         await runSqlWriteOnly(
             `UPDATE ${tableId}
                 SET ${words.join(", ")}, updated_at=:updatedAt
-                WHERE ${recordId} = :recordId;`,
+                WHERE ${primaryKey} = :recordId;`,
             {
                 ...placeholder,
                 ":recordId": recordId,

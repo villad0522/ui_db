@@ -179,7 +179,7 @@ async function _test(){
     [columnId3]: "田中太郎",
   });
   //
-  const sql = await generateSQL(
+  const { "normalSQL": sql1 } = await generateSQL(
     tableId2,
     [
       {
@@ -198,17 +198,17 @@ async function _test(){
     [],
     []
   );
-  const matrix = await runSqlReadOnly(sql,{});
+  const matrix = await runSqlReadOnly(sql1,{});
   if( matrix.length !== 1 ){
     throw new Error(`テスト結果が想定とは異なります。\n現状: matrix = ${JSON.stringify(matrix,null,2)}`);
   }
-  if( matrix[0]['学年'] !== 3 ){
+  if( matrix[0]['d1'] !== 3 ){
     throw new Error(`テスト結果が想定とは異なります。\n現状: matrix = ${JSON.stringify(matrix,null,2)}`);
   }
-  if( matrix[0]['氏名'] !== "田中太郎" ){
+  if( matrix[0]['d2'] !== "田中太郎" ){
     throw new Error(`テスト結果が想定とは異なります。\n現状: matrix = ${JSON.stringify(matrix,null,2)}`);
   }
-  const sql2 = await generateSQL(
+  const { "normalSQL": sql2 } = await generateSQL(
     tableId1,
     [
       {

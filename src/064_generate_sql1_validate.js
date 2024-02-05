@@ -6,7 +6,7 @@ import {
 //#######################################################################################
 // 関数「generateSQLwithDuplication_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData ){
+export async function generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData, isCount ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
@@ -236,12 +236,23 @@ export async function generateSQLwithDuplication( tableId, selectData, joinData,
       throw new Error(`orderData[${i}].isAscendingがブール値ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
     }
   }
+  if( typeof isCount !== "boolean" ){
+    if( !isCount ){
+      throw new Error(`isCountがNULLです。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+    }
+    else{
+      throw new Error(`isCountがブール値ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+    }
+  }
+  else if( isNaN(isCount) ){
+    throw new Error(`isCountがブール値ではありません。\nレイヤー : generate_sql1\n関数 : generateSQLwithDuplication`);
+  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await generateSQLwithDuplication_core( tableId, selectData, joinData, whereData, orderData );
+    result = await generateSQLwithDuplication_core( tableId, selectData, joinData, whereData, orderData, isCount );
   }
   catch(error){
     if( typeof error === "string" ){

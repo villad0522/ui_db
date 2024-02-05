@@ -3,6 +3,7 @@ import path from 'path';
 import {
   createColumn,
   createView,
+  deletePage,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,
@@ -51,7 +52,6 @@ import {
   getPageInfo,
   listViewsFromTableId,
   getTableFromView,
-  deletePage,
   getBreadcrumbs,
   cutPage,
   copyPage,
@@ -221,24 +221,24 @@ async function _test(){
     // ページにビューを追加
     const { viewId: viewId1 } = await createView( pageId1, "名簿テーブル" );
     //
-    const { sql, parameters } = await generateSQL(
+    const { normalSQL, parameters } = await generateSQL(
         viewId1,
         {
             ["p5"+columnId2]: recordId,
         }
     );
-    const matrix = await runSqlReadOnly(sql,parameters);
+    const matrix = await runSqlReadOnly( normalSQL, parameters );
     if( matrix.length !== 1 ){
         console.error(matrix);
         console.error(matrix.length);
         throw "テスト結果の件数が想定とは異なります。";
     }
-    if( matrix[0]['学年'] !== 3 ){
+    if( matrix[0]['d2'] !== 3 ){
         console.error(matrix);
         console.error(matrix[0]['学年']);
         throw "テスト結果が想定とは異なります。（学年）";
     }
-    if( matrix[0]['氏名'] !== "田中太郎" ){
+    if( matrix[0]['d1'] !== "田中太郎" ){
         console.error(matrix);
         throw "テスト結果が想定とは異なります。（氏名）";
     }

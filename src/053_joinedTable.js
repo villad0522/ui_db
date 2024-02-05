@@ -5,6 +5,7 @@ import {
   createColumn,
   createView,
   deleteView,
+  deletePage,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,
@@ -53,7 +54,6 @@ import {
   getPageInfo,
   listViewsFromTableId,
   getTableFromView,
-  deletePage,
   getBreadcrumbs,
   cutPage,
   copyPage,
@@ -333,11 +333,11 @@ export async function generateSQL_core( viewId, queryParameters ){
             ":viewId": viewId,
         },
     );
-    const sql = await generateSQL(
+    const { normalSQL, countSQL } = await generateSQL(
         tableId,
         viewColumns,
         conditionInfoList,
         sortOrders
     );
-    return { sql, parameters };
+    return {  normalSQL, countSQL, parameters };
 }

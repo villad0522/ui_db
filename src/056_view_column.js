@@ -300,12 +300,12 @@ export async function createColumn_core( tableId, columnName, dataType, parentTa
         // 列を表示設定にする
         for( const viewId of viewIdList ){
             if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
-            await _addViewColumn_core({ 
-                viewId: viewId,
-                viewColumnType: "RAW",
-                columnPath: `main.${result.columnId}`,
-                viewColumnName: columnName,
-            });
+            await _addViewColumn_core(
+                viewId,
+                "RAW",
+                `main.${result.columnId}`,
+                columnName,
+            );
             // 入力要素を再構築する
             await regenerateInputElements_core( viewId );
         }
@@ -320,12 +320,12 @@ export async function createColumn_core( tableId, columnName, dataType, parentTa
     // 列を表示設定にする
     for( const viewId of viewIdList ){
         if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
-        await _addViewColumn_core({ 
-            viewId: viewId,
-            viewColumnType: "RAW",
-            columnPath: `main.${result.columnId} > ${parentColumnId}`,
-            viewColumnName: columnName,
-        });
+        await _addViewColumn_core(
+            viewId,
+            "RAW",
+            `main.${result.columnId} > ${parentColumnId}`,
+            columnName,
+        );
         // 入力要素を再構築する
         await regenerateInputElements_core( viewId );
     }
@@ -423,11 +423,20 @@ export async function _deleteViewColumns_core( viewId ){
     );
     // 入力要素と入力グループを全て消し去る
     await deleteViewInput(viewId);
+    //
+    // ビューの情報を取得する
+    const { childPageId } = await getViewInfo( viewId );
+    const views = await listChildrenView( childPageId );
+    for( const { viewId } of views ){
+        if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+        // ビューカラムを一括削除（再帰呼び出し）
+        await _deleteViewColumns_core( viewId );
+    }
 }
 
 // ビューカラムの一覧を取得(Excel向け)
 export async function listViewColumnsForExcel_core( viewId ){
-  if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
     return await runSqlReadOnly(
         `SELECT
             "d" || view_column_id AS viewColumnId,
@@ -446,7 +455,7 @@ export async function listViewColumnsForExcel_core( viewId ){
 
 // 【サブ関数】入力要素を全て作り直す
 export async function regenerateInputElements_core( viewId ){
-  if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
     // 入力要素と入力グループを全て消し去る
     await deleteViewInput(viewId);
     //
@@ -475,7 +484,7 @@ export async function regenerateInputElements_core( viewId ){
     // };
     //
     for( const columnPath in joinIdMap ){
-        if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
         const inputGroupId = joinIdMap[columnPath];
         const columnId = await pathToColumnId( columnPath );
         const tableId = await getParentTableId(columnId);
@@ -485,7 +494,7 @@ export async function regenerateInputElements_core( viewId ){
         let nextColumnId = null;
         const pathLength = await getPathLength( columnPath );
         if( pathLength >= 2 ){
-            if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
             const childColumnPath = await slicePath( columnPath, pathLength-1 );
             const childColumnId = await pathToColumnId( childColumnPath );
             //
@@ -494,7 +503,7 @@ export async function regenerateInputElements_core( viewId ){
             nextColumnId = childColumnId;
         }
         else{
-            if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
             nextGroupId = "main";
             nextColumnId = columnId;
         }
@@ -514,11 +523,11 @@ export async function regenerateInputElements_core( viewId ){
     }
     //
     for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
-        if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
         let inputGroupId = "main";
         const pathLength = await getPathLength( columnPath );
         if( pathLength >= 2 ){
-            if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
             // 子（参照元）のカラムパス
             const childColumnPath = await slicePath( columnPath, pathLength-1 );
             inputGroupId = joinIdMap[childColumnPath];
@@ -542,9 +551,9 @@ export async function regenerateInputElements_core( viewId ){
 
 // 【サブ関数】ビューカラムを作成
 export async function _addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName ){
-  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
     if( typeof viewId !== "number" || isNaN(viewId) ){
-        throw `ページIDが数値ではありません`;
+        throw `ビューIDが数値ではありません`;
     }
     // RAW, SUM、MAX、MIN、AVG、COUNT 
     if( viewColumnType!=="RAW" && viewColumnType!=="SUM" && viewColumnType!=="MAX"
@@ -566,14 +575,14 @@ export async function _addViewColumn_core( viewId, viewColumnType, columnPath, v
     );
     const numbers = new Set();
     for( const { excelColumnIndex } of matrix ){
-        if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
         numbers.add( excelColumnIndex );
     }
     let excelColumnIndex;
     for( let i=0; i<=numbers.size; i++ ){
-        if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
         if(!numbers.has(i)){
-            if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
             excelColumnIndex = i;
             break;
         }
@@ -604,4 +613,38 @@ export async function _addViewColumn_core( viewId, viewColumnType, columnPath, v
             ":sortNumber": sortNumber,
         },
     );
+}
+
+// ページを削除
+export async function deletePage_core( pageId ){
+  if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
+  //
+  // ビューの一覧を取得する
+  const views = await listChildrenView( pageId );
+  for( const { viewId } of views ){
+    if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
+    // ビューカラムを一括削除
+    await _deleteViewColumns_core( viewId );
+  }
+  // 親のビューを取得
+  const view = await runSqlReadOnly(
+    `SELECT dynamic_parent_id AS viewId
+      FROM pages
+      WHERE page_id = :pageId
+      LIMIT 1;`,
+    {
+      ":pageId": pageId,
+    },
+  );
+  // もし親のビューが存在したら
+  if(view.length>=1){
+    if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
+    const parentViewId = view[0]["viewId"];
+    if( parentViewId && !isNaN(parentViewId) ){
+        if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
+        // ビューカラムを一括削除
+        await _deleteViewColumns_core( parentViewId );
+    }
+  }
+  await deletePage( pageId );   // 下層の関数を呼び出す
 }
