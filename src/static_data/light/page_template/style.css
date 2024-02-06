@@ -19,13 +19,14 @@ hr {
 }
 
 /* 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される */
-.flag+* {
+.flag {
     display: none;
 }
 
-.flag:checked+* {
-    display: block;
+.flag:not(:checked)+* {
+    display: none;
 }
+
 
 /* カード */
 .card {
@@ -90,7 +91,7 @@ hr {
 
 
 .tile {
-    border: solid #f0f0f0 3px;
+    border: solid #eee 2px;
     background: #fafafa;
     box-shadow: 9px 9px 40px -31px rgba(0, 0, 0, 0.5);
 }

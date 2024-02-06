@@ -231,7 +231,7 @@ export async function regenerateHTML_core( pageId ){
                 <button ${ parentPageId ? "" : "disabled" } onclick="jumpWithQuery('/custom/${parentPageId}/index.html')" type="button" class="btn btn-light me-2">
                     戻る
                 </button>
-                <div class="d-flex" role="search" style="width: 300px;">
+                <div class="d-flex" role="search" style="width: 270px;">
                     <div class="input-group">
                         <span class="input-group-text" style="background: none; color: #fff;">
                             <i class="bi bi-search"></i>
@@ -239,13 +239,16 @@ export async function regenerateHTML_core( pageId ){
                         <input class="form-control search_box" type="search" placeholder="検索" aria-label="Search">
                     </div>
                 </div>
-                <div class="form-check form-switch">
+                <div class="form-check form-switch d-none d-md-inline">
                     <input onchange="handleEditSwitch(event)" class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
                     <label class="form-check-label" for="edit_mode_switch" style="color:#fff">
                         表示設定
                     </label>
                 </div>
-                <a href="/default/tables/index.html" class="btn btn-dark me-2" target="_blank">
+                <button type="button" class="btn btn-success d-none d-md-inline" style="border: solid 2px #fff;">
+                    Excel
+                </button>
+                <a href="/default/tables/index.html" class="btn btn-dark me-2 d-none d-md-inline" target="_blank">
                     本体データ
                     &nbsp;
                     <i class="bi bi-box-arrow-up-right"></i>

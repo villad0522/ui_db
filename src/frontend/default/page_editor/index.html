@@ -29,15 +29,18 @@
                 <button disabled type="button" class="btn btn-light me-2" style="color: #fff;">
                     戻る
                 </button>
-                <div class="d-flex" role="search" style="width: 300px;">
+                <div class="d-flex" role="search" style="width: 270px;">
                 </div>
-                <div class="form-check form-switch">
+                <div class="form-check form-switch d-none d-md-inline">
                     <input checked onchange="handleEditSwitch(event)" class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
                     <label class="form-check-label" for="edit_mode_switch" style="color:#fff">
                         表示設定
                     </label>
                 </div>
-                <a href="/default/tables/index.html" class="btn btn-dark me-2" target="_blank">
+                <button type="button" class="btn btn-success d-none d-md-inline" style="border: solid 2px #fff;">
+                    Excel
+                </button>
+                <a href="/default/tables/index.html" class="btn btn-dark me-2 d-none d-md-inline" target="_blank">
                     本体データ
                     &nbsp;
                     <i class="bi bi-box-arrow-up-right"></i>
@@ -53,7 +56,7 @@
                 <input name="breadcrumbs${i}_pageId" style="display: none;">
                 <!--  -->
                 <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
-                <input name="breadcrumbs${i}_flag" class="flag" type="checkbox" style="display: none;">
+                <input name="breadcrumbs${i}_flag" class="flag" type="checkbox">
                 <li class="breadcrumb-item">
                     &nbsp;
                     <span name="breadcrumbs${i}_pageName" onclick="breadcrumbButton(${i})" >
@@ -65,113 +68,192 @@
                 </script>
             </ol>
         </nav>
-        <main class="container">
+        <main>
             <form>
-                <div class="row">
-                    <div class="col-12 col-md-10">
-                        <!--  -->
-                        <!--  -->
-                        <!-- 見出し -->
-                        <input name="pageName" placeholder="ページ名" class="form-control" style="font-size: 30px; font-weight: 900; overflow: hidden; padding-top: 10px;">
-                        <!--  -->
-                        <!--  -->
-                        <!-- メモ -->
-                        <textarea name="memo" placeholder="メモ" class="form-control"></textarea>
-                    </div>
-                    <div class="col-12 col-md-2">
-                        <br>
-                        <button onclick="myFetch('./rename_page/json');" type="button" class="btn btn-primary">
-                            保存
-                        </button>
-                    </div>
-                </div>
-                <!--  -->
-                <!--  -->
-                <!-- 子ページへのリンクここから -->
-                <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
-                    <script>
-                        let htmlText = "";
-                        for (let i = 0; i < 35; i++) {
-                            htmlText += `
-                <div>
-                    <input name="staticChildren${i}_pageId" style="display: none;">
-                    <!--  -->
-                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
-                    <input name="staticChildren${i}_flag" class="flag" type="checkbox" style="display: none;">
-                    <div style="text-align: right;">
-                        <!--  -->
-                        <div class="tile" onclick="jumpWithQuery('./?page_id='+getChildPageId(${i}));">
-                            <span name="staticChildren${i}_pageName"></span>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-md-10">
+                            <!--  -->
+                            <!--  -->
+                            <!-- 見出し -->
+                            <input name="pageName" placeholder="ページ名" class="form-control" style="font-size: 30px; font-weight: 900; overflow: hidden; padding-top: 10px;">
+                            <!--  -->
+                            <!--  -->
+                            <!-- メモ -->
+                            <textarea name="memo" placeholder="メモ" class="form-control"></textarea>
                         </div>
-                        <!--  -->
-                        <button onclick="myFetch('./paste_page/json?after_id='+getChildPageId(${i}));" type="button" class="btn btn-outline-warning btn-sm">
-                            貼り付け
-                        </button>
-                        <br>
-                        <button onclick="myFetch('./cut_page/json?page_id='+getChildPageId(${i}));" type="button" class="btn btn-outline-primary btn-sm">
-                            切り取り
-                        </button>
-                       ${""/* 
-                        <br>
-                        <button onclick="myFetch('./copy_page/json?page_id='+getChildPageId(${i}));" type="button" class="btn btn-outline-primary btn-sm">
-                            コピー
-                        </button> */}
-                        <br>
-                        <button onclick="myFetch('./delete_page/json?page_id='+getChildPageId(${i}));" type="button" class="btn btn-outline-danger btn-sm">
-                            削除
-                        </button>
-                        <br>
-                        <br>
-                    </div>
-                </div>`;
-                        }
-                        document.write(htmlText);
-                    </script>
-                    <div style="text-align: center;">
-                        <div class="tile_add" onclick="myFetch('./create_page/json')">
-                            <i class="bi bi-plus" style="font-size: 70px; position: relative; top: -5px;"></i>
+                        <div class="col-12 col-md-2">
                             <br>
-                            子ページを追加
-                            <br>
-                        </div>
-                        <button onclick="myFetch('./paste_page/json?after_id=0');" type="button" class="btn btn-outline-warning btn-sm">
-                            末尾に貼り付け
-                        </button>
-                    </div>
-                    <div class="tile_empty"></div>
-                    <div class="tile_empty"></div>
-                    <div class="tile_empty"></div>
-                    <div class="tile_empty"></div>
-                    <div class="tile_empty"></div>
-                    <div class="tile_empty"></div>
-                    <div class="tile_empty"></div>
-                    <div class="tile_empty"></div>
-                </div>
-                <br>
-                <br>
-                <!--  -->
-                <!--  -->
-                <!-- ビュー新規作成フォーム -->
-                <div class="card">
-                    <div class="card-body row">
-                        <div class="col-12 col-md-6 col-lg-4">
-                            <select name="tableName" class="form-select" aria-label="テーブルを選択してください">
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-4">
-                            <button onclick="myFetch('./create_view/json')" type="button" class="btn btn-primary">
-                                ビューを作成
+                            <button onclick="myFetch('./rename_page/json');" type="button" class="btn btn-primary">
+                                保存
                             </button>
                         </div>
                     </div>
+                    <!--  -->
+                    <!--  -->
+                    <!-- 子ページへのリンクここから -->
+                    <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+                        <script>
+                            let htmlText = "";
+                            for (let i = 0; i < 35; i++) {
+                                htmlText += `
+                        <div>
+                            <input name="staticChildren${i}_pageId" style="display: none;">
+                            <!--  -->
+                            <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                            <input name="staticChildren${i}_flag" class="flag" type="checkbox">
+                            <div style="text-align: right;">
+                                <!--  -->
+                                <div class="tile" onclick="jumpWithQuery('./?page_id='+getChildPageId(${i}));">
+                                    <span name="staticChildren${i}_pageName"></span>
+                                </div>
+                                <!--  -->
+                                <button onclick="myFetch('./paste_page/json?after_id='+getChildPageId(${i}));" type="button" class="btn btn-outline-warning btn-sm">
+                                    貼り付け
+                                </button>
+                                <br>
+                                <button onclick="myFetch('./cut_page/json?page_id='+getChildPageId(${i}));" type="button" class="btn btn-outline-primary btn-sm">
+                                    切り取り
+                                </button>
+                            ${""/* 
+                                <br>
+                                <button onclick="myFetch('./copy_page/json?page_id='+getChildPageId(${i}));" type="button" class="btn btn-outline-primary btn-sm">
+                                    コピー
+                                </button> */}
+                                <br>
+                                <button onclick="myFetch('./delete_page/json?page_id='+getChildPageId(${i}));" type="button" class="btn btn-outline-danger btn-sm">
+                                    削除
+                                </button>
+                                <br>
+                                <br>
+                            </div>
+                        </div>`;
+                            }
+                            document.write(htmlText);
+                        </script>
+                        <div style="text-align: center;">
+                            <div class="tile_add" onclick="myFetch('./create_page/json')">
+                                <i class="bi bi-plus" style="font-size: 70px; position: relative; top: -5px;"></i>
+                                <br>
+                                子ページを追加
+                                <br>
+                            </div>
+                            <button onclick="myFetch('./paste_page/json?after_id=0');" type="button" class="btn btn-outline-warning btn-sm">
+                                末尾に貼り付け
+                            </button>
+                            <br>
+                            <br>
+                        </div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                    </div>
                 </div>
-                <br>
-                <br>
-                <br>
-                <br>
-                <button onclick="myFetch('./regenerate_page/json');" type="button" class="btn btn-outline-dark">
-                    ページを再生成
-                </button>
+                <!--  -->
+                <!-- タブの上部 -->
+                <!--  -->
+                <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                <input name="views0_flag" class="flag" type="checkbox">
+                <ul class="nav nav-tabs justify-content-center">
+                    <!--  -->
+                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                    <input name="views0_flag" class="flag" type="checkbox">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab0">
+                            タブ0
+                        </a>
+                    </li>
+                    <!--  -->
+                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                    <input name="views1_flag" class="flag" type="checkbox">
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab1">
+                            タブ1
+                        </a>
+                    </li>
+                    <!--  -->
+                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                    <input name="views2_flag" class="flag" type="checkbox">
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab2">
+                            タブ2
+                        </a>
+                    </li>
+                    <!--  -->
+                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                    <input name="views3_flag" class="flag" type="checkbox">
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab3">
+                            タブ3
+                        </a>
+                    </li>
+                    <!--  -->
+                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                    <input name="views4_flag" class="flag" type="checkbox">
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab4">
+                            タブ4
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#create_view">
+                            <i class="bi bi-plus"></i>
+                        </a>
+                    </li>
+                </ul>
+                <!--  -->
+                <!-- タブの本体 -->
+                <div class="tab-content">
+                    <script>
+                        let htmlText4 = "";
+                        for (let i = 0; i < 5; i++) {
+                            const isActive = (i === 0) ? "active" : "";
+                            htmlText4 += `
+                    <!--  -->
+                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                    <input name="views${i}_flag" class="flag" type="checkbox">
+                    <div id="tab${i}" class="tab-pane ${isActive}" style="z-index: 999;">
+                        <div style="text-align: right;">
+                            <button type="button" class="btn btn-outline-danger">
+                                ビューを削除
+                            </button>
+                        </div>
+                    </div>`;
+                        }
+                        document.write(htmlText4);
+                    </script>
+                    <!--  -->
+                    <!--  -->
+                    <!-- ビュー新規作成タブ -->
+                    <div id="create_view" class="tab-pane active">
+                        <div style="margin: 0 auto; max-width: 500px;">
+                            <div class="input-group">
+                                <select name="tableName" class="form-select" aria-label="テーブルを選択してください">
+                                </select>
+                                <button onclick="myFetch('./create_view/json')" type="button" class="btn btn-primary">
+                                    ビューを作成
+                                </button>
+                            </div>
+                            <br>
+                            <p>
+                                <small>
+                                    「ビュー」とは、情報を分かりやすく整理して表示するための仮想的なテーブルのことです。
+                                    本体データから必要な情報を抽出し、それを見やすい形で提供します。
+                                    ビュー自体は実際のデータを持たず、入力された内容はすべて
+                                    <a href="/default/tables/index.html" target="_blank">
+                                        本体データ
+                                    </a>
+                                    に保存されます。
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </form>
         </main>
     </body>

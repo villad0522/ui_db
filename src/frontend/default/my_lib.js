@@ -4,7 +4,7 @@ const elements = document.querySelectorAll('[name]');
 const nameSet = new Set();
 for (const element of elements) {
     const name = element.getAttribute("name");
-    if (nameSet.has(name)) {
+    if (!name.includes("_flag") && nameSet.has(name)) {
         alert(`【エラー】name属性が重複しています。name = ${name}`);
         break;
     }
@@ -122,15 +122,13 @@ function _setFormData(formData) {
             key = key.split("_option")[0];
             // name属性の値が変数keyと等しいHTML要素を探す。
             const elements = document.getElementsByName(key);
-            if (elements.length === 0) {
-                return;
+            for (const element of elements) {
+                // 予測変換を設定
+                const optionElement = document.createElement("option");
+                optionElement.value = value;
+                optionElement.innerText = value;
+                element.appendChild(optionElement);
             }
-            const element = elements[0];
-            // 予測変換を設定
-            const optionElement = document.createElement("option");
-            optionElement.value = value;
-            optionElement.innerText = value;
-            element.appendChild(optionElement);
         }
         else {
             // name属性の値が変数keyと等しいHTML要素を探す。
@@ -138,16 +136,17 @@ function _setFormData(formData) {
             if (elements.length === 0) {
                 return;
             }
-            const element = elements[0];
-            // フォームに値を設定
-            if (element.type === 'checkbox' || element.type === 'radio') {
-                elements[0].checked = (value.toLowerCase() === "true") || (value === "1");
-            }
-            else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                element.value = value ?? "";
-            }
-            else {
-                element.innerText = value ?? "";
+            for (const element of elements) {
+                // フォームに値を設定
+                if (element.type === 'checkbox' || element.type === 'radio') {
+                    element.checked = (value.toLowerCase() === "true") || (value === "1");
+                }
+                else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                    element.value = value ?? "";
+                }
+                else {
+                    element.innerText = value ?? "";
+                }
             }
         }
     });
@@ -190,7 +189,6 @@ function _setupTextarea() {
         // テキストエリアが０行の場合の高さを調べる
         // （スクロールバーとborderは含む。paddingは含まない。）
         const emptyHeight = dummyElement.offsetHeight;
-        console.log(emptyHeight);
         //
         dummyElement.remove();
         //
