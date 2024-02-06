@@ -1,12 +1,12 @@
 
 import { myFetch, jumpWithQuery } from "/default/my_lib.js";
 
-
 //###############################################################
 // ページを読み込んだら、はじめに実行する関数
 window.addEventListener('DOMContentLoaded', async () => {
-    await myFetch("./form" + location.search, { method: "GET" });
+    //await myFetch("./form" + location.search, { method: "GET" });
 });
+//
 //###############################################################
 // UI編集スイッチが切り替えられたとき
 window.handleEditSwitch = function (event) {

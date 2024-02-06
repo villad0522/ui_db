@@ -1,19 +1,65 @@
 
-// name属性を持つすべての要素を取得
-const elements = document.querySelectorAll('[name]');
-const nameSet = new Set();
-for (const element of elements) {
-    const name = element.getAttribute("name");
-    if (!name.includes("_flag") && nameSet.has(name)) {
-        alert(`【エラー】name属性が重複しています。name = ${name}`);
-        break;
+//###############################################################
+// ページを読み込んだら、はじめに実行する関数
+window.addEventListener('DOMContentLoaded', async () => {
+    // name属性を持つすべての要素を取得
+    const elements = document.querySelectorAll('[name]');
+    const nameSet = new Set();
+    for (const element of elements) {
+        const name = element.getAttribute("name");
+        if (!name.includes("_flag") && nameSet.has(name)) {
+            console.error(`【エラー】name属性が重複しています。name = ${name}`);
+            break;
+        }
+        nameSet.add(name);
     }
-    nameSet.add(name);
+    //
+    // 一か所でも編集されたかどうかを記録する変数
+    window.isEdit = false;
+    //
+    // 変更された項目を水色にする
+    const formElements = document.querySelectorAll("form input, form select, form textarea");
+    for (const formElement of formElements) {
+        formElement.addEventListener("input", () => {
+            formElement.style.background = "#ddffff";
+            window.isEdit = true;
+        });
+        formElement.addEventListener("change", () => {
+            formElement.style.background = "#ddffff";
+            window.isEdit = true;
+        });
+    }
+});
+//
+//###############################################################
+// 現在のページのクエリパラメータ―を維持したまま、別のページに移動する関数
+export function jumpWithQuery(url) {
+    if (window.isEdit) {
+        if (confirm("編集内容は破棄されます。よろしいですか？") == false) {
+            return;
+        }
+    }
+    // 現在のクエリパラメータ―を維持する
+    const nowUrl = new URL(location.href);
+    const nextUrl = new URL(url, location.href);
+    const nowParams = nowUrl.searchParams;  //現在のパラメーター
+    const nextParams = nextUrl.searchParams;    //進みたいパラメーター
+    // 重複を無くすためにクエリパラメータ―を作り直す
+    const newParams = new URLSearchParams();    //新しく作るパラメーター
+    nowParams.forEach((value, key) => {
+        newParams.set(key, value);
+    });
+    nextParams.forEach((value, key) => {
+        newParams.set(key, value);
+    });
+    // URLを再構築
+    window.location.href = nextUrl.origin + nextUrl.pathname + "?" + newParams.toString();
 }
+window.jumpWithQuery = jumpWithQuery;
 
 //###############################################################
 // サーバーと通信する関数
-export default async function myFetch(url, parameters) {
+export async function myFetch(url, parameters) {
     if (parameters?.isKeepQuery !== false) {
         // 現在のクエリパラメータ―を維持する
         const nowUrl = new URL(location.href);

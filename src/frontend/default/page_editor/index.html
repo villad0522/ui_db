@@ -37,7 +37,7 @@
                         表示設定
                     </label>
                 </div>
-                <button type="button" class="btn btn-success d-none d-md-inline" style="border: solid 2px #fff;">
+                <button type="button" class="btn btn-success d-none d-md-inline" disabled style="border: solid 2px #ccc;">
                     Excel
                 </button>
                 <a href="/default/tables/index.html" class="btn btn-dark me-2 d-none d-md-inline" target="_blank">
@@ -76,7 +76,7 @@
                             <!--  -->
                             <!--  -->
                             <!-- 見出し -->
-                            <input name="pageName" placeholder="ページ名" class="form-control" style="font-size: 30px; font-weight: 900; overflow: hidden; padding-top: 10px;">
+                            <input name="pageName" placeholder="ページ名" class="form-control mb-1" style="font-size: 30px; font-weight: 900; overflow: hidden; padding-top: 10px;">
                             <!--  -->
                             <!--  -->
                             <!-- メモ -->
@@ -164,8 +164,8 @@
                     <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
                     <input name="views0_flag" class="flag" type="checkbox">
                     <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#tab0">
-                            タブ0
+                        <a name="views0_name" class="nav-link active" data-bs-toggle="tab" href="#tab0">
+                            ビュー0
                         </a>
                     </li>
                     <!--  -->
@@ -173,7 +173,7 @@
                     <input name="views1_flag" class="flag" type="checkbox">
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#tab1">
-                            タブ1
+                            ビュー1
                         </a>
                     </li>
                     <!--  -->
@@ -181,7 +181,7 @@
                     <input name="views2_flag" class="flag" type="checkbox">
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#tab2">
-                            タブ2
+                            ビュー2
                         </a>
                     </li>
                     <!--  -->
@@ -189,7 +189,7 @@
                     <input name="views3_flag" class="flag" type="checkbox">
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#tab3">
-                            タブ3
+                            ビュー3
                         </a>
                     </li>
                     <!--  -->
@@ -197,7 +197,7 @@
                     <input name="views4_flag" class="flag" type="checkbox">
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#tab4">
-                            タブ4
+                            ビュー4
                         </a>
                     </li>
                     <li class="nav-item">
@@ -218,10 +218,20 @@
                     <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
                     <input name="views${i}_flag" class="flag" type="checkbox">
                     <div id="tab${i}" class="tab-pane ${isActive}" style="z-index: 999;">
-                        <div style="text-align: right;">
-                            <button type="button" class="btn btn-outline-danger">
-                                ビューを削除
-                            </button>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-6" style="color: #aaa; font-size: 12px;">
+                                    ビューID :
+                                    <input type="text" class="form-control-plaintext" name="views${i}_viewId" readonly style="width: 50px; display: inline; color: #aaa; ">
+                                </div>
+                                <div class="col-6" style="text-align: right;">
+                                    <button type="button" class="btn btn-outline-danger">
+                                        ビューを削除
+                                    </button>
+                                </div>
+                            </div>
+                            <br>
+                            <iframe src="./view_column_editor/index.html" style="width: 100%"></iframe>
                         </div>
                     </div>`;
                         }
@@ -232,6 +242,8 @@
                     <!-- ビュー新規作成タブ -->
                     <div id="create_view" class="tab-pane active">
                         <div style="margin: 0 auto; max-width: 500px;">
+                            <br>
+                            <br>
                             <div class="input-group">
                                 <select name="tableName" class="form-select" aria-label="テーブルを選択してください">
                                 </select>
