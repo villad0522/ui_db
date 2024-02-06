@@ -26,6 +26,7 @@ import {
   _generatePageSortNumber,
   _copyPage,
   getViewInfo,
+  isExistView,
 } from "./058_page_and_view_validate.js";
 import {
   getLocalIp,
@@ -424,6 +425,7 @@ export async function _deleteViewColumns_core( viewId ){
     // 入力要素と入力グループを全て消し去る
     await deleteViewInput(viewId);
     //
+    if(await isExistView(viewId)===false) return;
     // ビューの情報を取得する
     const { childPageId } = await getViewInfo( viewId );
     const views = await listChildrenView( childPageId );

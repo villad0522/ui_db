@@ -147,6 +147,7 @@ import {
   _copyPage,  // 【サブ関数】ページをコピーする
   getViewInfo,  // ビューの情報を取得
   clearCache,  // インメモリキャッシュを削除する
+  isExistView,  // ビューの存在を確認
 } from "./058_page_and_view_validate.js";
 import { setBugMode } from "./059_page_and_view.js";
 
@@ -156,7 +157,7 @@ export async function test057() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 48; i++ ) {
+    for ( i = 1; i <= 49; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

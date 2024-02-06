@@ -22,6 +22,7 @@ import {
   _generatePageSortNumber,
   _copyPage,
   getViewInfo,
+  isExistView,
 } from "./058_page_and_view_validate.js";
 import {
   getLocalIp,

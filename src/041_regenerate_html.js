@@ -59,6 +59,7 @@ import {
   _generatePageSortNumber,
   _copyPage,
   getViewInfo,
+  isExistView,
 } from "./058_page_and_view_validate.js";
 import {
   createColumn,
@@ -264,7 +265,7 @@ export async function regenerateHTML_core( pageId ){
             <!--  -->
             <!--  -->
             <!-- メモ -->
-            <pre>${ await  escapeHTML_core( memo ) }</pre>
+            <textarea class="form-control-plaintext" readonly>${ await  escapeHTML_core( memo ) }</textarea>
             <!--  -->
             <!--  -->
             <!-- 子ページへのリンクここから -->

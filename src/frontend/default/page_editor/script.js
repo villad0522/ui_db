@@ -1,5 +1,5 @@
 
-import myFetch from "/default/my_fetch.js";
+import myFetch from "/default/my_lib.js";
 
 
 // 一か所でも編集されたかどうかを記録する変数

@@ -125,7 +125,6 @@ function _setFormData(formData) {
             if (elements.length === 0) {
                 return;
             }
-            console.log(key);
             const element = elements[0];
             // 予測変換を設定
             const optionElement = document.createElement("option");
@@ -134,7 +133,6 @@ function _setFormData(formData) {
             element.appendChild(optionElement);
         }
         else {
-            console.log(key, value);
             // name属性の値が変数keyと等しいHTML要素を探す。
             const elements = document.getElementsByName(key);
             if (elements.length === 0) {
@@ -153,8 +151,63 @@ function _setFormData(formData) {
             }
         }
     });
+    _setupTextarea();
 }
 //
 //###############################################################
-
+//
 const _sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+//
+//###############################################################
+//
+// テキストエリアの自動高さ調整をONにする関数
+// フォームの初期値を読み込んだら、はじめに実行します。
+let isSetupTextarea = false;
+function _setupTextarea() {
+    if (isSetupTextarea) return;
+    isSetupTextarea = true;
+    //
+    // 全てのtextareaタグごとに繰り返し
+    const textareaElements = document.querySelectorAll("textarea");
+    for (const textareaElement of textareaElements) {
+        const initFlag = textareaElement.getAttribute("init_textarea");
+        if (initFlag) continue;
+        textareaElement.setAttribute("init_textarea", "true");
+        textareaElement.style.resize = "none";
+        textareaElement.style.boxSizing = "border-box";
+        //
+        const dummyElement = textareaElement.cloneNode(true);
+        dummyElement.style.visibility = "hidden";
+        dummyElement.style.position = "absolute";
+        dummyElement.style.padding = "0";
+        dummyElement.style.minHeight = "0";
+        dummyElement.style.height = "auto";
+        dummyElement.style.overflowX = "scroll";
+        dummyElement.value = "";
+        dummyElement.style.lineHeight = "0";
+        textareaElement.before(dummyElement);
+        //
+        // テキストエリアが０行の場合の高さを調べる
+        // （スクロールバーとborderは含む。paddingは含まない。）
+        const emptyHeight = dummyElement.offsetHeight;
+        console.log(emptyHeight);
+        //
+        dummyElement.remove();
+        //
+        // 高さの初期値を設定
+        _setTextareaHeight(textareaElement, emptyHeight);
+        //
+        // inputイベントが発生するたびに関数呼び出し
+        textareaElement.addEventListener("input", (event) => _setTextareaHeight(event.target, emptyHeight));
+    }
+}
+//
+// サブ関数（外部ファイルから呼び出さないで）
+//     textareaの高さを調整する関数
+function _setTextareaHeight(element, emptyHeight) {
+    element.style.height = "auto";  // autoの指定がないと、なぜか文字を入力・削除するたびにtextareaの高さが増加してしまう
+    // scrollHeightにpaddingは含まれている
+    element.style.height = (element.scrollHeight + emptyHeight) + "px";
+}
+//
+//###############################################################

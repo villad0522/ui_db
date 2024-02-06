@@ -24,6 +24,7 @@ import {
   _copyPage_core,  // 【サブ関数】ページをコピーする
   getViewInfo_core,  // ビューの情報を取得
   clearCache_core,  // インメモリキャッシュを削除する
+  isExistView_core,  // ビューの存在を確認
 } from "./059_page_and_view.js";
 
 
@@ -1453,6 +1454,58 @@ export async function clearCache(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「isExistView_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function isExistView( viewId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : page_and_view\n関数 : isExistView`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : page_and_view\n関数 : isExistView`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : page_and_view\n関数 : isExistView`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await isExistView_core( viewId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : page_and_view\n関数 : isExistView`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "boolean" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : page_and_view\n関数 : isExistView`);
+    }
+    else{
+      throw new Error(`resultがブール値ではありません。\nレイヤー : page_and_view\n関数 : isExistView`);
+    }
+  }
+  else if( isNaN(result) ){
+    throw new Error(`resultがブール値ではありません。\nレイヤー : page_and_view\n関数 : isExistView`);
+  }
   //
   //--------------------------------------------------------------------------
   return result;

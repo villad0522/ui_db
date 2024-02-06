@@ -169,6 +169,7 @@ import {
   _generatePageSortNumber,
   _copyPage,
   getViewInfo,
+  isExistView,
 } from "./058_page_and_view_validate.js";
 import {
   getPageData,
@@ -305,6 +306,7 @@ export {
   _generatePageSortNumber,
   _copyPage,
   getViewInfo,
+  isExistView,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,

@@ -873,6 +873,9 @@ export async function _copyPage_core( pageId, destParentPageId, destAfterPageId 
 // ビューの情報を取得
 export async function getViewInfo_core( viewId ){
   if(bugMode === 47) throw "MUTATION47";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(!cacheViews[viewId]){
+    throw `ビューの情報を取得しようとしましたが、該当するビューは存在しません。`;
+  }
   return cacheViews[viewId];
 }
 
@@ -881,4 +884,10 @@ export async function clearCache_core(  ){
   if(bugMode === 48) throw "MUTATION48";  // 意図的にバグを混入させる（ミューテーション解析）
   await clearCache();
   cacheViews = {};
+}
+
+// ビューの存在を確認
+export async function isExistView_core( viewId ){
+  if(bugMode === 49) throw "MUTATION49";  // 意図的にバグを混入させる（ミューテーション解析）
+  return cacheViews[viewId] ? true: false;
 }
