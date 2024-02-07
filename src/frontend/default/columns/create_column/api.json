@@ -1,7 +1,7 @@
 {
     "httpMethod": "POST",
     "description": "カラムを作成します。",
-    "commandName": "CREATE_PRIMITIVE_COLUMN",
+    "commandName": "CREATE_COLUMN",
     "queryParameters": {
         "table": {
             "dataType": "TEXT",
@@ -17,11 +17,24 @@
             "isRequired": true,
             "example": "氏名"
         },
-        "dataType": {
+        "columnType": {
             "dataType": "TEXT",
-            "description": "新しく作成するカラムのデータ型。INTEGER,REAL,TEXT,BOOL,FILE のいずれかを指定してください。",
+            "description": "新しく作成するカラムのデータ型。INTEGER,REAL,TEXT,BOOL,FILE のいずれかを指定するか、リクエストボディ「tables」に対応するインデックス番号を指定してください。",
             "isRequired": true,
             "example": "TEXT"
+        },
+        "tables": {
+            "title": "テーブル一覧",
+            "isArray": true,
+            "onePageMaxSize": 100,
+            "children": {
+                "id": {
+                    "dataType": "TEXT",
+                    "description": "名前を変更したいテーブルのID",
+                    "isRequired": true,
+                    "example": "t6"
+                }
+            }
         }
     },
     "response": {

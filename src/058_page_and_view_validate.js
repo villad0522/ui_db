@@ -1003,6 +1003,14 @@ export async function listChildrenView( pageId ){
     else if( isNaN(result[i].viewId) ){
       throw new Error(`result[${i}].viewIdが数値ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
     }
+    if( typeof result[i].name !== "string" ){
+      if( !result[i].name ){
+        throw new Error(`result[${i}].nameがNULLです。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].nameが文字列ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+      }
+    }
     if( typeof result[i].childPageId !== "number" ){
       if( !result[i].childPageId ){
         throw new Error(`result[${i}].childPageIdがNULLです。\nレイヤー : page_and_view\n関数 : listChildrenView`);

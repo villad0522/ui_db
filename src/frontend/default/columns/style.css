@@ -1,10 +1,10 @@
 /* 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される */
-.flag+* {
+.flag {
     display: none;
 }
 
-.flag:checked+* {
-    display: block;
+.flag:not(:checked)+* {
+    display: none;
 }
 
 /* クリックできるカード */

@@ -21,11 +21,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     const formElements = document.querySelectorAll("form input, form select, form textarea");
     for (const formElement of formElements) {
         formElement.addEventListener("input", () => {
-            formElement.style.background = "#ddffff";
             window.isEdit = true;
         });
         formElement.addEventListener("change", () => {
-            formElement.style.background = "#ddffff";
             window.isEdit = true;
         });
     }

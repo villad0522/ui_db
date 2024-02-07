@@ -4,19 +4,18 @@ import { myFetch, jumpWithQuery } from "/default/my_lib.js";
 //###############################################################
 // ページを読み込んだら、はじめに実行する
 window.addEventListener('DOMContentLoaded', async () => {
-    await myFetch("./form" + location.search, { method: "GET" });
+    const searchParams = new URLSearchParams(location.search);
+    const tableId = searchParams.get("table");
+    if (!tableId) {
+        // 前のページに戻る
+        location.href = "/default/tables/index.html";
+        setTimeout(() => {
+            alert("クエリパラメータ―に「table」が設定されていません");
+        }, 1000);
+        return;
+    }
+    await myFetch("./form?table=" + tableId, { method: "GET" });
 });
-//
-//###############################################################
-// 列がクリックされたときに実行する関数
-window.tableButton = function (i) {
-    // テーブル名
-    let tableId = document.getElementsByName(`columns${i}_id`)[0].value;
-    //
-    // 別のページに移動する
-    tableId = encodeURIComponent(tableId);
-    window.location.href = `./records?table=${tableId}`;
-}
 //
 //###############################################################
 // ページネーションボタンの「First」がクリックされたときに実行する関数

@@ -49,6 +49,28 @@
             "dataType": "INTEGER",
             "description": "カラムの個数",
             "example": 1
+        },
+        "tables": {
+            "title": "テーブル一覧",
+            "isArray": true,
+            "onePageMaxSize": 100,
+            "children": {
+                "id": {
+                    "dataType": "TEXT",
+                    "description": "テーブルID",
+                    "example": "t2"
+                },
+                "name": {
+                    "dataType": "TEXT",
+                    "description": "テーブル名",
+                    "example": "売上表"
+                }
+            }
+        },
+        "tables_total": {
+            "dataType": "INTEGER",
+            "description": "テーブルの個数",
+            "example": 1
         }
     }
 }

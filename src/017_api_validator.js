@@ -227,6 +227,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     // リクエストボディをチェックする（可能なら変換も行う）
     // requestBody を requestBody2 に変換する
     const requestBody2 = {};
+    const noErrors = {};
     for (const parentKey in endpointInfo.requestBody) {
         if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
         const parentInfo = endpointInfo.requestBody[parentKey];
@@ -262,6 +263,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
                     isRequired: parentInfo.isRequired,
                 });
                 requestBody2[parentKey] = parentValue;
+                noErrors[parentKey + "_error"] = "";
             }
             catch (err) {
                 // 記入漏れや書式エラーが発生した場合
@@ -269,7 +271,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
                 // FormData形式の場合
                 console.error(`リクエストボディの項目「${parentKey}」が不正な書式です。${err}  endpointPath="${endpointPath}"`);
                 return {
-                    ...requestBody,
+                    ...noErrors,
                     userMessage: String(err),
                     [parentKey + "_error"]: String(err),
                 };

@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 //###############################################################
 // テーブルがクリックされたときに実行する関数
 window.tableButton = function (i) {
-    // テーブル名
+    // テーブルID
     let tableId = document.getElementsByName(`tables${i}_id`)[0].value;
     //
     // 別のページに移動する

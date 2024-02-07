@@ -660,6 +660,7 @@ export async function listChildrenView_core( pageId ){
   const views = await runSqlReadOnly(
     `SELECT 
         pages.page_id AS childPageId,
+        view_name AS name,
         views.view_id AS viewId,
         views.table_id AS tableId,
         views.one_page_max_size AS onePageMaxSize,
