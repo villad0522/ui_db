@@ -14,7 +14,7 @@ window.tableButton = function (i) {
     //
     // 別のページに移動する
     tableId = encodeURIComponent(tableId);
-    window.location.href = `../columns?table=${tableId}`;
+    window.location.href = `../records?table=${tableId}`;
 }
 //
 //###############################################################

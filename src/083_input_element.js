@@ -4,7 +4,6 @@ import {
   startUp,
   clearCache,
   createColumn,
-  createRecord,
   updateRecords,
   checkField,
   checkRecord,
@@ -13,50 +12,54 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
-} from "./088_relation_validate.js";
+} from "./091_relation_validate.js";
 import {
   getLocalIp,
-} from "./124_ip_address_validate.js";
+} from "./127_ip_address_validate.js";
 import {
   close,
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./112_csv_validate.js";
+} from "./115_csv_validate.js";
 import {
   getPath,
-} from "./121_directory_validate.js";
+} from "./124_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./118_connect_database_validate.js";
+} from "./121_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
   getTableId,
   checkColumnEnabled,
   getColumnName,
-} from "./097_column_name_validate.js";
+} from "./100_column_name_validate.js";
 import {
   startTransaction,
   endTransaction,
-} from "./115_transaction_lower_validate.js";
+} from "./118_transaction_lower_validate.js";
 import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
+} from "./112_primary_key_validate.js";
 import {
   deleteRecords,
-} from "./106_delete_record_validate.js";
+} from "./109_delete_record_validate.js";
 import {
   listDataTypes,
-} from "./103_data_type_validate.js";
+} from "./106_data_type_validate.js";
+import {
+  createRecord,
+  listRecords,
+} from "./085_records_validate.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
   checkReservedWord,
-} from "./094_reserved_word_validate.js";
+} from "./097_reserved_word_validate.js";
 import {
   deleteRecord,
   disableTable,
@@ -65,7 +68,7 @@ import {
   enableColumn,
   delete_table,
   autoCorrect,
-} from "./091_search_text_validate.js";
+} from "./094_search_text_validate.js";
 import {
   reload,
   listTables,
@@ -73,10 +76,10 @@ import {
   getTableName,
   listTableNamesAll,
   getTableIdFromName,
-} from "./100_table_name_validate.js";
+} from "./103_table_name_validate.js";
 import {
   formatField,
-} from "./085_db_formatter_validate.js";
+} from "./088_db_formatter_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）

@@ -135,6 +135,11 @@
     "layerNameEN": "input_element"
   },
   {
+    "layerId": "01HP0VMXM34K7B44W64FMWNH1C",
+    "layerNameJP": "本体データ",
+    "layerNameEN": "records"
+  },
+  {
     "layerId": "01HN4M30MXQ37JVP8S24T77SFC",
     "layerNameJP": "DBフォーマッタ―",
     "layerNameEN": "db_formatter"

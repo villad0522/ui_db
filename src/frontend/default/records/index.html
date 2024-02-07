@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ja" data-bs-theme="dark">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>システム管理</title>
+        <!--  -->
+        <!-- bootstrap5.3を読み込む -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+        <!-- bootstrapのドキュメントはこちら -->
+        <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->
+        <!--  -->
+        <!--  -->
+        <!-- bootstrapのアイコンを読み込む -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <!--  -->
+        <!-- 自作CSSを読み込む -->
+        <link rel="stylesheet" href="./style.css" type="text/css">
+        <!--  -->
+        <!-- 自作JavaScriptを読み込む -->
+        <script src="./script.js" type="module"></script>
+    </head>
+
+    <body>
+        <form>
+            <nav class="navbar navbar-dark bg-primary">
+                <div class="container-fluid">
+                    <a href="/default/tables/index.html" class="btn btn-light me-2">
+                        戻る
+                    </a>
+                </div>
+            </nav>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/custom/1/index.html">
+                            トップ
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/default/tables/index.html">
+                            本体データ
+                        </a>
+                    </li>
+                    <li name="tableName" class="breadcrumb-item active" aria-current="page">
+                    </li>
+                </ol>
+            </nav>
+            <!--  -->
+            <!-- 列を作成する画面（右端から出てくる） -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCreateColumn" aria-labelledby="offcanvasCreateColumnLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasCreateColumnLabel">
+                        列を作成
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <p>
+                        1. 新しい列の名前を決めてください。
+                        <small>（後から変更できます）</small>
+                    </p>
+                    <div style="margin-left: 10px;">
+                        <input name="columnName" type="text" class="form-control">
+                        <div name="columnName_error" class="invalid-feedback" style="display: block;"></div>
+                    </div>
+                    <br>
+                    <br>
+                    <p>
+                        2. 入力方法を選択してください。
+                    </p>
+                    <div style="margin-left: 10px;">
+                        <script>
+                            let htmlText2 = "";
+                            for (let i = 0; i < 35; i++) {
+                                const isChecked = (i === 0) ? "checked" : "";
+                                htmlText2 += `
+                            <!--  -->
+                            <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                            <input name="tables${i}_flag" class="flag" type="checkbox">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="columnType" id="radio_tables${i}" ${isChecked} value="${i}">
+                                <label class="form-check-label" for="radio_tables${i}">
+                                    <span name="tables${i}_name"></span>
+                                    から選ぶ
+                                </label>
+                                <input name="tables${i}_id" style="display: none;">
+                            </div>
+                        `;
+                            }
+                            document.write(htmlText2);
+                        </script>
+                        <div class="form-check">
+                            <input id="radio_text" value="TEXT" class="form-check-input" type="radio" name="columnType">
+                            <label for="radio_text" class="form-check-label">
+                                文字列を自由に記入する
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input id="radio_integer" value="INTEGER" class="form-check-input" type="radio" name="columnType">
+                            <label for="radio_integer" class="form-check-label">
+                                整数を自由に記入する
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input id="radio_real" value="REAL" class="form-check-input" type="radio" name="columnType">
+                            <label for="radio_real" class="form-check-label">
+                                実数を自由に記入する
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input id="radio_bool" value="BOOL" class="form-check-input" type="radio" name="columnType">
+                            <label for="radio_bool" class="form-check-label">
+                                ON/OFFのどちらかを選ぶ
+                            </label>
+                        </div>
+                        <!-- 
+                        <div class="form-check">
+                            <input id="radio_file" value="FILE" class="form-check-input" type="radio" name="columnType">
+                            <label for="radio_file" class="form-check-label">
+                                ファイルをアップロードする
+                            </label>
+                        </div> -->
+                    </div>
+                    <br>
+                    <div style="position: sticky; bottom: 0; padding: 5px; width: max-content; box-sizing: border-box; margin: 0 0 0 auto; background: #222;">
+                        <button type="button" data-bs-dismiss="offcanvas" aria-label="Close" class="btn btn-outline-primary">
+                            キャンセル
+                        </button>
+                        <button onclick="myFetch('./create_column/form')" type="button" class="btn btn-primary">
+                            決定
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--  -->
+            <!-- メインコンテンツ -->
+            <main class="container-xl" style="display: none;">
+                <br>
+                <div>
+                    <h3 name="tableName" style="display: inline-block;">
+                    </h3>
+                    （<span name="records_total"></span>件）
+                    <button onclick="jumpWithQuery('./rename/index.html');" type="button" class="btn btn-sm btn-outline-primary">
+                        列の名前を変更
+                    </button>
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <script>
+                                let htmlText3 = "";
+                                for (let j = 0; j < 35; j++) {
+                                    htmlText3 += `
+                                        <th scope="col" name="columns${j}_flag">
+                                            <span name="columns${j}_name">
+                                            </span>
+                                        </th>
+                                    `;
+                                }
+                                document.write(htmlText3);
+                            </script>
+                            <th scope="col">
+                                ID
+                            </th>
+                            <th scope="col">
+                                <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCreateColumn" aria-controls="offcanvasCreateColumn">
+                                    <i class="bi bi-arrow-left"></i>
+                                    列を作成
+                                </button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <tr name="columns0_flag">
+                            <script>
+                                let htmlText5 = "";
+                                for (let j = 0; j < 35; j++) {
+                                    htmlText5 += `
+                                        <td name="columns${j}_flag">
+                                            <input name="columns${j}_newField" type="text" class="form-control" style="background: #111; border: none;" >
+                                            <input name="columns${j}_id" style="display: none;">
+                                            <input name="columns${j}_flag" style="display: none;" type="checkbox">
+                                        </td>
+                                    `;
+                                }
+                                document.write(htmlText5);
+                            </script>
+                            <td></td>
+                            <td>
+                                <button onclick="myFetch('./create_record/form')" class="btn btn-primary" type="button">
+                                    <i class="bi bi-arrow-down"></i>
+                                    行を追加
+                                </button>
+                            </td>
+                        </tr>
+                        <script>
+                            let htmlText4 = "";
+                            for (let i = 0; i < 50; i++) {
+                                htmlText4 += `
+                                    <tr name="records${i}_flag">`;
+                                for (let j = 0; j < 35; j++) {
+                                    htmlText4 += `
+                                        <td name="columns${j}_flag">
+                                            <div name="records${i}_field${j}">
+                                            </div>
+                                        </td>`;
+                                }
+                                htmlText4 += `
+                                        <td name="records${i}_id">
+                                        </td>
+                                        <td>
+                                            <button onclick="myFetch('./paste_record/json?after_id='+getChildPageId(${i}));" type="button" class="btn btn-secondary btn-sm">
+                                                <i class="bi bi-clipboard"></i>
+                                            </button>
+                                            <button onclick="myFetch('./cut_record/json?page_id='+getChildPageId(${i}));" type="button" class="btn btn-secondary btn-sm">
+                                                <i class="bi bi-scissors"></i>
+                                            </button>
+                                        ${""/* 
+                                            <button onclick="myFetch('./copy_page/json?page_id='+getChildPageId(${i}));" type="button" class="btn btn-primary btn-sm">
+                                                コピー
+                                            </button> */}
+                                            <button onclick="myFetch('./delete_record/json?page_id='+getChildPageId(${i}));" type="button" class="btn btn-secondary btn-sm">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </td>
+                                    </tr>`;
+                            }
+                            document.write(htmlText4);
+                        </script>
+                    </tbody>
+                </table>
+                <br>
+                <br>
+                <div style="position: sticky; bottom: 0; padding: 5px; width: max-content; box-sizing: border-box; margin: 0 auto; background: #eee;">
+
+                    <ul class="pagination" style="margin-bottom: 3px;">
+                        <!--  -->
+                        <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                        <input name="records_pageFirst_flag" class="flag" type="checkbox" style="display: none;">
+                        <li class="page-item">
+                            <button onclick="paginationButtonFirst()" type="button" class="page-link">
+                                <span aria-hidden="true">&laquo;</span>
+                            </button>
+                        </li>
+                        <!--  -->
+                        <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                        <input name="records_pagePrev_flag" class="flag" type="checkbox" style="display: none;">
+                        <li class="page-item">
+                            <button name="records_pagePrev" onclick="paginationButtonPrev()" type="button" class="page-link">
+                            </button>
+                        </li>
+                        <!--  -->
+                        <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                        <input name="records_pageNow_flag" class="flag" type="checkbox" style="display: none;">
+                        <li class="page-item active">
+                            <span class="page-link" name="records_pageNow"> </span>
+                        </li>
+                        <!--  -->
+                        <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                        <input name="records_pageNext_flag" class="flag" type="checkbox" style="display: none;">
+                        <li class="page-item">
+                            <button name="records_pageNext" onclick="paginationButtonNext()" type="button" class="page-link">
+                            </button>
+                        </li>
+                        <!--  -->
+                        <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                        <input name="records_pageLast_flag" class="flag" type="checkbox" style="display: none;">
+                        <li class="page-item">
+                            <button onclick="paginationButtonLast()" type="button" class="page-link">
+                                <span aria-hidden="true">&raquo;</span>
+                            </button>
+                        </li>
+                        <!--  -->
+                        <!-- 不可視のテキストボックス -->
+                        <input name="records_pageLast" type="text" style="display: none;">
+                    </ul>
+                </div>
+                <br>
+                <br>
+            </main>
+        </form>
+    </body>
+
+</html>

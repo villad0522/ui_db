@@ -174,6 +174,18 @@ function _setFormData(formData) {
                 element.appendChild(optionElement);
             }
         }
+        else if (String(key).endsWith("_flag")) {
+            // name属性の値が変数keyと等しいHTML要素を探す。
+            const elements = document.getElementsByName(key);
+            for (const element of elements) {
+                if (String(value).toLowerCase() === "false") {
+                    element.style.display = "none";
+                }
+                if (element.type === 'checkbox' || element.type === 'radio') {
+                    element.checked = (value.toLowerCase() === "true") || (value === "1");
+                }
+            }
+        }
         else {
             // name属性の値が変数keyと等しいHTML要素を探す。
             const elements = document.getElementsByName(key);
