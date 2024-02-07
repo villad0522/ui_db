@@ -6,3 +6,66 @@
 .flag:not(:checked)+* {
     display: none;
 }
+
+body {
+    position: relative;
+    width: max-content;
+}
+
+header {
+    width: calc(100vw - 20px);
+    position: sticky;
+    left: 0;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+}
+
+th,
+td {
+    width: max-content;
+    max-width: 300px;
+    overflow-x: auto;
+}
+
+th>*,
+td>* {
+    min-width: max-content;
+    max-width: none;
+}
+
+td.new_field {
+    box-sizing: border-box;
+    padding: 8px 5px 8px 5px;
+    width: 0;
+    position: relative;
+}
+
+td.new_field>input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    background: #111;
+    border: none;
+    padding: 0.375rem 0.5rem;
+    box-sizing: border-box;
+}
+
+footer {
+    width: calc(100vw - 20px);
+    position: sticky;
+    left: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.my_pagination {
+    pointer-events: all;
+    padding: 5px;
+    width: max-content;
+    box-sizing: border-box;
+    margin: 0 auto;
+    background: #333;
+}

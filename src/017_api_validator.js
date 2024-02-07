@@ -289,8 +289,11 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
         }
     }
     //
+    // クエリパラメータ―をチェックする（可能なら変換も行う）
+    const queryParameters2 = _validateQueryParameters({ endpointPath, endpointInfo, queryParameters });
+    //
     // APIのメイン処理を実行する
-    let response = await runApi( httpMethod, endpointPath, queryParameters, requestBody2, isRequestFormData, isResponseFormData );
+    let response = await runApi( httpMethod, endpointPath, queryParameters2, requestBody2, isRequestFormData, isResponseFormData );
     //
     // レスポンスデータをチェックする
     response = _validateResponseData({ endpointPath, endpointInfo, response });
@@ -299,6 +302,36 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
 }
 
 
+
+function _validateQueryParameters({ endpointPath, endpointInfo, queryParameters }) {
+    // クエリパラメータ―をチェックする（可能なら変換も行う）
+    // queryParameters を queryParameters2 に変換する
+    const queryParameters2 = {};
+    for (const parentKey in endpointInfo.queryParameters) {
+        const parentInfo = endpointInfo.queryParameters[parentKey];
+        let parentValue = queryParameters[parentKey];
+        if (!parentInfo || typeof parentInfo !== 'object') {
+            throw `クエリパラメータ―の仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}"`;
+        }
+        if (parentInfo.example === null || parentInfo.example === undefined) {
+            throw `仕様書にexampleが指定されていません。endpointPath="${endpointPath}", key="${parentKey}"`;
+        }
+        try {
+            parentValue = _validator({
+                value: parentValue,
+                dataType: parentInfo.dataType,
+                isRequired: parentInfo.isRequired,
+            });
+            queryParameters2[parentKey] = parentValue;
+        }
+        catch (err) {
+            // 記入漏れや書式エラーが発生した場合
+            console.error(`クエリパラメータ―の項目「${parentKey}」が不正な書式です。${err}  endpointPath="${endpointPath}"`);
+            throw err;
+        }
+    }
+    return queryParameters2;
+}
 
 
 function _validatorArray({ array, parentKey, arrayInfo, allData, endpointPath }) {

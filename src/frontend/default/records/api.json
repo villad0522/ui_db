@@ -14,12 +14,6 @@
             "description": "ページ番号。１ページに収まらなかった場合に活用します。このパラメータを2,3,4...と増やすことで、次のページを閲覧できます。",
             "isRequired": false,
             "example": 1
-        },
-        "order_by": {
-            "dataType": "TEXT",
-            "description": "並び替えに使用するカラムID",
-            "isRequired": false,
-            "example": "c7"
         }
     },
     "requestBody": {},
@@ -91,7 +85,7 @@
         "records": {
             "title": "レコード一覧",
             "isArray": true,
-            "onePageMaxSize": 100,
+            "onePageMaxSize": 50,
             "children": {
                 "id": {
                     "dataType": "INTEGER",

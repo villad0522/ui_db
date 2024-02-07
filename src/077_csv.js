@@ -200,7 +200,7 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
   const columnIdList = [];
   for (let i = 0; i < columnSize; i++) {
     if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-    const { columnId } = await createColumn( tableId, i+"列目", "ANY", null );
+    const { columnId } = await createColumn( tableId, i+"列目", "TEXT", null );
     columnIdList.push( columnId );
   }
   progressMessage = `【処理中】トランザクション処理を終了しています。のちに再開する予定です。`;

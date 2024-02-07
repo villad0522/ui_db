@@ -271,11 +271,10 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     //======================================================================
     case "LIST_RECORDS":{
       if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-      const orderByColumnId = queryParameters["order_by"];
       const pageNumber = queryParameters["page_records"];
       const onePageMaxSize = apiInfo?.response?.records?.onePageMaxSize;
       const tableId = queryParameters["table"];
-      const { columns, records, recordsTotal } = await listRecords( tableId, pageNumber, onePageMaxSize, orderByColumnId );
+      const { columns, records, recordsTotal } = await listRecords( tableId, pageNumber, onePageMaxSize );
       // 親テーブルを選ぶときのセレクトボックスを構築する
       const { tables, total:tablesTotal } = await listTables(
         1,

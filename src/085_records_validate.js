@@ -7,7 +7,7 @@ import {
 //#######################################################################################
 // 関数「listRecords_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function listRecords( tableId, pageNumber, onePageMaxSize, orderByColumnId ){
+export async function listRecords( tableId, pageNumber, onePageMaxSize ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
@@ -38,18 +38,12 @@ export async function listRecords( tableId, pageNumber, onePageMaxSize, orderByC
   else if( isNaN(onePageMaxSize) ){
     throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : records\n関数 : listRecords`);
   }
-  if( (orderByColumnId===null) || (orderByColumnId===undefined) ){
-    // orderByColumnIdは空欄OK。
-  }
-  else if( typeof orderByColumnId !== "string" ){
-    throw new Error(`orderByColumnIdが文字列ではありません。\nレイヤー : records\n関数 : listRecords`);
-  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await listRecords_core( tableId, pageNumber, onePageMaxSize, orderByColumnId );
+    result = await listRecords_core( tableId, pageNumber, onePageMaxSize );
   }
   catch(error){
     if( typeof error === "string" ){

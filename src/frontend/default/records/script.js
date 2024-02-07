@@ -30,7 +30,7 @@ window.getRecordId = function (i) {
 window.paginationButtonFirst = function (arrayName) {
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_columns", 1);
+    searchParams.set("page_records", 1);
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -39,10 +39,10 @@ window.paginationButtonFirst = function (arrayName) {
 // ページネーションボタンの「Prev」がクリックされたときに実行する関数
 window.paginationButtonPrev = function () {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("columns_pagePrev")[0].value;
+    const pageNumber = document.getElementsByName("records_pagePrev")[0].innerText;
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_columns", pageNumber);
+    searchParams.set("page_records", pageNumber);
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -51,10 +51,10 @@ window.paginationButtonPrev = function () {
 // ページネーションボタンの「Next」がクリックされたときに実行する関数
 window.paginationButtonNext = function () {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("columns_pageNext")[0].value;
+    const pageNumber = document.getElementsByName("records_pageNext")[0].innerText;
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_columns", pageNumber);
+    searchParams.set("page_records", pageNumber);
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -63,10 +63,10 @@ window.paginationButtonNext = function () {
 // ページネーションボタンの「Last」がクリックされたときに実行する関数
 window.paginationButtonLast = function () {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("columns_pageLast")[0].value;
+    const pageNumber = document.getElementsByName("records_pageLast")[0].value;
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_columns", pageNumber);
+    searchParams.set("page_records", pageNumber);
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }

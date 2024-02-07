@@ -96,7 +96,7 @@ export function setBugMode( mode ){
 
 
 // レコードの一覧を取得(GUI)
-export async function listRecords_core( tableId, pageNumber, onePageMaxSize, orderByColumnId ){
+export async function listRecords_core( tableId, pageNumber, onePageMaxSize ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
     const primaryKey = await getPrimaryKey( tableId );
     const columns = await listColumnsAll( tableId );
