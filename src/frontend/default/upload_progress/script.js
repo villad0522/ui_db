@@ -50,6 +50,12 @@ async function updateProgress() {
         //
         progressMainMessage.innerText = progressMessage;
         progressSubMessage.innerHTML = `失敗: ${errorCount}行&emsp;&emsp;成功: ${successCount}行&emsp;&emsp;全体: ${csvSize}行`;
+        //
+        if ((successCount + errorCount) === csvSize && csvSize >= 0) {
+            window.setTimeout(() => {
+                location.href = "/default/tables/index.html";
+            }, 500);
+        }
     }
     catch (err) {
         console.error(err);

@@ -1,7 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import {
-} from "./076_sort_validate.js";
+  createColumn,
+  deleteTable,
+  listTables,
+  setTitleColumn,
+  getTitleColumnId,
+  getRecordIdFromTitle,
+} from "./079_record_title_validate.js";
 import {
   getLocalIp,
 } from "./124_ip_address_validate.js";
@@ -10,7 +16,7 @@ import {
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./112_csv_validate.js";
+} from "./076_csv_validate.js";
 import {
   getPath,
 } from "./121_directory_validate.js";
@@ -31,18 +37,10 @@ import {
 } from "./115_transaction_lower_validate.js";
 import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
-import {
-  createColumn,
-  deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./079_record_title_validate.js";
+} from "./112_primary_key_validate.js";
 import {
   listDataTypes,
-} from "./106_data_type_validate.js";
+} from "./109_data_type_validate.js";
 import {
   createRecord,
   listRecords,
@@ -79,6 +77,16 @@ import {
   listTableNamesAll,
   getTableIdFromName,
 } from "./103_table_name_validate.js";
+import {
+  cutRecord,
+  copyRecord,
+  pasteRecord,
+  getCuttingRecord,
+  getCopyingRecord,
+  _moveRecord,
+  _copyRecord,
+  _generateRecordSortNumber,
+} from "./106_sort_validate.js";
 import {
   formatField,
 } from "./088_db_formatter_validate.js";

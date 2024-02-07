@@ -1,18 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import {
+  close,
   startTransaction,
   endTransaction,
 } from "./115_transaction_lower_validate.js";
 import {
   getLocalIp,
 } from "./124_ip_address_validate.js";
-import {
-  close,
-  createRecordsFromCsv,
-  getCsvProgress,
-  destroyCSV,
-} from "./112_csv_validate.js";
 import {
   getPath,
 } from "./121_directory_validate.js";
@@ -24,7 +19,7 @@ import {
 } from "./118_connect_database_validate.js";
 import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
+} from "./112_primary_key_validate.js";
 import {
   startUp,  // プログラム起動
   clearCache,  // インメモリキャッシュを削除する
@@ -39,16 +34,16 @@ import {
   getDataType,  // データ型を取得
   deleteRecords,  // レコードを一括削除
   reload,  // 【サブ関数】メモリに再読み込み
-} from "./106_data_type_validate.js";
-import { setBugMode } from "./107_data_type.js";
+} from "./109_data_type_validate.js";
+import { setBugMode } from "./110_data_type.js";
 
 
-export async function test105() {
+export async function test108() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 40; i++ ) {
+    for ( i = 1; i <= 42; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

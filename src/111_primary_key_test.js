@@ -2,18 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import {
   startUp,
+  close,
   startTransaction,
   endTransaction,
 } from "./115_transaction_lower_validate.js";
 import {
   getLocalIp,
 } from "./124_ip_address_validate.js";
-import {
-  close,
-  createRecordsFromCsv,
-  getCsvProgress,
-  destroyCSV,
-} from "./112_csv_validate.js";
 import {
   getPath,
 } from "./121_directory_validate.js";
@@ -25,11 +20,11 @@ import {
 } from "./118_connect_database_validate.js";
 import {
   getPrimaryKey,  // プライマリキーを取得する関数
-} from "./109_primary_key_validate.js";
-import { setBugMode } from "./110_primary_key.js";
+} from "./112_primary_key_validate.js";
+import { setBugMode } from "./113_primary_key.js";
 
 
-export async function test108() {
+export async function test111() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();

@@ -98,10 +98,18 @@ const upload = multer({ storage: storage });
 
 // アップロードされたファイルを処理するエンドポイント
 app.post('/upload', upload.single('input_file'), async (req, res) => {
-    // ファイルが正常にアップロードされた場合の処理
-    res.redirect("/default/upload_progress/index.html");
+    if (req.file.mimetype !== 'text/csv') {
+        res.status(500).type("text/plain").send("アップロードされたファイルがCSV形式ではありません。");
+        return;
+    }
+    // Content-Typeヘッダを設定してレスポンスを送信
+    res.header('Content-Type', 'application/json');
+    res.send({
+        "nextUrl": "/default/upload_progress/index.html"
+    });
     try {
-        await createRecordsFromCsv(req.file.path);
+        let fileName = decodeURIComponent(req.file.originalname);
+        await createRecordsFromCsv(fileName, req.file.path);
     }
     catch (err) {
         console.error(err);

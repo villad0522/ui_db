@@ -3,112 +3,57 @@ import path from 'path';
 import {
   clearCache,
   createColumn,
+  listDataTypes,
+  createRecord,
+  updateRecords,
+  checkField,
+  checkRecord,
+  createTable,
   deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./079_record_title_validate.js";
+  getDataType,
+  deleteRecords,
+  reload,
+} from "./109_data_type_validate.js";
 import {
   getLocalIp,
 } from "./124_ip_address_validate.js";
 import {
   close,
-  createRecordsFromCsv,
-  getCsvProgress,
-  destroyCSV,
-} from "./112_csv_validate.js";
+  startTransaction,
+  endTransaction,
+} from "./115_transaction_lower_validate.js";
 import {
   getPath,
 } from "./121_directory_validate.js";
 import {
   getDebugMode,
+  runSqlReadOnly,
+  runSqlWriteOnly,
   getDB,
 } from "./118_connect_database_validate.js";
 import {
-  runSqlReadOnly,
-  runSqlWriteOnly,
-  getTableId,
-  checkColumnEnabled,
-  getColumnName,
-} from "./100_column_name_validate.js";
-import {
-  startTransaction,
-  endTransaction,
-} from "./115_transaction_lower_validate.js";
-import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
-import {
-  listDataTypes,
-} from "./106_data_type_validate.js";
-import {
-  createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
-  updateRecords,
-  checkField,
-  checkRecord,
-  getDataType,
-  listColumnsForGUI,
-  listColumnsAll,
-  getParentTableId,
-} from "./091_relation_validate.js";
-import {
-  createTable,
-  updateTableName,
-  updateColumnName,
-  reserveWord,
-  checkReservedWord,
-} from "./097_reserved_word_validate.js";
-import {
-  deleteRecords,
-  disableTable,
-  enableTable,
-  disableColumn,
-  enableColumn,
-  delete_table,
-  autoCorrect,
-} from "./094_search_text_validate.js";
-import {
-  reload,
-  checkTableEnabled,
-  getTableName,
-  listTableNamesAll,
-  getTableIdFromName,
-} from "./103_table_name_validate.js";
-import {
-  formatField,
-} from "./088_db_formatter_validate.js";
-import {
-  autoFill,
-  _autoFill,
-  _getConditions,
-  _listPredictions,
-  _listRecords,
-  createInputGroup,
-  createInputElement,
-  deleteViewInput,
-  changeInputType,
-  _fillMasterData,
-  getInputType,
-  updateRecordsFromView,
-  createRecordFromView,
-  _convertToRecord,
-} from "./082_input_element_validate.js";
+} from "./112_primary_key_validate.js";
 import {
   startUp,  // プログラム起動
-} from "./076_sort_validate.js";
-import { setBugMode } from "./077_sort.js";
+  cutRecord,  // レコードを切り取る
+  copyRecord,  // レコードをコピーする
+  pasteRecord,  // レコードを貼り付ける
+  getCuttingRecord,  // 切り取り中のレコードを取得する
+  getCopyingRecord,  // コピー中のレコードを取得する
+  _moveRecord,  // 【サブ関数】レコードを移動する
+  _copyRecord,  // 【サブ関数】レコードをコピーする
+  _generateRecordSortNumber,  // 【サブ関数】ソート番号を発行する
+} from "./106_sort_validate.js";
+import { setBugMode } from "./107_sort.js";
 
 
-export async function test075() {
+export async function test105() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 1; i++ ) {
+    for ( i = 1; i <= 15; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

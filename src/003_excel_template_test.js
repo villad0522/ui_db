@@ -35,13 +35,8 @@ import {
   endTransaction,
 } from "./115_transaction_lower_validate.js";
 import {
-  createRecordsFromCsv,
-  getCsvProgress,
-  destroyCSV,
-} from "./112_csv_validate.js";
-import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
+} from "./112_primary_key_validate.js";
 import {
   clearCache,
   listEndpoints,
@@ -58,7 +53,7 @@ import {
 } from "./055_view_column_validate.js";
 import {
   listDataTypes,
-} from "./106_data_type_validate.js";
+} from "./109_data_type_validate.js";
 import {
   createRecord,
   listRecords,
@@ -103,6 +98,16 @@ import {
   getTableIdFromName,
 } from "./103_table_name_validate.js";
 import {
+  cutRecord,
+  copyRecord,
+  pasteRecord,
+  getCuttingRecord,
+  getCopyingRecord,
+  _moveRecord,
+  _copyRecord,
+  _generateRecordSortNumber,
+} from "./106_sort_validate.js";
+import {
   formatField,
 } from "./088_db_formatter_validate.js";
 import {
@@ -121,6 +126,11 @@ import {
   createRecordFromView,
   _convertToRecord,
 } from "./082_input_element_validate.js";
+import {
+  createRecordsFromCsv,
+  getCsvProgress,
+  destroyCSV,
+} from "./076_csv_validate.js";
 import {
   getPathLength,
   slicePath,

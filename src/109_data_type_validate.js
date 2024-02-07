@@ -12,7 +12,7 @@ import {
   getDataType_core,  // データ型を取得
   deleteRecords_core,  // レコードを一括削除
   reload_core,  // 【サブ関数】メモリに再読み込み
-} from "./107_data_type.js";
+} from "./110_data_type.js";
 
 
 //#######################################################################################

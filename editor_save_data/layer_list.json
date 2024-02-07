@@ -120,9 +120,9 @@
     "layerNameEN": "columnPath"
   },
   {
-    "layerId": "01HMAT7HTHJBTN3MQQ3G6924CE",
-    "layerNameJP": "並び替え",
-    "layerNameEN": "sort"
+    "layerId": "01HNBH486YGN5XGE993773Z591",
+    "layerNameJP": "CSVインポート",
+    "layerNameEN": "csv"
   },
   {
     "layerId": "01HM7EY8CJGHQ1YBC7NCFA5BH3",
@@ -170,6 +170,11 @@
     "layerNameEN": "table_name"
   },
   {
+    "layerId": "01HMAT7HTHJBTN3MQQ3G6924CE",
+    "layerNameJP": "並び替え",
+    "layerNameEN": "sort"
+  },
+  {
     "layerId": "01HM1S4TRMCV7S59Y7PVYHHRTE",
     "layerNameJP": "データ型",
     "layerNameEN": "data_type"
@@ -178,11 +183,6 @@
     "layerId": "01HM81BRJJHDFRR9PX4TWMV7Q0",
     "layerNameJP": "プライマリキー",
     "layerNameEN": "primary_key"
-  },
-  {
-    "layerId": "01HNBH486YGN5XGE993773Z591",
-    "layerNameJP": "CSVインポート",
-    "layerNameEN": "csv"
   },
   {
     "layerId": "01HN7Z9DASN481SVT7C8MQPBZY",

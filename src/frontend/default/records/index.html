@@ -235,12 +235,12 @@
                             <script>
                                 let htmlText6 = "";
                                 for (let j = 0; j < 35; j++) {
-                                    htmlText6 += `<td name="columns${j}_flag"></td>`;
+                                    htmlText6 += `<td name="columns${j}_flag" style="border: none;"></td>`;
                                 }
                                 document.write(htmlText6);
                             </script>
-                            <td></td>
-                            <td>
+                            <td style="border: none;"></td>
+                            <td style="border: none;">
                                 <button onclick="myFetch('./paste_record/json?after_id='+getChildPageId());" type="button" class="btn btn-secondary btn-sm">
                                     <i class="bi bi-clipboard"></i>
                                     <i class="bi bi-arrow-up"></i>

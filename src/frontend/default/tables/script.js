@@ -6,6 +6,28 @@ import { myFetch, jumpWithQuery } from "/default/my_lib.js";
 window.addEventListener('DOMContentLoaded', async () => {
     await myFetch("./form" + location.search, { method: "GET" });
 });
+//
+//###############################################################
+// ファイルがアップロードされたときに実行する関数
+window.sendFile = async function (event) {
+    event.preventDefault();
+    const formData = new FormData(event.target)
+    const file = formData.get("input_file"); // File APIの使用
+    const fileName = file.name
+    const fileExtention = fileName.substring(fileName.lastIndexOf(".") + 1);
+    const blob = file.slice(0, file.size, file.type);
+    const encodedFileName = encodeURI(file.name.substring(0, fileName.lastIndexOf("."))); //エンコードしたファイル名の取得
+    const renamedFile = new File([blob], encodedFileName + "." + fileExtention, { type: file.type });
+    formData.set('input_file', renamedFile);
+    await myFetch(
+        "/upload",
+        {
+            "method": "POST",
+            "body": formData,
+        }
+    );
+}
+//
 //###############################################################
 // テーブルがクリックされたときに実行する関数
 window.tableButton = function (i) {

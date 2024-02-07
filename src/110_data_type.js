@@ -2,18 +2,13 @@
 //
 import {
   startUp,
+  close,
   startTransaction,
   endTransaction,
 } from "./115_transaction_lower_validate.js";
 import {
   getLocalIp,
 } from "./124_ip_address_validate.js";
-import {
-  close,
-  createRecordsFromCsv,
-  getCsvProgress,
-  destroyCSV,
-} from "./112_csv_validate.js";
 import {
   getPath,
 } from "./121_directory_validate.js";
@@ -25,7 +20,7 @@ import {
 } from "./118_connect_database_validate.js";
 import {
   getPrimaryKey,
-} from "./109_primary_key_validate.js";
+} from "./112_primary_key_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
@@ -132,6 +127,10 @@ export async function createColumn_core( tableId, columnId, dataType ){
             if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
             sqlDataType = "BLOB";
             break;
+        case "ANY":
+            if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+            sqlDataType = "";
+            break;
         default:
             throw `データ型「${dataType}」はサポートされていません。`;
     }
@@ -154,7 +153,7 @@ export async function createColumn_core( tableId, columnId, dataType ){
 
 // データ型の一覧を取得
 export async function listDataTypes_core( tableId ){
-  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
     return cacheData[tableId];
 }
 // 戻り値の例
@@ -167,7 +166,7 @@ export async function listDataTypes_core( tableId ){
 
 // レコードを作成
 export async function createRecord_core( tableId, recordData ){
-  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
     if( Object.keys(recordData).length===0 ){
         throw "データが何も記入されていません";
     }
@@ -194,7 +193,7 @@ export async function createRecord_core( tableId, recordData ){
     //
     // 配列「columnIdList」が本当に存在するカラムなのかを確認（インジェクション攻撃対策）
     for( const columnId of columnIdList ){
-        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
         if( !dataTypes[columnId] ){
             throw "指定されたカラムは存在しません。";
         }
@@ -203,22 +202,38 @@ export async function createRecord_core( tableId, recordData ){
     // キーの先頭に「:」を追加する
     const newRecordData = {};
     for( const columnId in recordData ){
-        if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
         newRecordData[":"+columnId] = recordData[columnId];
+    }
+    //
+    // ソート番号を決定する
+    const records = await runSqlReadOnly(
+        `SELECT
+            sort_number AS sortNumber
+        FROM ${tableId}
+        ORDER BY sort_number DESC
+        LIMIT 1;`,
+        {},
+    );
+    let sortNumber = 512;
+    if(records.length>=1){
+        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        sortNumber = records[0]["sortNumber"] + 8;
     }
     //
     // レコードを追加する。
     const timestamp = new Date().getTime();
     await runSqlWriteOnly(
-        `INSERT INTO ${tableId} ( ${columnIdList.join(", ")}, created_at, updated_at )
-            VALUES ( ${placeholderList.join(", ")}, :createdAt, :updatedAt );`,
+        `INSERT INTO ${tableId} ( ${columnIdList.join(", ")}, sort_number, created_at, updated_at )
+            VALUES ( ${placeholderList.join(", ")}, :sortNumber, :createdAt, :updatedAt );`,
         {
             ...newRecordData,
+            ":sortNumber": sortNumber,
             ":createdAt": timestamp,
             ":updatedAt": timestamp,
         }
     );
-    const records = await runSqlReadOnly(
+    const records2 = await runSqlReadOnly(
         `SELECT * FROM ${tableId}
             WHERE created_at = :createdAt
             LIMIT 1;`,
@@ -226,10 +241,10 @@ export async function createRecord_core( tableId, recordData ){
             ":createdAt": timestamp,
         },
     );
-    if(records.length===0){
+    if(records2.length===0){
         throw "追加したはずのレコードが見つかりません。";
     }
-    const recordId = records[0][primaryKey];
+    const recordId = records2[0][primaryKey];
     if(!recordId){
         throw "新しく発行されたレコードIDが見つかりません。";
     }
@@ -243,7 +258,7 @@ export async function createRecord_core( tableId, recordData ){
 
 // レコードを上書き
 export async function updateRecords_core( tableId, records ){
-  if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
     // 「tableId」が本当に存在するのか確認
     const dataTypes = cacheData[tableId];
     if(Object.keys(dataTypes).length===0){
@@ -253,7 +268,7 @@ export async function updateRecords_core( tableId, records ){
     const timestamp = new Date().getTime();
     const primaryKey = await getPrimaryKey( tableId );
     for( const r of records ){
-        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
         const recordData = structuredClone(r);
         const recordId = recordData["id"];
         if( !recordId ){
@@ -272,9 +287,9 @@ export async function updateRecords_core( tableId, records ){
         // 存在しないカラムを削除する
         const newRecordData = {};
         for( const columnId in recordData ){
-            if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
             if( dataTypes[columnId] ){
-                if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
                 newRecordData[columnId] = recordData[columnId];
             }
         }
@@ -288,7 +303,7 @@ export async function updateRecords_core( tableId, records ){
         const words = [];
         const placeholder = {};
         for( const columnId in newRecordData ){
-            if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
             words.push(`${columnId}=:${columnId}`);
             placeholder[":"+columnId] = newRecordData[columnId];
         }
@@ -310,12 +325,12 @@ export async function updateRecords_core( tableId, records ){
 
 // フィールドを検証
 export async function checkField_core( columnId, value ){
-  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
     if( !String(columnId).startsWith("c") ){
         throw `カラムIDに無効な文字列「${columnId}」が指定されました。`;
     }
     if( (value===null) || (value===undefined) ){
-        if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
         return {
             isOK: true,
             message: "空欄です。",
@@ -327,9 +342,9 @@ export async function checkField_core( columnId, value ){
     }
     switch( dataType ){
         case "INTEGER":
-            if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
             if( typeof value !== "number" || isNaN(value) ){
-                if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "数値ではありません。",
@@ -340,9 +355,9 @@ export async function checkField_core( columnId, value ){
             }
             break;
         case "REAL":
-            if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
             if( typeof value !== "number" || isNaN(value) ){
-                if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "数値ではありません。",
@@ -350,9 +365,9 @@ export async function checkField_core( columnId, value ){
             }
             break;
         case "TEXT":
-            if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
             if( typeof value !== "string" ){
-                if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "文字列ではありません。",
@@ -360,9 +375,9 @@ export async function checkField_core( columnId, value ){
             }
             break;
         case "BOOL":
-            if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
             if( typeof value !== "boolean" ){
-                if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: `ブール値ではありません。value=${value}  columnId=${columnId}  dataType=${dataType}`,
@@ -370,9 +385,9 @@ export async function checkField_core( columnId, value ){
             }
             break;
         case "FILE":
-            if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
             if (!value instanceof Uint8Array) {
-                if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
                 return {
                     isOK: false,
                     message: "サポートされているファイル形式（Uint8Array）ではありません。",
@@ -389,13 +404,13 @@ export async function checkField_core( columnId, value ){
 
 // レコードを検証
 export async function checkRecord_core( tableId, recordData ){
-  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
     const dataTypeMap = cacheData[tableId];
     for( const columnId in dataTypeMap){
-        if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
         const {isOK,message} = await checkField_core( columnId, recordData[columnId] );
         if(isOK===false){
-            if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
             return {
                 isOK: false,
                 message: message,
@@ -410,13 +425,14 @@ export async function checkRecord_core( tableId, recordData ){
 
 // テーブルを作成
 export async function createTable_core( tableId ){
-  if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
     const primaryKey = await getPrimaryKey( tableId );
     // テーブルを作成する
     await runSqlWriteOnly(
         `CREATE TABLE IF NOT EXISTS ${tableId} (
             "${primaryKey}" INTEGER PRIMARY KEY NOT NULL,
-            "created_at" INTEGER UNIQUE,
+            "sort_number" REAL NOT NULL,
+            "created_at" INTEGER NOT NULL,
             "updated_at" INTEGER NOT NULL
         );`,
         {},
@@ -426,7 +442,7 @@ export async function createTable_core( tableId ){
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
-  if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
     // テーブルを削除する
     await runSqlWriteOnly(
         `DROP TABLE IF EXISTS ${tableId};`,
@@ -447,14 +463,14 @@ export async function deleteTable_core( tableId ){
 
 // データ型を取得
 export async function getDataType_core( columnId ){
-  if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
     return cacheData2[columnId];
 }
 
 
 // レコードを一括削除
 export async function deleteRecords_core( tableId, recordIdList ){
-  if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
     // 「tableId」が本当に存在するのか確認
     const dataTypes = cacheData[tableId];
     if(Object.keys(dataTypes).length===0){
@@ -463,7 +479,7 @@ export async function deleteRecords_core( tableId, recordIdList ){
     const primaryKey = await getPrimaryKey( tableId );
     //
     for( const recordId of recordIdList ){
-        if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
         const records2 = await runSqlReadOnly(
             `SELECT * FROM ${tableId} WHERE ${primaryKey} = :recordId LIMIT 1;`,
             {
@@ -486,7 +502,7 @@ export async function deleteRecords_core( tableId, recordIdList ){
 
 // 【サブ関数】メモリに再読み込み
 export async function reload_core(  ){
-  if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
     const columns = await runSqlReadOnly(
         `SELECT
             column_id AS columnId,
@@ -498,9 +514,9 @@ export async function reload_core(  ){
     cacheData = {};
     cacheData2 = {};
     for( const { columnId, tableId, dataType } of columns ){
-        if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
         if(!cacheData[tableId]){
-            if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
             cacheData[tableId] = {};
         }
         cacheData[tableId][columnId] = dataType;

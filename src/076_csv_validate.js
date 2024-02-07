@@ -3,15 +3,23 @@ import {
   getCsvProgress_core,  // インポートの進捗状況を取得する関数
   destroyCSV_core,  // インポートを中断する関数
   close_core,  // バックエンドプログラム終了
-} from "./113_csv.js";
+} from "./077_csv.js";
 
 
 //#######################################################################################
 // 関数「createRecordsFromCsv_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function createRecordsFromCsv( filePath ){
+export async function createRecordsFromCsv( fileName, filePath ){
   //--------------------------------------------------------------------------
   // 引数を検証
+  if( typeof fileName !== "string" ){
+    if( !fileName ){
+      throw new Error(`fileNameがNULLです。\nレイヤー : csv\n関数 : createRecordsFromCsv`);
+    }
+    else{
+      throw new Error(`fileNameが文字列ではありません。\nレイヤー : csv\n関数 : createRecordsFromCsv`);
+    }
+  }
   if( typeof filePath !== "string" ){
     if( !filePath ){
       throw new Error(`filePathがNULLです。\nレイヤー : csv\n関数 : createRecordsFromCsv`);
@@ -25,7 +33,7 @@ export async function createRecordsFromCsv( filePath ){
   // メイン処理を実行
   let result;
   try{
-    result = await createRecordsFromCsv_core( filePath );
+    result = await createRecordsFromCsv_core( fileName, filePath );
   }
   catch(error){
     if( typeof error === "string" ){
