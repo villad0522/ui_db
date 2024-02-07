@@ -175,11 +175,6 @@
     "layerNameEN": "data_type"
   },
   {
-    "layerId": "01HNMYY3QRZF9F84XBYFRSDEGR",
-    "layerNameJP": "レコードを削除",
-    "layerNameEN": "delete_record"
-  },
-  {
     "layerId": "01HM81BRJJHDFRR9PX4TWMV7Q0",
     "layerNameJP": "プライマリキー",
     "layerNameEN": "primary_key"

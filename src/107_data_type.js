@@ -4,31 +4,28 @@ import {
   startUp,
   startTransaction,
   endTransaction,
-} from "./118_transaction_lower_validate.js";
+} from "./115_transaction_lower_validate.js";
 import {
   getLocalIp,
-} from "./127_ip_address_validate.js";
+} from "./124_ip_address_validate.js";
 import {
   close,
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./115_csv_validate.js";
+} from "./112_csv_validate.js";
 import {
   getPath,
-} from "./124_directory_validate.js";
+} from "./121_directory_validate.js";
 import {
   getDebugMode,
   runSqlReadOnly,
   runSqlWriteOnly,
   getDB,
-} from "./121_connect_database_validate.js";
+} from "./118_connect_database_validate.js";
 import {
   getPrimaryKey,
-} from "./112_primary_key_validate.js";
-import {
-  deleteRecords,
-} from "./109_delete_record_validate.js";
+} from "./109_primary_key_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
@@ -455,22 +452,18 @@ export async function getDataType_core( columnId ){
 }
 
 
-// レコードを削除
-export async function deleteRecord_core( tableId, records ){
+// レコードを一括削除
+export async function deleteRecords_core( tableId, recordIdList ){
   if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
     // 「tableId」が本当に存在するのか確認
     const dataTypes = cacheData[tableId];
     if(Object.keys(dataTypes).length===0){
         throw "指定されたテーブルは存在しません。";
     }
-    //
     const primaryKey = await getPrimaryKey( tableId );
-    for( const recordData of records ){
+    //
+    for( const recordId of recordIdList ){
         if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
-        let recordId = recordData[primaryKey];
-        if(!recordId){
-            throw "削除対象のプライマリキーが指定されていません。";
-        }
         const records2 = await runSqlReadOnly(
             `SELECT * FROM ${tableId} WHERE ${primaryKey} = :recordId LIMIT 1;`,
             {

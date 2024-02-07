@@ -16,30 +16,27 @@ import {
 } from "./100_column_name_validate.js";
 import {
   getLocalIp,
-} from "./127_ip_address_validate.js";
+} from "./124_ip_address_validate.js";
 import {
   close,
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./115_csv_validate.js";
+} from "./112_csv_validate.js";
 import {
   getPath,
-} from "./124_directory_validate.js";
+} from "./121_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./121_connect_database_validate.js";
+} from "./118_connect_database_validate.js";
 import {
   startTransaction,
   endTransaction,
-} from "./118_transaction_lower_validate.js";
+} from "./115_transaction_lower_validate.js";
 import {
   getPrimaryKey,
-} from "./112_primary_key_validate.js";
-import {
-  deleteRecords,
-} from "./109_delete_record_validate.js";
+} from "./109_primary_key_validate.js";
 import {
   createColumn,
   createTable,
@@ -55,7 +52,7 @@ import {
   checkField,
   checkRecord,
   getDataType,
-  deleteRecord,
+  deleteRecords,
 } from "./106_data_type_validate.js";
 import {
   reload,
@@ -294,16 +291,11 @@ export async function delete_table_core( tableId ){
 
 
 
-// レコードを削除
-export async function deleteRecord_core( tableId, records ){
+// レコードを一括削除
+export async function deleteRecords_core( tableId, recordIdList ){
   if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-  const primaryKey = await getPrimaryKey( tableId );
-  for( const recordData of records ){
+  for( const recordId of recordIdList ){
     if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-    const recordId = recordData[primaryKey];
-    if(!recordId){
-      throw "削除対象のプライマリキーが指定されていません。";
-    }
     await runSqlWriteOnly(
       `DELETE FROM search_text
       WHERE table_id = :tableId
@@ -314,7 +306,7 @@ export async function deleteRecord_core( tableId, records ){
       },
     );
   }
-  return await deleteRecord( tableId, records );  // 下層の関数を呼び出す
+  return await deleteRecords( tableId, recordIdList );  // 下層の関数を呼び出す
 }
 
 

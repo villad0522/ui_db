@@ -1,0 +1,32 @@
+{
+    "httpMethod": "POST",
+    "description": "レコードを１件削除します。",
+    "commandName": "DELETE_RECORD",
+    "queryParameters": {
+        "table": {
+            "dataType": "TEXT",
+            "description": "テーブルID",
+            "isRequired": true,
+            "example": "t3"
+        },
+        "record_id": {
+            "dataType": "INTEGER",
+            "description": "レコードID",
+            "isRequired": true,
+            "example": 678
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "userMessage": {
+            "dataType": "TEXT",
+            "description": "完了メッセージ",
+            "example": "再接続しました。"
+        },
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "./"
+        }
+    }
+}

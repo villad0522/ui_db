@@ -3,31 +3,28 @@ import path from 'path';
 import {
   startTransaction,
   endTransaction,
-} from "./118_transaction_lower_validate.js";
+} from "./115_transaction_lower_validate.js";
 import {
   getLocalIp,
-} from "./127_ip_address_validate.js";
+} from "./124_ip_address_validate.js";
 import {
   close,
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./115_csv_validate.js";
+} from "./112_csv_validate.js";
 import {
   getPath,
-} from "./124_directory_validate.js";
+} from "./121_directory_validate.js";
 import {
   getDebugMode,
   runSqlReadOnly,
   runSqlWriteOnly,
   getDB,
-} from "./121_connect_database_validate.js";
+} from "./118_connect_database_validate.js";
 import {
   getPrimaryKey,
-} from "./112_primary_key_validate.js";
-import {
-  deleteRecords,
-} from "./109_delete_record_validate.js";
+} from "./109_primary_key_validate.js";
 import {
   startUp,  // プログラム起動
   clearCache,  // インメモリキャッシュを削除する
@@ -40,7 +37,7 @@ import {
   createTable,  // テーブルを作成
   deleteTable,  // 不可逆的にテーブルを削除
   getDataType,  // データ型を取得
-  deleteRecord,  // レコードを削除
+  deleteRecords,  // レコードを一括削除
   reload,  // 【サブ関数】メモリに再読み込み
 } from "./106_data_type_validate.js";
 import { setBugMode } from "./107_data_type.js";

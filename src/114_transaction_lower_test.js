@@ -5,23 +5,23 @@ import {
   runSqlReadOnly,
   runSqlWriteOnly,
   getDB,
-} from "./121_connect_database_validate.js";
+} from "./118_connect_database_validate.js";
 import {
   getLocalIp,
-} from "./127_ip_address_validate.js";
+} from "./124_ip_address_validate.js";
 import {
   getPath,
-} from "./124_directory_validate.js";
+} from "./121_directory_validate.js";
 import {
   startUp,  // プログラム起動
   startTransaction,  // トランザクション処理開始
   endTransaction,  // トランザクション処理終了
   close,  // バックエンドプログラム終了
-} from "./118_transaction_lower_validate.js";
-import { setBugMode } from "./119_transaction_lower.js";
+} from "./115_transaction_lower_validate.js";
+import { setBugMode } from "./116_transaction_lower.js";
 
 
-export async function test117() {
+export async function test114() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();

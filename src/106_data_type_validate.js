@@ -10,7 +10,7 @@ import {
   createTable_core,  // テーブルを作成
   deleteTable_core,  // 不可逆的にテーブルを削除
   getDataType_core,  // データ型を取得
-  deleteRecord_core,  // レコードを削除
+  deleteRecords_core,  // レコードを一括削除
   reload_core,  // 【サブ関数】メモリに再読み込み
 } from "./107_data_type.js";
 
@@ -646,41 +646,38 @@ export async function getDataType( columnId ){
 
 
 //#######################################################################################
-// 関数「deleteRecord_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「deleteRecords_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function deleteRecord( tableId, records ){
+export async function deleteRecords( tableId, recordIdList ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : data_type\n関数 : deleteRecord`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : data_type\n関数 : deleteRecords`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : data_type\n関数 : deleteRecord`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : data_type\n関数 : deleteRecords`);
     }
   }
-  if( !Array.isArray(records) ){
-    if( !records ){
-      throw new Error(`recordsがNULLです。\nレイヤー : data_type\n関数 : deleteRecord`);
+  if( !Array.isArray(recordIdList) ){
+    if( !recordIdList ){
+      throw new Error(`recordIdListがNULLです。\nレイヤー : data_type\n関数 : deleteRecords`);
     }
     else{
-      throw new Error(`recordsが配列ではありません。\nレイヤー : data_type\n関数 : deleteRecord`);
+      throw new Error(`recordIdListが配列ではありません。\nレイヤー : data_type\n関数 : deleteRecords`);
     }
   }
-  for( let i=0; i<records.length; i++ ){
-    if( records[i]===null || records[i]===undefined ){
-      throw new Error(`records[${i}]がNULLです。\nレイヤー : data_type\n関数 : deleteRecord`);
-    }
-    else if( typeof records[i] !== "object" ){
-      throw new Error(`records[${i}]がオブジェクトではありません。\nレイヤー : data_type\n関数 : deleteRecord`);
-    }
-    else if( records[i].constructor !== Object ){
-      throw new Error(`records[${i}]が辞書型ではありません。\nレイヤー : data_type\n関数 : deleteRecord`);
-    }
-    for( const j in records[i] ){
-      if( typeof j !== "string" ){
-        throw new Error(`records[${i}]のキーが文字列ではありません。\nレイヤー : data_type\n関数 : deleteRecord`);
+  for( let i=0; i<recordIdList.length; i++ ){
+    if( typeof recordIdList[i] !== "number" ){
+      if( !recordIdList[i] ){
+        throw new Error(`recordIdList[${i}]がNULLです。\nレイヤー : data_type\n関数 : deleteRecords`);
       }
+      else{
+        throw new Error(`recordIdList[${i}]が数値ではありません。\nレイヤー : data_type\n関数 : deleteRecords`);
+      }
+    }
+    else if( isNaN(recordIdList[i]) ){
+      throw new Error(`recordIdList[${i}]が数値ではありません。\nレイヤー : data_type\n関数 : deleteRecords`);
     }
   }
   //
@@ -688,11 +685,11 @@ export async function deleteRecord( tableId, records ){
   // メイン処理を実行
   let result;
   try{
-    result = await deleteRecord_core( tableId, records );
+    result = await deleteRecords_core( tableId, recordIdList );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : data_type\n関数 : deleteRecord`);
+      throw new Error(`${error}\nレイヤー : data_type\n関数 : deleteRecords`);
     }
     else{
       throw error;
@@ -703,10 +700,10 @@ export async function deleteRecord( tableId, records ){
   // 戻り値を検証
   if( typeof result !== "string" ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : data_type\n関数 : deleteRecord`);
+      throw new Error(`resultがNULLです。\nレイヤー : data_type\n関数 : deleteRecords`);
     }
     else{
-      throw new Error(`resultが文字列ではありません。\nレイヤー : data_type\n関数 : deleteRecord`);
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_type\n関数 : deleteRecords`);
     }
   }
   //

@@ -7,13 +7,13 @@ import {
   runSqlReadOnly,
   runSqlWriteOnly,
   getDB,
-} from "./121_connect_database_validate.js";
+} from "./118_connect_database_validate.js";
 import {
   getLocalIp,
-} from "./127_ip_address_validate.js";
+} from "./124_ip_address_validate.js";
 import {
   getPath,
-} from "./124_directory_validate.js";
+} from "./121_directory_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）

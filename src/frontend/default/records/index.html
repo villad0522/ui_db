@@ -214,6 +214,7 @@
                                         <td>
                                             <button onclick="myFetch('./paste_record/json?after_id='+getChildPageId(${i}));" type="button" class="btn btn-secondary btn-sm">
                                                 <i class="bi bi-clipboard"></i>
+                                                <i class="bi bi-arrow-up"></i>
                                             </button>
                                             <button onclick="myFetch('./cut_record/json?page_id='+getChildPageId(${i}));" type="button" class="btn btn-secondary btn-sm">
                                                 <i class="bi bi-scissors"></i>
@@ -222,7 +223,7 @@
                                             <button onclick="myFetch('./copy_page/json?page_id='+getChildPageId(${i}));" type="button" class="btn btn-primary btn-sm">
                                                 コピー
                                             </button> */}
-                                            <button onclick="myFetch('./delete_record/json?page_id='+getChildPageId(${i}));" type="button" class="btn btn-secondary btn-sm">
+                                            <button onclick="myFetch('./delete_record/json?record_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
                                                 <i class="bi bi-trash-fill"></i>
                                             </button>
                                         </td>
@@ -230,6 +231,22 @@
                             }
                             document.write(htmlText4);
                         </script>
+                        <tr name="columns0_flag">
+                            <script>
+                                let htmlText6 = "";
+                                for (let j = 0; j < 35; j++) {
+                                    htmlText6 += `<td name="columns${j}_flag"></td>`;
+                                }
+                                document.write(htmlText6);
+                            </script>
+                            <td></td>
+                            <td>
+                                <button onclick="myFetch('./paste_record/json?after_id='+getChildPageId());" type="button" class="btn btn-secondary btn-sm">
+                                    <i class="bi bi-clipboard"></i>
+                                    <i class="bi bi-arrow-up"></i>
+                                </button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <br>

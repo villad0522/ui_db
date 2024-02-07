@@ -4,11 +4,11 @@ import {
   startUp,  // プログラム起動
   getLocalIp,  // ローカルIPアドレスを取得する関数
   close,  // バックエンドプログラム終了
-} from "./127_ip_address_validate.js";
-import { setBugMode } from "./128_ip_address.js";
+} from "./124_ip_address_validate.js";
+import { setBugMode } from "./125_ip_address.js";
 
 
-export async function test126() {
+export async function test123() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();

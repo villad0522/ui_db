@@ -5,7 +5,7 @@ import {
   runSqlWriteOnly_core,  // SQLクエリ実行（書き込み専用）
   close_core,  // バックエンドプログラム終了
   getDB_core,  // データベースオブジェクトを取得
-} from "./122_connect_database.js";
+} from "./119_connect_database.js";
 
 
 //#######################################################################################

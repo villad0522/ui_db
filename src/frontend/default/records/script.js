@@ -19,6 +19,13 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 //
 //###############################################################
+// レコードIDを取得する関数
+window.getRecordId = function (i) {
+    const recordId = document.getElementsByName(`records${i}_id`)[0].innerText;
+    return recordId;
+}
+//
+//###############################################################
 // ページネーションボタンの「First」がクリックされたときに実行する関数
 window.paginationButtonFirst = function (arrayName) {
     // クエリパラメータ―を作成

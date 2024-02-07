@@ -2,10 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import {
   getPath,
-} from "./124_directory_validate.js";
+} from "./121_directory_validate.js";
 import {
   getLocalIp,
-} from "./127_ip_address_validate.js";
+} from "./124_ip_address_validate.js";
 import {
   startUp,  // プログラム起動
   getDebugMode,  // デバッグモード判定
@@ -13,11 +13,11 @@ import {
   runSqlWriteOnly,  // SQLクエリ実行（書き込み専用）
   close,  // バックエンドプログラム終了
   getDB,  // データベースオブジェクトを取得
-} from "./121_connect_database_validate.js";
-import { setBugMode } from "./122_connect_database.js";
+} from "./118_connect_database_validate.js";
+import { setBugMode } from "./119_connect_database.js";
 
 
-export async function test120() {
+export async function test117() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
