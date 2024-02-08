@@ -55,7 +55,6 @@ import {
   getPrimaryKey,
 } from "./112_primary_key_validate.js";
 import {
-  deleteTable,
   listTables,
   setTitleColumn,
   getTitleColumnId,
@@ -66,9 +65,6 @@ import {
 } from "./109_data_type_validate.js";
 import {
   createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   updateRecords,
   checkField,
   checkRecord,
@@ -113,6 +109,10 @@ import {
 import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -165,6 +165,7 @@ import {
   regenerateInputElements,  // 【サブ関数】入力要素を全て作り直す
   _addViewColumn,  // 【サブ関数】ビューカラムを作成
   deletePage,  // ページを削除
+  deleteTable,  // 不可逆的にテーブルを削除
 } from "./055_view_column_validate.js";
 import { setBugMode } from "./056_view_column.js";
 
@@ -174,7 +175,7 @@ export async function test054() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 38; i++ ) {
+    for ( i = 1; i <= 39; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -256,12 +257,18 @@ async function _test(){
     }
     //
     // 予測変換
+    const inputTexts = {};
+    for( const { viewColumnId, viewColumnName } of viewColumns3 ){
+        if( viewColumnName === "氏名" ){
+            inputTexts[viewColumnId] = "田";
+        }
+        else if( viewColumnName === "学年" ){
+            inputTexts[viewColumnId] = 3;
+        }
+    }
     const result3 = await autoFill(
         viewId3,
-        {
-            "d3": "田",
-            "d4": 3,
-        },
+        inputTexts,
         true, // isClick
     );
     /*
@@ -284,32 +291,39 @@ async function _test(){
             "国語"
         ]
     }  */
-    if( result3["d3"]!=="田中太郎" ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
-    }
-    if( result3["d4"]!==3 ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
-    }
-    if( !result3["d4_option"] ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
-    }
-    if( result3["d4_option"][0]!==3 ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
-    }
-    if( result3["d3_option"][0]!=="田中太郎" ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
-    }
-    if( result3["d1"]!=="" ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
-    }
-    if( result3["d2"]!=="" ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
-    }
-    if( result3["d1_option"][0]!==34 ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
-    }
-    if( result3["d2_option"][0]!=="国語" ){
-        throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
+    for( const { viewColumnId, viewColumnName } of viewColumns3 ){
+        if( viewColumnName === "氏名" ){
+            if( result3[viewColumnId]!=="田中太郎" ){
+                throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
+            }
+            if( result3[viewColumnId+"_option"][0]!=="田中太郎" ){
+                throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
+            }
+        }
+        else if( viewColumnName === "学年" ){
+            if( result3[viewColumnId]!==3 ){
+                throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
+            }
+            if( result3[viewColumnId+"_option"][0]!==3 ){
+                throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
+            }
+        }
+        else if( viewColumnName === "科目" ){
+            if( result3[viewColumnId]!=="" ){
+                throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
+            }
+            if( result3[viewColumnId+"_option"][0]!=="国語" ){
+                throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
+            }
+        }
+        else if( viewColumnName === "得点" ){
+            if( result3[viewColumnId]!=="" ){
+                throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
+            }
+            if( result3[viewColumnId+"_option"][0]!==34 ){
+                throw new Error(`実行結果が想定外です。\n`+JSON.stringify(result3, null, 2));
+            }
+        }
     }
     //
     //

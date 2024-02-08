@@ -70,9 +70,6 @@ import {
 } from "./109_data_type_validate.js";
 import {
   createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   updateRecords,
   checkField,
   checkRecord,
@@ -90,11 +87,9 @@ import {
 } from "./097_reserved_word_validate.js";
 import {
   deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./079_record_title_validate.js";
+  generateSQL,
+  deleteView,
+} from "./052_joinedTable_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -122,8 +117,18 @@ import {
   _generateRecordSortNumber,
 } from "./106_sort_validate.js";
 import {
+  listTables,
+  setTitleColumn,
+  getTitleColumnId,
+  getRecordIdFromTitle,
+} from "./079_record_title_validate.js";
+import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -165,10 +170,6 @@ import {
 import {
   generateSQLwithDuplication,
 } from "./064_generate_sql1_validate.js";
-import {
-  generateSQL,
-  deleteView,
-} from "./052_joinedTable_validate.js";
 import {
   getPageData,
 } from "./049_page_data_validate.js";

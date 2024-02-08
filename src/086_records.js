@@ -152,7 +152,7 @@ export async function listRecords_core( tableId, pageNumber, onePageMaxSize ){
 
 
 // レコードを追加
-export async function createRecord_core( tableId, columns ){
+export async function createRecordFromUI_core( tableId, columns ){
   if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
     const newFields = {};
     for( let i=0; i<columns.length; i++ ){

@@ -45,9 +45,6 @@ import {
 } from "./109_data_type_validate.js";
 import {
   createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   updateRecords,
   checkField,
   checkRecord,
@@ -92,6 +89,10 @@ import {
 import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -195,17 +196,10 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
   sql += `\n`;
   //===================================================================================
   sql += `FROM ${tableId}\n`;
-  sql += `  LEFT OUTER JOIN sort_numbers AS sort_main\n`;
-  sql += `    ON ( ${primaryKey} = sort_main.record_id ) AND ( sort_main.table_id = '${tableId}' )\n`;
-  //
   for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnName } of joinData ){
     if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
-    sql += `  \n`;
     sql += `  LEFT OUTER JOIN ${toTableName}\n`;
     sql += `    ON ${fromColumnName} = ${toColumnName}\n`;
-    //
-    sql += `  LEFT OUTER JOIN sort_numbers AS sort_${toJoinId}\n`;
-    sql += `    ON ( ${toColumnName} = sort_${toJoinId}.record_id ) AND ( sort_${toJoinId}.table_id = '${toTableName}' )\n`;
   }
   sql += `\n`;
   //===================================================================================
@@ -265,7 +259,7 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
   }
   for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnId } of joinData ){
     if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
-    orderByList.push(`sort_${toJoinId}.sort_number ASC`);
+    orderByList.push(`${toTableName}.sort_number DESC`);
   }
   if( orderByList.length > 0 ){
     if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）

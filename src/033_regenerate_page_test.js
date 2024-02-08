@@ -64,9 +64,6 @@ import {
 } from "./109_data_type_validate.js";
 import {
   createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   updateRecords,
   checkField,
   checkRecord,
@@ -83,12 +80,8 @@ import {
   checkReservedWord,
 } from "./097_reserved_word_validate.js";
 import {
-  deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./079_record_title_validate.js";
+  generateSQL,
+} from "./052_joinedTable_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -116,8 +109,18 @@ import {
   _generateRecordSortNumber,
 } from "./106_sort_validate.js";
 import {
+  listTables,
+  setTitleColumn,
+  getTitleColumnId,
+  getRecordIdFromTitle,
+} from "./079_record_title_validate.js";
+import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -160,9 +163,6 @@ import {
   generateSQLwithDuplication,
 } from "./064_generate_sql1_validate.js";
 import {
-  generateSQL,
-} from "./052_joinedTable_validate.js";
-import {
   getPageData,
 } from "./049_page_data_validate.js";
 import {
@@ -189,6 +189,7 @@ import {
   deleteView,  // ビューを削除
   deletePage,  // ページを再帰的に削除
   pastePage,  // ページを貼り付ける
+  deleteTable,  // 不可逆的にテーブルを削除
 } from "./034_regenerate_page_validate.js";
 import { setBugMode } from "./035_regenerate_page.js";
 
@@ -198,7 +199,7 @@ export async function test033() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 23; i++ ) {
+    for ( i = 1; i <= 24; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

@@ -4,6 +4,7 @@ import {
   startUp,
   clearCache,
   createColumn,
+  createRecord,
   updateRecords,
   checkField,
   checkRecord,
@@ -80,7 +81,7 @@ import {
 } from "./088_db_formatter_validate.js";
 import {
   listRecords,  // レコードの一覧を取得(GUI)
-  createRecord,  // レコードを追加
+  createRecordFromUI,  // レコードを追加
 } from "./085_records_validate.js";
 import { setBugMode } from "./086_records.js";
 
@@ -122,5 +123,36 @@ export async function test084() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
+  await startUp("http://localhost:3000/", true);
+  //
+  const { tableId: tableId1 } = await createTable("学年");
+  const { columnId: columnId1 } = await createColumn( tableId1, "学年", "INTEGER", null );
+  const { recordId: recordId } = await createRecord( tableId1, {
+    [columnId1]: 3,
+  });
+  //
+  const { tableId: tableId2 } = await createTable("名簿");
+  const { columnId: columnId2  } = await createColumn( tableId2, "学年", "POINTER", tableId1 );
+  const { columnId: columnId3  } = await createColumn( tableId2, "氏名", "TEXT", null );
+  const { recordId: recordId2 } = await createRecord( tableId2, {
+    [columnId2]: recordId,
+    [columnId3]: "田中太郎",
+  });
+  const { recordId: recordId3 } = await createRecord( tableId2, {
+    [columnId2]: recordId,
+    [columnId3]: "鈴木信也",
+  });
+  //
+  const { tableId: tableId3 } = await createTable("成績表");
+  const { columnId: columnId4  } = await createColumn( tableId3, "学生", "POINTER", tableId2 );
+  const { columnId: columnId5  } = await createColumn( tableId3, "科目", "TEXT", null );
+  const { columnId: columnId6  } = await createColumn( tableId3, "得点", "INTEGER", null );
+  const { recordId: recordId4 } = await createRecord( tableId3, {
+    [columnId4]: recordId2,
+    [columnId5]: "国語",
+    [columnId6]: 34,
+  });
+  //
+  await close();
 
 }

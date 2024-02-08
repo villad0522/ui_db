@@ -45,9 +45,6 @@ import {
 } from "./109_data_type_validate.js";
 import {
   createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   updateRecords,
   checkField,
   checkRecord,
@@ -92,6 +89,10 @@ import {
 import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -899,4 +900,10 @@ export async function clearCache_core(  ){
 export async function isExistView_core( viewId ){
   if(bugMode === 49) throw "MUTATION49";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheViews[viewId] ? true: false;
+}
+
+// 不可逆的にテーブルを削除
+export async function deleteTable_core( tableId ){
+  if(bugMode === 50) throw "MUTATION50";  // 意図的にバグを混入させる（ミューテーション解析）
+  throw "この関数は未実装です。";
 }

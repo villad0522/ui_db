@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import {
   createColumn,
+  createRecord,
   updateRecords,
   checkField,
   checkRecord,
@@ -40,10 +41,6 @@ import {
   listDataTypes,
 } from "./109_data_type_validate.js";
 import {
-  createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   createTable,
   updateTableName,
   updateColumnName,
@@ -80,6 +77,10 @@ import {
 import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   startUp,  // プログラム起動
   autoFill,  // 自動入力

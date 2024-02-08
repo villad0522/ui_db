@@ -25,6 +25,7 @@ import {
   getViewInfo_core,  // ビューの情報を取得
   clearCache_core,  // インメモリキャッシュを削除する
   isExistView_core,  // ビューの存在を確認
+  deleteTable_core,  // 不可逆的にテーブルを削除
 } from "./059_page_and_view.js";
 
 
@@ -1513,6 +1514,52 @@ export async function isExistView( viewId ){
   }
   else if( isNaN(result) ){
     throw new Error(`resultがブール値ではありません。\nレイヤー : page_and_view\n関数 : isExistView`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「deleteTable_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function deleteTable( tableId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : page_and_view\n関数 : deleteTable`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : page_and_view\n関数 : deleteTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await deleteTable_core( tableId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : page_and_view\n関数 : deleteTable`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : page_and_view\n関数 : deleteTable`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : page_and_view\n関数 : deleteTable`);
+    }
   }
   //
   //--------------------------------------------------------------------------

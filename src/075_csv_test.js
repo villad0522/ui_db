@@ -39,9 +39,6 @@ import {
 } from "./109_data_type_validate.js";
 import {
   createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   updateRecords,
   checkField,
   checkRecord,
@@ -87,6 +84,10 @@ import {
   formatField,
 } from "./088_db_formatter_validate.js";
 import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
+import {
   autoFill,
   _autoFill,
   _getConditions,
@@ -116,7 +117,7 @@ export async function test075() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 22; i++ ) {
+    for ( i = 1; i <= 23; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -173,15 +174,15 @@ async function _test(){
     await fs.promises.writeFile(csvFilePath, csvText, 'utf8');
     //
     // CSVファイルからデータベースに読み込む
-    await createRecordsFromCsv(csvFilePath);
+    await createRecordsFromCsv( "テスト用CSVデータ", csvFilePath );
     //
     // テーブルから読み出す
-    const matrix = await runSqlReadOnly(`SELECT * FROM csv_data;`,{});
+    const matrix = await runSqlReadOnly(`SELECT * FROM テスト用CSVデータ;`,{});
     if (matrix.length !== data.length) {
         console.log(matrix);
         throw `インポートしたはずの件数と合致しません`;
     }
-    if (matrix[0]["c0"] !== data[0][0]) {
+    if (matrix[0]["c1"] !== data[0][0]) {
         console.log(matrix);
         throw `インポートしたはずの内容と合致しません`;
     }
@@ -191,7 +192,7 @@ async function _test(){
     //
     // テスト用のテーブルを削除
     await runSqlWriteOnly(`
-        DROP TABLE IF EXISTS csv_data;
+        DROP TABLE IF EXISTS テスト用CSVデータ;
     `,{});
     //
     // わざと再接続

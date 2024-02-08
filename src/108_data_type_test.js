@@ -140,9 +140,7 @@ async function _test(){
         "c4": "good",
         "c5": true,
     }]);
-    await deleteRecord( "t67", [{
-        "t67_id": recordId,
-    }]);
+    await deleteRecords( "t67", [ recordId ] );
     const { recordId: recordId2 } = await createRecord( "t67", {
         "c2": 23,
         "c3": 3.14,

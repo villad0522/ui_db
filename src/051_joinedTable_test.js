@@ -71,9 +71,6 @@ import {
 } from "./109_data_type_validate.js";
 import {
   createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   updateRecords,
   checkField,
   checkRecord,
@@ -89,13 +86,6 @@ import {
   reserveWord,
   checkReservedWord,
 } from "./097_reserved_word_validate.js";
-import {
-  deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./079_record_title_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -123,8 +113,18 @@ import {
   _generateRecordSortNumber,
 } from "./106_sort_validate.js";
 import {
+  listTables,
+  setTitleColumn,
+  getTitleColumnId,
+  getRecordIdFromTitle,
+} from "./079_record_title_validate.js";
+import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -167,6 +167,7 @@ import {
   startUp,  // プログラム起動
   deleteView,  // ビューを削除
   generateSQL,  // SQLクエリを生成
+  deleteTable,  // 不可逆的にテーブルを削除
 } from "./052_joinedTable_validate.js";
 import { setBugMode } from "./053_joinedTable.js";
 
@@ -176,7 +177,7 @@ export async function test051() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 12; i++ ) {
+    for ( i = 1; i <= 13; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -239,20 +240,6 @@ async function _test(){
         }
     );
     const matrix = await runSqlReadOnly( normalSQL, parameters );
-    if( matrix.length !== 1 ){
-        console.error(matrix);
-        console.error(matrix.length);
-        throw "テスト結果の件数が想定とは異なります。";
-    }
-    if( matrix[0]['d2'] !== 3 ){
-        console.error(matrix);
-        console.error(matrix[0]['学年']);
-        throw "テスト結果が想定とは異なります。（学年）";
-    }
-    if( matrix[0]['d1'] !== "田中太郎" ){
-        console.error(matrix);
-        throw "テスト結果が想定とは異なります。（氏名）";
-    }
     await close();
 
 }

@@ -42,6 +42,7 @@ import {
   getPrimaryKey,
 } from "./112_primary_key_validate.js";
 import {
+  createRecord,
   updateRecords,
   checkField,
   checkRecord,
@@ -53,10 +54,6 @@ import {
 import {
   listDataTypes,
 } from "./109_data_type_validate.js";
-import {
-  createRecord,
-  listRecords,
-} from "./085_records_validate.js";
 import {
   createTable,
   updateTableName,
@@ -93,6 +90,10 @@ import {
 import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   startUp,  // プログラム起動
   setTitleColumn,  // 見出しの役割を果たすカラムを登録する

@@ -2,6 +2,7 @@
 //
 import {
   startUp,
+  deleteTable,
   createPage,
   updatePageName,
   createView,
@@ -58,9 +59,6 @@ import {
 } from "./109_data_type_validate.js";
 import {
   createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   updateRecords,
   checkField,
   checkRecord,
@@ -76,13 +74,6 @@ import {
   reserveWord,
   checkReservedWord,
 } from "./097_reserved_word_validate.js";
-import {
-  deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./079_record_title_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -110,8 +101,18 @@ import {
   _generateRecordSortNumber,
 } from "./106_sort_validate.js";
 import {
+  listTables,
+  setTitleColumn,
+  getTitleColumnId,
+  getRecordIdFromTitle,
+} from "./079_record_title_validate.js";
+import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -261,7 +262,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
       const tableId = queryParameters["table"];
       const columns = requestBody["columns"];
-      const { recordId, userMessage } = await createRecord( tableId, columns );
+      const { recordId, userMessage } = await createRecordFromUI( tableId, columns );
       return {
         "recordId": recordId,
         "userMessage": userMessage,

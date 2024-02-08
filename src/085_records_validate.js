@@ -1,6 +1,6 @@
 import {
   listRecords_core,  // レコードの一覧を取得(GUI)
-  createRecord_core,  // レコードを追加
+  createRecordFromUI_core,  // レコードを追加
 } from "./086_records.js";
 
 
@@ -162,50 +162,50 @@ export async function listRecords( tableId, pageNumber, onePageMaxSize ){
 
 
 //#######################################################################################
-// 関数「createRecord_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「createRecordFromUI_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function createRecord( tableId, columns ){
+export async function createRecordFromUI( tableId, columns ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : records\n関数 : createRecord`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : records\n関数 : createRecordFromUI`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : records\n関数 : createRecord`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : records\n関数 : createRecordFromUI`);
     }
   }
   if( !Array.isArray(columns) ){
     if( !columns ){
-      throw new Error(`columnsがNULLです。\nレイヤー : records\n関数 : createRecord`);
+      throw new Error(`columnsがNULLです。\nレイヤー : records\n関数 : createRecordFromUI`);
     }
     else{
-      throw new Error(`columnsが配列ではありません。\nレイヤー : records\n関数 : createRecord`);
+      throw new Error(`columnsが配列ではありません。\nレイヤー : records\n関数 : createRecordFromUI`);
     }
   }
   for( let i=0; i<columns.length; i++ ){
     if( typeof columns[i] !== "object" ){
       if( !columns[i] ){
-        throw new Error(`columns[${i}]がNULLです。\nレイヤー : records\n関数 : createRecord`);
+        throw new Error(`columns[${i}]がNULLです。\nレイヤー : records\n関数 : createRecordFromUI`);
       }
       else{
-        throw new Error(`columns[${i}]がオブジェクトではありません。\nレイヤー : records\n関数 : createRecord`);
+        throw new Error(`columns[${i}]がオブジェクトではありません。\nレイヤー : records\n関数 : createRecordFromUI`);
       }
     }
     if( typeof columns[i].id !== "string" ){
       if( !columns[i].id ){
-        throw new Error(`columns[${i}].idがNULLです。\nレイヤー : records\n関数 : createRecord`);
+        throw new Error(`columns[${i}].idがNULLです。\nレイヤー : records\n関数 : createRecordFromUI`);
       }
       else{
-        throw new Error(`columns[${i}].idが文字列ではありません。\nレイヤー : records\n関数 : createRecord`);
+        throw new Error(`columns[${i}].idが文字列ではありません。\nレイヤー : records\n関数 : createRecordFromUI`);
       }
     }
     if( typeof columns[i].newField !== "string" ){
       if( !columns[i].newField ){
-        throw new Error(`columns[${i}].newFieldがNULLです。\nレイヤー : records\n関数 : createRecord`);
+        throw new Error(`columns[${i}].newFieldがNULLです。\nレイヤー : records\n関数 : createRecordFromUI`);
       }
       else{
-        throw new Error(`columns[${i}].newFieldが文字列ではありません。\nレイヤー : records\n関数 : createRecord`);
+        throw new Error(`columns[${i}].newFieldが文字列ではありません。\nレイヤー : records\n関数 : createRecordFromUI`);
       }
     }
   }
@@ -214,11 +214,11 @@ export async function createRecord( tableId, columns ){
   // メイン処理を実行
   let result;
   try{
-    result = await createRecord_core( tableId, columns );
+    result = await createRecordFromUI_core( tableId, columns );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : records\n関数 : createRecord`);
+      throw new Error(`${error}\nレイヤー : records\n関数 : createRecordFromUI`);
     }
     else{
       throw error;
@@ -229,29 +229,29 @@ export async function createRecord( tableId, columns ){
   // 戻り値を検証
   if( typeof result !== "object" ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : records\n関数 : createRecord`);
+      throw new Error(`resultがNULLです。\nレイヤー : records\n関数 : createRecordFromUI`);
     }
     else{
-      throw new Error(`resultがオブジェクトではありません。\nレイヤー : records\n関数 : createRecord`);
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : records\n関数 : createRecordFromUI`);
     }
   }
   if( typeof result.recordId !== "number" ){
     if( !result.recordId ){
-      throw new Error(`result.recordIdがNULLです。\nレイヤー : records\n関数 : createRecord`);
+      throw new Error(`result.recordIdがNULLです。\nレイヤー : records\n関数 : createRecordFromUI`);
     }
     else{
-      throw new Error(`result.recordIdが数値ではありません。\nレイヤー : records\n関数 : createRecord`);
+      throw new Error(`result.recordIdが数値ではありません。\nレイヤー : records\n関数 : createRecordFromUI`);
     }
   }
   else if( isNaN(result.recordId) ){
-    throw new Error(`result.recordIdが数値ではありません。\nレイヤー : records\n関数 : createRecord`);
+    throw new Error(`result.recordIdが数値ではありません。\nレイヤー : records\n関数 : createRecordFromUI`);
   }
   if( typeof result.userMessage !== "string" ){
     if( !result.userMessage ){
-      throw new Error(`result.userMessageがNULLです。\nレイヤー : records\n関数 : createRecord`);
+      throw new Error(`result.userMessageがNULLです。\nレイヤー : records\n関数 : createRecordFromUI`);
     }
     else{
-      throw new Error(`result.userMessageが文字列ではありません。\nレイヤー : records\n関数 : createRecord`);
+      throw new Error(`result.userMessageが文字列ではありません。\nレイヤー : records\n関数 : createRecordFromUI`);
     }
   }
   //

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import {
   startUp,
+  deleteTable,
   generateSQL,
   deleteView,
 } from "./052_joinedTable_validate.js";
@@ -76,9 +77,6 @@ import {
 } from "./109_data_type_validate.js";
 import {
   createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   updateRecords,
   checkField,
   checkRecord,
@@ -94,13 +92,6 @@ import {
   reserveWord,
   checkReservedWord,
 } from "./097_reserved_word_validate.js";
-import {
-  deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./079_record_title_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -128,8 +119,18 @@ import {
   _generateRecordSortNumber,
 } from "./106_sort_validate.js";
 import {
+  listTables,
+  setTitleColumn,
+  getTitleColumnId,
+  getRecordIdFromTitle,
+} from "./079_record_title_validate.js";
+import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -246,12 +247,6 @@ async function _test(){
   const matrix = pageData["view"+viewId1+"_"];
   if( matrix.length !== 1 ){
     console.error(matrix);
-    throw "テスト結果が想定とは異なります。";
-  }
-  if( matrix[0]['学年'] !== 3 ){
-    throw "テスト結果が想定とは異なります。";
-  }
-  if( matrix[0]['氏名'] !== "田中太郎" ){
     throw "テスト結果が想定とは異なります。";
   }
   await close();

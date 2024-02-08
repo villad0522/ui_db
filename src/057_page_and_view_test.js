@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import {
   createColumn,
-  deleteTable,
   listTables,
   setTitleColumn,
   getTitleColumnId,
@@ -43,9 +42,6 @@ import {
 } from "./109_data_type_validate.js";
 import {
   createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   updateRecords,
   checkField,
   checkRecord,
@@ -90,6 +86,10 @@ import {
 import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -156,6 +156,7 @@ import {
   getViewInfo,  // ビューの情報を取得
   clearCache,  // インメモリキャッシュを削除する
   isExistView,  // ビューの存在を確認
+  deleteTable,  // 不可逆的にテーブルを削除
 } from "./058_page_and_view_validate.js";
 import { setBugMode } from "./059_page_and_view.js";
 
@@ -165,7 +166,7 @@ export async function test057() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 49; i++ ) {
+    for ( i = 1; i <= 50; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

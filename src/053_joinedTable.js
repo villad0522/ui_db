@@ -3,6 +3,7 @@
 import {
   startUp,
   createColumn,
+  deleteTable,
   createView,
   deleteView,
   deletePage,
@@ -73,9 +74,6 @@ import {
 } from "./109_data_type_validate.js";
 import {
   createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   updateRecords,
   checkField,
   checkRecord,
@@ -91,13 +89,6 @@ import {
   reserveWord,
   checkReservedWord,
 } from "./097_reserved_word_validate.js";
-import {
-  deleteTable,
-  listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./079_record_title_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -125,8 +116,18 @@ import {
   _generateRecordSortNumber,
 } from "./106_sort_validate.js";
 import {
+  listTables,
+  setTitleColumn,
+  getTitleColumnId,
+  getRecordIdFromTitle,
+} from "./079_record_title_validate.js";
+import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -351,4 +352,9 @@ export async function generateSQL_core( viewId, queryParameters ){
         sortOrders
     );
     return {  normalSQL, countSQL, parameters };
+}
+// 不可逆的にテーブルを削除
+export async function deleteTable_core( tableId ){
+  if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+  throw "この関数は未実装です。";
 }

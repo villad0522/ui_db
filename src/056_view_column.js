@@ -3,6 +3,7 @@
 import {
   startUp,
   clearCache,
+  deleteTable,
   createPage,
   updatePageName,
   getPageInfo,
@@ -60,7 +61,6 @@ import {
 } from "./112_primary_key_validate.js";
 import {
   createColumn,
-  deleteTable,
   listTables,
   setTitleColumn,
   getTitleColumnId,
@@ -71,9 +71,6 @@ import {
 } from "./109_data_type_validate.js";
 import {
   createRecord,
-  listRecords,
-} from "./085_records_validate.js";
-import {
   updateRecords,
   checkField,
   checkRecord,
@@ -118,6 +115,10 @@ import {
 import {
   formatField,
 } from "./088_db_formatter_validate.js";
+import {
+  listRecords,
+  createRecordFromUI,
+} from "./085_records_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -659,4 +660,10 @@ export async function deletePage_core( pageId ){
     }
   }
   await deletePage( pageId );   // 下層の関数を呼び出す
+}
+
+// 不可逆的にテーブルを削除
+export async function deleteTable_core( tableId ){
+  if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
+  throw "この関数は未実装です。";
 }
