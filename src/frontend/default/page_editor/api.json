@@ -4,7 +4,7 @@
     "commandName": "GET_PAGE_INFO",
     "queryParameters": {
         "page_id": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "情報を取得したいページのID",
             "isRequired": true,
             "example": 8

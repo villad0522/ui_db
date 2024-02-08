@@ -1,15 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  cutRecord,
-  copyRecord,
-  pasteRecord,
-  getCuttingRecord,
-  getCopyingRecord,
-  _moveRecord,
-  _copyRecord,
-  _generateRecordSortNumber,
-} from "./106_sort_validate.js";
+  createColumn,
+  listDataTypes,
+  createRecord,
+  updateRecords,
+  checkField,
+  checkRecord,
+  getDataType,
+  deleteRecords,
+} from "./109_data_type_validate.js";
 import {
   getLocalIp,
 } from "./124_ip_address_validate.js";
@@ -29,15 +29,15 @@ import {
   getPrimaryKey,
 } from "./112_primary_key_validate.js";
 import {
-  createColumn,
-  listDataTypes,
-  createRecord,
-  updateRecords,
-  checkField,
-  checkRecord,
-  getDataType,
-  deleteRecords,
-} from "./109_data_type_validate.js";
+  cutRecord,
+  copyRecord,
+  pasteRecord,
+  getCuttingRecord,
+  getCopyingRecord,
+  _moveRecord,
+  _copyRecord,
+  _generateRecordSortNumber,
+} from "./106_sort_validate.js";
 import {
   startUp,  // プログラム起動
   clearCache,  // インメモリキャッシュを削除する

@@ -4,7 +4,7 @@
     "commandName": "CREATE_VIEW",
     "queryParameters": {
         "page_id": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "ページID",
             "isRequired": true,
             "example": 1

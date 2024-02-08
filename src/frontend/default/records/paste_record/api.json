@@ -1,0 +1,33 @@
+{
+    "httpMethod": "POST",
+    "description": "レコードを貼り付けます。",
+    "commandName": "PASTE_RECORD",
+    "queryParameters": {
+        "table": {
+            "dataType": "TEXT",
+            "description": "テーブルID",
+            "isRequired": true,
+            "example": "t3"
+        },
+        "before_id": {
+            "dataType": "INTEGER",
+            "description": "貼り付けたい場所の、直前に存在するレコードのID。",
+            "isRequired": false,
+            "example": 8
+        },
+        "after_id": {
+            "dataType": "INTEGER",
+            "description": "貼り付けたい場所の、直後に存在するレコードのID。",
+            "isRequired": false,
+            "example": 8
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "./"
+        }
+    }
+}

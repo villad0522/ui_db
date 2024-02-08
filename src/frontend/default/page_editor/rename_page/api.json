@@ -4,7 +4,7 @@
     "commandName": "RENAME_PAGE",
     "queryParameters": {
         "page_id": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "変更したいページのID",
             "isRequired": true,
             "example": 8

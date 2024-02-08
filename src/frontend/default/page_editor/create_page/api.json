@@ -4,7 +4,7 @@
     "commandName": "CREATE_PAGE",
     "queryParameters": {
         "page_id": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "親ページのページID",
             "isRequired": true,
             "example": 1

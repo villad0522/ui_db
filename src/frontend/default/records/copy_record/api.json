@@ -1,0 +1,21 @@
+{
+    "httpMethod": "POST",
+    "description": "レコードをコピーして保留します。貼り付けは行いません。",
+    "commandName": "COPY_RECORD",
+    "queryParameters": {
+        "table": {
+            "dataType": "TEXT",
+            "description": "テーブルID",
+            "isRequired": true,
+            "example": "t3"
+        },
+        "record_id": {
+            "dataType": "INTEGER",
+            "description": "コピーしたいレコードのID",
+            "isRequired": true,
+            "example": 8
+        }
+    },
+    "requestBody": {},
+    "response": {}
+}

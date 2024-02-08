@@ -322,7 +322,9 @@ function _validateQueryParameters({ endpointPath, endpointInfo, queryParameters 
                 dataType: parentInfo.dataType,
                 isRequired: parentInfo.isRequired,
             });
-            queryParameters2[parentKey] = parentValue;
+            if( parentValue !== null ){
+                queryParameters2[parentKey] = parentValue;
+            }
         }
         catch (err) {
             // 記入漏れや書式エラーが発生した場合
@@ -488,7 +490,7 @@ function _validator({ value, dataType, isRequired }) {
             // 空欄NGの場合
             throw "必須項目が空欄です。";
         default:
-            throw `サポートされていないデータ型です。detaType="${childInfo.dataType}"`;
+            throw `サポートされていないデータ型です。detaType="${dataType}"`;
     }
 }
 

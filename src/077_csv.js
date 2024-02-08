@@ -245,11 +245,12 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
     // データベースに挿入する処理
     for( const cells of buf ){
       if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+      const cells2 = cells.map(_convertData);
       await stmt.run([
         sortNumber,
         createdAt,
         updatedAt,
-        ...cells,
+        ...cells2,
       ]);
       sortNumber -= 8;
       successCount++;
@@ -349,6 +350,24 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
   parserStream = null;
   progressMessage = `完了しました。`;
 }
+
+
+const baseDate = new Date( 1980, 0, 1 );
+
+function _convertData(inputText){
+  if(!isNaN(inputText)){
+    return Number(inputText);
+  }
+  try{
+    const date = new Date(inputText);
+    if( !isNaN(date.getDate()) && date.getTime()>baseDate.getTime() ){
+      return date.getTime();
+    }
+  }
+  catch(err){}
+  return String( inputText ?? "" );
+}
+
 
 
 

@@ -4,7 +4,7 @@
     "commandName": "CUT_PAGE",
     "queryParameters": {
         "page_id": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "切り取りたいページのID",
             "isRequired": true,
             "example": 8

@@ -126,7 +126,7 @@ async function _reload() {
             table_id AS tableId
         FROM column_names
         WHERE enable = 1
-        ORDER BY created_at DESC;`,
+        ORDER BY created_at ASC;`,
         {},
     );
     cacheData1 = {};

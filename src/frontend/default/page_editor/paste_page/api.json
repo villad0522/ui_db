@@ -4,13 +4,13 @@
     "commandName": "PASTE_PAGE",
     "queryParameters": {
         "page_id": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "親ページのページID",
             "isRequired": true,
             "example": 1
         },
         "after_id": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "貼り付けたい場所の、直後に存在するページのID。「0」を代入すると、末尾に貼り付けます。",
             "isRequired": false,
             "example": 8

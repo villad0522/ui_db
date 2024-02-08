@@ -2,15 +2,19 @@
 //
 import {
   startUp,
-  cutRecord,
-  copyRecord,
-  pasteRecord,
-  getCuttingRecord,
-  getCopyingRecord,
-  _moveRecord,
-  _copyRecord,
-  _generateRecordSortNumber,
-} from "./106_sort_validate.js";
+  clearCache,
+  createColumn,
+  listDataTypes,
+  createRecord,
+  updateRecords,
+  checkField,
+  checkRecord,
+  createTable,
+  deleteTable,
+  getDataType,
+  deleteRecords,
+  reload,
+} from "./109_data_type_validate.js";
 import {
   getLocalIp,
 } from "./124_ip_address_validate.js";
@@ -32,19 +36,15 @@ import {
   getPrimaryKey,
 } from "./112_primary_key_validate.js";
 import {
-  clearCache,
-  createColumn,
-  listDataTypes,
-  createRecord,
-  updateRecords,
-  checkField,
-  checkRecord,
-  createTable,
-  deleteTable,
-  getDataType,
-  deleteRecords,
-  reload,
-} from "./109_data_type_validate.js";
+  cutRecord,
+  copyRecord,
+  pasteRecord,
+  getCuttingRecord,
+  getCopyingRecord,
+  _moveRecord,
+  _copyRecord,
+  _generateRecordSortNumber,
+} from "./106_sort_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）

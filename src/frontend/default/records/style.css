@@ -16,6 +16,7 @@ header {
     width: calc(100vw - 20px);
     position: sticky;
     left: 0;
+    z-index: 999;
 }
 
 thead {

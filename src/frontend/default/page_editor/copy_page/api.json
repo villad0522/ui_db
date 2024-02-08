@@ -4,7 +4,7 @@
     "commandName": "COPY_PAGE",
     "queryParameters": {
         "page_id": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "コピーしたいページのID",
             "isRequired": true,
             "example": 8

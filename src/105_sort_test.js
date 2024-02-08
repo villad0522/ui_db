@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import {
+  startUp,
   clearCache,
   createColumn,
   listDataTypes,
@@ -35,7 +36,6 @@ import {
   getPrimaryKey,
 } from "./112_primary_key_validate.js";
 import {
-  startUp,  // プログラム起動
   cutRecord,  // レコードを切り取る
   copyRecord,  // レコードをコピーする
   pasteRecord,  // レコードを貼り付ける
@@ -53,7 +53,7 @@ export async function test105() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 15; i++ ) {
+    for ( i = 1; i <= 17; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

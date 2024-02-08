@@ -4,7 +4,7 @@
     "commandName": "DELETE_PAGE",
     "queryParameters": {
         "page_id": {
-            "dataType": "NUMBER",
+            "dataType": "INTEGER",
             "description": "削除したいページのIDを指定してください。トップページ(ID:1)は削除禁止です。",
             "isRequired": true,
             "example": 9
