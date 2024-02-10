@@ -74,14 +74,15 @@ export async function pasteRecord_core( tableId, beforeRecordId, afterRecordId )
   if( copyingRecordId ){
     if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
     // レコードをコピーする場合
-    await _copyRecord_core( tableId, copyingRecordId, beforeRecordId, afterRecordId );
-    return;
+    return await _copyRecord_core( tableId, copyingRecordId, beforeRecordId, afterRecordId );
   }
   else if( cuttingRecordId ){
     if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
     // 事前に切り取ったレコードを貼り付ける場合
     await _moveRecord_core( tableId, cuttingRecordId, beforeRecordId, afterRecordId );
-    return;
+    copyingRecords[tableId] = null;
+    cuttingRecords[tableId] = null;
+    return cuttingRecordId;
   }
   else{
     throw new Error(`貼り付け操作を行う前に、切り取り または コピーを行ってください。`);
@@ -139,8 +140,9 @@ export async function _copyRecord_core( tableId, recordId, beforeRecordId, after
   const recordData = records[0];
   delete recordData[primaryKey];
   recordData["sort_number"] = sortNumber;
-  recordData["created_at"] = new Date().getTime();
-  recordData["updated_at"] = new Date().getTime();
+  const timestamp = new Date().getTime();
+  recordData["created_at"] = timestamp;
+  recordData["updated_at"] = timestamp;
   const placeholders = {};
   for( const columnId in recordData ){
     if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -153,6 +155,22 @@ export async function _copyRecord_core( tableId, recordId, beforeRecordId, after
       VALUES ( ${columnIds.map(columnId=>(":"+columnId))} );`,
     placeholders,
   );
+  const records2 = await runSqlReadOnly(
+      `SELECT * FROM ${tableId}
+          WHERE created_at = :createdAt
+          LIMIT 1;`,
+      {
+          ":createdAt": timestamp,
+      },
+  );
+  if(records2.length===0){
+      throw "追加したはずのレコードが見つかりません。";
+  }
+  const newRecordId = records2[0][primaryKey];
+  if(!newRecordId){
+      throw "新しく発行されたレコードIDが見つかりません。";
+  }
+  return newRecordId;
 }
 
 // 【サブ関数】ソート番号を発行する

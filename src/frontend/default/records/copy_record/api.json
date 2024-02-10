@@ -14,8 +14,26 @@
             "description": "コピーしたいレコードのID",
             "isRequired": true,
             "example": 8
+        },
+        "record": {
+            "dataType": "INTEGER",
+            "description": "フォーカス中のレコードID",
+            "isRequired": false,
+            "example": 294
+        },
+        "page_records": {
+            "dataType": "INTEGER",
+            "description": "ページ番号。１ページに収まらなかった場合に活用します。このパラメータを2,3,4...と増やすことで、次のページを閲覧できます。",
+            "isRequired": false,
+            "example": 1
         }
     },
     "requestBody": {},
-    "response": {}
+    "response": {
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "../?table=t6"
+        }
+    }
 }

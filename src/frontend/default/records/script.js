@@ -26,7 +26,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         const scrollX = Number(scrollXText);
         const scrollY = Number(scrollYText);
         if (!isNaN(scrollX) && !isNaN(scrollY)) {
-            console.log(scrollY);
             document.documentElement.scrollLeft = scrollX;
             document.documentElement.scrollTop = scrollY;
         }
@@ -74,6 +73,7 @@ window.paginationButtonFirst = function (arrayName) {
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("page_records", 1);
+    searchParams.delete("record");
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -86,6 +86,7 @@ window.paginationButtonPrev = function () {
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("page_records", pageNumber);
+    searchParams.delete("record");
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -98,6 +99,7 @@ window.paginationButtonNext = function () {
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("page_records", pageNumber);
+    searchParams.delete("record");
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -110,6 +112,7 @@ window.paginationButtonLast = function () {
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("page_records", pageNumber);
+    searchParams.delete("record");
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }

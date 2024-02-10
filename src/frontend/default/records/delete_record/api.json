@@ -11,9 +11,21 @@
         },
         "record_id": {
             "dataType": "INTEGER",
-            "description": "レコードID",
+            "description": "削除したいレコードのID",
             "isRequired": true,
             "example": 678
+        },
+        "record": {
+            "dataType": "INTEGER",
+            "description": "フォーカス中のレコードID",
+            "isRequired": false,
+            "example": 294
+        },
+        "page_records": {
+            "dataType": "INTEGER",
+            "description": "ページ番号。１ページに収まらなかった場合に活用します。このパラメータを2,3,4...と増やすことで、次のページを閲覧できます。",
+            "isRequired": false,
+            "example": 1
         }
     },
     "requestBody": {},

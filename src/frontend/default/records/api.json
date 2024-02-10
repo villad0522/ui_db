@@ -9,6 +9,12 @@
             "isRequired": true,
             "example": "t3"
         },
+        "record": {
+            "dataType": "INTEGER",
+            "description": "フォーカス中のレコードID",
+            "isRequired": false,
+            "example": 294
+        },
         "page_records": {
             "dataType": "INTEGER",
             "description": "ページ番号。１ページに収まらなかった場合に活用します。このパラメータを2,3,4...と増やすことで、次のページを閲覧できます。",
@@ -109,6 +115,21 @@
                     "dataType": "INTEGER",
                     "description": "レコードID",
                     "example": 112
+                },
+                "isFocus": {
+                    "dataType": "BOOL",
+                    "description": "フォーカス中か否か",
+                    "example": false
+                },
+                "isCopying": {
+                    "dataType": "BOOL",
+                    "description": "コピー中か否か",
+                    "example": false
+                },
+                "isCutting": {
+                    "dataType": "BOOL",
+                    "description": "切り取り中か否か",
+                    "example": false
                 },
                 "field0": {
                     "dataType": "TEXT",

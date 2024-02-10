@@ -110,6 +110,7 @@ import {
   setTitleColumnsFromUI,
   _deleteTitleColumn,
   _getParentValue,
+  _getParentOffset,
 } from "./082_record_title_validate.js";
 import {
   formatField,

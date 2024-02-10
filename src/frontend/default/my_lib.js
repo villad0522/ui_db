@@ -162,6 +162,9 @@ window.myFetch = myFetch;
 // フォームデータを画面に反映させる関数
 function _setFormData(formData) {
     formData.forEach((value, key) => {
+        if (key.includes("isFocus")) {
+            console.log(key, value);
+        }
         if (String(key).includes("_option")) {
             key = key.split("_option")[0];
             const optionValue = value;

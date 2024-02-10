@@ -97,7 +97,7 @@ export function setBugMode( mode ){
 
 
 // レコードの一覧を取得(GUI)
-export async function listRecords_core( tableId, pageNumber, onePageMaxSize ){
+export async function listRecords_core( tableId, pageNumber, onePageMaxSize, focusRecordId ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
     const primaryKey = await getPrimaryKey( tableId );
     const columns = await listColumnsAll( tableId );
@@ -114,8 +114,26 @@ export async function listRecords_core( tableId, pageNumber, onePageMaxSize ){
         {},
     );
     let offset = onePageMaxSize * (pageNumber - 1);
-    if( offset >= recordsTotal ){
+    if( !isNaN(focusRecordId) && focusRecordId>=1 ){
         if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+        const [{ "COUNT(*)": offset2 }] = await runSqlReadOnly(
+            `SELECT COUNT(*)
+                FROM ${tableId}
+                WHERE sort_number > (
+                    SELECT sort_number
+                        FROM ${tableId}
+                        WHERE ${primaryKey} = :recordId
+                        LIMIT 1
+                )
+                ORDER BY sort_number DESC;`,
+            {
+                ":recordId": focusRecordId,
+            },
+        );
+        offset = offset2 - (offset2 % onePageMaxSize);
+    }
+    if( offset >= recordsTotal ){
+        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
         offset = recordsTotal;
     }
     // 「sqlite_master」と結合させることで、実際に存在するテーブルのみに絞り込む
@@ -129,14 +147,22 @@ export async function listRecords_core( tableId, pageNumber, onePageMaxSize ){
             ":offset": offset,
         },
     );
+    // 切り取り中のレコードを取得する
+    const cuttingRecordId = await getCuttingRecord( tableId );
+    // コピー中のレコードを取得する
+    const copyingRecordId = await getCopyingRecord( tableId );
     const newRecords = [];
     for( const oldRecord of oldRecords ){
-        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+        const recordId = oldRecord[primaryKey];
         const newRecord = {
-            "id": String(oldRecord[primaryKey]),
+            "id": String(recordId),
+            "isFocus": (recordId===focusRecordId) ? true : false,
+            "isCopying": (recordId===copyingRecordId) ? true : false,
+            "isCutting": (recordId===cuttingRecordId) ? true : false,
         };
         for( let i=0; i<columns.length; i++ ){
-            if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
             const columnId = columns[i]["id"];
             let value = oldRecord[columnId];
             newRecord[ "field" + i ] = value;
@@ -146,7 +172,8 @@ export async function listRecords_core( tableId, pageNumber, onePageMaxSize ){
     return {
         "columns": columns,
         "records": newRecords,
-        "recordsTotal": recordsTotal
+        "recordsTotal": recordsTotal,
+        "pageNumber": Math.floor(offset/onePageMaxSize)+1,
     };
 }
 
@@ -154,10 +181,10 @@ export async function listRecords_core( tableId, pageNumber, onePageMaxSize ){
 
 // レコードを追加
 export async function createRecordFromUI_core( tableId, columns ){
-  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     const newFields = {};
     for( let i=0; i<columns.length; i++ ){
-        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
         const columnId = columns[i]["id"];
         const inputText = columns[i]["newField"];
         newFields[columnId] = await formatField( inputText, columnId, false );

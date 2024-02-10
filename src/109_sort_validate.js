@@ -159,6 +159,17 @@ export async function pasteRecord( tableId, beforeRecordId, afterRecordId ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "number" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : sort\n関数 : pasteRecord`);
+    }
+    else{
+      throw new Error(`resultが数値ではありません。\nレイヤー : sort\n関数 : pasteRecord`);
+    }
+  }
+  else if( isNaN(result) ){
+    throw new Error(`resultが数値ではありません。\nレイヤー : sort\n関数 : pasteRecord`);
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -387,6 +398,17 @@ export async function _copyRecord( tableId, recordId, beforeRecordId, afterRecor
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "number" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : sort\n関数 : _copyRecord`);
+    }
+    else{
+      throw new Error(`resultが数値ではありません。\nレイヤー : sort\n関数 : _copyRecord`);
+    }
+  }
+  else if( isNaN(result) ){
+    throw new Error(`resultが数値ではありません。\nレイヤー : sort\n関数 : _copyRecord`);
+  }
   //
   //--------------------------------------------------------------------------
   return result;

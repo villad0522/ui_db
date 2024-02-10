@@ -111,6 +111,7 @@ import {
   setTitleColumnsFromUI,
   _deleteTitleColumn,
   _getParentValue,
+  _getParentOffset,
 } from "./082_record_title_validate.js";
 import {
   formatField,
@@ -287,6 +288,9 @@ function _convertResponseData({ endpointPath, endpointInfo, response, queryParam
         // 現在のページ番号
         const queryParameterKey = "page_" + String(parentKey);
         let pageNumber = queryParameters[queryParameterKey];
+        if( response[queryParameterKey] ){
+            pageNumber = response[queryParameterKey] ?? 1;
+        }
         if (isNaN(pageNumber)) {
             pageNumber = 1;
         }
@@ -313,6 +317,9 @@ function _convertResponseData({ endpointPath, endpointInfo, response, queryParam
         //
         response2[String(parentKey) + "_pageLast_flag"] = (pageNumber < maxPageNumber - 1) ? true : false;
         response2[String(parentKey) + "_pageLast"] = maxPageNumber;
+    }
+    for (const parentKey in endpointInfo.response) {
+        delete response2["page_" + String(parentKey)];
     }
     return response2;
 }

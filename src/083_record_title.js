@@ -320,9 +320,9 @@ export async function _deleteTitleColumn_core( tableId ){
 }
 
 // レコードの一覧を取得(GUI)
-export async function listRecords_core( tableId, pageNumber, onePageMaxSize ){
+export async function listRecords_core( tableId, oldPageNumber, onePageMaxSize, focusRecordId ){
   if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
-  const { columns, records, recordsTotal } = await listRecords( tableId, pageNumber, onePageMaxSize );
+  const { columns, records, recordsTotal, pageNumber } = await listRecords( tableId, oldPageNumber, onePageMaxSize, focusRecordId );
   const newColumns = [];
   const newRecords = [];
   for( const columnInfo of columns ){
@@ -353,7 +353,7 @@ export async function listRecords_core( tableId, pageNumber, onePageMaxSize ){
   for( const oldRecord of records ){
       if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
       const newRecord = {
-        "id": oldRecord["id"],
+        ...oldRecord,
       };
       for( let i=0; i<columns.length; i++ ){
         if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -374,7 +374,8 @@ export async function listRecords_core( tableId, pageNumber, onePageMaxSize ){
         }
         const recordId = Number(value);
         const parentText = await _getParentValue_core( parentTableId, recordId );
-        const url = `/default/records/index.html?table=${tableId}&record=${recordId}`;
+        const offset = await _getParentOffset_core( parentTableId, recordId, onePageMaxSize );
+        const url = `/default/records/index.html?table=${parentTableId}&record=${recordId}#offset${offset}`;
         newRecord[ "field" + i ] = `<a href="${url}">${String(parentText)}</a>`;
       }
       newRecords.push(newRecord);
@@ -382,7 +383,8 @@ export async function listRecords_core( tableId, pageNumber, onePageMaxSize ){
   return { 
     columns: newColumns,
     records: newRecords, 
-    recordsTotal
+    recordsTotal,
+    pageNumber,
   };
 }
 
@@ -452,4 +454,25 @@ export async function createRecordFromUI_core( tableId, columns ){
     });
   }
   return await createRecordFromUI( tableId, newColumns );
+}
+
+// 【サブ】親テーブルのスクロール位置を取得
+export async function _getParentOffset_core( tableId, recordId, onePageMaxSize ){
+  if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
+  const primaryKey = await getPrimaryKey( tableId );
+  const [{ "COUNT(*)": offset2 }] = await runSqlReadOnly(
+      `SELECT COUNT(*)
+          FROM ${tableId}
+          WHERE sort_number > (
+              SELECT sort_number
+                  FROM ${tableId}
+                  WHERE ${primaryKey} = :recordId
+                  LIMIT 1
+          )
+          ORDER BY sort_number DESC;`,
+      {
+          ":recordId": recordId,
+      },
+  );
+  return offset2 % onePageMaxSize;
 }

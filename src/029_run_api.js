@@ -111,6 +111,7 @@ import {
   setTitleColumnsFromUI,
   _deleteTitleColumn,
   _getParentValue,
+  _getParentOffset,
 } from "./082_record_title_validate.js";
 import {
   formatField,
@@ -300,10 +301,11 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     //======================================================================
     case "LIST_RECORDS":{
       if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
-      const pageNumber = queryParameters["page_records"];
+      const focusRecordId = queryParameters["record"];
+      const oldPageNumber = queryParameters["page_records"];
       const onePageMaxSize = apiInfo?.response?.records?.onePageMaxSize;
       const tableId = queryParameters["table"];
-      const { columns, records, recordsTotal } = await listRecords( tableId, pageNumber, onePageMaxSize );
+      const { columns, records, recordsTotal, pageNumber } = await listRecords( tableId, oldPageNumber, onePageMaxSize, focusRecordId );
       // 親テーブルを選ぶときのセレクトボックスを構築する
       const { tables, total:tablesTotal } = await listTables(
         1,
@@ -318,6 +320,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
         "tables_total": tablesTotal,
         "records": records,
         "records_total": recordsTotal,
+        "page_records": pageNumber,
       };
     }
     //======================================================================
@@ -326,7 +329,9 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       const tableId = queryParameters["table"];
       const recordId = queryParameters["record_id"];
       await copyRecord( tableId, recordId );
-      return {};
+      return {
+        "nextUrl": `./?` + await convertQuery_core(queryParameters),
+      };
     }
     //======================================================================
     case "CUT_RECORD":{
@@ -334,17 +339,20 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       const tableId = queryParameters["table"];
       const recordId = queryParameters["record_id"];
       await cutRecord( tableId, recordId );
-      return {};
+      return {
+        "nextUrl": `./?` + await convertQuery_core(queryParameters),
+      };
     }
     //======================================================================
     case "PASTE_RECORD":{
       if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
       const tableId = queryParameters["table"];
+      const pageNumber = queryParameters["page_records"];
       const beforeRecordId = queryParameters["before_id"];
       const afterRecordId = queryParameters["after_id"];
-      await pasteRecord( tableId, beforeRecordId, afterRecordId );
+      const recordId = await pasteRecord( tableId, beforeRecordId, afterRecordId );
       return {
-        "nextUrl": "./?" + await convertQuery_core(queryParameters),
+        "nextUrl": `./?table=${tableId}&record=${recordId}&page_records=${pageNumber ?? 1}`,
       };
     }
     //======================================================================

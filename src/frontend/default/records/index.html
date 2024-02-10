@@ -24,6 +24,12 @@
     </head>
 
     <body style="visibility: hidden;">
+        <!-- スクロール位置の基準にするためのアンカー -->
+        <div id="offset0"></div>
+        <div id="offset1"></div>
+        <div id="offset2"></div>
+        <div id="offset3"></div>
+        <div id="offset4"></div>
         <form>
             <header>
                 <nav class="navbar navbar-dark bg-primary">
@@ -55,9 +61,11 @@
                     </h3>
                     （<span name="records_total"></span>件）
                     <button onclick="jumpWithQuery('./rename/index.html');" type="button" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-pencil"></i>
                         列の名前を変更
                     </button>
                     <button onclick="handleDeleteTable()" type="button" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i>
                         表を削除
                     </button>
                 </div>
@@ -156,6 +164,8 @@
                 <table class="table table-bordered table-hover text-nowrap">
                     <thead>
                         <tr>
+                            <th scope="col" rowspan="2" style="border-bottom: solid; vertical-align: middle;">
+                            </th>
                             <script>
                                 let htmlText3 = "";
                                 for (let j = 0; j < 35; j++) {
@@ -198,6 +208,7 @@
                     </thead>
                     <tbody>
                         <tr name="columns0_flag">
+                            <td></td>
                             <script>
                                 let htmlText5 = "";
                                 for (let j = 0; j < 35; j++) {
@@ -223,7 +234,12 @@
                             let htmlText4 = "";
                             for (let i = 0; i < 50; i++) {
                                 htmlText4 += `
-                                    <tr name="records${i}_flag">`;
+                                    <tr name="records${i}_flag" id="offset${i + 5}">
+                                        <td style="padding: 0; width: 40px;">
+                                            <label for="records${i}_isFocus" class="check_outer">
+                                                <input name="records${i}_isFocus" class="form-check-input" type="checkbox" id="records${i}_isFocus">
+                                            </label>
+                                        </td>`;
                                 for (let j = 0; j < 35; j++) {
                                     htmlText4 += `
                                         <td name="columns${j}_flag">
@@ -235,19 +251,32 @@
                                         <td name="records${i}_id">
                                         </td>
                                         <td>
-                                            <button onclick="myFetch('./paste_record/json?after_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
+                                            <button onclick="myFetch('./paste_record/form?after_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
                                                 <i class="bi bi-clipboard"></i>
                                                 <i class="bi bi-arrow-up"></i>
                                             </button>
-                                            <button onclick="myFetch('./cut_record/json?record_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
+                                            <button onclick="myFetch('./cut_record/form?record_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
                                                 <i class="bi bi-scissors"></i>
                                             </button>
-                                            <button onclick="myFetch('./copy_record/json?record_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
+                                            <button onclick="myFetch('./copy_record/form?record_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
                                                 <i class="bi bi-files"></i>
                                             </button>
-                                            <button onclick="myFetch('./delete_record/json?record_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
+                                            <button onclick="myFetch('./delete_record/form?record_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
                                                 <i class="bi bi-trash-fill"></i>
                                             </button>
+                                            <!--  -->
+                                            <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                                            <input name="records${i}_isCopying" class="flag" type="checkbox">
+                                            <span class="badge rounded-pill text-bg-info">
+                                                コピー中
+                                            </span>
+                                            <!--  -->
+                                            <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                                            <input name="records${i}_isCutting" class="flag" type="checkbox">
+                                            <span class="badge rounded-pill text-bg-info">
+                                                切り取り中
+                                            </span>
+                                            <!--  -->
                                         </td>
                                     </tr>`;
                             }
