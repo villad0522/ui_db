@@ -46,15 +46,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
-                <form onsubmit="sendFile(event)">
-                    <br>
-                    <label for="formFile" class="form-label">
-                        CSVファイルを選択してください
-                    </label>
-                    <input class="form-control" type="file" id="formFile" name="input_file">
-                    <br>
-                    <input class="btn btn-primary" type="submit" value="OK">
-                </form>
+                <br>
+                <label for="formFile" class="form-label">
+                    CSVファイルを選択してください
+                </label>
+                <input class="form-control" type="file" id="formFile">
+                <br>
+                <button onclick="sendFile(event)" class="btn btn-primary" type="button">
+                    OK
+                </button>
             </div>
         </div>
         <!--  -->
@@ -107,25 +107,15 @@
                                     <!--  -->
                                     <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
                                     <input name="tables${i}_flag" class="flag" type="checkbox" style="display: none;">
-                                    <div>
-                                        <div class="card clickable" onclick="tableButton(${i})">
-                                            <div class="card-img-top" style="padding: 25% 30% 5% 30%; opacity: 0.7;">
-                                                <svg class="bi bi-table" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="currentColor" viewBox="0 0 16 16">
-                                                    <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z" />
-                                                </svg>
-                                            </div>
-                                            <div class="card-body">
-                                                <h6 name="tables${i}_name" class="card-title"></h6>
-                                            </div>
+                                    <div class="card clickable" onclick="tableButton(${i})">
+                                        <div class="card-img-top" style="padding: 25% 30% 5% 30%; opacity: 0.7;">
+                                            <svg class="bi bi-table" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z" />
+                                            </svg>
                                         </div>
-                                        <span class="collapse" id="collapse${i}" style="text-align: right;">
-                                            <button onclick="copyButton(${i})" type="button" class="btn btn-outline-primary btn-sm">
-                                                コピー
-                                            </button>
-                                            <button onclick="deleteButton(${i})" type="button" class="btn btn-outline-danger btn-sm">
-                                                削除
-                                            </button>
-                                        </span>
+                                        <div class="card-body">
+                                            <h6 name="tables${i}_name" class="card-title"></h6>
+                                        </div>
                                     </div>
                                 </div>
                             `;
@@ -179,28 +169,29 @@
                         <input name="tables_pageLast" type="text" style="display: none;">
                     </ul>
                 </div>
-            </form>
-            <br>
-            <br>
-            <br>
-            <label for="funcName" class="form-label">データ移行処理</label>
-            <div class="input-group mb-3" style="width: 300px;">
-                <select id="funcName" class="form-control">
-                    <option></option>
-                </select>
-                <button type="button" class="btn btn-primary">
-                    実行
+                <br>
+                <br>
+                <br>
+                <label for="processName" class="form-label">データ移行処理</label>
+                <div class="input-group mb-3" style="width: 300px;">
+                    <select id="processName" name="processName" class="form-control">
+                        <option selected>飼育台帳</option>
+                        <option>飼育履歴</option>
+                    </select>
+                    <button onclick="myFetch('./transfer_data/json');" type="button" class="btn btn-primary">
+                        実行
+                    </button>
+                </div>
+                <br>
+                <a href="/default/api_doc/" class="btn btn-primary">
+                    API仕様書
+                </a>
+                <button onclick="myFetch('/default/clear_cache/json');" type="button" class="btn btn-outline-primary">
+                    キャッシュデータを削除
                 </button>
-            </div>
-            <br>
-            <a href="/default/api_doc/" class="btn btn-primary">
-                API仕様書
-            </a>
-            <button onclick="myFetch('/default/clear_cache/json');" type="button" class="btn btn-outline-primary">
-                キャッシュデータを削除
-            </button>
-            <br>
-            <br>
+                <br>
+                <br>
+            </form>
         </main>
     </body>
 

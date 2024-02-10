@@ -164,14 +164,19 @@ function _setFormData(formData) {
     formData.forEach((value, key) => {
         if (String(key).includes("_option")) {
             key = key.split("_option")[0];
+            const optionValue = value;
+            const selectedValue = formData.get(key);
             // name属性の値が変数keyと等しいHTML要素を探す。
             const elements = document.getElementsByName(key);
             for (const element of elements) {
                 // 予測変換を設定
                 const optionElement = document.createElement("option");
-                optionElement.value = value;
-                optionElement.innerText = value;
+                optionElement.value = optionValue;
+                optionElement.innerText = optionValue;
                 element.appendChild(optionElement);
+                if (optionValue === selectedValue) {
+                    optionElement.selected = true;
+                }
             }
         }
         else if (String(key).endsWith("_flag")) {
@@ -201,7 +206,7 @@ function _setFormData(formData) {
                     element.value = value ?? "";
                 }
                 else {
-                    element.innerText = value ?? "";
+                    element.innerHTML = value ?? "";
                 }
             }
         }

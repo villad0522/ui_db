@@ -4,8 +4,10 @@ import { myFetch, jumpWithQuery } from "/default/my_lib.js";
 //###############################################################
 // ページを読み込んだら、はじめに実行する
 window.addEventListener('DOMContentLoaded', async () => {
+    //---------------------------------------------------------------
     const searchParams = new URLSearchParams(location.search);
     const tableId = searchParams.get("table");
+    const pageNumber = searchParams.get("page_records") ?? 1;
     if (!tableId) {
         // 前のページに戻る
         location.href = "/default/tables/index.html";
@@ -14,9 +16,50 @@ window.addEventListener('DOMContentLoaded', async () => {
         }, 1000);
         return;
     }
+    //
+    //---------------------------------------------------------------
+    //
+    // ページを遷移した後も、スクロール位置を保持する
+    const scrollXText = sessionStorage.getItem("scrollX" + tableId + pageNumber);
+    const scrollYText = sessionStorage.getItem("scrollY" + tableId + pageNumber);
+    if (scrollXText && scrollYText) {
+        const scrollX = Number(scrollXText);
+        const scrollY = Number(scrollYText);
+        if (!isNaN(scrollX) && !isNaN(scrollY)) {
+            console.log(scrollY);
+            document.documentElement.scrollLeft = scrollX;
+            document.documentElement.scrollTop = scrollY;
+        }
+    }
+    let pastScrollTime = 0;
+    let timerId = null;
+    window.addEventListener("scroll", () => {
+        const nowTime = new Date().getTime();
+        if (nowTime - pastScrollTime < 200) return;
+        if (timerId) {
+            window.clearTimeout(timerId);
+            timerId = null;
+        }
+        timerId = window.setTimeout(() => {
+            sessionStorage.setItem("scrollX" + tableId + pageNumber, document.documentElement.scrollLeft);
+            sessionStorage.setItem("scrollY" + tableId + pageNumber, document.documentElement.scrollTop);
+        }, 300);
+    });
+    //
+    //---------------------------------------------------------------
     await myFetch("./form?table=" + tableId, { method: "GET" });
-    document.querySelector("main").style.display = "block";
+    setTimeout(() => {
+        document.body.style.visibility = "visible";
+    }, 100);
+    //---------------------------------------------------------------
 });
+//
+//#####################################################################
+// テーブルを丸ごと削除する関数
+window.handleDeleteTable = async function () {
+    if (!confirm("本当に削除しますか？この操作は二度と元に戻せません。")) return;
+    await myFetch('./delete_table/json');
+}
 //
 //###############################################################
 // レコードIDを取得する関数

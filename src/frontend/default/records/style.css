@@ -22,6 +22,28 @@ header {
 thead {
     position: sticky;
     top: 0;
+    z-index: 99;
+}
+
+thead:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%;
+    border: 1px solid var(--bs-table-border-color);
+    background: var(--bs-table-border-color);
+    z-index: -1;
+}
+
+thead>tr:first-child {
+    border-bottom: none;
+}
+
+thead>tr:last-child {
+    border-top: none;
 }
 
 th,
@@ -37,14 +59,15 @@ td>* {
     max-width: none;
 }
 
-td.new_field {
+td.form {
     box-sizing: border-box;
     padding: 8px 5px 8px 5px;
     width: 0;
     position: relative;
 }
 
-td.new_field>input {
+td.form>input,
+td.form>select {
     display: block;
     width: 100%;
     min-width: 0;

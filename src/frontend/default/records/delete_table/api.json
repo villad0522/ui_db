@@ -1,0 +1,26 @@
+{
+    "httpMethod": "POST",
+    "description": "テーブルを１つ削除します。",
+    "commandName": "DELETE_TABLE",
+    "queryParameters": {
+        "table": {
+            "dataType": "TEXT",
+            "description": "テーブルID",
+            "isRequired": true,
+            "example": "t3"
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "userMessage": {
+            "dataType": "TEXT",
+            "description": "完了メッセージ",
+            "example": "削除しました。"
+        },
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "./"
+        }
+    }
+}

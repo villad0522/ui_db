@@ -39,7 +39,7 @@ export async function updateExcel( filePath, sheetDatas, parameters ){
         throw new Error(`sheetDatas["${i}"]が配列ではありません。\nレイヤー : excel_edit\n関数 : updateExcel`);
       }
     }
-    for( let j=0; i<sheetDatas[i].length; i++ ){
+    for( let j=0; j<sheetDatas[i].length; j++ ){
       if( !Array.isArray(sheetDatas[i][j]) ){
         if( !sheetDatas[i][j] ){
           throw new Error(`sheetDatas["${i}"][${j}]がNULLです。\nレイヤー : excel_edit\n関数 : updateExcel`);
@@ -48,7 +48,7 @@ export async function updateExcel( filePath, sheetDatas, parameters ){
           throw new Error(`sheetDatas["${i}"][${j}]が配列ではありません。\nレイヤー : excel_edit\n関数 : updateExcel`);
         }
       }
-      for( let k=0; i<sheetDatas[i][j].length; i++ ){
+      for( let k=0; k<sheetDatas[i][j].length; k++ ){
       }
     }
   }

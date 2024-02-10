@@ -1,0 +1,41 @@
+{
+    "httpMethod": "POST",
+    "description": "見出しの役割を果たすカラムを登録します。",
+    "commandName": "SET_TITLE_COLUMNS",
+    "queryParameters": {
+        "table": {
+            "dataType": "TEXT",
+            "description": "テーブルID",
+            "isRequired": true,
+            "example": "t3"
+        }
+    },
+    "requestBody": {
+        "columns": {
+            "title": "カラム一覧",
+            "isArray": true,
+            "onePageMaxSize": 35,
+            "children": {
+                "id": {
+                    "dataType": "TEXT",
+                    "description": "カラムID",
+                    "isRequired": true,
+                    "example": "c5"
+                },
+                "titleColumn": {
+                    "dataType": "TEXT",
+                    "description": "見出しの役割を果たすカラムの名前",
+                    "isRequired": true,
+                    "example": "氏名"
+                }
+            }
+        }
+    },
+    "response": {
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "./"
+        }
+    }
+}

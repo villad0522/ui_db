@@ -47,6 +47,24 @@
                     "dataType": "TEXT",
                     "description": "参照先のテーブルID",
                     "example": "t8"
+                },
+                "titleColumn_flag": {
+                    "dataType": "BOOL",
+                    "description": "外部キーか否か",
+                    "isRequired": true,
+                    "example": true
+                },
+                "titleColumn": {
+                    "dataType": "TEXT",
+                    "description": "見出しの役割を果たすカラムの名前",
+                    "isRequired": false,
+                    "example": "氏名"
+                },
+                "titleColumn_option": {
+                    "dataType": "TEXT",
+                    "description": "見出しの役割を果たすカラムの候補",
+                    "isRequired": true,
+                    "example": "氏名"
                 }
             }
         },

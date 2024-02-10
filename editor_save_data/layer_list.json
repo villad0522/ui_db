@@ -50,6 +50,11 @@
     "layerNameEN": "get_api_info"
   },
   {
+    "layerId": "01HP641H4QQZZHA3V6WPZDG2EH",
+    "layerNameJP": "データ移行",
+    "layerNameEN": "data_transfer"
+  },
+  {
     "layerId": "01HMWEPGB1WN73RY4BK4R0QSJ8",
     "layerNameJP": "ページを再生成",
     "layerNameEN": "regenerate_page"

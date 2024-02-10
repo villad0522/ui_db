@@ -1,0 +1,21 @@
+{
+    "httpMethod": "POST",
+    "description": "データを移行します。",
+    "commandName": "TRANSFER_DATA",
+    "queryParameters": {},
+    "requestBody": {
+        "processName": {
+            "dataType": "TEXT",
+            "description": "処理の名前",
+            "example": "名簿",
+            "isRequired": true
+        }
+    },
+    "response": {
+        "userMessage": {
+            "dataType": "TEXT",
+            "description": "完了メッセージ",
+            "example": "データの移行が完了しました。"
+        }
+    }
+}

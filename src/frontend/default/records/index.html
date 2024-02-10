@@ -23,7 +23,7 @@
         <script src="./script.js" type="module"></script>
     </head>
 
-    <body>
+    <body style="visibility: hidden;">
         <form>
             <header>
                 <nav class="navbar navbar-dark bg-primary">
@@ -56,6 +56,9 @@
                     （<span name="records_total"></span>件）
                     <button onclick="jumpWithQuery('./rename/index.html');" type="button" class="btn btn-sm btn-outline-primary">
                         列の名前を変更
+                    </button>
+                    <button onclick="handleDeleteTable()" type="button" class="btn btn-sm btn-outline-danger">
+                        表を削除
                     </button>
                 </div>
                 <br>
@@ -168,21 +171,38 @@
                             <th scope="col">
                                 ID
                             </th>
-                            <th scope="col">
+                            <th scope="col" rowspan="2" style="border-bottom: solid; vertical-align: middle;">
                                 <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCreateColumn" aria-controls="offcanvasCreateColumn">
                                     <i class="bi bi-arrow-left"></i>
                                     列を作成
                                 </button>
                             </th>
                         </tr>
+                        <tr>
+                            <script>
+                                let htmlText1 = "";
+                                for (let j = 0; j < 35; j++) {
+                                    htmlText1 += `
+                                        <td class="form" name="columns${j}_flag" style="border-bottom: solid; padding: 0;">
+                                            <div name="columns${j}_titleColumn_flag">
+                                                <select onchange="myFetch('./set_title_columns/form')" name="columns${j}_titleColumn" class="form-select form-select-sm" aria-label=".form-select-sm example">
+                                                </select>
+                                            </div>
+                                        </td>
+                                    `;
+                                }
+                                document.write(htmlText1);
+                            </script>
+                            <td style="border-bottom: solid; padding: 0;"></td>
+                        </tr>
                     </thead>
-                    <tbody class="table-group-divider">
+                    <tbody>
                         <tr name="columns0_flag">
                             <script>
                                 let htmlText5 = "";
                                 for (let j = 0; j < 35; j++) {
                                     htmlText5 += `
-                                        <td class="new_field" name="columns${j}_flag">
+                                        <td class="form" name="columns${j}_flag">
                                             <input name="columns${j}_newField" type="text" class="form-control">
                                             <input name="columns${j}_id" style="display: none;">
                                             <input name="columns${j}_flag" style="display: none;" type="checkbox">

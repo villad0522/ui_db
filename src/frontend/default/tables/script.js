@@ -9,15 +9,15 @@ window.addEventListener('DOMContentLoaded', async () => {
 //
 //###############################################################
 // ファイルがアップロードされたときに実行する関数
-window.sendFile = async function (event) {
-    event.preventDefault();
-    const formData = new FormData(event.target)
-    const file = formData.get("input_file"); // File APIの使用
+window.sendFile = async function () {
+    const inputElement = document.getElementById("formFile");
+    const file = inputElement.files[0]; // File APIの使用
     const fileName = file.name
     const fileExtention = fileName.substring(fileName.lastIndexOf(".") + 1);
     const blob = file.slice(0, file.size, file.type);
     const encodedFileName = encodeURI(file.name.substring(0, fileName.lastIndexOf("."))); //エンコードしたファイル名の取得
     const renamedFile = new File([blob], encodedFileName + "." + fileExtention, { type: file.type });
+    const formData = new FormData();
     formData.set('input_file', renamedFile);
     await myFetch(
         "/upload",

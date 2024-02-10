@@ -1,35 +1,36 @@
 
-import { test123 } from "./123_ip_address_test.js";
-import { test120 } from "./120_directory_test.js";
-import { test117 } from "./117_connect_database_test.js";
-import { test114 } from "./114_transaction_lower_test.js";
-import { test111 } from "./111_primary_key_test.js";
-import { test108 } from "./108_data_type_test.js";
-import { test105 } from "./105_sort_test.js";
-import { test102 } from "./102_table_name_test.js";
-import { test099 } from "./099_column_name_test.js";
-import { test096 } from "./096_reserved_word_test.js";
-import { test093 } from "./093_search_text_test.js";
-import { test090 } from "./090_relation_test.js";
-import { test087 } from "./087_db_formatter_test.js";
-import { test084 } from "./084_records_test.js";
-import { test081 } from "./081_input_element_test.js";
-import { test078 } from "./078_record_title_test.js";
-import { test075 } from "./075_csv_test.js";
-import { test072 } from "./072_columnPath_test.js";
-import { test069 } from "./069_convert_sql_data_test.js";
-import { test066 } from "./066_generate_sql2_test.js";
-import { test063 } from "./063_generate_sql1_test.js";
-import { test060 } from "./060_generate_sql_test.js";
-import { test057 } from "./057_page_and_view_test.js";
-import { test054 } from "./054_view_column_test.js";
-import { test051 } from "./051_joinedTable_test.js";
-import { test048 } from "./048_page_data_test.js";
-import { test045 } from "./045_frontend_files_test.js";
-import { test042 } from "./042_regenerate_view_html_test.js";
-import { test039 } from "./039_regenerate_html_test.js";
-import { test036 } from "./036_regenerate_api_info_test.js";
-import { test033 } from "./033_regenerate_page_test.js";
+import { test126 } from "./126_ip_address_test.js";
+import { test123 } from "./123_directory_test.js";
+import { test120 } from "./120_connect_database_test.js";
+import { test117 } from "./117_transaction_lower_test.js";
+import { test114 } from "./114_primary_key_test.js";
+import { test111 } from "./111_data_type_test.js";
+import { test108 } from "./108_sort_test.js";
+import { test105 } from "./105_table_name_test.js";
+import { test102 } from "./102_column_name_test.js";
+import { test099 } from "./099_reserved_word_test.js";
+import { test096 } from "./096_search_text_test.js";
+import { test093 } from "./093_relation_test.js";
+import { test090 } from "./090_db_formatter_test.js";
+import { test087 } from "./087_records_test.js";
+import { test084 } from "./084_input_element_test.js";
+import { test081 } from "./081_record_title_test.js";
+import { test078 } from "./078_csv_test.js";
+import { test075 } from "./075_columnPath_test.js";
+import { test072 } from "./072_convert_sql_data_test.js";
+import { test069 } from "./069_generate_sql2_test.js";
+import { test066 } from "./066_generate_sql1_test.js";
+import { test063 } from "./063_generate_sql_test.js";
+import { test060 } from "./060_page_and_view_test.js";
+import { test057 } from "./057_view_column_test.js";
+import { test054 } from "./054_joinedTable_test.js";
+import { test051 } from "./051_page_data_test.js";
+import { test048 } from "./048_frontend_files_test.js";
+import { test045 } from "./045_regenerate_view_html_test.js";
+import { test042 } from "./042_regenerate_html_test.js";
+import { test039 } from "./039_regenerate_api_info_test.js";
+import { test036 } from "./036_regenerate_page_test.js";
+import { test033 } from "./033_data_transfer_test.js";
 import { test030 } from "./030_get_api_info_test.js";
 import { test027 } from "./027_run_api_test.js";
 import { test024 } from "./024_pagination_test.js";
@@ -47,6 +48,7 @@ async function test() {
     if( process.argv.length < 3 ){
       // testNumberが指定されていない場合
       console.log("全てのレイヤーの動作テストを行います。");
+      await test126();
       await test123();
       await test120();
       await test117();
@@ -95,6 +97,9 @@ async function test() {
     const testNumber = Number(process.argv[2]);
     console.log(`テストコード${ testNumber }を実行します。`);
     switch( testNumber ){
+      case 126:
+        await test126();
+        break;
       case 123:
         await test123();
         break;

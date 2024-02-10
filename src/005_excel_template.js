@@ -10,35 +10,36 @@ import {
   deletePage,
   pastePage,
   regeneratePage,
-} from "./034_regenerate_page_validate.js";
+} from "./037_regenerate_page_validate.js";
 import {
   getLocalIp,
-} from "./124_ip_address_validate.js";
+} from "./127_ip_address_validate.js";
 import {
   close,
   createDirectories,
-} from "./046_frontend_files_validate.js";
+} from "./049_frontend_files_validate.js";
 import {
   getPath,
-} from "./121_directory_validate.js";
+} from "./124_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./118_connect_database_validate.js";
+} from "./121_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
   getTableId,
   checkColumnEnabled,
   getColumnName,
-} from "./100_column_name_validate.js";
+  getColumnIdFromName,
+} from "./103_column_name_validate.js";
 import {
   startTransaction,
   endTransaction,
-} from "./115_transaction_lower_validate.js";
+} from "./118_transaction_lower_validate.js";
 import {
   getPrimaryKey,
-} from "./112_primary_key_validate.js";
+} from "./115_primary_key_validate.js";
 import {
   clearCache,
   listEndpoints,
@@ -52,10 +53,10 @@ import {
   listViewColumnsForExcel,
   regenerateInputElements,
   _addViewColumn,
-} from "./055_view_column_validate.js";
+} from "./058_view_column_validate.js";
 import {
   listDataTypes,
-} from "./109_data_type_validate.js";
+} from "./112_data_type_validate.js";
 import {
   createRecord,
   updateRecords,
@@ -65,14 +66,14 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
-} from "./091_relation_validate.js";
+} from "./094_relation_validate.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
   checkReservedWord,
-} from "./097_reserved_word_validate.js";
+} from "./100_reserved_word_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -81,14 +82,14 @@ import {
   enableColumn,
   delete_table,
   autoCorrect,
-} from "./094_search_text_validate.js";
+} from "./097_search_text_validate.js";
 import {
   reload,
   checkTableEnabled,
   getTableName,
   listTableNamesAll,
   getTableIdFromName,
-} from "./103_table_name_validate.js";
+} from "./106_table_name_validate.js";
 import {
   cutRecord,
   copyRecord,
@@ -98,20 +99,21 @@ import {
   _moveRecord,
   _copyRecord,
   _generateRecordSortNumber,
-} from "./106_sort_validate.js";
+} from "./109_sort_validate.js";
 import {
   listTables,
-  setTitleColumn,
-  getTitleColumnId,
-  getRecordIdFromTitle,
-} from "./079_record_title_validate.js";
-import {
-  formatField,
-} from "./088_db_formatter_validate.js";
-import {
   listRecords,
   createRecordFromUI,
-} from "./085_records_validate.js";
+  setTitleColumn,
+  getTitleColumnId,
+  _getRecordIdFromTitle,
+  setTitleColumnsFromUI,
+  _deleteTitleColumn,
+  _getParentValue,
+} from "./082_record_title_validate.js";
+import {
+  formatField,
+} from "./091_db_formatter_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -127,18 +129,18 @@ import {
   updateRecordsFromView,
   createRecordFromView,
   _convertToRecord,
-} from "./082_input_element_validate.js";
+} from "./085_input_element_validate.js";
 import {
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./076_csv_validate.js";
+} from "./079_csv_validate.js";
 import {
   getPathLength,
   slicePath,
   checkPath,
   pathToColumnId,
-} from "./073_columnPath_validate.js";
+} from "./076_columnPath_validate.js";
 import {
   getJoinIdMap,
   checkTableDuplication,
@@ -146,16 +148,16 @@ import {
   getJoinData,
   getWhereData,
   getOrderData,
-} from "./070_convert_sql_data_validate.js";
+} from "./073_convert_sql_data_validate.js";
 import {
   generateSQLwithoutDuplication,
-} from "./067_generate_sql2_validate.js";
+} from "./070_generate_sql2_validate.js";
 import {
   generateSQLwithDuplication,
-} from "./064_generate_sql1_validate.js";
+} from "./067_generate_sql1_validate.js";
 import {
   generateSQL,
-} from "./052_joinedTable_validate.js";
+} from "./055_joinedTable_validate.js";
 import {
   getPageInfo,
   listViewsFromTableId,
@@ -175,17 +177,17 @@ import {
   _copyPage,
   getViewInfo,
   isExistView,
-} from "./058_page_and_view_validate.js";
+} from "./061_page_and_view_validate.js";
 import {
   getPageData,
-} from "./049_page_data_validate.js";
+} from "./052_page_data_validate.js";
 import {
   generateViewHTML,
-} from "./043_regenerate_view_html_validate.js";
+} from "./046_regenerate_view_html_validate.js";
 import {
   regenerateHTML,
   escapeHTML,
-} from "./040_regenerate_html_validate.js";
+} from "./043_regenerate_html_validate.js";
 import {
   regenerateAPI_autoCorrect,
   _getExample,
@@ -193,7 +195,10 @@ import {
   regenerateAPI_read,
   regenerateAPI_update,
   regenerateAPI_delete,
-} from "./037_regenerate_api_info_validate.js";
+} from "./040_regenerate_api_info_validate.js";
+import {
+  transferData,
+} from "./034_data_transfer_validate.js";
 import {
   getEndpointInfo,
 } from "./019_auto_correct_validate.js";
