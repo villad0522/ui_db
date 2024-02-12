@@ -360,9 +360,6 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
   progressMessage = `完了しました。`;
 }
 
-
-const baseDate = new Date( 1980, 0, 1 );
-
 function _convertData(inputText){
   if(inputText===""){
     return "";
@@ -370,13 +367,6 @@ function _convertData(inputText){
   else if(!isNaN(inputText)){
     return Number(inputText);
   }
-  try{
-    const date = new Date(inputText);
-    if( !isNaN(date.getDate()) && date.getTime()>baseDate.getTime() ){
-      return date.getTime();
-    }
-  }
-  catch(err){}
   return String( inputText ?? "" );
 }
 

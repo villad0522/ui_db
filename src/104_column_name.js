@@ -466,7 +466,7 @@ export async function runSqlReadOnly_core( sql, params ){
     for( const tableId of tableIds ){
         if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
         // SQL文に含まれるカラム名をIDに置き換える
-        for( const { id: columnId } of cacheData2[tableId] ){
+        for( const { id: columnId } of cacheData2[tableId]??[] ){
             if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
             const regexp = cacheData4[columnId];
             if(!regexp){
@@ -477,7 +477,7 @@ export async function runSqlReadOnly_core( sql, params ){
     }
     for( const tableId of tableIds ){
         if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
-        for( const { id: columnId } of cacheData2[tableId] ){
+        for( const { id: columnId } of cacheData2[tableId]??[] ){
             if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
             const regexp = cacheData6[columnId];
             if(!regexp){
@@ -496,7 +496,7 @@ export async function runSqlWriteOnly_core( sql, params ){
     for( const tableId of tableIds ){
         if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
         // SQL文に含まれるカラム名をIDに置き換える
-        for( const { id: columnId } of cacheData2[tableId] ){
+        for( const { id: columnId } of cacheData2[tableId]??[] ){
             if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
             const regexp = cacheData4[columnId];
             if(!regexp){
@@ -507,7 +507,7 @@ export async function runSqlWriteOnly_core( sql, params ){
     }
     for( const tableId of tableIds ){
         if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
-        for( const { id: columnId } of cacheData2[tableId] ){
+        for( const { id: columnId } of cacheData2[tableId]??[] ){
             if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
             const regexp = cacheData6[columnId];
             if(!regexp){

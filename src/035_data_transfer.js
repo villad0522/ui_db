@@ -228,48 +228,54 @@ export async function transferData_core( processName ){
     case "系統マスタ":
       if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
       return await masterPhylogeny_core();
-    case "由来マスタ":
+    case "業者マスタ":
       if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+      return await masterCompany_core();
+    case "由来マスタ":
+      if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
       return await masterOrigin_core();
     case "購入規格マスタ":
-      if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
       return await masterProductType_core();
     case "購入品マスタ":
-      if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
-      return await masterItem_core();
-    case "業者マスタ":
       if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
-      return await masterCompany_core();
+      return await masterItem_core();
     case "支払マスタ":
       if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
       return await masterPayment_core();
-    case "Roomマスタ":
+    case "飼育室マスタ":
       if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
       return await masterRoom_core();
     case "管理費単価マスタ":
       if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
       return await masterPrice_core();
-    case "飼育台帳データ":
+    case "飼育操作マスタ":
       if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+      return await masterAction_core();
+    case "性別マスタ":
+      if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+      return await masterSex_core();
+    case "購入データ":
+      if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+      return await buyData_core();
+    case "飼育台帳データ":
+      if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
       return await broodbookData_core();
     case "飼育履歴データ":
-      if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
       return await historyData_core();
     case "動物増減データ":
-      if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
       return await increaseAndDecreaseData_core();
     case "飼育数データ":
-      if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
       return await numberOfAnimalData_core();
     case "予算実績データ":
-      if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
       return await budgetData_core();
     case "請求データ":
-      if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
       return await billData_core();
-    case "購入データ":
-      if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
-      return await buyData_core();
     default:
       throw "データを移行しようとしましたが失敗しました。サポートされていない処理名です。";
   }
@@ -278,7 +284,7 @@ export async function transferData_core( processName ){
 
 // 学部マスタ
 export async function masterFaculty_core(  ){
-  if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
   // 処理に必要なテーブルが揃っているかをチェックする
   await _checkSourceTable_core([ "CSV_教室マスタ" ]);
   //
@@ -307,19 +313,20 @@ export async function masterFaculty_core(  ){
 
 // 教室マスタ
 export async function masterLab_core(  ){
-  if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
   // 処理に必要なテーブルが揃っているかをチェックする
   await _checkSourceTable_core([ "CSV_教室マスタ", "学部マスタ" ]);
   //
   // 結果を書き込むテーブルとカラムを準備する
   const t1 = await _clearTable_core("教室マスタ");
-  await createColumn( t1, "教室コード", "TEXT", null );
-  await createColumn( t1, "謎の数字", "INTEGER", null );
+  await createColumn( t1, "教室名", "TEXT", null );
+  await createColumn( t1, "有効／無効", "BOOL", null );
   await createColumn( t1, "所属学部", "POINTER", await getTableIdFromName("学部マスタ") );
   await createColumn( t1, "基礎/臨床", "TEXT", null );
+  await createColumn( t1, "教室コード", "TEXT", null );
+  await createColumn( t1, "謎の数字", "INTEGER", null );
   await createColumn( t1, "並び順？", "REAL", null );
   await createColumn( t1, "教室略称", "TEXT", null );
-  await createColumn( t1, "教室名", "TEXT", null );
   //
   // データを移行する
   await runSqlWriteOnly(
@@ -359,15 +366,16 @@ export async function masterLab_core(  ){
 
 // 実験者マスタ
 export async function masterUser_core(  ){
-  if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
   // 処理に必要なテーブルが揃っているかをチェックする
   await _checkSourceTable_core([ "CSV_実験者マスタ", "教室マスタ" ]);
   //
   // 結果を書き込むテーブルとカラムを準備する
   const t1 = await _clearTable_core("実験者マスタ");
-  await createColumn( t1, "所属教室", "POINTER", await getTableIdFromName("教室マスタ") );
-  await createColumn( t1, "実験者コード", "TEXT", null );
   await createColumn( t1, "氏名", "TEXT", null );
+  await createColumn( t1, "所属教室", "POINTER", await getTableIdFromName("教室マスタ") );
+  await createColumn( t1, "有効／無効", "BOOL", null );
+  await createColumn( t1, "実験者コード", "TEXT", null );
   //
   // データを移行する
   await runSqlWriteOnly(
@@ -399,14 +407,14 @@ export async function masterUser_core(  ){
 
 // 動物種マスタ
 export async function masterSpecies_core(  ){
-  if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
   // 処理に必要なテーブルが揃っているかをチェックする
   await _checkSourceTable_core([ "CSV_動物種マスタ" ]);
   //
   // 結果を書き込むテーブルとカラムを準備する
   const t1 = await _clearTable_core("動物種マスタ");
-  await createColumn( t1, "動物種番号", "INTEGER", null );
   await createColumn( t1, "動物種名", "TEXT", null );
+  await createColumn( t1, "動物種番号", "INTEGER", null );
   //
   // データを移行する
   await runSqlWriteOnly(
@@ -434,15 +442,15 @@ export async function masterSpecies_core(  ){
 
 // 系統マスタ
 export async function masterPhylogeny_core(  ){
-  if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
   // 処理に必要なテーブルが揃っているかをチェックする
   await _checkSourceTable_core([ "CSV_系統マスタ", "動物種マスタ" ]);
   //
   // 結果を書き込むテーブルとカラムを準備する
   const t1 = await _clearTable_core("系統マスタ");
-  await createColumn( t1, "系統番号", "INTEGER", null );
   await createColumn( t1, "系統名", "TEXT", null );
   await createColumn( t1, "動物種", "POINTER", await getTableIdFromName("動物種マスタ") );
+  await createColumn( t1, "系統番号", "INTEGER", null );
   //
   // データを移行する
   await runSqlWriteOnly(
@@ -472,96 +480,565 @@ export async function masterPhylogeny_core(  ){
   return "データの移行が完了しました。";
 }
 
+// 業者マスタ
+export async function masterCompany_core(  ){
+  if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_由来マスタ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("業者マスタ");
+  await createColumn( t1, "業者名", "TEXT", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 業者マスタ (
+        業者名,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列1,
+          MAX(sort_number),
+          MAX(created_at),
+          MAX(updated_at)
+        FROM CSV_由来マスタ
+        GROUP BY 列1;`,
+    {},
+  );
+  return "データの移行が完了しました。";
+}
+
 // 由来マスタ
 export async function masterOrigin_core(  ){
-  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_由来マスタ", "動物種マスタ", "業者マスタ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("由来マスタ");
+  await createColumn( t1, "動物種", "POINTER", await getTableIdFromName("動物種マスタ") );
+  await createColumn( t1, "仕入業者", "POINTER", await getTableIdFromName("業者マスタ") );
+  await createColumn( t1, "由来番号", "INTEGER", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 由来マスタ (
+        動物種,
+        仕入業者,
+        由来番号,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          ${await getTableIdFromName("動物種マスタ")}_id,
+          ${await getTableIdFromName("業者マスタ")}_id,
+          列0,
+          MAX(csv.sort_number),
+          MAX(csv.created_at),
+          MAX(csv.updated_at)
+        FROM CSV_由来マスタ AS csv
+        LEFT OUTER JOIN 動物種マスタ
+          ON 列2 = 動物種番号
+        LEFT OUTER JOIN 業者マスタ
+          ON 列1 = 業者名
+        GROUP BY csv.sort_number;`,
+    {},
+  );
+  await deleteTable(await getTableIdFromName("CSV_由来マスタ"));
   return "データの移行が完了しました。";
 }
 
 // 購入規格マスタ
 export async function masterProductType_core(  ){
-  if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_購入規格マスタ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("購入規格マスタ");
+  await createColumn( t1, "規格名", "TEXT", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 購入規格マスタ (
+        規格名,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列0,
+          MAX(sort_number),
+          MAX(created_at),
+          MAX(updated_at)
+        FROM CSV_購入規格マスタ
+        GROUP BY sort_number;`,
+    {},
+  );
+  await deleteTable(await getTableIdFromName("CSV_購入規格マスタ"));
   return "データの移行が完了しました。";
 }
 
 // 購入品マスタ
 export async function masterItem_core(  ){
-  if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
-  return "データの移行が完了しました。";
-}
-
-// 業者マスタ
-export async function masterCompany_core(  ){
-  if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_購入品マスタ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("購入品マスタ");
+  await createColumn( t1, "購入品名", "TEXT", null );
+  await createColumn( t1, "単価", "REAL", null );
+  await createColumn( t1, "オンオフ？", "BOOL", null );
+  await createColumn( t1, "購入品コード", "TEXT", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 購入品マスタ (
+        購入品名,
+        単価,
+        オンオフ？,
+        購入品コード,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列1,
+          列2,
+          列3,
+          列0,
+          MAX(sort_number),
+          MAX(created_at),
+          MAX(updated_at)
+        FROM CSV_購入品マスタ
+        GROUP BY sort_number;`,
+    {},
+  );
+  await deleteTable(await getTableIdFromName("CSV_購入品マスタ"));
   return "データの移行が完了しました。";
 }
 
 // 支払マスタ
 export async function masterPayment_core(  ){
-  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_支払マスタ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("支払マスタ");
+  await createColumn( t1, "支払い方法", "TEXT", null );
+  await createColumn( t1, "オンオフ？", "BOOL", null );
+  await createColumn( t1, "支払い方法ID", "INTEGER", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 支払マスタ (
+        支払い方法,
+        オンオフ？,
+        支払い方法ID,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列1,
+          列2,
+          列0,
+          MAX(sort_number),
+          MAX(created_at),
+          MAX(updated_at)
+        FROM CSV_支払マスタ
+        GROUP BY sort_number;`,
+    {},
+  );
+  await deleteTable(await getTableIdFromName("CSV_支払マスタ"));
   return "データの移行が完了しました。";
 }
 
-// Roomマスタ
+// 飼育室マスタ
 export async function masterRoom_core(  ){
-  if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_Roomマスタ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("フロアマスタ");
+  await createColumn( t1, "フロア（１階～４階）", "INTEGER", null );
+  const t2 = await _clearTable_core("飼育室マスタ");
+  await createColumn( t2, "飼育室名", "TEXT", null );
+  await createColumn( t2, "フロア", "POINTER", t1 );
+  await createColumn( t2, "有効／無効", "BOOL", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 飼育室マスタ (
+        飼育室名,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列0,
+          MAX(sort_number),
+          MAX(created_at),
+          MAX(updated_at)
+        FROM CSV_Roomマスタ
+        GROUP BY sort_number;`,
+    {},
+  );
+  await deleteTable(await getTableIdFromName("CSV_Roomマスタ"));
   return "データの移行が完了しました。";
 }
 
 // 管理費単価マスタ
 export async function masterPrice_core(  ){
-  if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
-  return "データの移行が完了しました。";
-}
-
-// 飼育台帳データ
-export async function broodbookData_core(  ){
-  if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
-  return "データの移行が完了しました。";
-}
-
-// 飼育履歴データ
-export async function historyData_core(  ){
   if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_管理費単価マスタ", "動物種マスタ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("管理費単価マスタ");
+  await createColumn( t1, "飼料規格名", "TEXT", null );
+  await createColumn( t1, "単価", "REAL", null );
+  await createColumn( t1, "動物種", "POINTER", await getTableIdFromName("動物種マスタ") );
+  await createColumn( t1, "飼料コード", "TEXT", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 管理費単価マスタ (
+        飼料規格名,
+        単価,
+        動物種,
+        飼料コード,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列2,
+          列3,
+          ${await getTableIdFromName("動物種マスタ")}_id,
+          列0,
+          MAX(csv.sort_number),
+          MAX(csv.created_at),
+          MAX(csv.updated_at)
+        FROM CSV_管理費単価マスタ AS csv
+        LEFT OUTER JOIN 動物種マスタ
+          ON 列4 = 動物種番号
+        GROUP BY csv.sort_number;`,
+    {},
+  );
+  await deleteTable(await getTableIdFromName("CSV_管理費単価マスタ"));
   return "データの移行が完了しました。";
 }
 
-// 動物増減データ
-export async function increaseAndDecreaseData_core(  ){
+// 飼育操作マスタ
+export async function masterAction_core(  ){
   if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_コンスタントマスタ", "CSV_飼育台帳データ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("飼育操作マスタ");
+  await createColumn( t1, "操作名", "TEXT", null );
+  await createColumn( t1, "操作番号（1～10）", "INTEGER", null );
+  await createColumn( t1, "操作番号（1～A）", "TEXT", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 飼育操作マスタ (
+        操作名,
+        操作番号（1～10）,
+        操作番号（1～A）,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列6,
+          列2,
+          列5,
+          MAX(sort_number),
+          MAX(created_at),
+          MAX(updated_at)
+        FROM CSV_コンスタントマスタ
+        GROUP BY sort_number;`,
+    {},
+  );
+  await runSqlWriteOnly(
+    `INSERT INTO 飼育操作マスタ (
+        操作名,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列27,
+          MAX(sort_number),
+          MAX(created_at),
+          MAX(updated_at)
+        FROM CSV_飼育台帳データ
+        GROUP BY 列27;`,
+    {},
+  );
+  await deleteTable(await getTableIdFromName("CSV_コンスタントマスタ"));
   return "データの移行が完了しました。";
 }
 
-// 飼育数データ
-export async function numberOfAnimalData_core(  ){
+
+// 性別マスタ
+export async function masterSex_core(  ){
   if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
-  return "データの移行が完了しました。";
-}
-
-// 予算実績データ
-export async function budgetData_core(  ){
-  if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
-  return "データの移行が完了しました。";
-}
-
-// 請求データ
-export async function billData_core(  ){
-  if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_飼育台帳データ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("性別マスタ");
+  await createColumn( t1, "性別", "TEXT", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 性別マスタ (
+        性別,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列7,
+          MAX(sort_number),
+          MAX(created_at),
+          MAX(updated_at)
+        FROM CSV_飼育台帳データ
+        GROUP BY 列7;`,
+    {},
+  );
+  await deleteTable(await getTableIdFromName("CSV_飼育台帳データ"));
   return "データの移行が完了しました。";
 }
 
 // 購入データ
 export async function buyData_core(  ){
+  if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([
+    "CSV_飼育台帳データ",
+    "支払マスタ",
+    "教室マスタ",
+    "実験者マスタ",
+    "購入品マスタ",
+    "系統マスタ",
+    "購入規格マスタ",
+    "性別マスタ",
+    "業者マスタ",
+  ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("飼育台帳データ");
+  await createColumn( t1, "支払区分", "POINTER", await getTableIdFromName("支払マスタ") );
+  await createColumn( t1, "教室", "POINTER", await getTableIdFromName("教室マスタ") );
+  await createColumn( t1, "実験者", "POINTER", await getTableIdFromName("実験者マスタ") );
+  await createColumn( t1, "請求年月", "INTEGER", null );
+  await createColumn( t1, "入荷日", "INTEGER", null );
+  await createColumn( t1, "発注番号", "INTEGER", null );
+  await createColumn( t1, "購入品", "POINTER", await getTableIdFromName("購入品マスタ") );
+  await createColumn( t1, "系統", "POINTER", await getTableIdFromName("系統マスタ") );
+  await createColumn( t1, "購入規格", "POINTER", await getTableIdFromName("購入規格マスタ") );
+  await createColumn( t1, "性別", "POINTER", await getTableIdFromName("性別マスタ") );
+  await createColumn( t1, "業者", "POINTER", await getTableIdFromName("業者マスタ") );
+  await createColumn( t1, "数量", "REAL", null );
+  await createColumn( t1, "単価", "REAL", null );
+  await createColumn( t1, "金額", "REAL", null );
+  await createColumn( t1, "消費税", "REAL", null );
+  await createColumn( t1, "税込額", "REAL", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 飼育台帳データ (
+        支払区分,
+        教室,
+        実験者,
+        請求年月,
+        入荷日,
+        発注番号,
+        購入品,
+        系統,
+        購入規格,
+        性別,
+        業者,
+        数量,
+        単価,
+        金額,
+        消費税,
+        税込額,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+        GROUP BY csv.sort_number
+        LIMIT 100;`,
+    {},
+  );
+  return "データの移行が完了しました。";
+}
+
+
+
+// 飼育台帳データ
+export async function broodbookData_core(  ){
+  if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([
+    "CSV_飼育台帳データ",
+    "支払マスタ",
+    "教室マスタ",
+    "実験者マスタ",
+    "動物種マスタ",
+    "系統マスタ",
+    "性別マスタ",
+    "管理費単価マスタ",
+    "飼育室マスタ",
+    "購入規格マスタ",
+    "由来マスタ",
+    "購入データ",
+  ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("飼育台帳データ");
+  await createColumn( t1, "支払区分", "POINTER", await getTableIdFromName("支払マスタ") );
+  await createColumn( t1, "教室", "POINTER", await getTableIdFromName("教室マスタ") );
+  await createColumn( t1, "実験者", "POINTER", await getTableIdFromName("実験者マスタ") );
+  await createColumn( t1, "動物種", "POINTER", await getTableIdFromName("動物種マスタ") );
+  await createColumn( t1, "系統", "POINTER", await getTableIdFromName("系統マスタ") );
+  await createColumn( t1, "ケージ番号", "TEXT", null );
+  await createColumn( t1, "ケージサブ番号", "TEXT", null );
+  await createColumn( t1, "性別", "POINTER", await getTableIdFromName("性別マスタ") );
+  await createColumn( t1, "飼料", "POINTER", await getTableIdFromName("管理費単価マスタ") );
+  await createColumn( t1, "飼育室", "POINTER", await getTableIdFromName("飼育室マスタ") );
+  await createColumn( t1, "床(C)", "TEXT", null );
+  await createColumn( t1, "入舎日", "INTEGER", null );
+  await createColumn( t1, "退舎日", "INTEGER", null );
+  await createColumn( t1, "餌期", "INTEGER", null );
+  await createColumn( t1, "退舎予定日", "INTEGER", null );
+  await createColumn( t1, "出生日", "INTEGER", null );
+  await createColumn( t1, "購入規格", "POINTER", await getTableIdFromName("購入規格マスタ") );
+  await createColumn( t1, "由来", "POINTER", await getTableIdFromName("由来マスタ") );
+  await createColumn( t1, "コメント", "TEXT", null );
+  await createColumn( t1, "アニマルセンター備考欄", "TEXT", null );
+  await createColumn( t1, "購入申込", "POINTER", await getTableIdFromName("購入データ") );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 飼育台帳データ (
+        支払区分,
+        教室,
+        実験者,
+        動物種,
+        系統,
+        ケージ番号,
+        ケージサブ番号,
+        性別,
+        飼料,
+        飼育室,
+        床(C),
+        入舎日,
+        退舎日,
+        餌期,
+        退舎予定日,
+        出生日,
+        購入規格,
+        由来,
+        コメント,
+        アニマルセンター備考欄,
+        購入申込,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          ${await getTableIdFromName("支払マスタ")}_id,
+          ${await getTableIdFromName("教室マスタ")}_id,
+          ${await getTableIdFromName("実験者マスタ")}_id,
+          ${await getTableIdFromName("動物種マスタ")}_id,
+          ${await getTableIdFromName("系統マスタ")}_id,
+          列5,
+          列6,
+          ${await getTableIdFromName("性別マスタ")}_id,
+          ${await getTableIdFromName("管理費単価マスタ")}_id,
+          ${await getTableIdFromName("飼育室マスタ")}_id,
+          列11,
+          DATE(列14),
+          DATE(列15),
+          列16,
+          DATE(列17),
+          DATE(列18),
+          ${await getTableIdFromName("購入規格マスタ")}_id,
+          ${await getTableIdFromName("由来マスタ")}_id,
+          列23,
+          列24,
+          ${await getTableIdFromName("購入データ")}_id,
+          MAX(csv.sort_number),
+          MAX(csv.created_at),
+          MAX(csv.updated_at)
+        FROM CSV_飼育台帳データ AS csv
+        LEFT OUTER JOIN 支払マスタ
+          ON 列0 = 支払い方法ID
+        LEFT OUTER JOIN 教室マスタ
+          ON 列1 = 教室コード
+        LEFT OUTER JOIN 実験者マスタ
+          ON 列2 = 実験者コード
+        LEFT OUTER JOIN 動物種マスタ
+          ON 列3 = 動物種番号
+        LEFT OUTER JOIN 系統マスタ
+          ON 列4 = 系統番号
+        LEFT OUTER JOIN 性別マスタ
+          ON 列7 = 性別
+        LEFT OUTER JOIN 管理費単価マスタ
+          ON 列8 = 飼料コード
+        LEFT OUTER JOIN 飼育室マスタ
+          ON 列9 = 飼育室名
+        LEFT OUTER JOIN 購入規格マスタ
+          ON 列20 = 規格名
+        LEFT OUTER JOIN 由来マスタ
+          ON 列21 = 由来番号
+        LEFT OUTER JOIN 購入データ
+          ON 列25 = 購入番号
+        GROUP BY csv.sort_number
+        LIMIT 100;`,
+    {},
+  );
+  return "データの移行が完了しました。";
+}
+
+// 飼育履歴データ
+export async function historyData_core(  ){
   if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
+  return "データの移行が完了しました。";
+}
+
+// 動物増減データ
+export async function increaseAndDecreaseData_core(  ){
+  if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
+  return "データの移行が完了しました。";
+}
+
+// 飼育数データ
+export async function numberOfAnimalData_core(  ){
+  if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
+  return "データの移行が完了しました。";
+}
+
+// 予算実績データ
+export async function budgetData_core(  ){
+  if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
+  return "データの移行が完了しました。";
+}
+
+// 請求データ
+export async function billData_core(  ){
+  if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
   return "データの移行が完了しました。";
 }
 
 // 【サブ】テーブルを作り直す
 export async function _clearTable_core( tableName ){
-  if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
   const oldTableId = await getTableIdFromName(tableName);
   if( oldTableId ){
-    if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 45) throw "MUTATION45";  // 意図的にバグを混入させる（ミューテーション解析）
     await deleteTable(oldTableId);
   }
   const { tableId: newTableId } = await createTable(tableName);
@@ -570,11 +1047,11 @@ export async function _clearTable_core( tableName ){
 
 // 【サブ】テーブルの存在をチェックする
 export async function _checkSourceTable_core( tableNames ){
-  if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 46) throw "MUTATION46";  // 意図的にバグを混入させる（ミューテーション解析）
   for( const tableName of tableNames ){
-    if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 47) throw "MUTATION47";  // 意図的にバグを混入させる（ミューテーション解析）
     if(!await getTableIdFromName(tableName)){
-      if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 48) throw "MUTATION48";  // 意図的にバグを混入させる（ミューテーション解析）
       if(String(tableName).startsWith("CSV_")){
         throw `テーブル「${tableName}」が存在しません。先にCSVファイルをアップロードしてください。`;
       }

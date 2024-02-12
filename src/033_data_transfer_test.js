@@ -201,20 +201,22 @@ import {
   masterUser,  // 実験者マスタ
   masterSpecies,  // 動物種マスタ
   masterPhylogeny,  // 系統マスタ
+  masterCompany,  // 業者マスタ
   masterOrigin,  // 由来マスタ
   masterProductType,  // 購入規格マスタ
   masterItem,  // 購入品マスタ
-  masterCompany,  // 業者マスタ
   masterPayment,  // 支払マスタ
-  masterRoom,  // Roomマスタ
+  masterRoom,  // 飼育室マスタ
   masterPrice,  // 管理費単価マスタ
+  masterAction,  // 飼育操作マスタ
+  masterSex,  // 性別マスタ
+  buyData,  // 購入データ
   broodbookData,  // 飼育台帳データ
   historyData,  // 飼育履歴データ
   increaseAndDecreaseData,  // 動物増減データ
   numberOfAnimalData,  // 飼育数データ
   budgetData,  // 予算実績データ
   billData,  // 請求データ
-  buyData,  // 購入データ
   _clearTable,  // 【サブ】テーブルを作り直す
   _checkSourceTable,  // 【サブ】テーブルの存在をチェックする
 } from "./034_data_transfer_validate.js";
@@ -226,7 +228,7 @@ export async function test033() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 44; i++ ) {
+    for ( i = 1; i <= 48; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

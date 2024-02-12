@@ -5,20 +5,22 @@ import {
   masterUser_core,  // 実験者マスタ
   masterSpecies_core,  // 動物種マスタ
   masterPhylogeny_core,  // 系統マスタ
+  masterCompany_core,  // 業者マスタ
   masterOrigin_core,  // 由来マスタ
   masterProductType_core,  // 購入規格マスタ
   masterItem_core,  // 購入品マスタ
-  masterCompany_core,  // 業者マスタ
   masterPayment_core,  // 支払マスタ
-  masterRoom_core,  // Roomマスタ
+  masterRoom_core,  // 飼育室マスタ
   masterPrice_core,  // 管理費単価マスタ
+  masterAction_core,  // 飼育操作マスタ
+  masterSex_core,  // 性別マスタ
+  buyData_core,  // 購入データ
   broodbookData_core,  // 飼育台帳データ
   historyData_core,  // 飼育履歴データ
   increaseAndDecreaseData_core,  // 動物増減データ
   numberOfAnimalData_core,  // 飼育数データ
   budgetData_core,  // 予算実績データ
   billData_core,  // 請求データ
-  buyData_core,  // 購入データ
   _clearTable_core,  // 【サブ】テーブルを作り直す
   _checkSourceTable_core,  // 【サブ】テーブルの存在をチェックする
 } from "./035_data_transfer.js";
@@ -86,6 +88,14 @@ export async function masterFaculty(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterFaculty`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterFaculty`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -116,6 +126,14 @@ export async function masterLab(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterLab`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterLab`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -146,6 +164,14 @@ export async function masterUser(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterUser`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterUser`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -176,6 +202,14 @@ export async function masterSpecies(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterSpecies`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterSpecies`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -206,96 +240,14 @@ export async function masterPhylogeny(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「masterOrigin_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function masterOrigin(  ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await masterOrigin_core(  );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : masterOrigin`);
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterPhylogeny`);
     }
     else{
-      throw error;
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterPhylogeny`);
     }
   }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「masterProductType_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function masterProductType(  ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await masterProductType_core(  );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : masterProductType`);
-    }
-    else{
-      throw error;
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「masterItem_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function masterItem(  ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await masterItem_core(  );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : masterItem`);
-    }
-    else{
-      throw error;
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
   //
   //--------------------------------------------------------------------------
   return result;
@@ -326,6 +278,128 @@ export async function masterCompany(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterCompany`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterCompany`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「masterOrigin_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function masterOrigin(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await masterOrigin_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : masterOrigin`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterOrigin`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterOrigin`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「masterProductType_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function masterProductType(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await masterProductType_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : masterProductType`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterProductType`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterProductType`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「masterItem_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function masterItem(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await masterItem_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : masterItem`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterItem`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterItem`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -356,6 +430,14 @@ export async function masterPayment(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterPayment`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterPayment`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -386,6 +468,14 @@ export async function masterRoom(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterRoom`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterRoom`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -416,6 +506,14 @@ export async function masterPrice(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterPrice`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterPrice`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -423,9 +521,9 @@ export async function masterPrice(  ){
 
 
 //#######################################################################################
-// 関数「broodbookData_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「masterAction_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function broodbookData(  ){
+export async function masterAction(  ){
   //--------------------------------------------------------------------------
   // 引数を検証
   //
@@ -433,11 +531,11 @@ export async function broodbookData(  ){
   // メイン処理を実行
   let result;
   try{
-    result = await broodbookData_core(  );
+    result = await masterAction_core(  );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : broodbookData`);
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : masterAction`);
     }
     else{
       throw error;
@@ -446,6 +544,14 @@ export async function broodbookData(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterAction`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterAction`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -453,9 +559,9 @@ export async function broodbookData(  ){
 
 
 //#######################################################################################
-// 関数「historyData_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「masterSex_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function historyData(  ){
+export async function masterSex(  ){
   //--------------------------------------------------------------------------
   // 引数を検証
   //
@@ -463,11 +569,11 @@ export async function historyData(  ){
   // メイン処理を実行
   let result;
   try{
-    result = await historyData_core(  );
+    result = await masterSex_core(  );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : historyData`);
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : masterSex`);
     }
     else{
       throw error;
@@ -476,126 +582,14 @@ export async function historyData(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「increaseAndDecreaseData_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function increaseAndDecreaseData(  ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await increaseAndDecreaseData_core(  );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : increaseAndDecreaseData`);
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : masterSex`);
     }
     else{
-      throw error;
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : masterSex`);
     }
   }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「numberOfAnimalData_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function numberOfAnimalData(  ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await numberOfAnimalData_core(  );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : numberOfAnimalData`);
-    }
-    else{
-      throw error;
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「budgetData_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function budgetData(  ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await budgetData_core(  );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : budgetData`);
-    }
-    else{
-      throw error;
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「billData_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function billData(  ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await billData_core(  );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : billData`);
-    }
-    else{
-      throw error;
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
   //
   //--------------------------------------------------------------------------
   return result;
@@ -626,6 +620,242 @@ export async function buyData(  ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : buyData`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : buyData`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「broodbookData_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function broodbookData(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await broodbookData_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : broodbookData`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : broodbookData`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : broodbookData`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「historyData_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function historyData(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await historyData_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : historyData`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : historyData`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : historyData`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「increaseAndDecreaseData_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function increaseAndDecreaseData(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await increaseAndDecreaseData_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : increaseAndDecreaseData`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : increaseAndDecreaseData`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : increaseAndDecreaseData`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「numberOfAnimalData_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function numberOfAnimalData(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await numberOfAnimalData_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : numberOfAnimalData`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : numberOfAnimalData`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : numberOfAnimalData`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「budgetData_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function budgetData(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await budgetData_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : budgetData`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : budgetData`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : budgetData`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「billData_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function billData(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await billData_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : billData`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : billData`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : billData`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;
