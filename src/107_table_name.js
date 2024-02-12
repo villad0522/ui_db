@@ -160,6 +160,9 @@ export async function createTable_core( tableName ){
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
   if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+    if( !cacheData1[tableId] ){
+        throw `指定されたテーブルID「${tableId}」は存在しません。`;
+    }
     await runSqlWriteOnly(
         `DELETE FROM table_names
             WHERE table_number = :tableNumber;`,
@@ -334,7 +337,7 @@ export async function listTables_core( pageNumber, onePageMaxSize, isTrash ){
 // SQLクエリ実行（読み取り専用）
 export async function runSqlReadOnly_core( sql, params ){
   if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
-    //入力パラメータに含まれるテーブル名をIDに置き換える
+    // SQL文に含まれるテーブル名をIDに置き換える
     for( const tableId in cacheData1 ){
         if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
         const regexp = cacheData2[tableId];
@@ -350,7 +353,7 @@ export async function runSqlReadOnly_core( sql, params ){
 // SQLクエリ実行（書き込み専用）
 export async function runSqlWriteOnly_core( sql, params ){
   if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
-    //入力パラメータに含まれるテーブル名をIDに置き換える
+    // SQL文に含まれるテーブル名をIDに置き換える
     for( const tableId in cacheData1 ){
         if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
         const regexp = cacheData2[tableId];
@@ -394,8 +397,22 @@ export async function reload_core(  ){
         const tableId = "t" + String(tableNumber);
         cacheData1[tableId] = tableName;
         cacheData3[tableName] = tableId;
-        cacheData2[tableId] = new RegExp(`(?<!')(?<=(^|[^a-zA-Z0-9]))${tableName}(?!')(?=\$|[^a-zA-Z0-9])`, "g");
+        //
+        // 特定の文字列を置き換える正規表現
+        //   （単語の両端はシングルクオーテーションではない、空白文字または半角記号または先頭または終端）
+        //
+        // 　　(?<!')(?<=(^|[\s\\\*\+\.\?\{\}\(\)\[\]\^\$\-\|\/!"#%&,:;<=>?@_`~]))置き換えたい文字列(?!')(?=$|[\s\\\*\+\.\?\{\}\(\)\[\]\^\$\-\|\/!"#%&,:;<=>?@_`~])
+        //
+        const seikihyougen = `(?<!')(?<=(^|[\\s\\\\\\*\\+\\.\\?\\{\\}\\(\\)\\[\\]\\^\\\$\\-\\|\\/!"#%&,:;<=>?@_\`~]))`
+            + _escapeRegExp(tableName)
+            + `(?!')(?=\$|[\\s\\\\\\*\\+\\.\\?\\{\\}\\(\\)\\[\\]\\^\\\$\\-\\|\\/!"#%&,:;<=>?@_\`~])`;
+        cacheData2[tableId] = new RegExp(seikihyougen, "g");
     }
+}
+
+// 正規表現で必要な文字をエスケープする関数
+function _escapeRegExp(string) {
+    return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$$&');
 }
 
 // テーブルの一覧を取得（高速）
@@ -408,4 +425,32 @@ export async function listTableNamesAll_core(  ){
 export async function getTableIdFromName_core( tableName ){
   if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData3[tableName];
+}
+
+// SQL文に含まれるテーブルを取得
+export async function listTablesInSQL_core( sql ){
+  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+    const tableIds = new Set();
+    for( const tableId in cacheData1 ){
+        if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+        // SQL文にテーブル名が含まれるかどうか判定する
+        const regexp = cacheData2[tableId];
+        if(!regexp){
+            throw `正規表現が見つかりません`;
+        }
+        if( regexp.test(sql) ){
+            if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+            tableIds.add( tableId );  // 結果に追加
+            sql = sql.replaceAll( regexp, tableId );
+        }
+    }
+    for( const tableId in cacheData1 ){
+        if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+        // SQL文にテーブルIDが含まれるかどうか判定する
+        if( sql.includes(tableId) ){
+            if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+            tableIds.add( tableId );  // 結果に追加
+        }
+    }
+    return Array.from(tableIds);
 }

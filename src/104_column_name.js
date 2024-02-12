@@ -16,6 +16,7 @@ import {
   getTableName,
   listTableNamesAll,
   getTableIdFromName,
+  listTablesInSQL,
 } from "./106_table_name_validate.js";
 import {
   getLocalIp,
@@ -69,8 +70,6 @@ export function setBugMode( mode ){
 
 
 
-
-
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -113,13 +112,18 @@ let cacheData3 = {
 
 let cacheData4 = {
     // データの例
-    // "c1": new RegExp(`(?<=^|[^a-zA-Z0-9])\bカラム名1\b(?=\$|[^a-zA-Z0-9])`, "g"),
-    // "c2": new RegExp(`(?<=^|[^a-zA-Z0-9])\bカラム名2\b(?=\$|[^a-zA-Z0-9])`, "g"),
+    // "c1": new RegExp(`(?<=^|[^a-zA-Z0-9])\bt3_カラム名1\b(?=\$|[^a-zA-Z0-9])`, "g"),
+    // "c2": new RegExp(`(?<=^|[^a-zA-Z0-9])\bt7_カラム名2\b(?=\$|[^a-zA-Z0-9])`, "g"),
 };
 let cacheData5 = {
     // データの例
     // "t1_カラム名１": "c8",
     // "t1_カラム名２": "c88"
+};
+let cacheData6 = {
+    // データの例
+    // "c1": new RegExp(`(?<=^|[^a-zA-Z0-9])\bカラム名1\b(?=\$|[^a-zA-Z0-9])`, "g"),
+    // "c2": new RegExp(`(?<=^|[^a-zA-Z0-9])\bカラム名2\b(?=\$|[^a-zA-Z0-9])`, "g"),
 };
 
 //【サブ関数】メモリに再読み込み
@@ -139,6 +143,7 @@ async function _reload() {
     cacheData3 = {};
     cacheData4 = {};
     cacheData5 = {};
+    cacheData6 = {};
     for (const { columnNumber, columnName, tableId } of matrix) {
         const columnId = "c" + String(columnNumber);
         cacheData1[columnId] = columnName;
@@ -152,12 +157,30 @@ async function _reload() {
             "name": columnName,
             "dataType": await getDataType(columnId),
         });
+        //
+        // 特定の文字列を置き換える正規表現
+        //   （単語の両端はシングルクオーテーションではない、空白文字または半角記号または先頭または終端）
+        //
+        // 　　(?<!')(?<=(^|[\s\\\*\+\.\?\{\}\(\)\[\]\^\$\-\|\/!"#%&,:;<=>?@_`~]))置き換えたい文字列(?!')(?=$|[\s\\\*\+\.\?\{\}\(\)\[\]\^\$\-\|\/!"#%&,:;<=>?@_`~])
+        //
+        const seikihyougen = `(?<!')(?<=(^|[\\s\\\\\\*\\+\\.\\?\\{\\}\\(\\)\\[\\]\\^\\\$\\-\\|\\/!"#%&,:;<=>?@_\`~]))`
+            + _escapeRegExp(columnName)
+            + `(?!')(?=\$|[\\s\\\\\\*\\+\\.\\?\\{\\}\\(\\)\\[\\]\\^\\\$\\-\\|\\/!"#%&,:;<=>?@_\`~])`;
+        cacheData4[columnId] = new RegExp(seikihyougen, "g");
         let columnName2 = columnName;
         if( columnName.startsWith(tableId+"_") ){
-            columnName2 = columnName2.replace(tableId+"_","");
+            columnName2 = columnName.replace(tableId+"_","");
         }
-        cacheData4[columnId] = new RegExp(`(?<!')(?<=(^|[^a-zA-Z0-9]))(${columnName}|${columnName2})(?!')(?=\$|[^a-zA-Z0-9])`, "g");
+        const seikihyougen2 = `(?<!')(?<=(^|[\\s\\\\\\*\\+\\.\\?\\{\\}\\(\\)\\[\\]\\^\\\$\\-\\|\\/!"#%&,:;<=>?@_\`~]))`
+            + _escapeRegExp(columnName2)
+            + `(?!')(?=\$|[\\s\\\\\\*\\+\\.\\?\\{\\}\\(\\)\\[\\]\\^\\\$\\-\\|\\/!"#%&,:;<=>?@_\`~])`;
+        cacheData6[columnId] = new RegExp(seikihyougen2, "g");
     }
+}
+
+// 正規表現で必要な文字をエスケープする関数
+function _escapeRegExp(string) {
+    return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$$&');
 }
 
 // インメモリキャッシュを削除する
@@ -439,42 +462,72 @@ export async function listColumnsForGUI_core( tableId, pageNumber, onePageMaxSiz
 // SQLクエリ実行（読み取り専用）
 export async function runSqlReadOnly_core( sql, params ){
   if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
-    //入力パラメータに含まれるカラム名をIDに置き換える
-    for( const columnId in cacheData1 ){
+    const tableIds = await listTablesInSQL(sql);
+    for( const tableId of tableIds ){
         if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
-        const regexp = cacheData4[columnId];
-        if(!regexp){
-            throw `正規表現が見つかりません`;
+        // SQL文に含まれるカラム名をIDに置き換える
+        for( const { id: columnId } of cacheData2[tableId] ){
+            if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+            const regexp = cacheData4[columnId];
+            if(!regexp){
+                throw `正規表現が見つかりません。\ntableId = ${tableId}\ncolumnId = ${columnId}`;
+            }
+            sql = sql.replaceAll( regexp, columnId );
         }
-        sql = sql.replaceAll( regexp, columnId );
+    }
+    for( const tableId of tableIds ){
+        if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+        for( const { id: columnId } of cacheData2[tableId] ){
+            if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+            const regexp = cacheData6[columnId];
+            if(!regexp){
+                throw `正規表現が見つかりません。\ntableId = ${tableId}\ncolumnId = ${columnId}`;
+            }
+            sql = sql.replaceAll( regexp, columnId );
+        }
     }
     return await runSqlReadOnly( sql, params );  // 下層の関数を実行する
 }
 
 // SQLクエリ実行（書き込み専用）
 export async function runSqlWriteOnly_core( sql, params ){
-  if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
-    //入力パラメータに含まれるカラム名をIDに置き換える
-    for( const columnId in cacheData1 ){
-        if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
-        const regexp = cacheData4[columnId];
-        if(!regexp){
-            throw `正規表現が見つかりません`;
+  if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+    const tableIds = await listTablesInSQL(sql);
+    for( const tableId of tableIds ){
+        if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+        // SQL文に含まれるカラム名をIDに置き換える
+        for( const { id: columnId } of cacheData2[tableId] ){
+            if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+            const regexp = cacheData4[columnId];
+            if(!regexp){
+                throw `正規表現が見つかりません。\ntableId = ${tableId}\ncolumnId = ${columnId}`;
+            }
+            sql = sql.replaceAll( regexp, columnId );
         }
-        sql = sql.replaceAll( regexp, columnId );
+    }
+    for( const tableId of tableIds ){
+        if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+        for( const { id: columnId } of cacheData2[tableId] ){
+            if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+            const regexp = cacheData6[columnId];
+            if(!regexp){
+                throw `正規表現が見つかりません。\ntableId = ${tableId}\ncolumnId = ${columnId}`;
+            }
+            sql = sql.replaceAll( regexp, columnId );
+        }
     }
     return await runSqlReadOnly( sql, params );  // 下層の関数を実行する
 }
 
 // カラムIDからテーブルIDを調べる
 export async function getTableId_core( columnId ){
-  if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
     return cacheData3[columnId];
 }
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
-  if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
     await runSqlWriteOnly(
         `DELETE FROM column_names
             WHERE table_id = :tableId;`,
@@ -488,15 +541,15 @@ export async function deleteTable_core( tableId ){
 
 // カラムが有効なのか判定
 export async function checkColumnEnabled_core( columnId ){
-  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
     return cacheData1[columnId] ? true : false;
 }
 
 // カラムの一覧を取得（高速）
 export async function listColumnsAll_core( tableId ){
-  if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
     if(!cacheData2[tableId]){
-        if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
         // カラムが１つも無いテーブルの場合は、ここに到達する
         return [];
     }
@@ -505,12 +558,12 @@ export async function listColumnsAll_core( tableId ){
 
 // IDからカラム名を取得
 export async function getColumnName_core( columnId ){
-  if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData1[columnId];
 }
 
 // カラム名からIDを取得
 export async function getColumnIdFromName_core( columnName ){
-  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData5[columnName];
 }

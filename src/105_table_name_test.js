@@ -54,6 +54,7 @@ import {
   reload,  // 【サブ関数】メモリに再読み込み
   listTableNamesAll,  // テーブルの一覧を取得（高速）
   getTableIdFromName,  // テーブル名からIDを取得
+  listTablesInSQL,  // SQL文に含まれるテーブルを取得
 } from "./106_table_name_validate.js";
 import { setBugMode } from "./107_table_name.js";
 
@@ -63,7 +64,7 @@ export async function test105() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 25; i++ ) {
+    for ( i = 1; i <= 30; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

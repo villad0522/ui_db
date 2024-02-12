@@ -94,6 +94,7 @@ import {
   getTableName,
   listTableNamesAll,
   getTableIdFromName,
+  listTablesInSQL,
 } from "./106_table_name_validate.js";
 import {
   cutRecord,
@@ -280,6 +281,7 @@ export {
   getTableName,
   listTableNamesAll,
   getTableIdFromName,
+  listTablesInSQL,
   disableColumn,
   enableColumn,
   updateColumnName,

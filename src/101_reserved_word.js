@@ -54,6 +54,7 @@ import {
   getTableName,
   listTableNamesAll,
   getTableIdFromName,
+  listTablesInSQL,
 } from "./106_table_name_validate.js";
 import {
   deleteRecords,

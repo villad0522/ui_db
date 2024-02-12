@@ -421,7 +421,7 @@ export async function createTable_core( tableId ){
     await runSqlWriteOnly(
         `CREATE TABLE IF NOT EXISTS ${tableId} (
             "${primaryKey}" INTEGER PRIMARY KEY NOT NULL,
-            "sort_number" REAL NOT NULL,
+            "sort_number" REAL NOT NULL UNIQUE,
             "created_at" INTEGER NOT NULL,
             "updated_at" INTEGER NOT NULL
         );`,

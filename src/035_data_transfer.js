@@ -105,6 +105,7 @@ import {
   getTableName,
   listTableNamesAll,
   getTableIdFromName,
+  listTablesInSQL,
 } from "./106_table_name_validate.js";
 import {
   cutRecord,
@@ -308,49 +309,166 @@ export async function masterFaculty_core(  ){
 export async function masterLab_core(  ){
   if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
   // 処理に必要なテーブルが揃っているかをチェックする
-  await _checkSourceTable_core([ "CSV_教室マスタ" ]);
+  await _checkSourceTable_core([ "CSV_教室マスタ", "学部マスタ" ]);
   //
   // 結果を書き込むテーブルとカラムを準備する
   const t1 = await _clearTable_core("教室マスタ");
-  await createColumn( t1, "所属学部", "TEXT", null );
+  await createColumn( t1, "教室コード", "TEXT", null );
+  await createColumn( t1, "謎の数字", "INTEGER", null );
+  await createColumn( t1, "所属学部", "POINTER", await getTableIdFromName("学部マスタ") );
+  await createColumn( t1, "基礎/臨床", "TEXT", null );
+  await createColumn( t1, "並び順？", "REAL", null );
+  await createColumn( t1, "教室略称", "TEXT", null );
+  await createColumn( t1, "教室名", "TEXT", null );
   //
   // データを移行する
   await runSqlWriteOnly(
     `INSERT INTO 教室マスタ (
-        学部名,
+        教室コード,
+        謎の数字,
+        所属学部,
+        基礎/臨床,
+        並び順？,
+        教室略称,
+        教室名,
         sort_number,
         created_at,
         updated_at
       ) SELECT
-          列2,
-          MAX(sort_number),
-          MAX(created_at),
-          MAX(updated_at)
-        FROM CSV_教室マスタ
-        GROUP BY 列2;`,
+          列0,
+          列1,
+          ${await getTableIdFromName("学部マスタ")}_id,
+          列3,
+          列4,
+          列5,
+          列6,
+          MAX(csv.sort_number),
+          MAX(csv.created_at),
+          MAX(csv.updated_at)
+        FROM CSV_教室マスタ AS csv
+        LEFT OUTER JOIN 学部マスタ
+          ON 列2 = 学部名
+        GROUP BY csv.sort_number;`,
     {},
   );
   //
   // 不要になったテーブルを削除する
-  await deleteTable("CSV_教室マスタ");
+  await deleteTable(await getTableIdFromName("CSV_教室マスタ"));
   return "データの移行が完了しました。";
 }
 
 // 実験者マスタ
 export async function masterUser_core(  ){
   if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_実験者マスタ", "教室マスタ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("実験者マスタ");
+  await createColumn( t1, "所属教室", "POINTER", await getTableIdFromName("教室マスタ") );
+  await createColumn( t1, "実験者コード", "TEXT", null );
+  await createColumn( t1, "氏名", "TEXT", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 実験者マスタ (
+        所属教室,
+        実験者コード,
+        氏名,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          ${await getTableIdFromName("教室マスタ")}_id,
+          列1,
+          列2,
+          MAX(csv.sort_number),
+          MAX(csv.created_at),
+          MAX(csv.updated_at)
+        FROM CSV_実験者マスタ AS csv
+        LEFT OUTER JOIN 教室マスタ
+          ON 列0 = 教室コード
+        GROUP BY csv.sort_number;`,
+    {},
+  );
+  //
+  // 不要になったテーブルを削除する
+  await deleteTable(await getTableIdFromName("CSV_実験者マスタ"));
   return "データの移行が完了しました。";
 }
 
 // 動物種マスタ
 export async function masterSpecies_core(  ){
   if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_動物種マスタ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("動物種マスタ");
+  await createColumn( t1, "動物種番号", "INTEGER", null );
+  await createColumn( t1, "動物種名", "TEXT", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 動物種マスタ (
+        動物種番号,
+        動物種名,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列0,
+          列1,
+          MAX(csv.sort_number),
+          MAX(csv.created_at),
+          MAX(csv.updated_at)
+        FROM CSV_動物種マスタ AS csv
+        GROUP BY csv.sort_number;`,
+    {},
+  );
+  //
+  // 不要になったテーブルを削除する
+  await deleteTable(await getTableIdFromName("CSV_動物種マスタ"));
   return "データの移行が完了しました。";
 }
 
 // 系統マスタ
 export async function masterPhylogeny_core(  ){
   if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_系統マスタ", "動物種マスタ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("系統マスタ");
+  await createColumn( t1, "系統番号", "INTEGER", null );
+  await createColumn( t1, "系統名", "TEXT", null );
+  await createColumn( t1, "動物種", "POINTER", await getTableIdFromName("動物種マスタ") );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 系統マスタ (
+        系統番号,
+        系統名,
+        動物種,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列0,
+          列1,
+          ${await getTableIdFromName("動物種マスタ")}_id,
+          MAX(csv.sort_number),
+          MAX(csv.created_at),
+          MAX(csv.updated_at)
+        FROM CSV_系統マスタ AS csv
+        LEFT OUTER JOIN 動物種マスタ
+          ON 列2 = 動物種番号
+        GROUP BY csv.sort_number;`,
+    {},
+  );
+  //
+  // 不要になったテーブルを削除する
+  await deleteTable(await getTableIdFromName("CSV_系統マスタ"));
   return "データの移行が完了しました。";
 }
 
