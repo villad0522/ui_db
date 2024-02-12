@@ -359,6 +359,13 @@ async function _checkField( columnId, value ){
     };
   }
   // 外部キーの場合
+  if( value===0 ){
+    // 空欄の場合
+    return {
+      isOK: true,
+      message: "データ型に適合しています。",
+    };
+  }
   if( typeof value !== "number" || isNaN(value) ){
     return {
       isOK: false,

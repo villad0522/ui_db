@@ -120,7 +120,7 @@ export async function formatField_core( inputText, columnId, isRequired ){
             if (isRequired === false) {
                 if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
                 // 空欄OKの場合
-                return null;
+                return 0;
             }
             // 空欄NGの場合
             throw "必須項目が空欄です。";
