@@ -19,17 +19,21 @@ window.addEventListener('DOMContentLoaded', async () => {
     //
     //---------------------------------------------------------------
     //
-    // ページを遷移した後も、スクロール位置を保持する
-    const scrollXText = sessionStorage.getItem("scrollX" + tableId + pageNumber);
-    const scrollYText = sessionStorage.getItem("scrollY" + tableId + pageNumber);
-    if (scrollXText && scrollYText) {
-        const scrollX = Number(scrollXText);
-        const scrollY = Number(scrollYText);
-        if (!isNaN(scrollX) && !isNaN(scrollY)) {
-            document.documentElement.scrollLeft = scrollX;
-            document.documentElement.scrollTop = scrollY;
+    // 以前開いていたスクロール位置を読み込む
+    if (!location.hash) {
+        const scrollXText = sessionStorage.getItem("scrollX" + tableId + pageNumber);
+        const scrollYText = sessionStorage.getItem("scrollY" + tableId + pageNumber);
+        if (scrollXText && scrollYText) {
+            const scrollX = Number(scrollXText);
+            const scrollY = Number(scrollYText);
+            if (!isNaN(scrollX) && !isNaN(scrollY)) {
+                document.documentElement.scrollLeft = scrollX;
+                document.documentElement.scrollTop = scrollY;
+            }
         }
     }
+    //
+    // スクロール位置を保存する
     let pastScrollTime = 0;
     let timerId = null;
     window.addEventListener("scroll", () => {
@@ -74,6 +78,7 @@ window.paginationButtonFirst = function (arrayName) {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("page_records", 1);
     searchParams.delete("record");
+    searchParams.delete("paste");
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -87,6 +92,7 @@ window.paginationButtonPrev = function () {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("page_records", pageNumber);
     searchParams.delete("record");
+    searchParams.delete("paste");
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -100,6 +106,7 @@ window.paginationButtonNext = function () {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("page_records", pageNumber);
     searchParams.delete("record");
+    searchParams.delete("paste");
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -113,6 +120,7 @@ window.paginationButtonLast = function () {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("page_records", pageNumber);
     searchParams.delete("record");
+    searchParams.delete("paste");
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }

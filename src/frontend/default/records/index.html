@@ -231,8 +231,9 @@
                             </td>
                         </tr>
                         <script>
+                            const MAX_RECORD_SIZE = 50;
                             let htmlText4 = "";
-                            for (let i = 0; i < 50; i++) {
+                            for (let i = 0; i < MAX_RECORD_SIZE; i++) {
                                 htmlText4 += `
                                     <tr name="records${i}_flag" id="offset${i + 5}">
                                         <td style="padding: 0; width: 40px;">
@@ -251,16 +252,24 @@
                                         <td name="records${i}_id">
                                         </td>
                                         <td>
+                                            <!--  -->
+                                            <!-- 貼り付けボタン -->
                                             <button onclick="myFetch('./paste_record/form?after_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
                                                 <i class="bi bi-clipboard"></i>
                                                 <i class="bi bi-arrow-up"></i>
                                             </button>
+                                            <!--  -->
+                                            <!-- 切り取りボタン -->
                                             <button onclick="myFetch('./cut_record/form?record_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
                                                 <i class="bi bi-scissors"></i>
                                             </button>
+                                            <!--  -->
+                                            <!-- コピーボタン -->
                                             <button onclick="myFetch('./copy_record/form?record_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
                                                 <i class="bi bi-files"></i>
                                             </button>
+                                            <!--  -->
+                                            <!-- 削除ボタン -->
                                             <button onclick="myFetch('./delete_record/form?record_id='+getRecordId(${i}));" type="button" class="btn btn-secondary btn-sm">
                                                 <i class="bi bi-trash-fill"></i>
                                             </button>
@@ -277,27 +286,34 @@
                                                 切り取り中
                                             </span>
                                             <!--  -->
+                                            <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                                            <input name="records${i}_isPaste" class="flag" type="checkbox">
+                                            <span class="badge rounded-pill text-bg-success">
+                                                貼り付けました
+                                            </span>
+                                            <!--  -->
                                         </td>
                                     </tr>`;
                             }
+                            htmlText4 += `
+                                    <tr name="columns0_flag" style="border: none;">
+                                        <td style="border: none;"></td>`;
+                            for (let j = 0; j < 35; j++) {
+                                htmlText4 += `<td name="columns${j}_flag" style="border: none;"></td>`;
+                            }
+                            htmlText4 += `
+                                        <td style="border: none;"></td>
+                                        <td style="border: none;">
+                                            <!--  -->
+                                            <!-- 貼り付けボタン -->
+                                            <button onclick="myFetch('./paste_record/form?before_id='+getRecordId(${MAX_RECORD_SIZE - 1}));" type="button" class="btn btn-secondary btn-sm">
+                                                <i class="bi bi-clipboard"></i>
+                                                <i class="bi bi-arrow-up"></i>
+                                            </button>
+                                        </td>
+                                    </tr>`;
                             document.write(htmlText4);
                         </script>
-                        <tr name="columns0_flag" style="border: none;">
-                            <script>
-                                let htmlText6 = "";
-                                for (let j = 0; j < 35; j++) {
-                                    htmlText6 += `<td name="columns${j}_flag" style="border: none;"></td>`;
-                                }
-                                document.write(htmlText6);
-                            </script>
-                            <td style="border: none;"></td>
-                            <td style="border: none;">
-                                <button onclick="myFetch('./paste_record/json?after_id='+getChildPageId());" type="button" class="btn btn-secondary btn-sm">
-                                    <i class="bi bi-clipboard"></i>
-                                    <i class="bi bi-arrow-up"></i>
-                                </button>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </main>

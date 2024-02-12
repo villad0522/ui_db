@@ -302,10 +302,11 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     case "LIST_RECORDS":{
       if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
       const focusRecordId = queryParameters["record"];
+      const pasteRecordId = queryParameters["paste"];
       const oldPageNumber = queryParameters["page_records"];
       const onePageMaxSize = apiInfo?.response?.records?.onePageMaxSize;
       const tableId = queryParameters["table"];
-      const { columns, records, recordsTotal, pageNumber } = await listRecords( tableId, oldPageNumber, onePageMaxSize, focusRecordId );
+      const { columns, records, recordsTotal, pageNumber } = await listRecords( tableId, oldPageNumber, onePageMaxSize, focusRecordId, pasteRecordId );
       // 親テーブルを選ぶときのセレクトボックスを構築する
       const { tables, total:tablesTotal } = await listTables(
         1,
@@ -352,7 +353,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       const afterRecordId = queryParameters["after_id"];
       const recordId = await pasteRecord( tableId, beforeRecordId, afterRecordId );
       return {
-        "nextUrl": `./?table=${tableId}&record=${recordId}&page_records=${pageNumber ?? 1}`,
+        "nextUrl": `./?table=${tableId}&paste=${recordId}&page_records=${pageNumber ?? 1}`,
       };
     }
     //======================================================================

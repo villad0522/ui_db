@@ -320,9 +320,9 @@ export async function _deleteTitleColumn_core( tableId ){
 }
 
 // レコードの一覧を取得(GUI)
-export async function listRecords_core( tableId, oldPageNumber, onePageMaxSize, focusRecordId ){
+export async function listRecords_core( tableId, oldPageNumber, onePageMaxSize, focusRecordId, pasteRecordId ){
   if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
-  const { columns, records, recordsTotal, pageNumber } = await listRecords( tableId, oldPageNumber, onePageMaxSize, focusRecordId );
+  const { columns, records, recordsTotal, pageNumber } = await listRecords( tableId, oldPageNumber, onePageMaxSize, focusRecordId, pasteRecordId );
   const newColumns = [];
   const newRecords = [];
   for( const columnInfo of columns ){

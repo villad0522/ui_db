@@ -211,7 +211,7 @@ export async function _generateRecordSortNumber_core( tableId, beforeRecordId, a
       return sortNumberBefore / 2;
     }
     else{
-      throw `レコードを移動しようとしましたが、移動先の「直前のレコード」が取得できませんでした`;
+      throw `レコードを移動・コピーしようとしましたが、移動先の「直前のレコード」が取得できませんでした`;
     }
   }
   else if( afterRecordId ){
@@ -245,17 +245,40 @@ export async function _generateRecordSortNumber_core( tableId, beforeRecordId, a
       return sortNumberAfter + 8;
     }
     else{
-      throw `レコードを移動しようとしましたが、移動先の「直後のレコード」が取得できませんでした`;
+      throw `レコードを移動・コピーしようとしましたが、移動先の「直後のレコード」が取得できませんでした`;
     }
   }
   else{
-    throw `レコードを移動しようとしましたが、移動先が指定されていません`;
+    if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+    // 移動先がしていされていない場合、一番末尾に追加する
+    const records = await runSqlReadOnly(
+      `SELECT sort_number AS sortNumber
+        FROM ${tableId}
+        ORDER BY sort_number ASC
+        LIMIT 1;`,
+      {
+        ":afterId" : afterRecordId,
+      },
+    );
+    if( records.length>=1 ){
+      if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+      // 移動先のレコードが両方取得できた場合
+      const sortNumberBefore = records[0]["sortNumber"];
+      if( sortNumberBefore <= 0 ){
+        throw `ソート番号がゼロ以下です。`;
+      }
+      return sortNumberBefore * 0.9;
+    }
+    else{
+      if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+      return 128;
+    }
   }
 }
 
 // レコードを一括削除
 export async function deleteRecords_core( tableId, recordIdList ){
-  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
   copyingRecords[tableId] = null;
   cuttingRecords[tableId] = null;
   return await deleteRecords( tableId, recordIdList );

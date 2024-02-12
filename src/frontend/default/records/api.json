@@ -20,6 +20,12 @@
             "description": "ページ番号。１ページに収まらなかった場合に活用します。このパラメータを2,3,4...と増やすことで、次のページを閲覧できます。",
             "isRequired": false,
             "example": 1
+        },
+        "paste": {
+            "dataType": "INTEGER",
+            "description": "貼り付けた直後のレコードID",
+            "isRequired": false,
+            "example": 294
         }
     },
     "requestBody": {},
@@ -129,6 +135,11 @@
                 "isCutting": {
                     "dataType": "BOOL",
                     "description": "切り取り中か否か",
+                    "example": false
+                },
+                "isPaste": {
+                    "dataType": "BOOL",
+                    "description": "貼り付け直後のレコードか否か",
                     "example": false
                 },
                 "field0": {
