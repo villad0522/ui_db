@@ -68,7 +68,6 @@ import {
   enableTable,
   disableColumn,
   enableColumn,
-  delete_table,
   autoCorrect,
 } from "./097_search_text_validate.js";
 import {
@@ -193,8 +192,8 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
     if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
     fileName2 = fileName.substring(0, fileName.lastIndexOf("."));
   }
-  let tableName = "csv_" + fileName;
-  while( await getTableIdFromName(tableName) ){
+  let tableName = "CSV_" + fileName2;
+  if( await getTableIdFromName(tableName) ){
     throw "既に同じ名前のテーブルが存在します";
   }
   //
@@ -362,7 +361,10 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
 const baseDate = new Date( 1980, 0, 1 );
 
 function _convertData(inputText){
-  if(!isNaN(inputText)){
+  if(inputText===""){
+    return "";
+  }
+  else if(!isNaN(inputText)){
     return Number(inputText);
   }
   try{

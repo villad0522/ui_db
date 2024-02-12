@@ -97,7 +97,6 @@ import {
   enableTable,
   disableColumn,
   enableColumn,
-  delete_table,
   autoCorrect,
 } from "./097_search_text_validate.js";
 import {
@@ -215,6 +214,8 @@ import {
   budgetData,  // 予算実績データ
   billData,  // 請求データ
   buyData,  // 購入データ
+  _clearTable,  // 【サブ】テーブルを作り直す
+  _checkSourceTable,  // 【サブ】テーブルの存在をチェックする
 } from "./034_data_transfer_validate.js";
 import { setBugMode } from "./035_data_transfer.js";
 
@@ -224,7 +225,7 @@ export async function test033() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 39; i++ ) {
+    for ( i = 1; i <= 44; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

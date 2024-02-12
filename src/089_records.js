@@ -56,7 +56,6 @@ import {
   enableTable,
   disableColumn,
   enableColumn,
-  delete_table,
   autoCorrect,
 } from "./097_search_text_validate.js";
 import {
@@ -102,14 +101,15 @@ export async function listRecords_core( tableId, pageNumber, onePageMaxSize, foc
     const primaryKey = await getPrimaryKey( tableId );
     let columns = await listColumnsAll( tableId );
     columns = columns.map( columnInfo => {
-        if( String(columnInfo.name).startsWith(tableId+"_") ){
+        let columnName = String(columnInfo.name);
+        if( columnName.startsWith(tableId+"_") ){
             if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-            return {
-                ...columnInfo,
-                "name": String(columnInfo.name).replace( tableId+"_", "" ),
-            };
+            columnName = columnName.replace( tableId+"_", "" );
         }
-        return columnInfo;
+        return {
+            ...columnInfo,
+            "name": columnName,
+        };
     });
     if ( !pageNumber ) {
         if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）

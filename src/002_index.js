@@ -86,7 +86,6 @@ import {
   enableTable,
   disableColumn,
   enableColumn,
-  delete_table,
   autoCorrect,
 } from "./097_search_text_validate.js";
 import {
@@ -224,6 +223,8 @@ import {
   budgetData,
   billData,
   buyData,
+  _clearTable,
+  _checkSourceTable,
 } from "./034_data_transfer_validate.js";
 import {
   getEndpointInfo,
@@ -290,7 +291,6 @@ export {
   getColumnIdFromName,
   reserveWord,
   checkReservedWord,
-  delete_table,
   autoCorrect,
   getParentTableId,
   formatField,
@@ -396,6 +396,8 @@ export {
   budgetData,
   billData,
   buyData,
+  _clearTable,
+  _checkSourceTable,
   getEndpointInfo,
   listEndpoints,
   runApi,

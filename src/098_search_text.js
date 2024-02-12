@@ -283,7 +283,7 @@ export async function updateRecords_core( tableId, records ){
 
 
 // 不可逆的にテーブルを削除
-export async function delete_table_core( tableId ){
+export async function deleteTable_core( tableId ){
   if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
   await runSqlWriteOnly(
     `DELETE FROM search_text
@@ -292,7 +292,7 @@ export async function delete_table_core( tableId ){
       ":tableId": tableId,
     },
   );
-  return await delete_table( tableId );  // 下層の関数を呼び出す
+  return await deleteTable( tableId );  // 下層の関数を呼び出す
 }
 
 

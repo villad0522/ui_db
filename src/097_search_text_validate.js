@@ -2,7 +2,7 @@ import {
   startUp_core,  // プログラム起動
   createRecord_core,  // レコードを作成
   updateRecords_core,  // レコードを上書き
-  delete_table_core,  // 不可逆的にテーブルを削除
+  deleteTable_core,  // 不可逆的にテーブルを削除
   deleteRecords_core,  // レコードを一括削除
   disableTable_core,  // テーブルを無効化
   enableTable_core,  // テーブルを再度有効化
@@ -209,17 +209,17 @@ export async function updateRecords( tableId, records ){
 
 
 //#######################################################################################
-// 関数「delete_table_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「deleteTable_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function delete_table( tableId ){
+export async function deleteTable( tableId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : search_text\n関数 : delete_table`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : search_text\n関数 : deleteTable`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : search_text\n関数 : delete_table`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : search_text\n関数 : deleteTable`);
     }
   }
   //
@@ -227,11 +227,11 @@ export async function delete_table( tableId ){
   // メイン処理を実行
   let result;
   try{
-    result = await delete_table_core( tableId );
+    result = await deleteTable_core( tableId );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : search_text\n関数 : delete_table`);
+      throw new Error(`${error}\nレイヤー : search_text\n関数 : deleteTable`);
     }
     else{
       throw error;
@@ -242,10 +242,10 @@ export async function delete_table( tableId ){
   // 戻り値を検証
   if( typeof result !== "string" ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : search_text\n関数 : delete_table`);
+      throw new Error(`resultがNULLです。\nレイヤー : search_text\n関数 : deleteTable`);
     }
     else{
-      throw new Error(`resultが文字列ではありません。\nレイヤー : search_text\n関数 : delete_table`);
+      throw new Error(`resultが文字列ではありません。\nレイヤー : search_text\n関数 : deleteTable`);
     }
   }
   //

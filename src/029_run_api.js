@@ -81,7 +81,6 @@ import {
   enableTable,
   disableColumn,
   enableColumn,
-  delete_table,
   autoCorrect,
 } from "./097_search_text_validate.js";
 import {
@@ -219,6 +218,8 @@ import {
   budgetData,
   billData,
   buyData,
+  _clearTable,
+  _checkSourceTable,
 } from "./034_data_transfer_validate.js";
 
 
@@ -348,21 +349,23 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     //======================================================================
     case "COPY_RECORD":{
       if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+      const pageNumber = queryParameters["page_records"];
       const tableId = queryParameters["table"];
       const recordId = queryParameters["record_id"];
       await copyRecord( tableId, recordId );
       return {
-        "nextUrl": `./?` + await convertQuery_core(queryParameters),
+        "nextUrl": `/default/records/index.html?table=${tableId}&page_records=${pageNumber ?? 1}`,
       };
     }
     //======================================================================
     case "CUT_RECORD":{
       if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+      const pageNumber = queryParameters["page_records"];
       const tableId = queryParameters["table"];
       const recordId = queryParameters["record_id"];
       await cutRecord( tableId, recordId );
       return {
-        "nextUrl": `./?` + await convertQuery_core(queryParameters),
+        "nextUrl": `/default/records/index.html?table=${tableId}&page_records=${pageNumber ?? 1}`,
       };
     }
     //======================================================================

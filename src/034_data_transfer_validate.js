@@ -19,6 +19,8 @@ import {
   budgetData_core,  // 予算実績データ
   billData_core,  // 請求データ
   buyData_core,  // 購入データ
+  _clearTable_core,  // 【サブ】テーブルを作り直す
+  _checkSourceTable_core,  // 【サブ】テーブルの存在をチェックする
 } from "./035_data_transfer.js";
 
 
@@ -616,6 +618,100 @@ export async function buyData(  ){
   catch(error){
     if( typeof error === "string" ){
       throw new Error(`${error}\nレイヤー : data_transfer\n関数 : buyData`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「_clearTable_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function _clearTable( tableName ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableName !== "string" ){
+    if( !tableName ){
+      throw new Error(`tableNameがNULLです。\nレイヤー : data_transfer\n関数 : _clearTable`);
+    }
+    else{
+      throw new Error(`tableNameが文字列ではありません。\nレイヤー : data_transfer\n関数 : _clearTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await _clearTable_core( tableName );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : _clearTable`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : data_transfer\n関数 : _clearTable`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : data_transfer\n関数 : _clearTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「_checkSourceTable_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function _checkSourceTable( tableNames ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( !Array.isArray(tableNames) ){
+    if( !tableNames ){
+      throw new Error(`tableNamesがNULLです。\nレイヤー : data_transfer\n関数 : _checkSourceTable`);
+    }
+    else{
+      throw new Error(`tableNamesが配列ではありません。\nレイヤー : data_transfer\n関数 : _checkSourceTable`);
+    }
+  }
+  for( let i=0; i<tableNames.length; i++ ){
+    if( typeof tableNames[i] !== "string" ){
+      if( !tableNames[i] ){
+        throw new Error(`tableNames[${i}]がNULLです。\nレイヤー : data_transfer\n関数 : _checkSourceTable`);
+      }
+      else{
+        throw new Error(`tableNames[${i}]が文字列ではありません。\nレイヤー : data_transfer\n関数 : _checkSourceTable`);
+      }
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await _checkSourceTable_core( tableNames );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : data_transfer\n関数 : _checkSourceTable`);
     }
     else{
       throw error;

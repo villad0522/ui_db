@@ -81,7 +81,6 @@ import {
   enableTable,
   disableColumn,
   enableColumn,
-  delete_table,
   autoCorrect,
 } from "./097_search_text_validate.js";
 import {
@@ -219,6 +218,8 @@ import {
   budgetData,
   billData,
   buyData,
+  _clearTable,
+  _checkSourceTable,
 } from "./034_data_transfer_validate.js";
 import {
   runApi,  // APIを実行する関数

@@ -152,7 +152,11 @@ async function _reload() {
             "name": columnName,
             "dataType": await getDataType(columnId),
         });
-        cacheData4[columnId] = new RegExp(`(?<!')(?<=(^|[^a-zA-Z0-9]))${columnName}(?!')(?=\$|[^a-zA-Z0-9])`, "g");
+        let columnName2 = columnName;
+        if( columnName.startsWith(tableId+"_") ){
+            columnName2 = columnName2.replace(tableId+"_","");
+        }
+        cacheData4[columnId] = new RegExp(`(?<!')(?<=(^|[^a-zA-Z0-9]))(${columnName}|${columnName2})(?!')(?=\$|[^a-zA-Z0-9])`, "g");
     }
 }
 

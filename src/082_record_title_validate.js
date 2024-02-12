@@ -858,13 +858,11 @@ export async function _getParentValue( tableId, recordId, nestLevel ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  if( typeof result !== "string" ){
-    if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : record_title\n関数 : _getParentValue`);
-    }
-    else{
-      throw new Error(`resultが文字列ではありません。\nレイヤー : record_title\n関数 : _getParentValue`);
-    }
+  if( (result===null) || (result===undefined) ){
+    // resultは空欄OK。
+  }
+  else if( typeof result !== "string" ){
+    throw new Error(`resultが文字列ではありません。\nレイヤー : record_title\n関数 : _getParentValue`);
   }
   //
   //--------------------------------------------------------------------------

@@ -97,7 +97,6 @@ import {
   enableTable,
   disableColumn,
   enableColumn,
-  delete_table,
   autoCorrect,
 } from "./097_search_text_validate.js";
 import {
@@ -279,12 +278,61 @@ export async function transferData_core( processName ){
 // 学部マスタ
 export async function masterFaculty_core(  ){
   if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_教室マスタ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("学部マスタ");
+  await createColumn( t1, "学部名", "TEXT", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 学部マスタ (
+        学部名,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列2,
+          MAX(sort_number),
+          MAX(created_at),
+          MAX(updated_at)
+        FROM CSV_教室マスタ
+        GROUP BY 列2;`,
+    {},
+  );
   return "データの移行が完了しました。";
 }
 
 // 教室マスタ
 export async function masterLab_core(  ){
   if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 処理に必要なテーブルが揃っているかをチェックする
+  await _checkSourceTable_core([ "CSV_教室マスタ" ]);
+  //
+  // 結果を書き込むテーブルとカラムを準備する
+  const t1 = await _clearTable_core("教室マスタ");
+  await createColumn( t1, "所属学部", "TEXT", null );
+  //
+  // データを移行する
+  await runSqlWriteOnly(
+    `INSERT INTO 教室マスタ (
+        学部名,
+        sort_number,
+        created_at,
+        updated_at
+      ) SELECT
+          列2,
+          MAX(sort_number),
+          MAX(created_at),
+          MAX(updated_at)
+        FROM CSV_教室マスタ
+        GROUP BY 列2;`,
+    {},
+  );
+  //
+  // 不要になったテーブルを削除する
+  await deleteTable("CSV_教室マスタ");
   return "データの移行が完了しました。";
 }
 
@@ -388,4 +436,33 @@ export async function billData_core(  ){
 export async function buyData_core(  ){
   if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
   return "データの移行が完了しました。";
+}
+
+// 【サブ】テーブルを作り直す
+export async function _clearTable_core( tableName ){
+  if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
+  const oldTableId = await getTableIdFromName(tableName);
+  if( oldTableId ){
+    if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
+    await deleteTable(oldTableId);
+  }
+  const { tableId: newTableId } = await createTable(tableName);
+  return newTableId;
+}
+
+// 【サブ】テーブルの存在をチェックする
+export async function _checkSourceTable_core( tableNames ){
+  if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
+  for( const tableName of tableNames ){
+    if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(!await getTableIdFromName(tableName)){
+      if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(String(tableName).startsWith("CSV_")){
+        throw `テーブル「${tableName}」が存在しません。先にCSVファイルをアップロードしてください。`;
+      }
+      else{
+        throw `テーブル「${tableName}」が存在しません。先にマスターデータを構築してください。`;
+      }
+    }
+  }
 }

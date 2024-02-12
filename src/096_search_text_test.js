@@ -4,7 +4,6 @@ import {
   runSqlReadOnly,
   runSqlWriteOnly,
   clearCache,
-  deleteTable,
   listColumnsForGUI,
   getTableId,
   checkColumnEnabled,
@@ -66,7 +65,7 @@ import {
   startUp,  // プログラム起動
   createRecord,  // レコードを作成
   updateRecords,  // レコードを上書き
-  delete_table,  // 不可逆的にテーブルを削除
+  deleteTable,  // 不可逆的にテーブルを削除
   deleteRecords,  // レコードを一括削除
   disableTable,  // テーブルを無効化
   enableTable,  // テーブルを再度有効化

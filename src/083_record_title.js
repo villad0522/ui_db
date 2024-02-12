@@ -72,7 +72,6 @@ import {
   enableTable,
   disableColumn,
   enableColumn,
-  delete_table,
   autoCorrect,
 } from "./097_search_text_validate.js";
 import {
@@ -391,6 +390,11 @@ export async function listRecords_core( tableId, oldPageNumber, onePageMaxSize, 
         }
         const recordId = Number(value);
         const parentText = await _getParentValue_core( parentTableId, recordId );
+        if(!parentText){
+          if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+          newRecord[ "field" + i ] = `参照先が存在しません`;
+          continue;
+        }
         const url = `/default/records/index.html?table=${parentTableId}&record=${recordId}`;
         newRecord[ "field" + i ] = `<a href="${url}">${String(parentText)}</a>`;
       }
@@ -398,11 +402,11 @@ export async function listRecords_core( tableId, oldPageNumber, onePageMaxSize, 
   }
   let recordOffset = -1;  // 以前開いていたスクロール位置の場合、-1を指定する
   if( pasteRecordId ){
-    if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
     recordOffset = await _getRecordOffset_core( tableId, pasteRecordId, onePageMaxSize );
   }
   else if( focusRecordId ){
-    if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
     recordOffset = await _getRecordOffset_core( tableId, focusRecordId, onePageMaxSize );
   }
   return { 
@@ -416,10 +420,10 @@ export async function listRecords_core( tableId, oldPageNumber, onePageMaxSize, 
 
 // 【サブ】親テーブルの値を取得
 export async function _getParentValue_core( tableId, recordId, nestLevel ){
-  if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
   const titleColumnId = cacheData[tableId];
   if(!titleColumnId){
-    if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
     // 見出しが設定されていない場合
     return `<i class="bi bi-box-arrow-up-right"></i>`;
   }
@@ -434,23 +438,24 @@ export async function _getParentValue_core( tableId, recordId, nestLevel ){
     },
   );
   if( records.length===0 ){
-    if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
-    return "参照先が存在しません";
+    if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
+    // 参照先が存在しない場合
+    return null;
   }
   const fieldData = records[0][titleColumnId];
   if(!fieldData){
-    if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
     return `<i class="bi bi-box-arrow-up-right"></i>`;
   }
   const parentTableId = await getParentTableId( titleColumnId );
   if(!parentTableId){
-    if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
     // 外部キーではない場合
     return String(fieldData);
   }
   // 外部キーの場合、再帰呼び出し
   if(nestLevel>3){
-    if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
     return `<i class="bi bi-box-arrow-up-right"></i>`;
   }
   return await _getParentValue_core( parentTableId, fieldData, (nestLevel??0)+1 );
@@ -458,13 +463,13 @@ export async function _getParentValue_core( tableId, recordId, nestLevel ){
 
 // レコードを追加
 export async function createRecordFromUI_core( tableId, columns ){
-  if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
   const newColumns = [];
   for( const { id, newField } of columns ){
-    if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
     const parentTableId = await getParentTableId( id );
     if(!parentTableId){
-      if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
       // 外部キーではない場合
       newColumns.push({
         id: id,
@@ -484,7 +489,7 @@ export async function createRecordFromUI_core( tableId, columns ){
 
 // 【サブ】親テーブルのスクロール位置を取得
 export async function _getRecordOffset_core( tableId, recordId, onePageMaxSize ){
-  if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
   const primaryKey = await getPrimaryKey( tableId );
   const [{ "COUNT(*)": offset2 }] = await runSqlReadOnly(
       `SELECT COUNT(*)
