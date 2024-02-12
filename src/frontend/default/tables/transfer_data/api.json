@@ -16,6 +16,11 @@
             "dataType": "TEXT",
             "description": "完了メッセージ",
             "example": "データの移行が完了しました。"
+        },
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "./"
         }
     }
 }

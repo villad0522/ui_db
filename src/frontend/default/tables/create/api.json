@@ -25,7 +25,7 @@
         "nextUrl": {
             "dataType": "TEXT",
             "description": "完了した場合に、移動すべきURL",
-            "example": "../"
+            "example": "./"
         }
     }
 }

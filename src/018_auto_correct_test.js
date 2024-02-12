@@ -110,7 +110,7 @@ import {
   setTitleColumnsFromUI,
   _deleteTitleColumn,
   _getParentValue,
-  _getParentOffset,
+  _getRecordOffset,
 } from "./082_record_title_validate.js";
 import {
   formatField,
@@ -199,6 +199,25 @@ import {
 } from "./040_regenerate_api_info_validate.js";
 import {
   transferData,
+  masterFaculty,
+  masterLab,
+  masterUser,
+  masterSpecies,
+  masterPhylogeny,
+  masterOrigin,
+  masterProductType,
+  masterItem,
+  masterCompany,
+  masterPayment,
+  masterRoom,
+  masterPrice,
+  broodbookData,
+  historyData,
+  increaseAndDecreaseData,
+  numberOfAnimalData,
+  budgetData,
+  billData,
+  buyData,
 } from "./034_data_transfer_validate.js";
 import {
 } from "./022_convert_array_validate.js";

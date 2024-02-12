@@ -2,7 +2,14 @@
     "httpMethod": "POST",
     "description": "カラムの名前を一括で変更します。",
     "commandName": "UPDATE_COLUMN_NAME",
-    "queryParameters": {},
+    "queryParameters": {
+        "table": {
+            "dataType": "TEXT",
+            "description": "テーブルID",
+            "isRequired": true,
+            "example": "t3"
+        }
+    },
     "requestBody": {
         "columns": {
             "title": "カラム一覧",

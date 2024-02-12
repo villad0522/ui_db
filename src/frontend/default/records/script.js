@@ -18,21 +18,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
     //
     //---------------------------------------------------------------
+    const formData = await myFetch("./form?table=" + tableId, { method: "GET" });
     //
-    // 以前開いていたスクロール位置を読み込む
-    if (!location.hash) {
-        const scrollXText = sessionStorage.getItem("scrollX" + tableId + pageNumber);
-        const scrollYText = sessionStorage.getItem("scrollY" + tableId + pageNumber);
-        if (scrollXText && scrollYText) {
-            const scrollX = Number(scrollXText);
-            const scrollY = Number(scrollYText);
-            if (!isNaN(scrollX) && !isNaN(scrollY)) {
-                document.documentElement.scrollLeft = scrollX;
-                document.documentElement.scrollTop = scrollY;
-            }
-        }
-    }
-    //
+    //---------------------------------------------------------------
     // スクロール位置を保存する
     let pastScrollTime = 0;
     let timerId = null;
@@ -49,11 +37,36 @@ window.addEventListener('DOMContentLoaded', async () => {
         }, 300);
     });
     //
+    const recordOffset = Number(formData.get("recordOffset"));
+    if (recordOffset >= 0) {
+        // フォーカス中の場所にスクロールする
+        const trElement = document.getElementById("offset" + recordOffset);
+        trElement.scrollIntoView({
+            behavior: "instant", // スクロールを単一のジャンプで即座に行う
+            block: "center",
+        });
+    }
+    else {
+        // 以前開いていたスクロール位置を読み込む
+        const scrollXText = sessionStorage.getItem("scrollX" + tableId + pageNumber);
+        const scrollYText = sessionStorage.getItem("scrollY" + tableId + pageNumber);
+        if (scrollXText && scrollYText) {
+            const scrollX = Number(scrollXText);
+            const scrollY = Number(scrollYText);
+            if (!isNaN(scrollX) && !isNaN(scrollY)) {
+                window.scroll({
+                    top: scrollY,
+                    left: scrollX,
+                    behavior: "instant", // スクロールを単一のジャンプで即座に行う
+                });
+            }
+        }
+    }
+    //
     //---------------------------------------------------------------
-    await myFetch("./form?table=" + tableId, { method: "GET" });
-    setTimeout(() => {
-        document.body.style.visibility = "visible";
-    }, 100);
+    //
+    document.body.style.visibility = "visible";
+    //
     //---------------------------------------------------------------
 });
 //

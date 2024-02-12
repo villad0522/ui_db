@@ -63,6 +63,7 @@ td>* {
     max-width: none;
 }
 
+th.form,
 td.form {
     box-sizing: border-box;
     padding: 8px 5px 8px 5px;
@@ -70,11 +71,13 @@ td.form {
     position: relative;
 }
 
+th.form>input,
+th.form>select,
 td.form>input,
 td.form>select {
     display: block;
     width: 100%;
-    min-width: 0;
+    min-width: 100px;
     background: #111;
     border: none;
     padding: 0.375rem 0.5rem;

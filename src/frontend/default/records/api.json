@@ -107,6 +107,11 @@
             "description": "テーブルの個数",
             "example": 1
         },
+        "recordOffset": {
+            "dataType": "INTEGER",
+            "description": "最初に表示すべきスクロール位置",
+            "example": 0
+        },
         "records_total": {
             "dataType": "INTEGER",
             "description": "レコードの件数",

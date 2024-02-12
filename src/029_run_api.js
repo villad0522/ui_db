@@ -111,7 +111,7 @@ import {
   setTitleColumnsFromUI,
   _deleteTitleColumn,
   _getParentValue,
-  _getParentOffset,
+  _getRecordOffset,
 } from "./082_record_title_validate.js";
 import {
   formatField,
@@ -200,6 +200,25 @@ import {
 } from "./040_regenerate_api_info_validate.js";
 import {
   transferData,
+  masterFaculty,
+  masterLab,
+  masterUser,
+  masterSpecies,
+  masterPhylogeny,
+  masterOrigin,
+  masterProductType,
+  masterItem,
+  masterCompany,
+  masterPayment,
+  masterRoom,
+  masterPrice,
+  broodbookData,
+  historyData,
+  increaseAndDecreaseData,
+  numberOfAnimalData,
+  budgetData,
+  billData,
+  buyData,
 } from "./034_data_transfer_validate.js";
 
 
@@ -251,6 +270,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
       return {
         "userMessage": await transferData( requestBody.processName ),
+        "nextUrl": `/default/tables/index.html`,
       };
     }
     //======================================================================
@@ -295,7 +315,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       return {
         "recordId": recordId,
         "userMessage": userMessage,
-        "nextUrl": `./?` + await convertQuery_core(queryParameters),
+        "nextUrl": `/default/records/index.html?table=${tableId}&record=${recordId}`,
       };
     }
     //======================================================================
@@ -306,7 +326,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       const oldPageNumber = queryParameters["page_records"];
       const onePageMaxSize = apiInfo?.response?.records?.onePageMaxSize;
       const tableId = queryParameters["table"];
-      const { columns, records, recordsTotal, pageNumber } = await listRecords( tableId, oldPageNumber, onePageMaxSize, focusRecordId, pasteRecordId );
+      const { columns, records, recordsTotal, pageNumber, recordOffset } = await listRecords( tableId, oldPageNumber, onePageMaxSize, focusRecordId, pasteRecordId );
       // 親テーブルを選ぶときのセレクトボックスを構築する
       const { tables, total:tablesTotal } = await listTables(
         1,
@@ -319,6 +339,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
         "columns_total": columns.length,
         "tables": tables,
         "tables_total": tablesTotal,
+        "recordOffset": recordOffset,
         "records": records,
         "records_total": recordsTotal,
         "page_records": pageNumber,
@@ -415,7 +436,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       );
       return {
         "userMessage": message,
-        "nextUrl": `../?table=${queryParameters["table"]}`,
+        "nextUrl": `../?table=${queryParameters["table"]??""}`,
       };
     }
     //======================================================================

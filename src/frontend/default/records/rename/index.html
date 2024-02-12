@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>列の名前を変更</title>
+        <title name="tableName"></title>
         <!--  -->
         <!-- bootstrap5.3を読み込む -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -12,90 +12,165 @@
         <!-- bootstrapのドキュメントはこちら -->
         <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->
         <!--  -->
-        <link rel="stylesheet" href="./style.css" type="text/css">
+        <!--  -->
+        <!-- bootstrapのアイコンを読み込む -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <!--  -->
+        <!-- 自作CSSを読み込む -->
+        <link rel="stylesheet" href="../style.css" type="text/css">
+        <!--  -->
+        <!-- 自作JavaScriptを読み込む -->
         <script src="./script.js" type="module"></script>
     </head>
 
-    <body>
-        <nav class="navbar navbar-dark bg-primary">
-            <div class="container-fluid">
-                <button onclick="jumpWithQuery('../index.html')" type="button" class="btn btn-light me-2">
-                    戻る
-                </button>
-            </div>
-        </nav>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="/custom/1/index.html">
-                        トップ
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="/default/tables/index.html">
-                        本体データ
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="../index.html">
-                        列の一覧
-                    </a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    列の名前を変更
-                </li>
-            </ol>
-        </nav>
-        <main class="container">
-            <br>
-            <br>
-            <form>
-                <br>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <h3>列の名前を変更</h3>
+    <body style="visibility: hidden;">
+        <form>
+            <header>
+                <nav class="navbar navbar-dark bg-primary">
+                    <div class="container-fluid">
+                        <button onclick="jumpWithQuery('../index.html')" type="button" class="btn btn-light me-2">
+                            戻る
+                        </button>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-2" style="margin-top: 30px">
-                        <div class="card" style="height: 100%;">
-                        </div>
-                    </div>
-                    <script>
-                        let htmlText = "";
-                        for (let i = 0; i < 35; i++) {
-                            htmlText += `
-                                <div class="col-6 col-sm-4 col-md-3 col-lg-2" style="margin-top: 30px">
-                                    <input name="columns${i}_id" type="text" style="display: none;">
-                                    <input name="columns${i}_flag" class="flag" type="checkbox" style="display: none;">
-                                    <div class="card">
-                                        <div class="card-img-top" style="padding: 25% 30% 5% 30%; opacity: 0.7;">
-                                            <svg class="bi bi-table" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z" />
-                                            </svg>
-                                        </div>
-                                        <input name="columns${i}_name" type="text" class="form-control" style="margin: 10px 0;">
-                                    </div>
-                                </div>
-                            `;
-                        }
-                        document.write(htmlText);
-                    </script>
+                </nav>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/custom/1/index.html">
+                                トップ
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="/default/tables/index.html">
+                                本体データ
+                            </a>
+                        </li>
+                        <li name="tableName" class="breadcrumb-item active" aria-current="page">
+                        </li>
+                    </ol>
+                </nav>
+                <div class="container-xl">
+                    <br>
+                    <h3 name="tableName" style="display: inline-block;">
+                    </h3>
                 </div>
                 <br>
-                <br>
-                <div style="position: sticky; bottom: 0; padding: 5px; width: max-content; box-sizing: border-box; margin: 0 0 0 auto;">
-                    <button onclick="jumpWithQuery('../index.html');" type="button" class="btn btn-outline-primary">
+            </header>
+            <!--  -->
+            <!-- メインコンテンツ -->
+            <main>
+                <table class="table table-bordered text-nowrap">
+                    <thead>
+                        <tr>
+                            <th scope="col" rowspan="2" style="border-bottom: solid; vertical-align: middle;">
+                            </th>
+                            <script>
+                                let htmlText3 = "";
+                                for (let j = 0; j < 35; j++) {
+                                    htmlText3 += `
+                                        <th class="form" scope="col" name="columns${j}_flag">
+                                            <input name="columns${j}_name" type="text" class="form-control">
+                                            <input name="columns${j}_id" style="display: none;">
+                                            <input name="columns${j}_flag" style="display: none;" type="checkbox">
+                                        </th>
+                                    `;
+                                }
+                                document.write(htmlText3);
+                            </script>
+                            <th scope="col" style="vertical-align: middle;">
+                                ID
+                            </th>
+                            <th scope="col" rowspan="2" style="border-bottom: solid; vertical-align: middle;">
+                                <button class="btn btn-sm btn-outline-primary" type="button" disabled style="visibility: hidden;">
+                                    <i class="bi bi-arrow-left"></i>
+                                    列を作成
+                                </button>
+                            </th>
+                        </tr>
+                        <tr>
+                            <script>
+                                let htmlText1 = "";
+                                for (let j = 0; j < 35; j++) {
+                                    htmlText1 += `
+                                        <td class="form" name="columns${j}_flag" style="border-bottom: solid; padding: 0;">
+                                            <div name="columns${j}_titleColumn_flag">
+                                                <select onchange="myFetch('../set_title_columns/form')" name="columns${j}_titleColumn" class="form-select form-select-sm" aria-label=".form-select-sm example">
+                                                </select>
+                                            </div>
+                                        </td>
+                                    `;
+                                }
+                                document.write(htmlText1);
+                            </script>
+                            <td style="border-bottom: solid; padding: 0;"></td>
+                        </tr>
+                    </thead>
+                    <tbody style="opacity: 0.3;">
+                        <script>
+                            const MAX_RECORD_SIZE = 50;
+                            let htmlText4 = "";
+                            for (let i = 0; i < MAX_RECORD_SIZE; i++) {
+                                htmlText4 += `
+                                    <tr name="records${i}_flag">
+                                        <td style="padding: 0; width: 40px;">
+                                            <label for="records${i}_isFocus" class="check_outer">
+                                                <input disabled name="records${i}_isFocus" class="form-check-input" type="checkbox" id="records${i}_isFocus">
+                                            </label>
+                                        </td>`;
+                                for (let j = 0; j < 35; j++) {
+                                    htmlText4 += `
+                                        <td name="columns${j}_flag">
+                                            <div name="records${i}_field${j}">
+                                            </div>
+                                        </td>`;
+                                }
+                                htmlText4 += `
+                                        <td name="records${i}_id">
+                                        </td>
+                                        <td>
+                                            <!--  -->
+                                            <!-- 貼り付けボタン -->
+                                            <button disabled type="button" class="btn btn-secondary btn-sm" style="visibility: hidden;">
+                                                <i class="bi bi-clipboard"></i>
+                                                <i class="bi bi-arrow-up"></i>
+                                            </button>
+                                            <!--  -->
+                                            <!-- 切り取りボタン -->
+                                            <button disabled type="button" class="btn btn-secondary btn-sm" style="visibility: hidden;">
+                                                <i class="bi bi-scissors"></i>
+                                            </button>
+                                            <!--  -->
+                                            <!-- コピーボタン -->
+                                            <button disabled type="button" class="btn btn-secondary btn-sm" style="visibility: hidden;">
+                                                <i class="bi bi-files"></i>
+                                            </button>
+                                            <!--  -->
+                                            <!-- 削除ボタン -->
+                                            <button disabled type="button" class="btn btn-secondary btn-sm" style="visibility: hidden;">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </td>
+                                    </tr>`;
+                            }
+                            document.write(htmlText4);
+                        </script>
+                    </tbody>
+                </table>
+            </main>
+            <br>
+            <footer style="position: sticky; bottom: 0; pointer-events: none;">
+                <div style="padding: 20px; width: max-content; box-sizing: border-box; margin: 0 0 0 auto; background: #222; pointer-events: all; border-radius: 10px 0 0 0;">
+                    <button onclick="jumpWithQuery('../index.html');" type="button" class="btn btn-outline-primary btn-lg">
                         キャンセル
                     </button>
-                    <button onclick="myFetch('./form')" type="button" class="btn btn-primary">
-                        保存
+                    <button onclick="myFetch('./form')" type="button" class="btn btn-primary btn-lg">
+                        保存（列の名前を変更）
                     </button>
                 </div>
-                <br>
-                <br>
-            </form>
-        </main>
+            </footer>
+            <br>
+            <br>
+        </form>
     </body>
 
 </html>

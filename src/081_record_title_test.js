@@ -107,7 +107,7 @@ import {
   listRecords,  // レコードの一覧を取得(GUI)
   _getParentValue,  // 【サブ】親テーブルの値を取得
   createRecordFromUI,  // レコードを追加
-  _getParentOffset,  // 【サブ】親テーブルのスクロール位置を取得
+  _getRecordOffset,  // 【サブ】親テーブルのスクロール位置を取得
 } from "./082_record_title_validate.js";
 import { setBugMode } from "./083_record_title.js";
 
@@ -117,7 +117,7 @@ export async function test081() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 37; i++ ) {
+    for ( i = 1; i <= 42; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

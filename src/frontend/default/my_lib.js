@@ -108,8 +108,9 @@ export async function myFetch(url, parameters) {
         const contentType = String(response.headers.get("content-type"));
         //=========================================================
         if (contentType.includes("text/plain")) {
-            alert(await response.text());
-            return;
+            const text = await response.text();
+            alert(text);
+            return text;
         }
         //=========================================================
         else if (contentType.includes("application/json")) {
@@ -120,7 +121,7 @@ export async function myFetch(url, parameters) {
             if (jsonData.nextUrl) {
                 location.href = jsonData.nextUrl;
             }
-            return;
+            return jsonData;
         }
         //=========================================================
         else if (
@@ -136,12 +137,13 @@ export async function myFetch(url, parameters) {
             if (formData.has("nextUrl")) {
                 location.href = formData.get("nextUrl");
             }
-            return;
+            return formData;
         }
         //=========================================================
         else if (contentType.includes("text/html")) {
-            document.documentElement.innerHTML = await response.text();
-            return;
+            const text = await response.text();
+            document.documentElement.innerHTML = text;
+            return text;
         }
         //=========================================================
         else {
@@ -162,9 +164,6 @@ window.myFetch = myFetch;
 // フォームデータを画面に反映させる関数
 function _setFormData(formData) {
     formData.forEach((value, key) => {
-        if (key.includes("isFocus")) {
-            console.log(key, value);
-        }
         if (String(key).includes("_option")) {
             key = key.split("_option")[0];
             const optionValue = value;

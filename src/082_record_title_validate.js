@@ -12,7 +12,7 @@ import {
   listRecords_core,  // レコードの一覧を取得(GUI)
   _getParentValue_core,  // 【サブ】親テーブルの値を取得
   createRecordFromUI_core,  // レコードを追加
-  _getParentOffset_core,  // 【サブ】親テーブルのスクロール位置を取得
+  _getRecordOffset_core,  // 【サブ】親テーブルのスクロール位置を取得
 } from "./083_record_title.js";
 
 
@@ -767,6 +767,17 @@ export async function listRecords( tableId, oldPageNumber, onePageMaxSize, focus
       }
     }
   }
+  if( typeof result.recordOffset !== "number" ){
+    if( !result.recordOffset ){
+      throw new Error(`result.recordOffsetがNULLです。\nレイヤー : record_title\n関数 : listRecords`);
+    }
+    else{
+      throw new Error(`result.recordOffsetが数値ではありません。\nレイヤー : record_title\n関数 : listRecords`);
+    }
+  }
+  else if( isNaN(result.recordOffset) ){
+    throw new Error(`result.recordOffsetが数値ではありません。\nレイヤー : record_title\n関数 : listRecords`);
+  }
   if( typeof result.recordsTotal !== "number" ){
     if( !result.recordsTotal ){
       throw new Error(`result.recordsTotalがNULLです。\nレイヤー : record_title\n関数 : listRecords`);
@@ -961,51 +972,51 @@ export async function createRecordFromUI( tableId, columns ){
 
 
 //#######################################################################################
-// 関数「_getParentOffset_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「_getRecordOffset_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function _getParentOffset( tableId, recordId, onePageMaxSize ){
+export async function _getRecordOffset( tableId, recordId, onePageMaxSize ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : record_title\n関数 : _getParentOffset`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : record_title\n関数 : _getRecordOffset`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : record_title\n関数 : _getParentOffset`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : record_title\n関数 : _getRecordOffset`);
     }
   }
   if( typeof recordId !== "number" ){
     if( !recordId ){
-      throw new Error(`recordIdがNULLです。\nレイヤー : record_title\n関数 : _getParentOffset`);
+      throw new Error(`recordIdがNULLです。\nレイヤー : record_title\n関数 : _getRecordOffset`);
     }
     else{
-      throw new Error(`recordIdが数値ではありません。\nレイヤー : record_title\n関数 : _getParentOffset`);
+      throw new Error(`recordIdが数値ではありません。\nレイヤー : record_title\n関数 : _getRecordOffset`);
     }
   }
   else if( isNaN(recordId) ){
-    throw new Error(`recordIdが数値ではありません。\nレイヤー : record_title\n関数 : _getParentOffset`);
+    throw new Error(`recordIdが数値ではありません。\nレイヤー : record_title\n関数 : _getRecordOffset`);
   }
   if( typeof onePageMaxSize !== "number" ){
     if( !onePageMaxSize ){
-      throw new Error(`onePageMaxSizeがNULLです。\nレイヤー : record_title\n関数 : _getParentOffset`);
+      throw new Error(`onePageMaxSizeがNULLです。\nレイヤー : record_title\n関数 : _getRecordOffset`);
     }
     else{
-      throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : record_title\n関数 : _getParentOffset`);
+      throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : record_title\n関数 : _getRecordOffset`);
     }
   }
   else if( isNaN(onePageMaxSize) ){
-    throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : record_title\n関数 : _getParentOffset`);
+    throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : record_title\n関数 : _getRecordOffset`);
   }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await _getParentOffset_core( tableId, recordId, onePageMaxSize );
+    result = await _getRecordOffset_core( tableId, recordId, onePageMaxSize );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : record_title\n関数 : _getParentOffset`);
+      throw new Error(`${error}\nレイヤー : record_title\n関数 : _getRecordOffset`);
     }
     else{
       throw error;
@@ -1016,14 +1027,14 @@ export async function _getParentOffset( tableId, recordId, onePageMaxSize ){
   // 戻り値を検証
   if( typeof result !== "number" ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : record_title\n関数 : _getParentOffset`);
+      throw new Error(`resultがNULLです。\nレイヤー : record_title\n関数 : _getRecordOffset`);
     }
     else{
-      throw new Error(`resultが数値ではありません。\nレイヤー : record_title\n関数 : _getParentOffset`);
+      throw new Error(`resultが数値ではありません。\nレイヤー : record_title\n関数 : _getRecordOffset`);
     }
   }
   else if( isNaN(result) ){
-    throw new Error(`resultが数値ではありません。\nレイヤー : record_title\n関数 : _getParentOffset`);
+    throw new Error(`resultが数値ではありません。\nレイヤー : record_title\n関数 : _getRecordOffset`);
   }
   //
   //--------------------------------------------------------------------------
