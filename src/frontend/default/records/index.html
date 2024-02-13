@@ -51,9 +51,13 @@
                 </nav>
                 <div class="container-xl">
                     <br>
-                    <h3 name="tableName" style="display: inline-block;">
-                    </h3>
-                    （<span name="records_total"></span>件）
+                    <h3 name="tableName" style="display: inline-block;"></h3>
+                    <small style="font-size: 12px; color: #555;">
+                        <span name="tableId"></span>
+                    </small>
+                    <h5 style="display: inline-block; margin: 0 10px;">
+                        <span name="records_total"></span>件
+                    </h5>
                     <button onclick="jumpWithQuery('./rename/index.html');" type="button" class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-pencil"></i>
                         列の名前を変更
@@ -167,9 +171,9 @@
                                         <th scope="col" name="columns${j}_flag">
                                             <span name="columns${j}_name">
                                             </span>
-                                            <span style="font-size: 12px;">
-                                                (<span name="columns${j}_id"></span>)
-                                            </span>
+                                            <small style="font-size: 12px; color: #555;">
+                                                <span name="columns${j}_id"></span>
+                                            </small>
                                         </th>
                                     `;
                                 }

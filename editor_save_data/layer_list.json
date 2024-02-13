@@ -26,8 +26,8 @@
   },
   {
     "layerId": "01HN7F6HCXJ0YHCW5CA0E7ENNK",
-    "layerNameJP": "予測変換",
-    "layerNameEN": "auto_correct"
+    "layerNameJP": "API予測変換",
+    "layerNameEN": "api_auto_correct"
   },
   {
     "layerId": "01HMKSCCJ6ZEY2ZWMT7BWRB49E",
@@ -148,6 +148,11 @@
     "layerId": "01HN4M30MXQ37JVP8S24T77SFC",
     "layerNameJP": "DBフォーマッタ―",
     "layerNameEN": "db_formatter"
+  },
+  {
+    "layerId": "01HPG19PE9RPSCKGKF4QYHZAM4",
+    "layerNameJP": "管理画面上の予測変換",
+    "layerNameEN": "system_auto_correct"
   },
   {
     "layerId": "01HM63PB1G602AZ8FNS545P6DY",

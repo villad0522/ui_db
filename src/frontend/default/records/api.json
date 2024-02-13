@@ -35,6 +35,11 @@
             "description": "テーブル名",
             "example": "名簿"
         },
+        "tableId": {
+            "dataType": "TEXT",
+            "description": "テーブルID",
+            "example": "t56"
+        },
         "columns": {
             "title": "カラム一覧",
             "isArray": true,

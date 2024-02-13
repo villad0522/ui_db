@@ -1,0 +1,21 @@
+{
+    "httpMethod": "POST",
+    "description": "入力途中のテーブル名を補完して、予測変換を取得します",
+    "commandName": "AUTO_CORRECT_TABLE_NAME",
+    "queryParameters": {},
+    "requestBody": {
+        "tableName": {
+            "dataType": "TEXT",
+            "description": "テーブル名",
+            "isRequired": false,
+            "example": "名簿"
+        }
+    },
+    "response": {
+        "tableName_option": {
+            "description": "テーブル名の候補",
+            "dataType": "TEXT",
+            "example": "名簿"
+        }
+    }
+}

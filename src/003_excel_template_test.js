@@ -12,18 +12,18 @@ import {
 } from "./037_regenerate_page_validate.js";
 import {
   getLocalIp,
-} from "./127_ip_address_validate.js";
+} from "./130_ip_address_validate.js";
 import {
   close,
   createDirectories,
 } from "./049_frontend_files_validate.js";
 import {
   getPath,
-} from "./124_directory_validate.js";
+} from "./127_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./121_connect_database_validate.js";
+} from "./124_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -31,14 +31,14 @@ import {
   checkColumnEnabled,
   getColumnName,
   getColumnIdFromName,
-} from "./103_column_name_validate.js";
+} from "./106_column_name_validate.js";
 import {
   startTransaction,
   endTransaction,
-} from "./118_transaction_lower_validate.js";
+} from "./121_transaction_lower_validate.js";
 import {
   getPrimaryKey,
-} from "./115_primary_key_validate.js";
+} from "./118_primary_key_validate.js";
 import {
   clearCache,
   listEndpoints,
@@ -55,7 +55,7 @@ import {
 } from "./058_view_column_validate.js";
 import {
   listDataTypes,
-} from "./112_data_type_validate.js";
+} from "./115_data_type_validate.js";
 import {
   createRecord,
   updateRecords,
@@ -65,14 +65,14 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
-} from "./094_relation_validate.js";
+} from "./097_relation_validate.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
   checkReservedWord,
-} from "./100_reserved_word_validate.js";
+} from "./103_reserved_word_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -80,7 +80,8 @@ import {
   disableColumn,
   enableColumn,
   autoCorrect,
-} from "./097_search_text_validate.js";
+  autoCorrectFromArray,
+} from "./100_search_text_validate.js";
 import {
   reload,
   checkTableEnabled,
@@ -88,7 +89,7 @@ import {
   listTableNamesAll,
   getTableIdFromName,
   listTablesInSQL,
-} from "./106_table_name_validate.js";
+} from "./109_table_name_validate.js";
 import {
   cutRecord,
   copyRecord,
@@ -98,7 +99,7 @@ import {
   _moveRecord,
   _copyRecord,
   _generateRecordSortNumber,
-} from "./109_sort_validate.js";
+} from "./112_sort_validate.js";
 import {
   listTables,
   listRecords,
@@ -111,6 +112,10 @@ import {
   _getParentValue,
   _getRecordOffset,
 } from "./082_record_title_validate.js";
+import {
+  autoCorrectTableName,
+  autoCorrectColumnName,
+} from "./094_system_auto_correct_validate.js";
 import {
   formatField,
 } from "./091_db_formatter_validate.js";
@@ -224,7 +229,7 @@ import {
 } from "./034_data_transfer_validate.js";
 import {
   getEndpointInfo,
-} from "./019_auto_correct_validate.js";
+} from "./019_api_auto_correct_validate.js";
 import {
   runApi,
 } from "./010_transaction_upper_validate.js";

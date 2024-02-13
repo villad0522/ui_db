@@ -1,16 +1,17 @@
 
-import { test126 } from "./126_ip_address_test.js";
-import { test123 } from "./123_directory_test.js";
-import { test120 } from "./120_connect_database_test.js";
-import { test117 } from "./117_transaction_lower_test.js";
-import { test114 } from "./114_primary_key_test.js";
-import { test111 } from "./111_data_type_test.js";
-import { test108 } from "./108_sort_test.js";
-import { test105 } from "./105_table_name_test.js";
-import { test102 } from "./102_column_name_test.js";
-import { test099 } from "./099_reserved_word_test.js";
-import { test096 } from "./096_search_text_test.js";
-import { test093 } from "./093_relation_test.js";
+import { test129 } from "./129_ip_address_test.js";
+import { test126 } from "./126_directory_test.js";
+import { test123 } from "./123_connect_database_test.js";
+import { test120 } from "./120_transaction_lower_test.js";
+import { test117 } from "./117_primary_key_test.js";
+import { test114 } from "./114_data_type_test.js";
+import { test111 } from "./111_sort_test.js";
+import { test108 } from "./108_table_name_test.js";
+import { test105 } from "./105_column_name_test.js";
+import { test102 } from "./102_reserved_word_test.js";
+import { test099 } from "./099_search_text_test.js";
+import { test096 } from "./096_relation_test.js";
+import { test093 } from "./093_system_auto_correct_test.js";
 import { test090 } from "./090_db_formatter_test.js";
 import { test087 } from "./087_records_test.js";
 import { test084 } from "./084_input_element_test.js";
@@ -35,7 +36,7 @@ import { test030 } from "./030_get_api_info_test.js";
 import { test027 } from "./027_run_api_test.js";
 import { test024 } from "./024_pagination_test.js";
 import { test021 } from "./021_convert_array_test.js";
-import { test018 } from "./018_auto_correct_test.js";
+import { test018 } from "./018_api_auto_correct_test.js";
 import { test015 } from "./015_api_validator_test.js";
 import { test012 } from "./012_api_document_test.js";
 import { test009 } from "./009_transaction_upper_test.js";
@@ -48,6 +49,7 @@ async function test() {
     if( process.argv.length < 3 ){
       // testNumberが指定されていない場合
       console.log("全てのレイヤーの動作テストを行います。");
+      await test129();
       await test126();
       await test123();
       await test120();
@@ -97,6 +99,9 @@ async function test() {
     const testNumber = Number(process.argv[2]);
     console.log(`テストコード${ testNumber }を実行します。`);
     switch( testNumber ){
+      case 129:
+        await test129();
+        break;
       case 126:
         await test126();
         break;

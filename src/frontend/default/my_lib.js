@@ -1,4 +1,6 @@
 
+import setAutoCorrect from "./auto_correct.js";
+
 //###############################################################
 // ページを読み込んだら、はじめに実行する関数
 window.addEventListener('DOMContentLoaded', async () => {
@@ -129,7 +131,7 @@ export async function myFetch(url, parameters) {
             || contentType.includes("application/x-www-form-urlencoded")
         ) {
             const formData = await response.formData();
-            _setFormData(formData); // フォームデータを画面に反映させる
+            await _setFormData(formData); // フォームデータを画面に反映させる
             await _sleep(500);
             if (formData.has("userMessage")) {
                 alert(formData.get("userMessage"));
@@ -162,8 +164,11 @@ window.myFetch = myFetch;
 //
 //###############################################################
 // フォームデータを画面に反映させる関数
-function _setFormData(formData) {
-    formData.forEach((value, key) => {
+async function _setFormData(formData) {
+    const isInitialized = {
+        // "tableName": true,
+    };
+    for (let [key, value] of formData.entries()) {
         if (String(key).includes("_option")) {
             key = key.split("_option")[0];
             const optionValue = value;
@@ -172,12 +177,25 @@ function _setFormData(formData) {
             const elements = document.getElementsByName(key);
             for (const element of elements) {
                 // 予測変換を設定
-                const optionElement = document.createElement("option");
-                optionElement.value = optionValue;
-                optionElement.innerText = optionValue;
-                element.appendChild(optionElement);
-                if (optionValue === selectedValue) {
-                    optionElement.selected = true;
+                if (element.tagName === 'SELECT') {
+                    if (!isInitialized[key]) {
+                        element.innerHTML = "";
+                    }
+                    const optionElement = document.createElement("option");
+                    optionElement.value = optionValue;
+                    optionElement.innerText = optionValue;
+                    element.appendChild(optionElement);
+                    if (optionValue === selectedValue) {
+                        optionElement.selected = true;
+                    }
+                }
+                else if (element.tagName === 'INPUT') {
+                    // 予測変換をセットする
+                    await setAutoCorrect({
+                        inputElement: element,
+                        optionValue: optionValue,  // 候補
+                        isInitialized: isInitialized[key],
+                    });
                 }
             }
         }
@@ -212,7 +230,8 @@ function _setFormData(formData) {
                 }
             }
         }
-    });
+        isInitialized[key] = true;
+    }
     _setupTextarea();
 }
 //

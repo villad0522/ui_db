@@ -45,7 +45,13 @@
                                 本体データ
                             </a>
                         </li>
-                        <li name="tableName" class="breadcrumb-item active" aria-current="page">
+                        <li class="breadcrumb-item">
+                            <button name="tableName" onclick="jumpWithQuery('../index.html')" type="button" class="btn btn-link" style="padding: 0;">
+                                戻る
+                            </button>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            列の名前を変更
                         </li>
                     </ol>
                 </nav>
@@ -69,9 +75,14 @@
                                 for (let j = 0; j < 35; j++) {
                                     htmlText3 += `
                                         <th class="form" scope="col" name="columns${j}_flag">
+                                            <!--  -->
+                                            <!-- 列の名前を入力するテキストボックス -->
                                             <input name="columns${j}_name" type="text" class="form-control">
                                             <input name="columns${j}_id" style="display: none;">
                                             <input name="columns${j}_flag" style="display: none;" type="checkbox">
+                                            <!--  -->
+                                            <!-- 列の横幅を確保するために、見えない文字を表示する -->
+                                            <div name="columns${j}_name" style="visibility: hidden; height: 0; min-height: 0; padding: 0 40px; overflow: hidden;"></div>
                                         </th>
                                     `;
                                 }

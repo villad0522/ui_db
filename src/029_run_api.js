@@ -13,18 +13,18 @@ import {
 } from "./037_regenerate_page_validate.js";
 import {
   getLocalIp,
-} from "./127_ip_address_validate.js";
+} from "./130_ip_address_validate.js";
 import {
   close,
   createDirectories,
 } from "./049_frontend_files_validate.js";
 import {
   getPath,
-} from "./124_directory_validate.js";
+} from "./127_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./121_connect_database_validate.js";
+} from "./124_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -32,14 +32,14 @@ import {
   checkColumnEnabled,
   getColumnName,
   getColumnIdFromName,
-} from "./103_column_name_validate.js";
+} from "./106_column_name_validate.js";
 import {
   startTransaction,
   endTransaction,
-} from "./118_transaction_lower_validate.js";
+} from "./121_transaction_lower_validate.js";
 import {
   getPrimaryKey,
-} from "./115_primary_key_validate.js";
+} from "./118_primary_key_validate.js";
 import {
   clearCache,
   getEndpointInfo,
@@ -57,7 +57,7 @@ import {
 } from "./058_view_column_validate.js";
 import {
   listDataTypes,
-} from "./112_data_type_validate.js";
+} from "./115_data_type_validate.js";
 import {
   createRecord,
   updateRecords,
@@ -67,14 +67,14 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
-} from "./094_relation_validate.js";
+} from "./097_relation_validate.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   reserveWord,
   checkReservedWord,
-} from "./100_reserved_word_validate.js";
+} from "./103_reserved_word_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -82,7 +82,8 @@ import {
   disableColumn,
   enableColumn,
   autoCorrect,
-} from "./097_search_text_validate.js";
+  autoCorrectFromArray,
+} from "./100_search_text_validate.js";
 import {
   reload,
   checkTableEnabled,
@@ -90,7 +91,7 @@ import {
   listTableNamesAll,
   getTableIdFromName,
   listTablesInSQL,
-} from "./106_table_name_validate.js";
+} from "./109_table_name_validate.js";
 import {
   cutRecord,
   copyRecord,
@@ -100,7 +101,7 @@ import {
   _moveRecord,
   _copyRecord,
   _generateRecordSortNumber,
-} from "./109_sort_validate.js";
+} from "./112_sort_validate.js";
 import {
   listTables,
   listRecords,
@@ -113,6 +114,10 @@ import {
   _getParentValue,
   _getRecordOffset,
 } from "./082_record_title_validate.js";
+import {
+  autoCorrectTableName,
+  autoCorrectColumnName,
+} from "./094_system_auto_correct_validate.js";
 import {
   formatField,
 } from "./091_db_formatter_validate.js";
@@ -338,6 +343,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
         false, //isTrash
       );
       return {
+        "tableId": tableId,
         "tableName": await getTableName(tableId),
         "columns": columns,
         "columns_total": columns.length,
@@ -526,7 +532,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
         "breadcrumbs_total": breadcrumbs.length,
         "staticChildren": staticChildren,
         "staticChildren_total": staticChildren.length,
-        "tableName_option": await listTableNamesAll(),
+        "tableName_option": await autoCorrectTableName(""),
         "views": views,
         "views_total": views.length,
         "copyingPageId": await getCopyingPage(),
@@ -534,12 +540,19 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       };
     }
     //======================================================================
-    case "CREATE_RECORD_FROM_VIEW":{
+    case "AUTO_CORRECT_TABLE_NAME":{
       if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+      return {
+        "tableName_option": await autoCorrectTableName(requestBody["tableName"]),
+      };
+    }
+    //======================================================================
+    case "CREATE_RECORD_FROM_VIEW":{
+      if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
       const result = await createRecordFromView( apiInfo.viewId, requestBody );
       let nextUrl = null;
       if(result.isSuccess){
-        if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
         nextUrl = "./?" + await convertQuery_core(queryParameters);
       }
       return {
@@ -552,12 +565,12 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "UPDATE_RECORDS":{
-      if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
       const viewId = Number(apiInfo.viewId);
       const result = await updateRecordsFromView( viewId, requestBody["view" + viewId + "_"] );
       let nextUrl = null;
       if(result.isSuccess){
-        if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
         nextUrl = "./?" + await convertQuery_core(queryParameters);
       }
       return {
@@ -570,7 +583,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "DELETE_RECORD":{
-      if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
       const tableId = apiInfo.tableId ?? queryParameters["table"];
       const recordId = Number(queryParameters["record_id"]);
       return {
@@ -580,12 +593,12 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "GET_PAGE_DATA":{
-      if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
       return await getPageData( apiInfo.pageId, queryParameters );
     }
     //======================================================================
     case "AUTO_CORRECT":{
-      if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
       const isClick = queryParameters["is_click"] ? true : false;
       return await autoFill(
         apiInfo.viewId,
@@ -600,7 +613,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CREATE_VIEW":{
-      if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       const tableName = requestBody["tableName"];
       await  createView( pageId, tableName );
@@ -618,7 +631,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
 
 // 連想配列をクエリパラメータに変換
 export async function convertQuery_core( obj ){
-  if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
   return Object.keys(obj)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
     .join('&');

@@ -17,6 +17,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <!--  -->
         <!-- 自作CSSを読み込む -->
+        <link rel="stylesheet" href="../auto_correct.css" type="text/css">
         <link rel="stylesheet" href="./style.css" type="text/css">
         <!--  -->
         <!-- 自作JavaScriptを読み込む -->
@@ -244,8 +245,10 @@
                             <br>
                             <br>
                             <div class="input-group">
-                                <select name="tableName" class="form-select" aria-label="テーブルを選択してください">
-                                </select>
+                                <div class="form-floating">
+                                    <input name="tableName" oninput="myFetch('./auto_correct_table_name/form')" type="text" class="form-control">
+                                    <label for="create_view_table_name">テーブル名</label>
+                                </div>
                                 <button onclick="myFetch('./create_view/json')" type="button" class="btn btn-primary">
                                     ビューを作成
                                 </button>

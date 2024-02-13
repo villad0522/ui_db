@@ -1,0 +1,52 @@
+/*===========================================================================*/
+
+.prediction_outer {
+    height: 0;
+    width: 100%;
+    position: relative;
+    display: none;
+}
+
+.prediction_inner {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
+    border: solid 1px #999;
+    max-height: 500px;
+    overflow-y: scroll;
+    background: #fff;
+    color: #555;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, .2);
+}
+
+.prediction_inner>div {
+    padding: 0 5px;
+    cursor: pointer;
+    overflow-x: hidden;
+    white-space: nowrap;
+}
+
+.prediction_inner>div:hover {
+    background: #05f;
+    color: #fff;
+}
+
+.prediction_selected {
+    visibility: hidden;
+    padding: 0 5px;
+    display: none;
+    pointer-events: none;
+    z-index: 999;
+    position: absolute;
+    width: max-content;
+    background: #05f;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+.prediction_outer:hover .prediction_selected {
+    visibility: visible;
+}
+
+/*===========================================================================*/
