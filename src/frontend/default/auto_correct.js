@@ -8,7 +8,6 @@ export default async function setAutoCorrect({
     optionValue,  // 候補
     isInitialized,
 }) {
-    console.log(optionValue, isInitialized);
     if (!inputElement || !optionValue) {
         throw "引数が足りません";
     }

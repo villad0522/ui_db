@@ -3,11 +3,11 @@
     "description": "ビューの構造を取得します。",
     "commandName": "GET_VIEW_INFO",
     "queryParameters": {
-        "view_index": {
+        "view": {
             "dataType": "INTEGER",
-            "description": "ビューの番号。ビューIDではないのでご注意ください。",
+            "description": "ビューID",
             "isRequired": true,
-            "example": 0
+            "example": 23
         }
     },
     "requestBody": {},
@@ -21,6 +21,11 @@
             "dataType": "TEXT",
             "description": "ビュー名",
             "example": "○○一覧"
+        },
+        "childPageId": {
+            "dataType": "INTEGER",
+            "description": "子ページのID",
+            "example": 5
         },
         "viewType": {
             "dataType": "TEXT",

@@ -1,9 +1,13 @@
 html {
     background: none;
+    max-height: 1500px;
+    overflow: hidden;
 }
 
 body {
     background: none;
+    max-height: 1500px;
+    overflow: hidden;
 }
 
 

@@ -262,8 +262,49 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       };
     }
     //======================================================================
-    case "SET_TITLE_COLUMNS":{
+    case "GET_VIEW_INFO":{
       if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+      const viewId = Number(queryParameters["view"]);
+      const viewInfo = await getViewInfo( viewId );
+      return {
+        "viewId": viewId,
+        "childPageId": viewInfo.childPageId,
+        "viewType":  viewInfo.viewType,
+        "onePageMaxSize": viewInfo.onePageMaxSize,
+        "viewName": viewInfo.name,
+        "excelStartRow": viewInfo.excelStartRow,
+        "excelStartColumn": viewInfo.excelStartColumn,
+        "viewColumns": [],
+        "viewColumns_total": 0,
+        "records": [],
+        "records_total": 0
+      };
+    }
+    //======================================================================
+    case "GET_PAGE_INFO":{
+      if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+      const pageId = Number(queryParameters["page_id"]);
+      const { pageName, memo } = await getPageInfo( pageId );
+      const staticChildren = await listStaticChildren( pageId );
+      const views = await listChildrenView( pageId );
+      const breadcrumbs = await getBreadcrumbs( pageId );
+      return {
+        "pageName": pageName,
+        "memo": memo ?? "",
+        "breadcrumbs": breadcrumbs,
+        "breadcrumbs_total": breadcrumbs.length,
+        "staticChildren": staticChildren,
+        "staticChildren_total": staticChildren.length,
+        "tableName_option": await autoCorrectTableName(""),
+        "views": views,
+        "views_total": views.length,
+        "copyingPageId": await getCopyingPage(),
+        "cuttingPageId": await getCuttingPage()
+      };
+    }
+    //======================================================================
+    case "SET_TITLE_COLUMNS":{
+      if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
       await setTitleColumnsFromUI( requestBody.columns );
       return {
         "nextUrl": `./?` + await convertQuery_core(queryParameters),
@@ -271,7 +312,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "DELETE_TABLE":{
-      if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
       return {
         "userMessage": await deleteTable( queryParameters.table ),
         "nextUrl": `/default/tables/index.html`,
@@ -279,7 +320,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "TRANSFER_DATA":{
-      if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
       return {
         "userMessage": await transferData( requestBody.processName ),
         "nextUrl": `/default/tables/index.html`,
@@ -287,19 +328,19 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "GET_CSV_PROGRESS":{
-      if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
       return await getCsvProgress();
     }
     //======================================================================
     case "DESTROY_CSV_PROGRESS":{
-      if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
       return {
         "userMessage": await destroyCSV(),
       };
     }
     //======================================================================
     case "CLEAR_CACHE":{
-      if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
       await clearCache();
       return {
         "userMessage": "キャッシュデータを削除しました。"
@@ -307,7 +348,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "LIST_TABLES":{
-      if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
       const { tables, total } = await listTables(
         queryParameters["page_tables"],
         35,
@@ -320,7 +361,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CREATE_RECORD":{
-      if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
       const tableId = queryParameters["table"];
       const columns = requestBody["columns"];
       const { recordId, userMessage } = await createRecordFromUI( tableId, columns );
@@ -331,24 +372,8 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       };
     }
     //======================================================================
-    case "GET_VIEW_INFO":{
-      if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
-      return {
-        "viewId": 3,
-        "viewName": "ビューの名前",
-        "viewType": "TABLE",
-        "onePageMaxSize": 23,
-        "excelStartRow": 2,
-        "excelStartColumn": "C",
-        "viewColumns": [],
-        "viewColumns_total": 0,
-        "records": [],
-        "records_total": 0
-      };
-    }
-    //======================================================================
     case "LIST_RECORDS":{
-      if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
       const focusRecordId = queryParameters["record"];
       const pasteRecordId = queryParameters["paste"];
       const oldPageNumber = queryParameters["page_records"];
@@ -376,7 +401,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "COPY_RECORD":{
-      if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageNumber = queryParameters["page_records"];
       const tableId = queryParameters["table"];
       const recordId = queryParameters["record_id"];
@@ -387,7 +412,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CUT_RECORD":{
-      if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageNumber = queryParameters["page_records"];
       const tableId = queryParameters["table"];
       const recordId = queryParameters["record_id"];
@@ -398,7 +423,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "PASTE_RECORD":{
-      if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
       const tableId = queryParameters["table"];
       const pageNumber = queryParameters["page_records"];
       const beforeRecordId = queryParameters["before_id"];
@@ -410,7 +435,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CREATE_TABLE":{
-      if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
       const { tableId, message } = await createTable( requestBody["tableName"] );
       return {
         "tableId": tableId,
@@ -420,18 +445,18 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CREATE_COLUMN":{
-      if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
       const columnType = requestBody["columnType"];
       const tables = requestBody["tables"];
       let dataType = "";
       let parentTableId = null;
       if( isNaN(columnType) ){
-        if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
         dataType = columnType;
         parentTableId = null;
       }
       else{
-        if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
         dataType = "POINTER";
         parentTableId = tables[Number(columnType)]?.id;
       }
@@ -450,7 +475,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "UPDATE_TABLE_NAME":{
-      if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
       const message = await updateTableName(
         requestBody["tables"],
       );
@@ -461,7 +486,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "UPDATE_COLUMN_NAME":{
-      if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
       const message = await updateColumnName(
         requestBody["columns"],
       );
@@ -472,7 +497,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "REGENERATE_PAGE":{
-      if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       await regeneratePage( pageId );
       return {
@@ -481,7 +506,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CREATE_PAGE":{
-      if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
       const parentId = Number(queryParameters["page_id"]);
       await createPage( parentId );
       return {
@@ -490,18 +515,16 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "RENAME_PAGE":{
-      if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       const pageName = requestBody["pageName"];
       const memo = requestBody["memo"] ?? "";
       await updatePageName( pageId, pageName, memo );
-      return {
-        "nextUrl": `/custom/${pageId}/index.html?` + await convertQuery_core(queryParameters),
-      };
+      return {};
     }
     //======================================================================
     case "DELETE_PAGE":{
-      if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       const newQueryParameters = {
         ...queryParameters,
@@ -514,48 +537,26 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "COPY_PAGE":{
-      if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       await copyPage( pageId );
       return {};
     }
     //======================================================================
     case "CUT_PAGE":{
-      if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       await cutPage( pageId );
       return {};
     }
     //======================================================================
     case "PASTE_PAGE":{
-      if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
       const parentPageId = Number(queryParameters["page_id"]);
       const afterPageId = Number(queryParameters["after_id"]);
       await pastePage( parentPageId, afterPageId );
       return {
         "nextUrl": "./?" + await convertQuery_core(queryParameters),
-      };
-    }
-    //======================================================================
-    case "GET_PAGE_INFO":{
-      if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
-      const pageId = Number(queryParameters["page_id"]);
-      const { pageName, memo } = await getPageInfo( pageId );
-      const staticChildren = await listStaticChildren( pageId );
-      const views = await listChildrenView( pageId );
-      const breadcrumbs = await getBreadcrumbs( pageId );
-      return {
-        "pageName": pageName,
-        "memo": memo ?? "",
-        "breadcrumbs": breadcrumbs,
-        "breadcrumbs_total": breadcrumbs.length,
-        "staticChildren": staticChildren,
-        "staticChildren_total": staticChildren.length,
-        "tableName_option": await autoCorrectTableName(""),
-        "views": views,
-        "views_total": views.length,
-        "copyingPageId": await getCopyingPage(),
-        "cuttingPageId": await getCuttingPage()
       };
     }
     //======================================================================

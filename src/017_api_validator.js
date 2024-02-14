@@ -265,10 +265,6 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
         throw `エンドポイント「${endpointPath}」のHTTPメソッドが未定義です。`;
     }
     if (endpointInfo.httpMethod !== httpMethod) {
-        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-        console.log("\n\n");
-        console.log(JSON.stringify(endpointInfo, null, 2));
-        console.log("\n\n");
         throw `HTTPメソッドが不正です。正：${endpointInfo.httpMethod}  誤：${httpMethod}`;
     }
     //
@@ -277,17 +273,17 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     const requestBody2 = {};
     const noErrors = {};
     for (const parentKey in endpointInfo.requestBody) {
-        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
         const parentInfo = endpointInfo.requestBody[parentKey];
         let parentValue = requestBody[parentKey];
         if (!parentInfo || typeof parentInfo !== 'object') {
             throw `リクエストボディの仕様が未定義です。endpointPath="${endpointPath}", key="${parentKey}"`;
         }
         if (parentInfo.isArray) {
-            if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
             // 配列の場合
             if (parentInfo.isRequired === false && !parentValue) {
-                if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
                 continue; // 空欄かつ空欄OKの場合
             }
             requestBody2[parentKey] = _validatorArray({
@@ -299,7 +295,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
             });
         }
         else {
-            if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
             // 配列ではない場合
             if (parentInfo.example === null || parentInfo.example === undefined) {
                 throw `仕様書にexampleが指定されていません。endpointPath="${endpointPath}", key="${parentKey}"`;

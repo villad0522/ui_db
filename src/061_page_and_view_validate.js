@@ -1050,6 +1050,33 @@ export async function listChildrenView( pageId ){
         throw new Error(`result[${i}].viewTypeが文字列ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
       }
     }
+    if( typeof result[i].excelStartRow !== "number" ){
+      if( !result[i].excelStartRow ){
+        throw new Error(`result[${i}].excelStartRowがNULLです。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].excelStartRowが数値ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+      }
+    }
+    else if( isNaN(result[i].excelStartRow) ){
+      throw new Error(`result[${i}].excelStartRowが数値ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+    }
+    if( typeof result[i].excelStartColumn !== "string" ){
+      if( !result[i].excelStartColumn ){
+        throw new Error(`result[${i}].excelStartColumnがNULLです。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].excelStartColumnが文字列ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+      }
+    }
+    if( typeof result[i].iframe !== "string" ){
+      if( !result[i].iframe ){
+        throw new Error(`result[${i}].iframeがNULLです。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].iframeが文字列ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+      }
+    }
   }
   //
   //--------------------------------------------------------------------------
@@ -1395,6 +1422,17 @@ export async function getViewInfo( viewId ){
       throw new Error(`resultがオブジェクトではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
     }
   }
+  if( typeof result.viewId !== "number" ){
+    if( !result.viewId ){
+      throw new Error(`result.viewIdがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`result.viewIdが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
+  else if( isNaN(result.viewId) ){
+    throw new Error(`result.viewIdが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+  }
   if( typeof result.childPageId !== "number" ){
     if( !result.childPageId ){
       throw new Error(`result.childPageIdがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
@@ -1431,6 +1469,33 @@ export async function getViewInfo( viewId ){
     }
     else{
       throw new Error(`result.viewTypeが文字列ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
+  if( typeof result.name !== "string" ){
+    if( !result.name ){
+      throw new Error(`result.nameがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`result.nameが文字列ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
+  if( typeof result.excelStartRow !== "number" ){
+    if( !result.excelStartRow ){
+      throw new Error(`result.excelStartRowがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`result.excelStartRowが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
+  else if( isNaN(result.excelStartRow) ){
+    throw new Error(`result.excelStartRowが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+  }
+  if( typeof result.excelStartColumn !== "string" ){
+    if( !result.excelStartColumn ){
+      throw new Error(`result.excelStartColumnがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`result.excelStartColumnが文字列ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
     }
   }
   //

@@ -113,5 +113,6 @@ hr {
 }
 
 iframe {
-    min-height: 70vh;
+    min-height: 1500px;
+    width: 100%;
 }

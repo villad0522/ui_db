@@ -72,23 +72,14 @@
         <main>
             <form>
                 <div class="container">
-                    <div class="row">
-                        <div class="col-12 col-md-10">
-                            <!--  -->
-                            <!--  -->
-                            <!-- 見出し -->
-                            <input name="pageName" placeholder="ページ名" class="form-control mb-1" style="font-size: 30px; font-weight: 900; overflow: hidden; padding-top: 10px;">
-                            <!--  -->
-                            <!--  -->
-                            <!-- メモ -->
-                            <textarea name="memo" placeholder="メモ" class="form-control"></textarea>
-                        </div>
-                        <div class="col-12 col-md-2">
-                            <button onclick="myFetch('./rename_page/json');" type="button" class="btn btn-primary" style="font-size: large; height: 100%;">
-                                保存
-                            </button>
-                        </div>
-                    </div>
+                    <!--  -->
+                    <!--  -->
+                    <!-- 見出し -->
+                    <input name="pageName" onchange="myFetch('./rename_page/json');" placeholder="ページ名" class="auto_save form-control mb-1" style="font-size: 30px; font-weight: 900; overflow: hidden; padding-top: 10px;">
+                    <!--  -->
+                    <!--  -->
+                    <!-- メモ -->
+                    <textarea name="memo" onchange="myFetch('./rename_page/json');" placeholder="メモ" class="auto_save form-control"></textarea>
                     <!--  -->
                     <!--  -->
                     <!-- 子ページへのリンクここから -->
@@ -218,20 +209,7 @@
                     <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
                     <input name="views${i}_flag" class="flag" type="checkbox">
                     <div id="tab${i}" class="tab-pane ${isActive}" style="z-index: 999;">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-6" style="color: #aaa; font-size: 12px;">
-                                    ビューID :
-                                    <input type="text" class="form-control-plaintext" name="views${i}_viewId" readonly style="width: 50px; display: inline; color: #aaa; ">
-                                </div>
-                                <div class="col-6" style="text-align: right;">
-                                    <button type="button" class="btn btn-outline-danger">
-                                        ビューを削除
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <iframe src="./view_editor/index.html?view_index=${i}" style="width: 100%"></iframe>
+                        <div name="views${i}_iframe"></div>
                     </div>`;
                         }
                         document.write(htmlText4);

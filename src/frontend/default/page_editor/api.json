@@ -82,6 +82,11 @@
                     "description": "ビューのID",
                     "example": 5
                 },
+                "name": {
+                    "dataType": "TEXT",
+                    "description": "ビュー名",
+                    "example": "○○一覧"
+                },
                 "tableId": {
                     "dataType": "TEXT",
                     "description": "テーブルID",
@@ -101,6 +106,11 @@
                     "dataType": "TEXT",
                     "description": "ビューの種類",
                     "example": "TILE"
+                },
+                "iframe": {
+                    "dataType": "TEXT",
+                    "description": "ビューの編集画面のiframeタグ",
+                    "example": "<iframe src=\"/default/view_editor/index.html?view=1\"></iframe>"
                 }
             }
         },

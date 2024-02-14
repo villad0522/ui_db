@@ -20,12 +20,15 @@ window.addEventListener('DOMContentLoaded', async () => {
     window.isEdit = false;
     //
     // 変更された項目を水色にする
-    const formElements = document.querySelectorAll("form input, form select, form textarea");
-    for (const formElement of formElements) {
-        formElement.addEventListener("input", () => {
+    const inputElements = document.querySelectorAll("form input, form select, form textarea");
+    for (const inputElement of inputElements) {
+        if (inputElement.classList.contains("auto_save")) {
+            continue;
+        }
+        inputElement.addEventListener("input", () => {
             window.isEdit = true;
         });
-        formElement.addEventListener("change", () => {
+        inputElement.addEventListener("change", () => {
             window.isEdit = true;
         });
     }

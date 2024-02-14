@@ -187,6 +187,8 @@ export async function startUp_core( localUrl, isDebug ){
       "table_id" TEXT NOT NULL,
       "one_page_max_size" NUMBER NOT NULL DEFAULT 12,
       "view_type" TEXT NOT NULL DEFAULT 'TABLE',
+      "excel_start_row" INTEGER NOT NULL DEFAULT 1,
+      "excel_start_column" TEXT NOT NULL DEFAULT 'A',
       "sort_number" REAL NOT NULL DEFAULT 64,
       "created_at" INTEGER UNIQUE,
       FOREIGN KEY (page_id) REFERENCES pages(page_id)
@@ -384,7 +386,7 @@ export async function createView_core( pageId, tableId ){
   if(!tableName){
     throw `テーブル名を取得できません。\ntableId = ${tableId}`;
   }
-  const timestamp = await getTimestamp(date);
+  const timestamp = await getTimestamp();
   await runSqlWriteOnly(
     `INSERT INTO views( view_name, page_id, table_id, created_at )
         VALUES ( :viewName, :pageId, :tableId, :createdAt );`,
@@ -667,10 +669,14 @@ export async function listStaticChildren_core( pageId ){
 
 let cacheViews = {
   // viewId: {
+  //   viewId,
   //   childPageId,
   //   tableId,
   //   onePageMaxSize,
-  //   viewType
+  //   viewType,
+  //   name,
+  //   excelStartRow,
+  //   excelStartColumn,
   // }
 };
 
@@ -684,7 +690,9 @@ export async function listChildrenView_core( pageId ){
         views.view_id AS viewId,
         views.table_id AS tableId,
         views.one_page_max_size AS onePageMaxSize,
-        views.view_type AS viewType
+        views.view_type AS viewType,
+        views.excel_start_row AS excelStartRow,
+        views.excel_start_column AS excelStartColumn
       FROM views
       INNER JOIN pages
         ON pages.dynamic_parent_id = views.view_id
@@ -694,9 +702,11 @@ export async function listChildrenView_core( pageId ){
       ":parentPageId": pageId,
     },
   );
-  for( const viewInfo of views ){
+  for( let i=0; i<views.length; i++ ){
     if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
-    cacheViews[viewInfo.viewId] = viewInfo;
+    const viewId = views[i].viewId;
+    cacheViews[viewId] = views[i];
+    views[i]["iframe"] = `<iframe src="/default/view_editor/index.html?view=${viewId}"></iframe>`;
   }
   return views;
 }

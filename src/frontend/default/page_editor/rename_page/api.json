@@ -24,11 +24,5 @@
             "example": "○○を入力する際は、○○してください。"
         }
     },
-    "response": {
-        "nextUrl": {
-            "dataType": "TEXT",
-            "description": "完了した場合に、移動すべきURL",
-            "example": "./"
-        }
-    }
+    "response": {}
 }
