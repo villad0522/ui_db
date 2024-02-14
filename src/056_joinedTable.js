@@ -256,7 +256,12 @@ export async function deleteView_core( viewId ){
 // SQLクエリを生成
 export async function generateSQL_core( viewId, queryParameters ){
   if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
-    const tableId = await getTableFromView( viewId );
+    const  {
+        childPageId,
+        tableId,
+        onePageMaxSize,
+        viewType
+    } = await getViewInfo( viewId );
     if( !tableId ){
         throw `指定されたページには、動的リストが登録されていません。\nviewId = ${viewId}`;
     }
@@ -357,7 +362,8 @@ export async function generateSQL_core( viewId, queryParameters ){
         tableId,
         viewColumns,
         conditionInfoList,
-        sortOrders
+        sortOrders,
+        onePageMaxSize,
     );
     return {  normalSQL, countSQL, parameters };
 }

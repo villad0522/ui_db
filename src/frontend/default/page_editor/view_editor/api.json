@@ -1,0 +1,325 @@
+{
+    "httpMethod": "GET",
+    "description": "ビューの構造を取得します。",
+    "commandName": "GET_VIEW_INFO",
+    "queryParameters": {
+        "view_index": {
+            "dataType": "INTEGER",
+            "description": "ビューの番号。ビューIDではないのでご注意ください。",
+            "isRequired": true,
+            "example": 0
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "viewId": {
+            "dataType": "INTEGER",
+            "description": "ビューID",
+            "example": 56
+        },
+        "viewName": {
+            "dataType": "TEXT",
+            "description": "ビュー名",
+            "example": "○○一覧"
+        },
+        "viewType": {
+            "dataType": "TEXT",
+            "description": "表示の種類",
+            "example": "TABLE"
+        },
+        "onePageMaxSize": {
+            "dataType": "INTEGER",
+            "description": "１ページあたりの最大表示数",
+            "example": 50
+        },
+        "excelStartRow": {
+            "dataType": "INTEGER",
+            "description": "Excelの開始位置（行）",
+            "example": 8
+        },
+        "excelStartColumn": {
+            "dataType": "TEXT",
+            "description": "Excelの開始位置（列）",
+            "example": "C"
+        },
+        "viewColumns": {
+            "title": "ビューカラムの一覧",
+            "isArray": true,
+            "onePageMaxSize": 35,
+            "children": {
+                "viewColumnId": {
+                    "dataType": "TEXT",
+                    "description": "ビューカラムのID",
+                    "example": "d4"
+                },
+                "viewColumnName": {
+                    "dataType": "TEXT",
+                    "description": "ビューカラムの名前",
+                    "example": "氏名"
+                },
+                "viewColumnType": {
+                    "dataType": "TEXT",
+                    "description": "ビューカラムの種類",
+                    "example": "COUNT"
+                },
+                "excelColumnIndex": {
+                    "dataType": "TEXT",
+                    "description": "Excelの列番",
+                    "example": "D"
+                },
+                "columnId0": {
+                    "dataType": "TEXT",
+                    "description": "カラムID0",
+                    "example": "c8"
+                },
+                "columnId0_option": {
+                    "dataType": "TEXT",
+                    "description": "カラムID0の入力予測",
+                    "example": "c8"
+                },
+                "columnId1": {
+                    "dataType": "TEXT",
+                    "description": "カラムID1",
+                    "example": "c8"
+                },
+                "columnId1_option": {
+                    "dataType": "TEXT",
+                    "description": "カラムID1の入力予測",
+                    "example": "c8"
+                },
+                "columnId2": {
+                    "dataType": "TEXT",
+                    "description": "カラムID2",
+                    "example": "c8"
+                },
+                "columnId2_option": {
+                    "dataType": "TEXT",
+                    "description": "カラムID2の入力予測",
+                    "example": "c8"
+                },
+                "columnId3": {
+                    "dataType": "TEXT",
+                    "description": "カラムID3",
+                    "example": "c8"
+                },
+                "columnId3_option": {
+                    "dataType": "TEXT",
+                    "description": "カラムID3の入力予測",
+                    "example": "c8"
+                },
+                "columnId4": {
+                    "dataType": "TEXT",
+                    "description": "カラムID4",
+                    "example": "c8"
+                },
+                "columnId4_option": {
+                    "dataType": "TEXT",
+                    "description": "カラムID4の入力予測",
+                    "example": "c8"
+                },
+                "columnId5": {
+                    "dataType": "TEXT",
+                    "description": "カラムID5",
+                    "example": "c8"
+                },
+                "columnId5_option": {
+                    "dataType": "TEXT",
+                    "description": "カラムID5の入力予測",
+                    "example": "c8"
+                }
+            }
+        },
+        "viewColumns_total": {
+            "dataType": "INTEGER",
+            "description": "ビューカラムの個数",
+            "example": 10
+        },
+        "records_total": {
+            "dataType": "INTEGER",
+            "description": "レコードの件数",
+            "example": 132
+        },
+        "records": {
+            "title": "レコード一覧",
+            "isArray": true,
+            "onePageMaxSize": 50,
+            "children": {
+                "field0": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field1": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field2": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field3": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field4": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field5": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field6": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field7": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field8": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field9": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field10": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field11": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field12": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field13": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field14": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field15": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field16": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field17": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field18": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field19": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field20": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field21": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field22": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field23": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field24": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field25": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field26": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field27": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field28": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field29": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field30": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field31": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field32": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field33": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                },
+                "field34": {
+                    "dataType": "TEXT",
+                    "description": "データ",
+                    "example": "xxx"
+                }
+            }
+        }
+    }
+}

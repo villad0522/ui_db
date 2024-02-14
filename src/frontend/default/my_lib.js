@@ -215,14 +215,14 @@ async function _setFormData(formData) {
             // name属性の値が変数keyと等しいHTML要素を探す。
             const elements = document.getElementsByName(key);
             if (elements.length === 0) {
-                return;
+                continue;
             }
             for (const element of elements) {
                 // フォームに値を設定
                 if (element.type === 'checkbox' || element.type === 'radio') {
                     element.checked = (value.toLowerCase() === "true") || (value === "1");
                 }
-                else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                else if (element.tagName === 'SELECT' || element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
                     element.value = value ?? "";
                 }
                 else {

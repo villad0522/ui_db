@@ -6,7 +6,7 @@ import {
 //#######################################################################################
 // 関数「generateSQL_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function generateSQL( tableId, viewColumns, conditionInfoList, sortOrder ){
+export async function generateSQL( tableId, viewColumns, conditionInfoList, sortOrder, onePageMaxSize ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
@@ -138,12 +138,23 @@ export async function generateSQL( tableId, viewColumns, conditionInfoList, sort
       throw new Error(`sortOrder[${i}].isAscendingがブール値ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
     }
   }
+  if( typeof onePageMaxSize !== "number" ){
+    if( !onePageMaxSize ){
+      throw new Error(`onePageMaxSizeがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
+    }
+    else{
+      throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+    }
+  }
+  else if( isNaN(onePageMaxSize) ){
+    throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await generateSQL_core( tableId, viewColumns, conditionInfoList, sortOrder );
+    result = await generateSQL_core( tableId, viewColumns, conditionInfoList, sortOrder, onePageMaxSize );
   }
   catch(error){
     if( typeof error === "string" ){

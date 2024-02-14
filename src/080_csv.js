@@ -343,20 +343,23 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
         return;
       }
       const results = splitLastNewline( rest + text1 );
+      if(results[0]){
+        if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+        oneLine( results[0] );
+      }
       rest = results[1];
-      oneLine( results[0] );
     }).on('end', () => {
         resolve();
     });
   });
   if( rest.length > 0 ){
-    if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
     oneLine( rest );
   }
   //==============================================================================
   await Promise.all(threads);
   if( datas.length>0 ){
-    if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     await intervalFunc();
   }
   progressMessage = `【最終処理中】ファイルストリームを破棄しています。`;
@@ -365,12 +368,24 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
   progressMessage = `完了しました。`;
 }
 
+
+const regexDate = /^\d{4}\/\d{1,2}\/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}$/g;
+
+
 function _convertData(inputText){
   if(inputText===""){
     return "";
   }
   else if(!isNaN(inputText)){
     return Number(inputText);
+  }
+  regexDate.lastIndex = 0; // lastIndexをリセット
+  if( regexDate.test(inputText) ){
+    const date = new Date(inputText);
+    const timestamp =  date.getTime();
+    if( timestamp>=100000000000 && !isNaN(timestamp) ){
+      return timestamp;
+    }
   }
   return String( inputText ?? "" );
 }
@@ -409,7 +424,7 @@ function splitLastNewline(inputString) {
 
 // インポートの進捗状況を取得する関数
 export async function getCsvProgress_core(  ){
-  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
   return {
     "progressMessage": progressMessage,
     "successCount": successCount,
@@ -421,7 +436,7 @@ export async function getCsvProgress_core(  ){
 
 // インポートを中断する関数
 export async function destroyCSV_core(  ){
-  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
   setTimeout(()=>{
     errorCount = 0;
     allCount = 0;
@@ -430,7 +445,7 @@ export async function destroyCSV_core(  ){
     progressMessage = "何も処理をしていません";
   },500);
   if(parserStream){
-    if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
     // ストリームを中断・破棄
     parserStream.pause();
     parserStream.resume();
@@ -439,7 +454,7 @@ export async function destroyCSV_core(  ){
     return "CSVのアップロード処理を中断しました。";
   }
   else{
-    if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
     return "現在、何も実行されていません。";
   }
 }
@@ -447,9 +462,9 @@ export async function destroyCSV_core(  ){
 
 // バックエンドプログラム終了
 export async function close_core(  ){
-  if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
   if(parserStream){
-    if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
     // ストリームを中断・破棄
     parserStream.pause();
     parserStream.resume();
@@ -457,7 +472,7 @@ export async function close_core(  ){
     parserStream = null;
   }
   if(stmt){
-    if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
     progressMessage = `【処理中】データベースに送信した命令の完了を待っています。`;
     await stmt.finalize();
     stmt = null;

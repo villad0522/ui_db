@@ -152,7 +152,7 @@ export function setBugMode( mode ){
 
 
 // SQLクエリを生成
-export async function generateSQL_core( tableId, viewColumns, conditionInfoList, sortOrder ){
+export async function generateSQL_core( tableId, viewColumns, conditionInfoList, sortOrder, onePageMaxSize ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   // viewColumns の例
   //   [
@@ -213,14 +213,14 @@ export async function generateSQL_core( tableId, viewColumns, conditionInfoList,
   if( isDuplication === true ){
     if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
     // 重複しているテーブルを結合する場合、「テーブル名 AS 別名」と記入する必要がある。
-    normalSQL = await generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData, false );
-    countSQL = await generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData, true );
+    normalSQL = await generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData, false, onePageMaxSize );
+    countSQL = await generateSQLwithDuplication( tableId, selectData, joinData, whereData, orderData, true, onePageMaxSize );
   }
   else{
     if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
     // テーブルが重複していない場合
-    normalSQL = await generateSQLwithoutDuplication( tableId, selectData, joinData, whereData, orderData, false );
-    countSQL = await generateSQLwithoutDuplication( tableId, selectData, joinData, whereData, orderData, true );
+    normalSQL = await generateSQLwithoutDuplication( tableId, selectData, joinData, whereData, orderData, false, onePageMaxSize );
+    countSQL = await generateSQLwithoutDuplication( tableId, selectData, joinData, whereData, orderData, true, onePageMaxSize );
   }
   return {
     normalSQL,

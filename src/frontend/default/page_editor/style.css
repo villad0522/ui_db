@@ -111,3 +111,7 @@ hr {
     position: absolute;
     top: 0;
 }
+
+iframe {
+    min-height: 70vh;
+}

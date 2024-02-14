@@ -1,0 +1,17 @@
+html {
+    background: none;
+}
+
+body {
+    background: none;
+}
+
+
+/* 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される */
+.flag {
+    display: none;
+}
+
+.flag:not(:checked)+* {
+    display: none;
+}

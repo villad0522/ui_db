@@ -472,6 +472,7 @@ export async function runSqlReadOnly_core( sql, params ){
             if(!regexp){
                 throw `正規表現が見つかりません。\ntableId = ${tableId}\ncolumnId = ${columnId}`;
             }
+            regexp.lastIndex = 0; // lastIndexをリセット
             sql = sql.replaceAll( regexp, columnId );
         }
     }
@@ -483,6 +484,7 @@ export async function runSqlReadOnly_core( sql, params ){
             if(!regexp){
                 throw `正規表現が見つかりません。\ntableId = ${tableId}\ncolumnId = ${columnId}`;
             }
+            regexp.lastIndex = 0; // lastIndexをリセット
             sql = sql.replaceAll( regexp, columnId );
         }
     }
@@ -496,23 +498,27 @@ export async function runSqlWriteOnly_core( sql, params ){
     for( const tableId of tableIds ){
         if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
         // SQL文に含まれるカラム名をIDに置き換える
-        for( const { id: columnId } of cacheData2[tableId]??[] ){
+        const columns = cacheData2[tableId] ?? [];
+        for( const { id: columnId } of columns ){
             if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
             const regexp = cacheData4[columnId];
             if(!regexp){
                 throw `正規表現が見つかりません。\ntableId = ${tableId}\ncolumnId = ${columnId}`;
             }
+            regexp.lastIndex = 0; // lastIndexをリセット
             sql = sql.replaceAll( regexp, columnId );
         }
     }
     for( const tableId of tableIds ){
         if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
-        for( const { id: columnId } of cacheData2[tableId]??[] ){
+        const columns = cacheData2[tableId] ?? [];
+        for( const { id: columnId } of columns ){
             if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
             const regexp = cacheData6[columnId];
             if(!regexp){
                 throw `正規表現が見つかりません。\ntableId = ${tableId}\ncolumnId = ${columnId}`;
             }
+            regexp.lastIndex = 0; // lastIndexをリセット
             sql = sql.replaceAll( regexp, columnId );
         }
     }

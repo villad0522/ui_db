@@ -296,7 +296,7 @@ function _convertResponseData({ endpointPath, endpointInfo, response, queryParam
             throw `想定外のレスポンスデータを返そうとしました。本来は配列です。endpointPath=${endpointPath} key=${parentKey}`;
         }
         if (parentRule.onePageMaxSize < parentValue.length) {
-            throw `配列がサイズオーバーです。endpointPath=${endpointPath} key=${parentKey} 現在の長さ=${parentValue.length} 上限=${rule.onePageMaxSize}`;
+            throw `配列がサイズオーバーです。endpointPath=${endpointPath} key=${parentKey} 現在の長さ=${parentValue.length} 上限=${parentRule.onePageMaxSize}`;
         }
         //
         // 仮に全件を取得していた場合の、配列の長さ

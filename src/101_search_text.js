@@ -441,6 +441,9 @@ export async function autoCorrect_core( tableId, columnId, inputText, conditions
 // 配列の予測変換
 export async function autoCorrectFromArray_core( inputText, candidateArray ){
   if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+  // 文字列の配列「candidateArray」に文字列「inputText」が部分一致するかどうか調べ、予測変換を返す関数。
+  //
+  // 空欄の場合は、候補をそのまま返す
   if(inputText===""){
     if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
     return candidateArray;

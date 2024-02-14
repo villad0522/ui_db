@@ -150,7 +150,7 @@ export function setBugMode( mode ){
 
 
 // SQLクエリを生成
-export async function generateSQLwithDuplication_core( tableId, selectData, joinData, whereData, orderData, isCount ){
+export async function generateSQLwithDuplication_core( tableId, selectData, joinData, whereData, orderData, isCount, onePageMaxSize ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   const primaryKey = await getPrimaryKey( tableId );
   //
@@ -281,6 +281,10 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
   if(isCount){
     if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
     sql += `)`;
+  }
+  else{
+    if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+    sql += `LIMIT ${onePageMaxSize}`;
   }
   //
   return sql;

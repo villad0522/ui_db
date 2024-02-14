@@ -6,7 +6,7 @@ import {
 //#######################################################################################
 // 関数「generateSQLwithoutDuplication_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function generateSQLwithoutDuplication( tableId, selectData, joinData, whereData, orderData, isCount ){
+export async function generateSQLwithoutDuplication( tableId, selectData, joinData, whereData, orderData, isCount, onePageMaxSize ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
@@ -247,12 +247,23 @@ export async function generateSQLwithoutDuplication( tableId, selectData, joinDa
   else if( isNaN(isCount) ){
     throw new Error(`isCountがブール値ではありません。\nレイヤー : generate_sql2\n関数 : generateSQLwithoutDuplication`);
   }
+  if( typeof onePageMaxSize !== "number" ){
+    if( !onePageMaxSize ){
+      throw new Error(`onePageMaxSizeがNULLです。\nレイヤー : generate_sql2\n関数 : generateSQLwithoutDuplication`);
+    }
+    else{
+      throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : generate_sql2\n関数 : generateSQLwithoutDuplication`);
+    }
+  }
+  else if( isNaN(onePageMaxSize) ){
+    throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : generate_sql2\n関数 : generateSQLwithoutDuplication`);
+  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await generateSQLwithoutDuplication_core( tableId, selectData, joinData, whereData, orderData, isCount );
+    result = await generateSQLwithoutDuplication_core( tableId, selectData, joinData, whereData, orderData, isCount, onePageMaxSize );
   }
   catch(error){
     if( typeof error === "string" ){

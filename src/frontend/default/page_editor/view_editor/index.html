@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>ビューの編集</title>
+        <!--  -->
+        <!-- bootstrap5.3を読み込む -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+        <!-- bootstrapのドキュメントはこちら -->
+        <!-- https://getbootstrap.jp/docs/5.3/getting-started/introduction/ -->
+        <!--  -->
+        <!--  -->
+        <!-- bootstrapのアイコンを読み込む -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <!--  -->
+        <!-- 自作CSSを読み込む -->
+        <link rel="stylesheet" href="./style.css" type="text/css">
+        <!--  -->
+        <!-- 自作JavaScriptを読み込む -->
+        <script src="./script.js" type="module"></script>
+    </head>
+
+    <body style="visibility: hidden;">
+        <form>
+            <div class="container">
+                <div class="mb-3">
+                    <label for="viewName" class="form-label">
+                        ビューの名前
+                    </label>
+                    <input type="text" class="form-control" id="viewName" name="viewName">
+                </div>
+                <div class="mb-3">
+                    <label for="onePageMaxSize" class="form-label">
+                        １ページあたりの最大表示件数
+                    </label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="onePageMaxSize" name="onePageMaxSize">
+                        <span class="input-group-text">件</span>
+                        <button onclick="myFetch('./form')" type="button" class="btn btn-primary">
+                            保存
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="excelStartRow" class="form-label">
+                        Excelの開始位置（行）
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">列：</span>
+                        <select class="form-select" name="excelStartColumn">
+                            <option selected>A</option>
+                            <option>B</option>
+                            <option>C</option>
+                            <option>D</option>
+                            <option>E</option>
+                            <option>F</option>
+                            <option>G</option>
+                            <option>H</option>
+                            <option>I</option>
+                            <option>J</option>
+                            <option>K</option>
+                            <option>L</option>
+                            <option>M</option>
+                            <option>N</option>
+                            <option>O</option>
+                            <option>P</option>
+                            <option>Q</option>
+                            <option>R</option>
+                            <option>S</option>
+                            <option>T</option>
+                            <option>U</option>
+                            <option>V</option>
+                            <option>W</option>
+                            <option>X</option>
+                            <option>Y</option>
+                            <option>Z</option>
+                            <option>AA</option>
+                            <option>AB</option>
+                            <option>AC</option>
+                            <option>AD</option>
+                            <option>AE</option>
+                            <option>AF</option>
+                            <option>AG</option>
+                            <option>AH</option>
+                            <option>AI</option>
+                            <option>AJ</option>
+                            <option>AK</option>
+                            <option>AL</option>
+                            <option>AM</option>
+                            <option>AN</option>
+                            <option>AO</option>
+                            <option>AP</option>
+                            <option>AQ</option>
+                            <option>AR</option>
+                            <option>AS</option>
+                            <option>AT</option>
+                            <option>AU</option>
+                            <option>AV</option>
+                            <option>AW</option>
+                            <option>AX</option>
+                            <option>AY</option>
+                            <option>AZ</option>
+                            <option>BA</option>
+                            <option>BB</option>
+                            <option>BC</option>
+                            <option>BD</option>
+                            <option>BE</option>
+                            <option>BF</option>
+                            <option>BG</option>
+                            <option>BH</option>
+                            <option>BI</option>
+                            <option>BJ</option>
+                            <option>BK</option>
+                            <option>BL</option>
+                            <option>BM</option>
+                            <option>BN</option>
+                            <option>BO</option>
+                            <option>BP</option>
+                            <option>BQ</option>
+                            <option>BR</option>
+                            <option>BS</option>
+                            <option>BT</option>
+                            <option>BU</option>
+                            <option>BV</option>
+                            <option>BW</option>
+                            <option>BX</option>
+                            <option>BY</option>
+                            <option>BZ</option>
+                            <option>CA</option>
+                            <option>CB</option>
+                            <option>CC</option>
+                            <option>CD</option>
+                            <option>CE</option>
+                            <option>CF</option>
+                            <option>CG</option>
+                            <option>CH</option>
+                            <option>CI</option>
+                            <option>CJ</option>
+                            <option>CK</option>
+                            <option>CL</option>
+                            <option>CM</option>
+                            <option>CN</option>
+                            <option>CO</option>
+                            <option>CP</option>
+                            <option>CQ</option>
+                            <option>CR</option>
+                            <option>CS</option>
+                            <option>CT</option>
+                            <option>CU</option>
+                            <option>CV</option>
+                            <option>CW</option>
+                            <option>CX</option>
+                            <option>CY</option>
+                            <option>CZ</option>
+                        </select>
+                        <span class="input-group-text">行：</span>
+                        <input type="number" class="form-control" id="excelStartRow" name="excelStartRow">
+                        <button onclick="myFetch('./form')" type="button" class="btn btn-primary">
+                            保存
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered text-nowrap">
+                <thead>
+                    <tr>
+                        <th scope="col" rowspan="2" style="border-bottom: solid; vertical-align: middle;">
+                        </th>
+                        <script>
+                            let htmlText3 = "";
+                            for (let j = 0; j < 35; j++) {
+                                htmlText3 += `
+                                        <th class="form" scope="col" name="columns${j}_flag">
+                                            <!--  -->
+                                            <!-- 列の名前を入力するテキストボックス -->
+                                            <input name="columns${j}_name" type="text" class="form-control">
+                                            <input name="columns${j}_id" style="display: none;">
+                                            <input name="columns${j}_flag" style="display: none;" type="checkbox">
+                                            <!--  -->
+                                            <!-- 列の横幅を確保するために、見えない文字を表示する -->
+                                            <div name="columns${j}_name" style="visibility: hidden; height: 0; min-height: 0; padding: 0 40px; overflow: hidden;"></div>
+                                        </th>
+                                    `;
+                            }
+                            document.write(htmlText3);
+                        </script>
+                        <th scope="col" rowspan="2" style="border-bottom: solid; vertical-align: middle;">
+                            <button class="btn btn-sm btn-outline-primary" type="button">
+                                <i class="bi bi-arrow-left"></i>
+                                列を作成
+                            </button>
+                        </th>
+                    </tr>
+                    <tr>
+                        <script>
+                            let htmlText1 = "";
+                            for (let j = 0; j < 35; j++) {
+                                htmlText1 += `
+                                    <td class="form" name="columns${j}_flag" style="border-bottom: solid; padding: 0;">
+                                        設定ボタン
+                                    </td>
+                                `;
+                            }
+                            document.write(htmlText1);
+                        </script>
+                        <td style="border-bottom: solid; padding: 0;"></td>
+                    </tr>
+                </thead>
+                <tbody style="opacity: 0.3;">
+                    <script>
+                        const MAX_RECORD_SIZE = 50;
+                        let htmlText4 = "";
+                        for (let i = 0; i < MAX_RECORD_SIZE; i++) {
+                            htmlText4 += `
+                                    <tr name="records${i}_flag">
+                                        <td style="padding: 0; width: 40px;">
+                                            <label for="records${i}_isFocus" class="check_outer">
+                                                <input disabled name="records${i}_isFocus" class="form-check-input" type="checkbox" id="records${i}_isFocus">
+                                            </label>
+                                        </td>`;
+                            for (let j = 0; j < 35; j++) {
+                                htmlText4 += `
+                                        <td name="columns${j}_flag">
+                                            <div name="records${i}_field${j}">
+                                            </div>
+                                        </td>`;
+                            }
+                            htmlText4 += `
+                                        <td>
+                                        </td>
+                                    </tr>`;
+                        }
+                        document.write(htmlText4);
+                    </script>
+                </tbody>
+            </table>
+            <br>
+            <footer style="position: sticky; bottom: 0; pointer-events: none;">
+                <div style="padding: 20px; width: max-content; box-sizing: border-box; margin: 0 0 0 auto; background: #222; pointer-events: all; border-radius: 10px 0 0 0;">
+                    <button onclick="jumpWithQuery('../index.html');" type="button" class="btn btn-outline-primary btn-lg">
+                        キャンセル
+                    </button>
+                    <button onclick="myFetch('./form')" type="button" class="btn btn-primary btn-lg">
+                        保存（列の名前を変更）
+                    </button>
+                </div>
+            </footer>
+            <br>
+            <br>
+        </form>
+    </body>
+
+</html>
