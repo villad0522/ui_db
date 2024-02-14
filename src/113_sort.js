@@ -17,7 +17,7 @@ import {
 } from "./115_data_type_validate.js";
 import {
   getLocalIp,
-} from "./130_ip_address_validate.js";
+} from "./133_ip_address_validate.js";
 import {
   close,
   startTransaction,
@@ -25,13 +25,16 @@ import {
 } from "./121_transaction_lower_validate.js";
 import {
   getPath,
-} from "./127_directory_validate.js";
+} from "./130_directory_validate.js";
 import {
   getDebugMode,
   runSqlReadOnly,
   runSqlWriteOnly,
   getDB,
-} from "./124_connect_database_validate.js";
+} from "./127_connect_database_validate.js";
+import {
+  getTimestamp,
+} from "./124_timezone_validate.js";
 import {
   getPrimaryKey,
 } from "./118_primary_key_validate.js";
@@ -140,7 +143,7 @@ export async function _copyRecord_core( tableId, recordId, beforeRecordId, after
   const recordData = records[0];
   delete recordData[primaryKey];
   recordData["sort_number"] = sortNumber;
-  const timestamp = new Date().getTime();
+  const timestamp = await getTimestamp();
   recordData["created_at"] = timestamp;
   recordData["updated_at"] = timestamp;
   const placeholders = {};

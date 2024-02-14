@@ -12,6 +12,7 @@ import {
     createRecordsFromCsv,
 } from "./002_index.js";
 
+
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // urlencodedとjsonは別々に初期化する

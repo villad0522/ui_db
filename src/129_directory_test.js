@@ -2,16 +2,16 @@ import fs from 'fs';
 import path from 'path';
 import {
   getLocalIp,
-} from "./130_ip_address_validate.js";
+} from "./133_ip_address_validate.js";
 import {
   getPath,  // ディレクトリのパスを提供する関数
   startUp,  // プログラム起動
   close,  // バックエンドプログラム終了
-} from "./127_directory_validate.js";
-import { setBugMode } from "./128_directory.js";
+} from "./130_directory_validate.js";
+import { setBugMode } from "./131_directory.js";
 
 
-export async function test126() {
+export async function test129() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();

@@ -4,10 +4,10 @@ import {
   startUp,
   close,
   getPath,
-} from "./127_directory_validate.js";
+} from "./130_directory_validate.js";
 import {
   getLocalIp,
-} from "./130_ip_address_validate.js";
+} from "./133_ip_address_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）

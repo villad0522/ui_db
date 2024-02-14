@@ -200,6 +200,11 @@
     "layerNameEN": "transaction_lower"
   },
   {
+    "layerId": "01HPJN5T6HM2CA78QEZCZ4MEBZ",
+    "layerNameJP": "時刻とタイムゾーン",
+    "layerNameEN": "timezone"
+  },
+  {
     "layerId": "01HM1S41BMZT31P1KCV0RZPTAH",
     "layerNameJP": "データベース",
     "layerNameEN": "connect_database"

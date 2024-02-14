@@ -18,7 +18,7 @@ import {
 } from "./082_record_title_validate.js";
 import {
   getLocalIp,
-} from "./130_ip_address_validate.js";
+} from "./133_ip_address_validate.js";
 import {
   close,
   createRecordsFromCsv,
@@ -27,11 +27,11 @@ import {
 } from "./079_csv_validate.js";
 import {
   getPath,
-} from "./127_directory_validate.js";
+} from "./130_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./124_connect_database_validate.js";
+} from "./127_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -40,6 +40,9 @@ import {
   getColumnName,
   getColumnIdFromName,
 } from "./106_column_name_validate.js";
+import {
+  getTimestamp,
+} from "./124_timezone_validate.js";
 import {
   startTransaction,
   endTransaction,
@@ -206,7 +209,7 @@ async function _checkTree(){
     `SELECT * FROM pages LIMIT 1;`, {},
   );
   if( pages.length===0 ){
-    const timestamp = new Date().getTime();
+    const timestamp = await getTimestamp();
     // ページが１つも無い場合は、トップページを作成する
     await runSqlWriteOnly(
       `INSERT INTO pages( page_id, page_name, created_at )
@@ -237,7 +240,7 @@ async function _checkTree(){
     console.error(`子ページを持たないビューが見つかりました。子ページを作成します。`);
     const tableId = matrix2[0]["tableId"];
     const tableName = await getTableName(tableId);
-    const timestamp = new Date().getTime();
+    const timestamp = await getTimestamp();
     await runSqlWriteOnly(
       `INSERT INTO pages( dynamic_parent_id, page_name, created_at )
           VALUES ( :dynamicParentId, :pageName, :createdAt );`,
@@ -257,7 +260,7 @@ export async function createPage_core( parentPageId ){
   if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
   // ソート番号を何にするべきか決める
   const sortNumber = await _generatePageSortNumber_core( parentPageId, null );
-  const timestamp = new Date().getTime();
+    const timestamp = await getTimestamp();
   await runSqlWriteOnly(
     `INSERT INTO pages( static_parent_id, sort_number, created_at )
         VALUES ( :staticParentId, :sortNumber, :createdAt );`,
@@ -381,7 +384,7 @@ export async function createView_core( pageId, tableId ){
   if(!tableName){
     throw `テーブル名を取得できません。\ntableId = ${tableId}`;
   }
-  const timestamp = new Date().getTime();
+  const timestamp = await getTimestamp(date);
   await runSqlWriteOnly(
     `INSERT INTO views( view_name, page_id, table_id, created_at )
         VALUES ( :viewName, :pageId, :tableId, :createdAt );`,

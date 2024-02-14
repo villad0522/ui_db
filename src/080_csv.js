@@ -18,7 +18,7 @@ import {
 } from "./082_record_title_validate.js";
 import {
   getLocalIp,
-} from "./130_ip_address_validate.js";
+} from "./133_ip_address_validate.js";
 import {
   close,
   startTransaction,
@@ -26,11 +26,11 @@ import {
 } from "./121_transaction_lower_validate.js";
 import {
   getPath,
-} from "./127_directory_validate.js";
+} from "./130_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./124_connect_database_validate.js";
+} from "./127_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -39,6 +39,9 @@ import {
   getColumnName,
   getColumnIdFromName,
 } from "./106_column_name_validate.js";
+import {
+  getTimestamp,
+} from "./124_timezone_validate.js";
 import {
   getPrimaryKey,
 } from "./118_primary_key_validate.js";
@@ -235,8 +238,9 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
       )
       VALUES ( ?, ?, ?, ${new Array(columnSize).fill("?").join(", ")} );`;
   let sortNumber = 128 + ( csvSize * 8 );
-  const createdAt = new Date().getTime();
-  const updatedAt = createdAt;
+  const timestamp = await getTimestamp();
+  const createdAt = timestamp;
+  const updatedAt = timestamp;
   //
   //==============================================================================
   // 1000行をまとめてデータベースへ移行する
@@ -259,7 +263,11 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
     // データベースに挿入する処理
     for( const cells of buf ){
       if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-      const cells2 = cells.map(_convertData);
+      const cells2 = [];
+      for(const value of cells){
+        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+        cells2.push(await _convertData(value));
+      }
       await stmt.run([
         sortNumber,
         createdAt,
@@ -276,13 +284,13 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
     await endTransaction();    // 終了
     isInterval = false;
     if(parserStream){
-      if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
       progressMessage = `【処理中】CSVファイルからの読み出しを再開しています。`;
       parserStream.resume();
       progressMessage = `【処理中】CSVファイルから読み出しています。`;
     }
     else{
-      if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
       // 処理が中断された場合
       errorCount = 0;
       allCount = 0;
@@ -298,14 +306,14 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
   function oneLine(lineText){
     const matrix = parseCsv(lineText);
     for(const cells of matrix){
-      if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
       try{
         if( cells.length === columnSize ){
-          if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+          if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
           datas.push(cells);
         }
         else{
-          if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+          if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
           console.error(`\n本来の列のサイズと異なります。\n現状: ${cells.length}\n本来: ${columnSize}`);
           console.error(cells);
           errorCount++;
@@ -319,7 +327,7 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
       }
       allCount++;
       if (allCount % 1000 === 0) {
-        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
         // 1000行に一度、実行する
         if( isInterval === true ) continue;
         if( datas.length===0 ) continue;
@@ -338,13 +346,13 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
   await new Promise((resolve, reject) => {
     parserStream.on('data', (text1) => {
       if(!parserStream) {
-        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
         console.error("処理が中断されました");
         return;
       }
       const results = splitLastNewline( rest + text1 );
       if(results[0]){
-        if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
         oneLine( results[0] );
       }
       rest = results[1];
@@ -353,13 +361,13 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
     });
   });
   if( rest.length > 0 ){
-    if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     oneLine( rest );
   }
   //==============================================================================
   await Promise.all(threads);
   if( datas.length>0 ){
-    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
     await intervalFunc();
   }
   progressMessage = `【最終処理中】ファイルストリームを破棄しています。`;
@@ -369,10 +377,10 @@ export async function createRecordsFromCsv_core( fileName, filePath ){
 }
 
 
-const regexDate = /^\d{4}\/\d{1,2}\/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}$/g;
+const regexDate = /^((\d{1,2}\/\d{1,2}\/\d{4})|(\d{4}\/\d{1,2}\/\d{1,2})|(\d{1,2}-\d{1,2}-\d{4})|(\d{4}-\d{1,2}-\d{1,2}))( \d{1,2}:\d{1,2}(:\d{1,2})?)?$/g;
 
 
-function _convertData(inputText){
+async function _convertData(inputText){
   if(inputText===""){
     return "";
   }
@@ -382,7 +390,7 @@ function _convertData(inputText){
   regexDate.lastIndex = 0; // lastIndexをリセット
   if( regexDate.test(inputText) ){
     const date = new Date(inputText);
-    const timestamp =  date.getTime();
+    const timestamp = await getTimestamp(date);
     if( timestamp>=100000000000 && !isNaN(timestamp) ){
       return timestamp;
     }
@@ -424,7 +432,7 @@ function splitLastNewline(inputString) {
 
 // インポートの進捗状況を取得する関数
 export async function getCsvProgress_core(  ){
-  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
   return {
     "progressMessage": progressMessage,
     "successCount": successCount,
@@ -436,7 +444,7 @@ export async function getCsvProgress_core(  ){
 
 // インポートを中断する関数
 export async function destroyCSV_core(  ){
-  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
   setTimeout(()=>{
     errorCount = 0;
     allCount = 0;
@@ -445,7 +453,7 @@ export async function destroyCSV_core(  ){
     progressMessage = "何も処理をしていません";
   },500);
   if(parserStream){
-    if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
     // ストリームを中断・破棄
     parserStream.pause();
     parserStream.resume();
@@ -454,7 +462,7 @@ export async function destroyCSV_core(  ){
     return "CSVのアップロード処理を中断しました。";
   }
   else{
-    if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
     return "現在、何も実行されていません。";
   }
 }
@@ -462,9 +470,9 @@ export async function destroyCSV_core(  ){
 
 // バックエンドプログラム終了
 export async function close_core(  ){
-  if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
   if(parserStream){
-    if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
     // ストリームを中断・破棄
     parserStream.pause();
     parserStream.resume();
@@ -472,7 +480,7 @@ export async function close_core(  ){
     parserStream = null;
   }
   if(stmt){
-    if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
     progressMessage = `【処理中】データベースに送信した命令の完了を待っています。`;
     await stmt.finalize();
     stmt = null;

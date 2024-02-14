@@ -18,18 +18,18 @@ import {
 } from "./082_record_title_validate.js";
 import {
   getLocalIp,
-} from "./130_ip_address_validate.js";
+} from "./133_ip_address_validate.js";
 import {
   startTransaction,
   endTransaction,
 } from "./121_transaction_lower_validate.js";
 import {
   getPath,
-} from "./127_directory_validate.js";
+} from "./130_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./124_connect_database_validate.js";
+} from "./127_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -38,6 +38,9 @@ import {
   getColumnName,
   getColumnIdFromName,
 } from "./106_column_name_validate.js";
+import {
+  getTimestamp,
+} from "./124_timezone_validate.js";
 import {
   getPrimaryKey,
 } from "./118_primary_key_validate.js";
@@ -125,7 +128,7 @@ export async function test078() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 24; i++ ) {
+    for ( i = 1; i <= 25; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

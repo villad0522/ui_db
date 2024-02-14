@@ -1,7 +1,8 @@
 
-import { test129 } from "./129_ip_address_test.js";
-import { test126 } from "./126_directory_test.js";
-import { test123 } from "./123_connect_database_test.js";
+import { test132 } from "./132_ip_address_test.js";
+import { test129 } from "./129_directory_test.js";
+import { test126 } from "./126_connect_database_test.js";
+import { test123 } from "./123_timezone_test.js";
 import { test120 } from "./120_transaction_lower_test.js";
 import { test117 } from "./117_primary_key_test.js";
 import { test114 } from "./114_data_type_test.js";
@@ -49,6 +50,7 @@ async function test() {
     if( process.argv.length < 3 ){
       // testNumberが指定されていない場合
       console.log("全てのレイヤーの動作テストを行います。");
+      await test132();
       await test129();
       await test126();
       await test123();
@@ -99,6 +101,9 @@ async function test() {
     const testNumber = Number(process.argv[2]);
     console.log(`テストコード${ testNumber }を実行します。`);
     switch( testNumber ){
+      case 132:
+        await test132();
+        break;
       case 129:
         await test129();
         break;

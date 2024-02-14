@@ -13,18 +13,18 @@ import {
 } from "./037_regenerate_page_validate.js";
 import {
   getLocalIp,
-} from "./130_ip_address_validate.js";
+} from "./133_ip_address_validate.js";
 import {
   close,
   createDirectories,
 } from "./049_frontend_files_validate.js";
 import {
   getPath,
-} from "./127_directory_validate.js";
+} from "./130_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./124_connect_database_validate.js";
+} from "./127_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -33,6 +33,9 @@ import {
   getColumnName,
   getColumnIdFromName,
 } from "./106_column_name_validate.js";
+import {
+  getTimestamp,
+} from "./124_timezone_validate.js";
 import {
   startTransaction,
   endTransaction,
@@ -749,6 +752,8 @@ export async function masterPrice_core(  ){
   return "データの移行が完了しました。";
 }
 
+
+
 // 飼育操作マスタ
 export async function masterAction_core(  ){
   if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -853,14 +858,14 @@ export async function buyData_core(  ){
   //
   // 結果を書き込むテーブルとカラムを準備する
   const t1 = await _clearTable_core("購入データ");
-  await createColumn( t1, "支払区分", "POINTER", await getTableIdFromName("支払マスタ") );
-  await createColumn( t1, "教室", "POINTER", await getTableIdFromName("教室マスタ") );
-  await createColumn( t1, "実験者", "POINTER", await getTableIdFromName("実験者マスタ") );
+  await createColumn( t1, "発注番号", "INTEGER", null );
   await createColumn( t1, "請求年度", "INTEGER", null );
   await createColumn( t1, "請求月", "INTEGER", null );
   await createColumn( t1, "請求日時", "INTEGER", null );
+  await createColumn( t1, "支払区分", "POINTER", await getTableIdFromName("支払マスタ") );
+  await createColumn( t1, "教室", "POINTER", await getTableIdFromName("教室マスタ") );
+  await createColumn( t1, "実験者", "POINTER", await getTableIdFromName("実験者マスタ") );
   await createColumn( t1, "入荷日時", "INTEGER", null );
-  await createColumn( t1, "発注番号", "INTEGER", null );
   await createColumn( t1, "購入品", "POINTER", await getTableIdFromName("購入品マスタ") );
   await createColumn( t1, "系統", "POINTER", await getTableIdFromName("系統マスタ") );
   await createColumn( t1, "購入規格", "POINTER", await getTableIdFromName("購入規格マスタ") );
@@ -900,8 +905,8 @@ export async function buyData_core(  ){
           IFNULL( ${await getTableIdFromName("支払マスタ")}_id, 列0 ),
           IFNULL( ${await getTableIdFromName("教室マスタ")}_id, 列1 ),
           IFNULL( ${await getTableIdFromName("実験者マスタ")}_id, 列2 ),
-          strftime('%Y', 列3, 'start of year', '+3 months'),
-          strftime('%m', 列3, 'unixepoch'),
+          CAST( STRFTIME( '%Y', 列3 / 1000, 'UNIXEPOCH', 'LOCALTIME', '-3 MONTHS', 'START OF YEAR' ) AS INTEGER ) AS '請求年度',
+          CAST( STRFTIME('%m', 列3 / 1000, 'UNIXEPOCH', 'LOCALTIME' ) AS INTEGER ) AS '請求月',
           列3,
           列4,
           CAST( 列5 AS INTEGER ),
@@ -935,8 +940,7 @@ export async function buyData_core(  ){
           ON 列10 = 性別
         LEFT OUTER JOIN 業者マスタ
           ON 列11 = 業者名
-        GROUP BY csv.sort_number
-        LIMIT 100;`,
+        GROUP BY csv.sort_number;`,
     {},
   );
   return "データの移行が完了しました。";
@@ -964,33 +968,37 @@ export async function broodbookData_core(  ){
     "管理費単価マスタ",
     "飼育室マスタ",
     "購入規格マスタ",
-    "由来マスタ",
+    "業者マスタ",
     "購入データ",
   ]);
   //
   // 結果を書き込むテーブルとカラムを準備する
   const t1 = await _clearTable_core("飼育台帳データ");
+  await createColumn( t1, "入舎年度", "INTEGER", null );
+  await createColumn( t1, "入舎月", "INTEGER", null );
+  await createColumn( t1, "入舎日時", "INTEGER", null );
   await createColumn( t1, "支払区分", "POINTER", await getTableIdFromName("支払マスタ") );
   await createColumn( t1, "教室", "POINTER", await getTableIdFromName("教室マスタ") );
   await createColumn( t1, "実験者", "POINTER", await getTableIdFromName("実験者マスタ") );
-  await createColumn( t1, "動物種", "POINTER", await getTableIdFromName("動物種マスタ") );
+  await createColumn( t1, "動物種2", "POINTER", await getTableIdFromName("動物種マスタ") );
   await createColumn( t1, "系統", "POINTER", await getTableIdFromName("系統マスタ") );
   await createColumn( t1, "ケージ番号", "TEXT", null );
   await createColumn( t1, "ケージサブ番号", "TEXT", null );
-  await createColumn( t1, "性別", "POINTER", await getTableIdFromName("性別マスタ") );
+  await createColumn( t1, "性別2", "POINTER", await getTableIdFromName("性別マスタ") );
   await createColumn( t1, "飼料", "POINTER", await getTableIdFromName("管理費単価マスタ") );
   await createColumn( t1, "飼育室", "POINTER", await getTableIdFromName("飼育室マスタ") );
-  await createColumn( t1, "床(C)", "TEXT", null );
-  await createColumn( t1, "入舎日", "INTEGER", null );
-  await createColumn( t1, "退舎日", "INTEGER", null );
+  await createColumn( t1, "床（C）", "TEXT", null );
+  await createColumn( t1, "退舎年度", "INTEGER", null );
+  await createColumn( t1, "退舎月", "INTEGER", null );
+  await createColumn( t1, "退舎日時", "INTEGER", null );
   await createColumn( t1, "餌期", "INTEGER", null );
   await createColumn( t1, "退舎予定日", "INTEGER", null );
   await createColumn( t1, "出生日", "INTEGER", null );
   await createColumn( t1, "購入規格", "POINTER", await getTableIdFromName("購入規格マスタ") );
-  await createColumn( t1, "由来", "POINTER", await getTableIdFromName("由来マスタ") );
+  await createColumn( t1, "業者", "POINTER", await getTableIdFromName("業者マスタ") );
   await createColumn( t1, "コメント", "TEXT", null );
   await createColumn( t1, "アニマルセンター備考欄", "TEXT", null );
-  await createColumn( t1, "購入申込", "POINTER", await getTableIdFromName("購入データ") );
+  await createColumn( t1, "発注番号2", "POINTER", await getTableIdFromName("購入データ") );
   //
   // データを移行する
   await runSqlWriteOnly(
@@ -998,52 +1006,60 @@ export async function broodbookData_core(  ){
         支払区分,
         教室,
         実験者,
-        動物種,
+        動物種2,
         系統,
         ケージ番号,
         ケージサブ番号,
-        性別,
+        性別2,
         飼料,
         飼育室,
-        床(C),
-        入舎日,
-        退舎日,
+        床（C）,
+        入舎日時,
+        入舎年度,
+        入舎月,
+        退舎日時,
+        退舎年度,
+        退舎月,
         餌期,
         退舎予定日,
         出生日,
         購入規格,
-        由来,
+        業者,
+        発注番号2,
         コメント,
         アニマルセンター備考欄,
-        購入申込,
         sort_number,
         created_at,
         updated_at
       ) SELECT
-          ${await getTableIdFromName("支払マスタ")}_id,
-          ${await getTableIdFromName("教室マスタ")}_id,
-          ${await getTableIdFromName("実験者マスタ")}_id,
-          ${await getTableIdFromName("動物種マスタ")}_id,
-          ${await getTableIdFromName("系統マスタ")}_id,
+          IFNULL( ${await getTableIdFromName("支払マスタ")}_id, 列0 ),
+          IFNULL( ${await getTableIdFromName("教室マスタ")}_id, 列1 ),
+          IFNULL( ${await getTableIdFromName("実験者マスタ")}_id, 列2 ),
+          IFNULL( ${await getTableIdFromName("動物種マスタ")}_id, 列3 ),
+          IFNULL( ${await getTableIdFromName("系統マスタ")}_id, 列4 ),
           列5,
           列6,
-          ${await getTableIdFromName("性別マスタ")}_id,
-          ${await getTableIdFromName("管理費単価マスタ")}_id,
-          ${await getTableIdFromName("飼育室マスタ")}_id,
+          IFNULL( ${await getTableIdFromName("性別マスタ")}_id, 列7 ),
+          IFNULL( ${await getTableIdFromName("管理費単価マスタ")}_id, 列8 ),
+          IFNULL( ${await getTableIdFromName("飼育室マスタ")}_id, 列9 ),
           列11,
-          DATE(列14),
-          DATE(列15),
+          列14,
+          CAST( STRFTIME( '%Y', 列14 / 1000, 'UNIXEPOCH', 'LOCALTIME', '-3 MONTHS', 'START OF YEAR' ) AS INTEGER ),
+          CAST( STRFTIME( '%m', 列14 / 1000, 'UNIXEPOCH', 'LOCALTIME' ) AS INTEGER ),
+          列15,
+          CAST( STRFTIME( '%Y', 列15 / 1000, 'UNIXEPOCH', 'LOCALTIME', '-3 MONTHS', 'START OF YEAR' ) AS INTEGER ),
+          CAST( STRFTIME( '%m', 列15 / 1000, 'UNIXEPOCH', 'LOCALTIME' ) AS INTEGER ),
           列16,
-          DATE(列17),
-          DATE(列18),
-          ${await getTableIdFromName("購入規格マスタ")}_id,
-          ${await getTableIdFromName("由来マスタ")}_id,
+          列17,
+          列18,
+          IFNULL( ${await getTableIdFromName("購入規格マスタ")}_id, 列20 ),
+          IFNULL( ${await getTableIdFromName("業者マスタ")}_id, 列21 ),
+          IFNULL( ${await getTableIdFromName("購入データ")}_id, 列25 ),
           列23,
           列24,
-          ${await getTableIdFromName("購入データ")}_id,
-          MAX(csv.sort_number),
-          MAX(csv.created_at),
-          MAX(csv.updated_at)
+          csv.sort_number,
+          csv.created_at,
+          csv.updated_at
         FROM CSV_飼育台帳データ AS csv
         LEFT OUTER JOIN 支払マスタ
           ON 列0 = 支払い方法ID
@@ -1063,12 +1079,11 @@ export async function broodbookData_core(  ){
           ON 列9 = 飼育室名
         LEFT OUTER JOIN 購入規格マスタ
           ON 列20 = 規格名
-        LEFT OUTER JOIN 由来マスタ
-          ON 列21 = 由来番号
+        LEFT OUTER JOIN 業者マスタ
+          ON 列21 = 業者名
         LEFT OUTER JOIN 購入データ
-          ON 列25 = 購入番号
-        GROUP BY csv.sort_number
-        LIMIT 100;`,
+          ON 列25 = 発注番号
+        GROUP BY csv.sort_number;`,
     {},
   );
   return "データの移行が完了しました。";

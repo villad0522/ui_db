@@ -8,16 +8,19 @@ import {
 } from "./121_transaction_lower_validate.js";
 import {
   getLocalIp,
-} from "./130_ip_address_validate.js";
+} from "./133_ip_address_validate.js";
 import {
   getPath,
-} from "./127_directory_validate.js";
+} from "./130_directory_validate.js";
 import {
   getDebugMode,
   runSqlReadOnly,
   runSqlWriteOnly,
   getDB,
-} from "./124_connect_database_validate.js";
+} from "./127_connect_database_validate.js";
+import {
+  getTimestamp,
+} from "./124_timezone_validate.js";
 import {
   getPrimaryKey,
 } from "./118_primary_key_validate.js";
@@ -212,7 +215,7 @@ export async function createRecord_core( tableId, recordData ){
     }
     //
     // レコードを追加する。
-    const timestamp = new Date().getTime();
+    const timestamp = await getTimestamp();
     await runSqlWriteOnly(
         `INSERT INTO ${tableId} ( ${columnIdList.join(", ")}, sort_number, created_at, updated_at )
             VALUES ( ${placeholderList.join(", ")}, :sortNumber, :createdAt, :updatedAt );`,
@@ -255,7 +258,7 @@ export async function updateRecords_core( tableId, records ){
         throw "指定されたテーブルは存在しません。";
     }
     //
-    const timestamp = new Date().getTime();
+    const timestamp = await getTimestamp();
     const primaryKey = await getPrimaryKey( tableId );
     for( const r of records ){
         if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
