@@ -8,6 +8,12 @@
             "description": "ビューID",
             "isRequired": true,
             "example": 23
+        },
+        "view_index": {
+            "dataType": "INTEGER",
+            "description": "ビューのインデックス番号。",
+            "isRequired": true,
+            "example": 0
         }
     },
     "requestBody": {},

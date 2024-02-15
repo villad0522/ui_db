@@ -726,7 +726,7 @@ export async function updateView_core( params ){
                 SET view_column_name = :viewColumnName
                 WHERE view_column_id = :viewColumnId;`,
             {
-                ":viewColumnId": viewColumnId,
+                ":viewColumnId": viewColumnId.replace("d",""),
                 ":viewColumnName": viewColumnName,
             },
         );

@@ -268,19 +268,19 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       const viewId = Number(queryParameters["view"]);
       return {
         "userMessage": await deleteView(viewId),
-        "nextUrl": `./deleted.html?view=${viewId}`,
       };
     }
     //======================================================================
     case "UPDATE_VIEW":{
       if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
       const viewId = Number(queryParameters["view"]);
+      const viewIndex = Number(queryParameters["view_index"]);
       return {
         "userMessage": await updateView({
           ...requestBody,
           viewId: viewId,
         }),
-        "nextUrl": `./?view=${viewId}`,
+        "nextUrl": `./?view=${viewId}&view_index=${viewIndex}`,
       };
     }
     //======================================================================

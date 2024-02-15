@@ -16,11 +16,6 @@
             "dataType": "TEXT",
             "description": "完了メッセージ",
             "example": "再接続しました。"
-        },
-        "nextUrl": {
-            "dataType": "TEXT",
-            "description": "完了した場合に、移動すべきURL",
-            "example": "./"
         }
     }
 }

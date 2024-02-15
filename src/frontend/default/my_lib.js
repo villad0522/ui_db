@@ -93,15 +93,22 @@ export async function myFetch(url, parameters) {
     }
     //============================================================
     // 通信開始
-    const response = await window.fetch(
-        url,
-        {
-            method: "POST",
-            cache: "no-store",
-            ...parameters2,
-            ...parameters,
-        }
-    );
+    let response;
+    try {
+        response = await window.fetch(
+            url,
+            {
+                method: "POST",
+                cache: "no-store",
+                ...parameters2,
+                ...parameters,
+            }
+        );
+    }
+    catch (err) {
+        alert("サーバーに接続できません");
+        return;
+    }
     // 通信終了
     //============================================================
     if (

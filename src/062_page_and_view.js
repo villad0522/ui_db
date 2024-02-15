@@ -707,7 +707,7 @@ export async function listChildrenView_core( pageId ){
     if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
     const viewId = views[i].viewId;
     cacheViews[viewId] = views[i];
-    views[i]["iframe"] = `<iframe src="/default/view_editor/index.html?view=${viewId}"></iframe>`;
+    views[i]["iframe"] = `<iframe src="/default/view_editor/index.html?view=${viewId}&view_index=${i}"></iframe>`;
   }
   return views;
 }

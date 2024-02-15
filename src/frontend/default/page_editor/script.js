@@ -12,6 +12,10 @@ window.addEventListener('DOMContentLoaded', async () => {
 window.handleEditSwitch = function (event) {
     const params = new URL(location.href).searchParams;
     const pageId = params.get("page_id");
+    if (isNaN(pageId)) {
+        alert("クエリパラメータ―「page_id」が指定されていません");
+        return;
+    }
     jumpWithQuery(`/custom/${pageId}/index.html`);
     event.target.checked = true;   // スイッチを「編集中」に戻す
     // ↑ この処理の意義は、
