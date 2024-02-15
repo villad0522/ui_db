@@ -26,6 +26,7 @@ import {
   clearCache_core,  // インメモリキャッシュを削除する
   isExistView_core,  // ビューの存在を確認
   deleteTable_core,  // 不可逆的にテーブルを削除
+  updateView_core,  // ビューの情報を更新
 } from "./062_page_and_view.js";
 
 
@@ -458,6 +459,14 @@ export async function deleteView( viewId ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : page_and_view\n関数 : deleteView`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : page_and_view\n関数 : deleteView`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -1624,6 +1633,98 @@ export async function deleteTable( tableId ){
     }
     else{
       throw new Error(`resultが文字列ではありません。\nレイヤー : page_and_view\n関数 : deleteTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「updateView_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function updateView( params ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof params !== "object" ){
+    if( !params ){
+      throw new Error(`paramsがNULLです。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`paramsがオブジェクトではありません。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+  }
+  if( typeof params.viewName !== "string" ){
+    if( !params.viewName ){
+      throw new Error(`params.viewNameがNULLです。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.viewNameが文字列ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+  }
+  if( typeof params.viewType !== "string" ){
+    if( !params.viewType ){
+      throw new Error(`params.viewTypeがNULLです。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.viewTypeが文字列ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+  }
+  if( typeof params.onePageMaxSize !== "number" ){
+    if( !params.onePageMaxSize ){
+      throw new Error(`params.onePageMaxSizeがNULLです。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.onePageMaxSizeが数値ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+  }
+  else if( isNaN(params.onePageMaxSize) ){
+    throw new Error(`params.onePageMaxSizeが数値ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
+  }
+  if( typeof params.excelStartRow !== "number" ){
+    if( !params.excelStartRow ){
+      throw new Error(`params.excelStartRowがNULLです。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.excelStartRowが数値ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+  }
+  else if( isNaN(params.excelStartRow) ){
+    throw new Error(`params.excelStartRowが数値ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
+  }
+  if( typeof params.excelStartColumn !== "string" ){
+    if( !params.excelStartColumn ){
+      throw new Error(`params.excelStartColumnがNULLです。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.excelStartColumnが文字列ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await updateView_core( params );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
     }
   }
   //

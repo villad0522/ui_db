@@ -61,6 +61,7 @@ import {
   createColumn,
   createView,
   deletePage,
+  updateView,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,

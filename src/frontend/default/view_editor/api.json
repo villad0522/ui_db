@@ -72,62 +72,67 @@
                     "description": "Excelの列番",
                     "example": "D"
                 },
-                "columnId0": {
+                "columnPath": {
+                    "dataType": "TEXT",
+                    "description": "カラムパス",
+                    "example": "main.c2 > c53 > c1"
+                },
+                "columnName0": {
                     "dataType": "TEXT",
                     "description": "カラムID0",
                     "example": "c8"
                 },
-                "columnId0_option": {
+                "columnName0_option": {
                     "dataType": "TEXT",
                     "description": "カラムID0の入力予測",
                     "example": "c8"
                 },
-                "columnId1": {
+                "columnName1": {
                     "dataType": "TEXT",
                     "description": "カラムID1",
                     "example": "c8"
                 },
-                "columnId1_option": {
+                "columnName1_option": {
                     "dataType": "TEXT",
                     "description": "カラムID1の入力予測",
                     "example": "c8"
                 },
-                "columnId2": {
+                "columnName2": {
                     "dataType": "TEXT",
                     "description": "カラムID2",
                     "example": "c8"
                 },
-                "columnId2_option": {
+                "columnName2_option": {
                     "dataType": "TEXT",
                     "description": "カラムID2の入力予測",
                     "example": "c8"
                 },
-                "columnId3": {
+                "columnName3": {
                     "dataType": "TEXT",
                     "description": "カラムID3",
                     "example": "c8"
                 },
-                "columnId3_option": {
+                "columnName3_option": {
                     "dataType": "TEXT",
                     "description": "カラムID3の入力予測",
                     "example": "c8"
                 },
-                "columnId4": {
+                "columnName4": {
                     "dataType": "TEXT",
                     "description": "カラムID4",
                     "example": "c8"
                 },
-                "columnId4_option": {
+                "columnName4_option": {
                     "dataType": "TEXT",
                     "description": "カラムID4の入力予測",
                     "example": "c8"
                 },
-                "columnId5": {
+                "columnName5": {
                     "dataType": "TEXT",
                     "description": "カラムID5",
                     "example": "c8"
                 },
-                "columnId5_option": {
+                "columnName5_option": {
                     "dataType": "TEXT",
                     "description": "カラムID5の入力予測",
                     "example": "c8"

@@ -33,7 +33,7 @@
                     <button onclick="myFetch('./update_view/form')" type="button" class="btn btn-primary">
                         保存
                     </button>
-                    <button type="button" class="btn btn-outline-danger">
+                    <button onclick="myFetch('./delete_view/form')" type="button" class="btn btn-outline-danger">
                         ビューを削除
                     </button>
                 </div>
@@ -174,7 +174,11 @@
                         </div>
                     </div>
                 </div>
+                <div>
+                    <input name="viewType" type="text" class="form-control">
+                </div>
             </div>
+            <br>
             <br>
             <br>
             <div class="table-responsive">
@@ -188,12 +192,12 @@
                                         <th class="form" scope="col" name="viewColumns${j}_flag">
                                             <!--  -->
                                             <!-- 列の名前を入力するテキストボックス -->
-                                            <input name="viewColumns${j}_name" type="text" class="form-control">
-                                            <input name="viewColumns${j}_id" style="display: none;">
+                                            <input name="viewColumns${j}_viewColumnName" type="text" class="form-control">
+                                            <input name="viewColumns${j}_viewColumnId" style="display: none;">
                                             <input name="viewColumns${j}_flag" style="display: none;" type="checkbox">
                                             <!--  -->
                                             <!-- 列の横幅を確保するために、見えない文字を表示する -->
-                                            <div name="viewColumns${j}_name" style="visibility: hidden; height: 0; min-height: 0; padding: 0 40px; overflow: hidden;"></div>
+                                            <div name="viewColumns${j}_viewColumnName" style="visibility: hidden; height: 0; min-height: 0; padding: 0 40px; overflow: hidden;"></div>
                                         </th>
                                     `;
                                 }
@@ -218,7 +222,6 @@
                                 }
                                 document.write(htmlText1);
                             </script>
-                            <td style="border-bottom: solid; padding: 0;"></td>
                         </tr>
                     </thead>
                     <tbody style="opacity: 0.3;">

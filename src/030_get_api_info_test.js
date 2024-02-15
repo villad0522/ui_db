@@ -65,6 +65,7 @@ import {
 } from "./061_page_and_view_validate.js";
 import {
   createColumn,
+  updateView,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,

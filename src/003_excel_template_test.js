@@ -48,6 +48,7 @@ import {
 } from "./031_get_api_info_validate.js";
 import {
   createColumn,
+  updateView,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,

@@ -1,0 +1,26 @@
+{
+    "httpMethod": "POST",
+    "description": "ビューを削除します。",
+    "commandName": "DELETE_VIEW",
+    "queryParameters": {
+        "view": {
+            "dataType": "INTEGER",
+            "description": "ビューID",
+            "isRequired": true,
+            "example": 23
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "userMessage": {
+            "dataType": "TEXT",
+            "description": "完了メッセージ",
+            "example": "再接続しました。"
+        },
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "./"
+        }
+    }
+}

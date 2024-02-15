@@ -7,6 +7,7 @@ import {
   createView,
   deleteView,
   deletePage,
+  updateView,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,

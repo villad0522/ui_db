@@ -50,6 +50,7 @@ import {
 } from "./031_get_api_info_validate.js";
 import {
   createColumn,
+  updateView,
   _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,
@@ -244,7 +245,7 @@ export async function test027() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 39; i++ ) {
+    for ( i = 1; i <= 41; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

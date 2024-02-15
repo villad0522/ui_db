@@ -12,6 +12,7 @@ import {
   _addViewColumn_core,  // 【サブ関数】ビューカラムを作成
   deletePage_core,  // ページを削除
   deleteTable_core,  // 不可逆的にテーブルを削除
+  updateView_core,  // ビューの情報を更新
 } from "./059_view_column.js";
 
 
@@ -402,6 +403,173 @@ export async function listViewColumns( viewId ){
         throw new Error(`result[${i}].viewColumnNameが文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
       }
     }
+    if( typeof result[i].excelColumnIndex !== "number" ){
+      if( !result[i].excelColumnIndex ){
+        throw new Error(`result[${i}].excelColumnIndexがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].excelColumnIndexが数値ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    else if( isNaN(result[i].excelColumnIndex) ){
+      throw new Error(`result[${i}].excelColumnIndexが数値ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+    }
+    if( typeof result[i].columnName0 !== "string" ){
+      if( !result[i].columnName0 ){
+        throw new Error(`result[${i}].columnName0がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].columnName0が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    if( !Array.isArray(result[i].columnName0_option) ){
+      if( !result[i].columnName0_option ){
+        throw new Error(`result[${i}].columnName0_optionがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].columnName0_optionが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    for( let j=0; j<result[i].columnName0_option.length; j++ ){
+      if( typeof result[i].columnName0_option[j] !== "string" ){
+        if( !result[i].columnName0_option[j] ){
+          throw new Error(`result[${i}].columnName0_option[${j}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+        }
+        else{
+          throw new Error(`result[${i}].columnName0_option[${j}]が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+        }
+      }
+    }
+    if( typeof result[i].columnName1 !== "string" ){
+      if( !result[i].columnName1 ){
+        throw new Error(`result[${i}].columnName1がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].columnName1が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    if( !Array.isArray(result[i].columnName1_option) ){
+      if( !result[i].columnName1_option ){
+        throw new Error(`result[${i}].columnName1_optionがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].columnName1_optionが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    for( let j=0; j<result[i].columnName1_option.length; j++ ){
+      if( typeof result[i].columnName1_option[j] !== "string" ){
+        if( !result[i].columnName1_option[j] ){
+          throw new Error(`result[${i}].columnName1_option[${j}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+        }
+        else{
+          throw new Error(`result[${i}].columnName1_option[${j}]が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+        }
+      }
+    }
+    if( typeof result[i].columnName2 !== "string" ){
+      if( !result[i].columnName2 ){
+        throw new Error(`result[${i}].columnName2がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].columnName2が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    if( !Array.isArray(result[i].columnName2_option) ){
+      if( !result[i].columnName2_option ){
+        throw new Error(`result[${i}].columnName2_optionがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].columnName2_optionが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    for( let j=0; j<result[i].columnName2_option.length; j++ ){
+      if( typeof result[i].columnName2_option[j] !== "string" ){
+        if( !result[i].columnName2_option[j] ){
+          throw new Error(`result[${i}].columnName2_option[${j}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+        }
+        else{
+          throw new Error(`result[${i}].columnName2_option[${j}]が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+        }
+      }
+    }
+    if( typeof result[i].columnName3 !== "string" ){
+      if( !result[i].columnName3 ){
+        throw new Error(`result[${i}].columnName3がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].columnName3が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    if( !Array.isArray(result[i].columnName3_option) ){
+      if( !result[i].columnName3_option ){
+        throw new Error(`result[${i}].columnName3_optionがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].columnName3_optionが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    for( let j=0; j<result[i].columnName3_option.length; j++ ){
+      if( typeof result[i].columnName3_option[j] !== "string" ){
+        if( !result[i].columnName3_option[j] ){
+          throw new Error(`result[${i}].columnName3_option[${j}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+        }
+        else{
+          throw new Error(`result[${i}].columnName3_option[${j}]が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+        }
+      }
+    }
+    if( typeof result[i].columnName4 !== "string" ){
+      if( !result[i].columnName4 ){
+        throw new Error(`result[${i}].columnName4がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].columnName4が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    if( !Array.isArray(result[i].columnName4_option) ){
+      if( !result[i].columnName4_option ){
+        throw new Error(`result[${i}].columnName4_optionがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].columnName4_optionが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    for( let j=0; j<result[i].columnName4_option.length; j++ ){
+      if( typeof result[i].columnName4_option[j] !== "string" ){
+        if( !result[i].columnName4_option[j] ){
+          throw new Error(`result[${i}].columnName4_option[${j}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+        }
+        else{
+          throw new Error(`result[${i}].columnName4_option[${j}]が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+        }
+      }
+    }
+    if( typeof result[i].columnName5 !== "string" ){
+      if( !result[i].columnName5 ){
+        throw new Error(`result[${i}].columnName5がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].columnName5が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    if( !Array.isArray(result[i].columnName5_option) ){
+      if( !result[i].columnName5_option ){
+        throw new Error(`result[${i}].columnName5_optionがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+      else{
+        throw new Error(`result[${i}].columnName5_optionが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+      }
+    }
+    for( let j=0; j<result[i].columnName5_option.length; j++ ){
+      if( typeof result[i].columnName5_option[j] !== "string" ){
+        if( !result[i].columnName5_option[j] ){
+          throw new Error(`result[${i}].columnName5_option[${j}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+        }
+        else{
+          throw new Error(`result[${i}].columnName5_option[${j}]が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
+        }
+      }
+    }
   }
   //
   //--------------------------------------------------------------------------
@@ -778,6 +946,132 @@ export async function deleteTable( tableId ){
     }
     else{
       throw new Error(`resultが文字列ではありません。\nレイヤー : view_column\n関数 : deleteTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「updateView_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function updateView( params ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof params !== "object" ){
+    if( !params ){
+      throw new Error(`paramsがNULLです。\nレイヤー : view_column\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`paramsがオブジェクトではありません。\nレイヤー : view_column\n関数 : updateView`);
+    }
+  }
+  if( typeof params.viewName !== "string" ){
+    if( !params.viewName ){
+      throw new Error(`params.viewNameがNULLです。\nレイヤー : view_column\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.viewNameが文字列ではありません。\nレイヤー : view_column\n関数 : updateView`);
+    }
+  }
+  if( typeof params.viewType !== "string" ){
+    if( !params.viewType ){
+      throw new Error(`params.viewTypeがNULLです。\nレイヤー : view_column\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.viewTypeが文字列ではありません。\nレイヤー : view_column\n関数 : updateView`);
+    }
+  }
+  if( typeof params.onePageMaxSize !== "number" ){
+    if( !params.onePageMaxSize ){
+      throw new Error(`params.onePageMaxSizeがNULLです。\nレイヤー : view_column\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.onePageMaxSizeが数値ではありません。\nレイヤー : view_column\n関数 : updateView`);
+    }
+  }
+  else if( isNaN(params.onePageMaxSize) ){
+    throw new Error(`params.onePageMaxSizeが数値ではありません。\nレイヤー : view_column\n関数 : updateView`);
+  }
+  if( typeof params.excelStartRow !== "number" ){
+    if( !params.excelStartRow ){
+      throw new Error(`params.excelStartRowがNULLです。\nレイヤー : view_column\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.excelStartRowが数値ではありません。\nレイヤー : view_column\n関数 : updateView`);
+    }
+  }
+  else if( isNaN(params.excelStartRow) ){
+    throw new Error(`params.excelStartRowが数値ではありません。\nレイヤー : view_column\n関数 : updateView`);
+  }
+  if( typeof params.excelStartColumn !== "string" ){
+    if( !params.excelStartColumn ){
+      throw new Error(`params.excelStartColumnがNULLです。\nレイヤー : view_column\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.excelStartColumnが文字列ではありません。\nレイヤー : view_column\n関数 : updateView`);
+    }
+  }
+  if( !Array.isArray(params.viewColumns) ){
+    if( !params.viewColumns ){
+      throw new Error(`params.viewColumnsがNULLです。\nレイヤー : view_column\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.viewColumnsが配列ではありません。\nレイヤー : view_column\n関数 : updateView`);
+    }
+  }
+  for( let i=0; i<params.viewColumns.length; i++ ){
+    if( typeof params.viewColumns[i] !== "object" ){
+      if( !params.viewColumns[i] ){
+        throw new Error(`params.viewColumns[${i}]がNULLです。\nレイヤー : view_column\n関数 : updateView`);
+      }
+      else{
+        throw new Error(`params.viewColumns[${i}]がオブジェクトではありません。\nレイヤー : view_column\n関数 : updateView`);
+      }
+    }
+    if( typeof params.viewColumns[i].viewColumnId !== "string" ){
+      if( !params.viewColumns[i].viewColumnId ){
+        throw new Error(`params.viewColumns[${i}].viewColumnIdがNULLです。\nレイヤー : view_column\n関数 : updateView`);
+      }
+      else{
+        throw new Error(`params.viewColumns[${i}].viewColumnIdが文字列ではありません。\nレイヤー : view_column\n関数 : updateView`);
+      }
+    }
+    if( typeof params.viewColumns[i].viewColumnName !== "string" ){
+      if( !params.viewColumns[i].viewColumnName ){
+        throw new Error(`params.viewColumns[${i}].viewColumnNameがNULLです。\nレイヤー : view_column\n関数 : updateView`);
+      }
+      else{
+        throw new Error(`params.viewColumns[${i}].viewColumnNameが文字列ではありません。\nレイヤー : view_column\n関数 : updateView`);
+      }
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await updateView_core( params );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : updateView`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : view_column\n関数 : updateView`);
     }
   }
   //

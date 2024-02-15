@@ -459,6 +459,7 @@ export async function deleteView_core( viewId ){
     },
   );
   await deleteViewInput( viewId ); // 下層の関数を呼び出す
+  return "ビューを削除しました";
 }
 
 
@@ -904,32 +905,122 @@ export async function _copyPage_core( pageId, destParentPageId, destAfterPageId 
 // ビューの情報を取得
 export async function getViewInfo_core( viewId ){
   if(bugMode === 47) throw "MUTATION47";  // 意図的にバグを混入させる（ミューテーション解析）
-  if(!cacheViews[viewId]){
+  if(cacheViews[viewId]){
+    if(bugMode === 48) throw "MUTATION48";  // 意図的にバグを混入させる（ミューテーション解析）
+    return cacheViews[viewId];
+  }
+  const views = await runSqlReadOnly(
+    `SELECT 
+        pages.page_id AS childPageId,
+        view_name AS name,
+        views.view_id AS viewId,
+        views.table_id AS tableId,
+        views.one_page_max_size AS onePageMaxSize,
+        views.view_type AS viewType,
+        views.excel_start_row AS excelStartRow,
+        views.excel_start_column AS excelStartColumn
+      FROM views
+      INNER JOIN pages
+        ON pages.dynamic_parent_id = views.view_id
+      WHERE views.view_id = :viewId
+      LIMIT 1;`,
+    {
+      ":viewId": viewId,
+    },
+  );
+  if( views.length===0 ){
     throw `ビューの情報を取得しようとしましたが、該当するビューは存在しません。`;
   }
-  return cacheViews[viewId];
+  cacheViews[viewId] = views[0];
+  return views[0];
 }
 
 // インメモリキャッシュを削除する
 export async function clearCache_core(  ){
-  if(bugMode === 48) throw "MUTATION48";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 49) throw "MUTATION49";  // 意図的にバグを混入させる（ミューテーション解析）
   await clearCache();
-  cacheViews = {};
+  await _reload();
 }
 
 // ビューの存在を確認
 export async function isExistView_core( viewId ){
-  if(bugMode === 49) throw "MUTATION49";  // 意図的にバグを混入させる（ミューテーション解析）
-  return cacheViews[viewId] ? true: false;
+  if(bugMode === 50) throw "MUTATION50";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(cacheViews[viewId]){
+    if(bugMode === 51) throw "MUTATION51";  // 意図的にバグを混入させる（ミューテーション解析）
+    return true;
+  }
+  const views = await runSqlReadOnly(
+    `SELECT 
+        pages.page_id AS childPageId,
+        view_name AS name,
+        views.view_id AS viewId,
+        views.table_id AS tableId,
+        views.one_page_max_size AS onePageMaxSize,
+        views.view_type AS viewType,
+        views.excel_start_row AS excelStartRow,
+        views.excel_start_column AS excelStartColumn
+      FROM views
+      INNER JOIN pages
+        ON pages.dynamic_parent_id = views.view_id
+      WHERE views.view_id = :viewId
+      LIMIT 1;`,
+    {
+      ":viewId": viewId,
+    },
+  );
+  if( views.length===0 ){
+    if(bugMode === 52) throw "MUTATION52";  // 意図的にバグを混入させる（ミューテーション解析）
+    return false;
+  }
+  return true;
 }
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
-  if(bugMode === 50) throw "MUTATION50";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
     const views = await listViewsFromTableId_core( tableId );
     for( const viewId of views ){
-        if(bugMode === 51) throw "MUTATION51";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 54) throw "MUTATION54";  // 意図的にバグを混入させる（ミューテーション解析）
         await deleteView_core( viewId );
     }
     return await deleteTable( tableId );
+}
+
+
+// ビューの情報を更新
+export async function updateView_core( params ){
+  if(bugMode === 55) throw "MUTATION55";  // 意図的にバグを混入させる（ミューテーション解析）
+  const {
+    viewId,
+    viewName,
+    viewType,
+    onePageMaxSize,
+    excelStartRow,
+    excelStartColumn,
+  } = params;
+  await runSqlWriteOnly(
+    `UPDATE views
+        SET view_name = :viewName,
+          view_type = :viewType,
+          one_page_max_size = :onePageMaxSize,
+          excel_start_row = :excelStartRow,
+          excel_start_column = :excelStartColumn
+        WHERE view_id = :viewId;`,
+    {
+      ":viewId": viewId,
+      ":viewName": viewName,
+      ":viewType": viewType,
+      ":onePageMaxSize": onePageMaxSize,
+      ":excelStartRow": excelStartRow,
+      ":excelStartColumn": excelStartColumn,
+    },
+  );
+  await _reload();
+  return "ビューの設定を更新しました";
+}
+
+
+//【サブ関数】メモリに再読み込み
+async function _reload() {
+  cacheViews = {};
 }

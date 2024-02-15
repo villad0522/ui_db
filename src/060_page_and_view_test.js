@@ -168,6 +168,7 @@ import {
   clearCache,  // インメモリキャッシュを削除する
   isExistView,  // ビューの存在を確認
   deleteTable,  // 不可逆的にテーブルを削除
+  updateView,  // ビューの情報を更新
 } from "./061_page_and_view_validate.js";
 import { setBugMode } from "./062_page_and_view.js";
 
@@ -177,7 +178,7 @@ export async function test060() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 51; i++ ) {
+    for ( i = 1; i <= 55; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
