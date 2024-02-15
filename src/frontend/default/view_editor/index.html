@@ -33,7 +33,7 @@
                     <button onclick="myFetch('./update_view/form')" type="button" class="btn btn-primary">
                         保存
                     </button>
-                    <button onclick="handleDelete()" type="button" class="btn btn-outline-danger">
+                    <button onclick="handleDeleteView()" type="button" class="btn btn-outline-danger">
                         ビューを削除
                     </button>
                 </div>
@@ -54,7 +54,7 @@
                         </label>
                         <div class="input-group">
                             <span class="input-group-text">列</span>
-                            <select class="form-select" name="excelStartColumn">
+                            <select onchange="myFetch('./update_view/form')" class="form-select" name="excelStartColumn">
                                 <option selected value="1">A</option>
                                 <option value="2">B</option>
                                 <option value="3">C</option>
@@ -137,17 +137,16 @@
                                 let htmlText3 = "";
                                 for (let j = 0; j < 35; j++) {
                                     htmlText3 += `
-                                        <td class="form" name="viewColumns${j}_flag">
-                                            <button type="button" class="btn btn-secondary btn-sm">
-                                                <i class="bi bi-arrow-left"></i>
-                                            </button>
-                                            <span name="viewColumns${j}_excelColumnText" style="padding: 0 10px;"></span>
-                                            <button type="button" class="btn btn-secondary btn-sm">
-                                                <i class="bi bi-arrow-right"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-danger btn-sm">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                        <td name="viewColumns${j}_flag">
+                                            <div style="display: flex; justify-content: center;">
+                                                <button onclick="handleToLeftViewColumn(${j})" type="button" class="btn btn-secondary btn-sm">
+                                                    <i class="bi bi-arrow-left"></i>
+                                                </button>
+                                                <span name="viewColumns${j}_excelColumnText" style="padding: 0 10px;"></span>
+                                                <button onclick="handleToRightViewColumn(${j})" type="button" class="btn btn-secondary btn-sm">
+                                                    <i class="bi bi-arrow-right"></i>
+                                                </button>
+                                            </div>
                                         </td>
                                     `;
                                 }
@@ -166,14 +165,21 @@
                                 for (let j = 0; j < 35; j++) {
                                     htmlText1 += `
                                     <th scope="col" class="form" name="viewColumns${j}_flag" style="border-bottom: solid; padding-top: 3px;">
-                                        <!--  -->
-                                        <!-- 列の名前を入力するテキストボックス -->
-                                        <input name="viewColumns${j}_viewColumnName" type="text" class="form-control">
+                                        <div class="input-group">
+                                            <!--  -->
+                                            <!-- 列の名前を入力するテキストボックス -->
+                                            <input name="viewColumns${j}_viewColumnName" type="text" class="form-control">
+                                            <!--  -->
+                                            <!-- 削除ボタン -->
+                                            <button onclick="handleDeleteViewColumn(${j})" type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
                                         <input name="viewColumns${j}_viewColumnId" style="display: none;">
                                         <input name="viewColumns${j}_flag" style="display: none;" type="checkbox">
                                         <!--  -->
                                         <!-- 列の横幅を確保するために、見えない文字を表示する -->
-                                        <div name="viewColumns${j}_viewColumnName" style="visibility: hidden; height: 0; min-height: 0; padding: 0 40px; overflow: hidden;"></div>
+                                        <div name="viewColumns${j}_viewColumnName" class="dummy_th"></div>
                                     </th>
                                 `;
                                 }

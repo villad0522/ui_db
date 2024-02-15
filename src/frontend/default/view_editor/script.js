@@ -24,16 +24,14 @@ window.addEventListener('DOMContentLoaded', async () => {
         alert("サーバーから「viewName」を取得できませんでした");
         return;
     }
-    console.log(`views${viewIndex}_name`);
     const tabElements = window.parent.document.getElementsByName(`views${viewIndex}_name`);
-    console.log(tabElements);
     for (const tabElement of tabElements) {
         tabElement.innerText = String(viewName);
     }
 });
 
 
-window.handleDelete = async () => {
+window.handleDeleteView = async () => {
     await myFetch('./delete_view/form');
     //
     // タブを非表示にする
@@ -48,4 +46,29 @@ window.handleDelete = async () => {
     for (const flagElement of flagElements) {
         flagElement.checked = false;
     }
+}
+
+
+window.handleDeleteViewColumn = async (j) => {
+    if (!confirm("列を削除しますか？")) {
+        return;
+    }
+    const viewColumnIdElement = document.getElementsByName(`viewColumns${j}_viewColumnId`)[0];
+    const viewColumnId = viewColumnIdElement.value;
+    await myFetch(`./delete_view_column/form?view_column=${viewColumnId}`);
+    location.reload();
+}
+
+window.handleToRightViewColumn = async (j) => {
+    const viewColumnIdElement = document.getElementsByName(`viewColumns${j}_viewColumnId`)[0];
+    const viewColumnId = viewColumnIdElement.value;
+    await myFetch(`./reorder_view_column_right/form?view_column=${viewColumnId}`);
+    location.reload();
+}
+
+window.handleToLeftViewColumn = async (j) => {
+    const viewColumnIdElement = document.getElementsByName(`viewColumns${j}_viewColumnId`)[0];
+    const viewColumnId = viewColumnIdElement.value;
+    await myFetch(`./reorder_view_column_left/form?view_column=${viewColumnId}`);
+    location.reload();
 }

@@ -54,11 +54,15 @@ thead>tr:last-child {
     border-top: none;
 }
 
-th,
 td {
     width: max-content;
     max-width: 300px;
     overflow-x: auto;
+}
+
+th {
+    width: max-content;
+    overflow-x: hidden;
 }
 
 th>*,
@@ -85,4 +89,23 @@ td.form>select {
     border: none;
     padding: 0.375rem 0.5rem;
     box-sizing: border-box;
+}
+
+
+
+th.form>.input-group,
+td.form>.input-group {
+    width: 100%;
+    min-width: 100px;
+    border: none;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.dummy_th {
+    visibility: hidden;
+    height: 0;
+    min-height: 0;
+    padding: 0 60px;
+    overflow: hidden;
 }

@@ -1,0 +1,15 @@
+{
+    "httpMethod": "POST",
+    "description": "ビューカラムを右へ移動します。",
+    "commandName": "REORDER_VIEW_COLUMN_RIGHT",
+    "queryParameters": {
+        "view_column": {
+            "dataType": "TEXT",
+            "description": "ビューカラムID",
+            "isRequired": true,
+            "example": "d23"
+        }
+    },
+    "requestBody": {},
+    "response": {}
+}

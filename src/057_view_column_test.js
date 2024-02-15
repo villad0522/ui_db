@@ -176,6 +176,9 @@ import {
   deletePage,  // ページを削除
   deleteTable,  // 不可逆的にテーブルを削除
   updateView,  // ビューの情報を更新
+  deleteViewColumn,  // ビューカラムを削除
+  reorderViewColumnToRight,  // ビューカラムを右へ移動
+  reorderViewColumnToLeft,  // ビューカラムを左へ移動
 } from "./058_view_column_validate.js";
 import { setBugMode } from "./059_view_column.js";
 
@@ -185,7 +188,7 @@ export async function test057() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 36; i++ ) {
+    for ( i = 1; i <= 39; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

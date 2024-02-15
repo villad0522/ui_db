@@ -1,0 +1,21 @@
+{
+    "httpMethod": "POST",
+    "description": "ビューカラムを削除します。",
+    "commandName": "DELETE_VIEW_COLUMN",
+    "queryParameters": {
+        "view_column": {
+            "dataType": "TEXT",
+            "description": "ビューカラムID",
+            "isRequired": true,
+            "example": "d23"
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "userMessage": {
+            "dataType": "TEXT",
+            "description": "完了メッセージ",
+            "example": "削除しました。"
+        }
+    }
+}

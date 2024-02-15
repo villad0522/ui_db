@@ -32,17 +32,17 @@ import { test045 } from "./045_regenerate_view_html_test.js";
 import { test042 } from "./042_regenerate_html_test.js";
 import { test039 } from "./039_regenerate_api_info_test.js";
 import { test036 } from "./036_regenerate_page_test.js";
-import { test033 } from "./033_data_transfer_test.js";
-import { test030 } from "./030_get_api_info_test.js";
-import { test027 } from "./027_run_api_test.js";
-import { test024 } from "./024_pagination_test.js";
-import { test021 } from "./021_convert_array_test.js";
-import { test018 } from "./018_api_auto_correct_test.js";
-import { test015 } from "./015_api_validator_test.js";
-import { test012 } from "./012_api_document_test.js";
-import { test009 } from "./009_transaction_upper_test.js";
-import { test006 } from "./006_excel_edit_test.js";
-import { test003 } from "./003_excel_template_test.js";
+import { test033 } from "./033_excel_edit_test.js";
+import { test030 } from "./030_excel_template_test.js";
+import { test027 } from "./027_data_transfer_test.js";
+import { test024 } from "./024_get_api_info_test.js";
+import { test021 } from "./021_run_api_test.js";
+import { test018 } from "./018_pagination_test.js";
+import { test015 } from "./015_convert_array_test.js";
+import { test012 } from "./012_api_auto_correct_test.js";
+import { test009 } from "./009_api_validator_test.js";
+import { test006 } from "./006_api_document_test.js";
+import { test003 } from "./003_transaction_upper_test.js";
 
 
 async function test() {

@@ -1,15 +1,5 @@
 [
   {
-    "layerId": "01HMNZ8SGAZXY68HQTQN230ZHH",
-    "layerNameJP": "テンプレート管理",
-    "layerNameEN": "excel_template"
-  },
-  {
-    "layerId": "01HMNXBFJ0S33T6WGJCJ0C3YF6",
-    "layerNameJP": "Excelファイル操作",
-    "layerNameEN": "excel_edit"
-  },
-  {
     "layerId": "01HMKV6GE8BJ4FKMNAVGZST2ZT",
     "layerNameJP": "トランザクション処理",
     "layerNameEN": "transaction_upper"
@@ -53,6 +43,16 @@
     "layerId": "01HP641H4QQZZHA3V6WPZDG2EH",
     "layerNameJP": "データ移行",
     "layerNameEN": "data_transfer"
+  },
+  {
+    "layerId": "01HMNZ8SGAZXY68HQTQN230ZHH",
+    "layerNameJP": "テンプレート管理",
+    "layerNameEN": "excel_template"
+  },
+  {
+    "layerId": "01HMNXBFJ0S33T6WGJCJ0C3YF6",
+    "layerNameJP": "Excelファイル操作",
+    "layerNameEN": "excel_edit"
   },
   {
     "layerId": "01HMWEPGB1WN73RY4BK4R0QSJ8",

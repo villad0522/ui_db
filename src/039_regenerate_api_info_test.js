@@ -67,6 +67,9 @@ import {
   _deleteViewColumns,
   regenerateInputElements,
   _addViewColumn,
+  deleteViewColumn,
+  reorderViewColumnToRight,
+  reorderViewColumnToLeft,
 } from "./058_view_column_validate.js";
 import {
   listDataTypes,

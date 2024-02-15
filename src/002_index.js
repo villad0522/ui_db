@@ -6,7 +6,7 @@ import {
   updateTemplateName,
   listTemplates,
   getTemplateName,
-} from "./004_excel_template_validate.js";
+} from "./031_excel_template_validate.js";
 import {
   getLocalIp,
 } from "./133_ip_address_validate.js";
@@ -42,7 +42,7 @@ import {
 import {
   clearCache,
   listEndpoints,
-} from "./031_get_api_info_validate.js";
+} from "./025_get_api_info_validate.js";
 import {
   createColumn,
   updateView,
@@ -51,6 +51,9 @@ import {
   _deleteViewColumns,
   regenerateInputElements,
   _addViewColumn,
+  deleteViewColumn,
+  reorderViewColumnToRight,
+  reorderViewColumnToLeft,
 } from "./058_view_column_validate.js";
 import {
   listDataTypes,
@@ -211,6 +214,10 @@ import {
   regenerateAPI_delete,
 } from "./040_regenerate_api_info_validate.js";
 import {
+  updateExcel,
+  openExcel,
+} from "./034_excel_edit_validate.js";
+import {
   transferData,
   masterFaculty,
   masterLab,
@@ -235,20 +242,16 @@ import {
   billData,
   _clearTable,
   _checkSourceTable,
-} from "./034_data_transfer_validate.js";
+} from "./028_data_transfer_validate.js";
 import {
   getEndpointInfo,
-} from "./019_api_auto_correct_validate.js";
+} from "./013_api_auto_correct_validate.js";
 import {
   runApi,
-} from "./010_transaction_upper_validate.js";
+} from "./004_transaction_upper_validate.js";
 import {
   convertQuery,
-} from "./028_run_api_validate.js";
-import {
-  updateExcel,
-  openExcel,
-} from "./007_excel_edit_validate.js";
+} from "./022_run_api_validate.js";
 
 export {
   startUp,
@@ -378,6 +381,9 @@ export {
   _deleteViewColumns,
   regenerateInputElements,
   _addViewColumn,
+  deleteViewColumn,
+  reorderViewColumnToRight,
+  reorderViewColumnToLeft,
   getPageData,
   createDirectories,
   generateViewHTML,
@@ -390,6 +396,13 @@ export {
   regenerateAPI_update,
   regenerateAPI_delete,
   regeneratePage,
+  updateExcel,
+  openExcel,
+  createTemplate,
+  deleteTemplate,
+  updateTemplateName,
+  listTemplates,
+  getTemplateName,
   transferData,
   masterFaculty,
   masterLab,
@@ -418,11 +431,4 @@ export {
   listEndpoints,
   runApi,
   convertQuery,
-  updateExcel,
-  openExcel,
-  createTemplate,
-  deleteTemplate,
-  updateTemplateName,
-  listTemplates,
-  getTemplateName,
 };

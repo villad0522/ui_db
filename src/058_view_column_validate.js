@@ -11,6 +11,9 @@ import {
   deletePage_core,  // ページを削除
   deleteTable_core,  // 不可逆的にテーブルを削除
   updateView_core,  // ビューの情報を更新
+  deleteViewColumn_core,  // ビューカラムを削除
+  reorderViewColumnToRight_core,  // ビューカラムを右へ移動
+  reorderViewColumnToLeft_core,  // ビューカラムを左へ移動
 } from "./059_view_column.js";
 
 
@@ -756,6 +759,128 @@ export async function updateView( params ){
       throw new Error(`resultが文字列ではありません。\nレイヤー : view_column\n関数 : updateView`);
     }
   }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「deleteViewColumn_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function deleteViewColumn( viewColumnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewColumnId !== "string" ){
+    if( !viewColumnId ){
+      throw new Error(`viewColumnIdがNULLです。\nレイヤー : view_column\n関数 : deleteViewColumn`);
+    }
+    else{
+      throw new Error(`viewColumnIdが文字列ではありません。\nレイヤー : view_column\n関数 : deleteViewColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await deleteViewColumn_core( viewColumnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : deleteViewColumn`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : deleteViewColumn`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : view_column\n関数 : deleteViewColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「reorderViewColumnToRight_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function reorderViewColumnToRight( viewColumnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewColumnId !== "string" ){
+    if( !viewColumnId ){
+      throw new Error(`viewColumnIdがNULLです。\nレイヤー : view_column\n関数 : reorderViewColumnToRight`);
+    }
+    else{
+      throw new Error(`viewColumnIdが文字列ではありません。\nレイヤー : view_column\n関数 : reorderViewColumnToRight`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await reorderViewColumnToRight_core( viewColumnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : reorderViewColumnToRight`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「reorderViewColumnToLeft_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function reorderViewColumnToLeft( viewColumnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewColumnId !== "string" ){
+    if( !viewColumnId ){
+      throw new Error(`viewColumnIdがNULLです。\nレイヤー : view_column\n関数 : reorderViewColumnToLeft`);
+    }
+    else{
+      throw new Error(`viewColumnIdが文字列ではありません。\nレイヤー : view_column\n関数 : reorderViewColumnToLeft`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await reorderViewColumnToLeft_core( viewColumnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : reorderViewColumnToLeft`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
   //
   //--------------------------------------------------------------------------
   return result;
