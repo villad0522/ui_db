@@ -10,6 +10,7 @@ import {
     getPath,
     close,
     createRecordsFromCsv,
+    openExcel,
 } from "./002_index.js";
 
 
@@ -29,13 +30,16 @@ async function main({ isDebug }) {
         process.exit();
     }
     server1 = await _launchServer(app, localIpAddress, 3000, 3100);
-    server2 = await _launchServer(app, 'localhost', 3000, 3100);
-    const addressInfo = server1.address();
-    const localUrl = "http://" + addressInfo.address + ":" + addressInfo.port;
-    console.log(localUrl);
+    server2 = await _launchServer(app, '127.0.0.1', 3000, 3100);
+    const addressInfo1 = server1.address();
+    const addressInfo2 = server2.address();
+    const localUrl1 = "http://" + addressInfo1.address + ":" + addressInfo1.port;
+    const localUrl2 = "http://" + addressInfo2.address + ":" + addressInfo2.port;
+    console.log(localUrl1);
+    console.log(localUrl2);
     //
     // 下層の処理を呼び出す
-    await startUp(localUrl, isDebug);
+    await startUp(localUrl1, isDebug);
     //
     //
     // フロントエンドフォルダを公開する
@@ -48,13 +52,15 @@ async function main({ isDebug }) {
         res.redirect("/custom/1/index.html");
     });
     //============================================================
-    opener("http://" + addressInfo.address + ":" + addressInfo.port);
+    opener(localUrl1);
 }
 
 
 main({ isDebug: false });
 
 //============================================================
+
+
 function _launchServer(app, hostname, startPort, maxPort) {
     return new Promise((resolve, reject) => {
         let port = startPort;
@@ -77,6 +83,8 @@ function _launchServer(app, hostname, startPort, maxPort) {
         })
     })
 }
+
+
 //============================================================
 
 // ファイルの保存先ディレクトリを指定
@@ -116,6 +124,33 @@ app.post('/upload', upload.single('input_file'), async (req, res) => {
         console.error(err);
     }
 });
+
+
+//============================================================
+// Excelファイルを開く関数
+
+app.get('/open_excel/:pageId', async (req, res) => {
+    try {
+        const pageId = Number(req.params.pageId);
+        const { fileContents, fileName } = await openExcel(req.ip, pageId, req.query);
+        if (fileContents) {
+            const fileName2 = encodeURIComponent(fileName);
+            res.set({ 'Content-Disposition': `attachment; filename=${fileName2}` })
+            res.status(200).send(fileContents);
+        }
+        else {
+            res.header('Content-Type', 'text/html');
+            res.send(`<!DOCTYPE html> <html lang="ja"> <head><meta charset="utf-8"><script>setTimeout(window.close,2000);</script></head> <body><h1 style="text-align: center;">Excelファイルを開いています...</h1></body> </html>`);
+        }
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).type("text/plain").send(String(err));
+    }
+})
+
+//============================================================
+
 
 app.get('*/json', _api);
 app.get('*/form', _api);

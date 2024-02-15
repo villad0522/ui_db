@@ -36,7 +36,8 @@ window.addEventListener('DOMContentLoaded', async () => {
 //
 //###############################################################
 // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する関数
-export function jumpWithQuery(url) {
+export function jumpWithQuery(url, params) {
+    const { isNewTab } = params ?? {};
     if (window.isEdit) {
         if (confirm("編集内容は破棄されます。よろしいですか？") == false) {
             return;
@@ -56,7 +57,13 @@ export function jumpWithQuery(url) {
         newParams.set(key, value);
     });
     // URLを再構築
-    window.location.href = nextUrl.origin + nextUrl.pathname + "?" + newParams.toString();
+    const newUrl = nextUrl.origin + nextUrl.pathname + "?" + newParams.toString();
+    if (isNewTab) {
+        window.open(newUrl);
+    }
+    else {
+        window.location.href = newUrl;
+    }
 }
 window.jumpWithQuery = jumpWithQuery;
 
