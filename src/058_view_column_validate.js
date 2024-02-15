@@ -1,13 +1,11 @@
 import {
   startUp_core,  // プログラム起動
-  _generateViewColumnSortNumber_core,  // 【サブ関数】ソート番号を発行する
   addViewColumn_core,  // ビューカラムを作成
   createColumn_core,  // カラムを作成
   createView_core,  // ビューを作成
   listViewColumns_core,  // ビューカラムの一覧を取得
   deleteView_core,  // ビューを削除
   _deleteViewColumns_core,  // 【サブ関数】ビューカラムを一括削除
-  listViewColumnsForExcel_core,  // ビューカラムの一覧を取得(Excel向け)
   regenerateInputElements_core,  // 【サブ関数】入力要素を全て作り直す
   _addViewColumn_core,  // 【サブ関数】ビューカラムを作成
   deletePage_core,  // ページを削除
@@ -57,64 +55,6 @@ export async function startUp( localUrl, isDebug ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「_generateViewColumnSortNumber_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function _generateViewColumnSortNumber( viewId, afterViewColumnId ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  if( typeof viewId !== "number" ){
-    if( !viewId ){
-      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : _generateViewColumnSortNumber`);
-    }
-    else{
-      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : _generateViewColumnSortNumber`);
-    }
-  }
-  else if( isNaN(viewId) ){
-    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : _generateViewColumnSortNumber`);
-  }
-  if( (afterViewColumnId===null) || (afterViewColumnId===undefined) ){
-    // afterViewColumnIdは空欄OK。
-  }
-  else if( typeof afterViewColumnId !== "string" ){
-    throw new Error(`afterViewColumnIdが文字列ではありません。\nレイヤー : view_column\n関数 : _generateViewColumnSortNumber`);
-  }
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await _generateViewColumnSortNumber_core( viewId, afterViewColumnId );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : view_column\n関数 : _generateViewColumnSortNumber`);
-    }
-    else{
-      throw error;
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
-  if( typeof result !== "number" ){
-    if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : _generateViewColumnSortNumber`);
-    }
-    else{
-      throw new Error(`resultが数値ではありません。\nレイヤー : view_column\n関数 : _generateViewColumnSortNumber`);
-    }
-  }
-  else if( isNaN(result) ){
-    throw new Error(`resultが数値ではありません。\nレイヤー : view_column\n関数 : _generateViewColumnSortNumber`);
-  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -403,171 +343,12 @@ export async function listViewColumns( viewId ){
         throw new Error(`result[${i}].viewColumnNameが文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
       }
     }
-    if( typeof result[i].excelColumnIndex !== "number" ){
-      if( !result[i].excelColumnIndex ){
-        throw new Error(`result[${i}].excelColumnIndexがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
+    if( typeof result[i].excelColumnText !== "string" ){
+      if( !result[i].excelColumnText ){
+        throw new Error(`result[${i}].excelColumnTextがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
       }
       else{
-        throw new Error(`result[${i}].excelColumnIndexが数値ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    else if( isNaN(result[i].excelColumnIndex) ){
-      throw new Error(`result[${i}].excelColumnIndexが数値ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-    }
-    if( typeof result[i].columnName0 !== "string" ){
-      if( !result[i].columnName0 ){
-        throw new Error(`result[${i}].columnName0がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-      else{
-        throw new Error(`result[${i}].columnName0が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    if( !Array.isArray(result[i].columnName0_option) ){
-      if( !result[i].columnName0_option ){
-        throw new Error(`result[${i}].columnName0_optionがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-      else{
-        throw new Error(`result[${i}].columnName0_optionが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    for( let j=0; j<result[i].columnName0_option.length; j++ ){
-      if( typeof result[i].columnName0_option[j] !== "string" ){
-        if( !result[i].columnName0_option[j] ){
-          throw new Error(`result[${i}].columnName0_option[${j}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-        }
-        else{
-          throw new Error(`result[${i}].columnName0_option[${j}]が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-        }
-      }
-    }
-    if( typeof result[i].columnName1 !== "string" ){
-      if( !result[i].columnName1 ){
-        throw new Error(`result[${i}].columnName1がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-      else{
-        throw new Error(`result[${i}].columnName1が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    if( !Array.isArray(result[i].columnName1_option) ){
-      if( !result[i].columnName1_option ){
-        throw new Error(`result[${i}].columnName1_optionがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-      else{
-        throw new Error(`result[${i}].columnName1_optionが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    for( let j=0; j<result[i].columnName1_option.length; j++ ){
-      if( typeof result[i].columnName1_option[j] !== "string" ){
-        if( !result[i].columnName1_option[j] ){
-          throw new Error(`result[${i}].columnName1_option[${j}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-        }
-        else{
-          throw new Error(`result[${i}].columnName1_option[${j}]が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-        }
-      }
-    }
-    if( typeof result[i].columnName2 !== "string" ){
-      if( !result[i].columnName2 ){
-        throw new Error(`result[${i}].columnName2がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-      else{
-        throw new Error(`result[${i}].columnName2が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    if( !Array.isArray(result[i].columnName2_option) ){
-      if( !result[i].columnName2_option ){
-        throw new Error(`result[${i}].columnName2_optionがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-      else{
-        throw new Error(`result[${i}].columnName2_optionが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    for( let j=0; j<result[i].columnName2_option.length; j++ ){
-      if( typeof result[i].columnName2_option[j] !== "string" ){
-        if( !result[i].columnName2_option[j] ){
-          throw new Error(`result[${i}].columnName2_option[${j}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-        }
-        else{
-          throw new Error(`result[${i}].columnName2_option[${j}]が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-        }
-      }
-    }
-    if( typeof result[i].columnName3 !== "string" ){
-      if( !result[i].columnName3 ){
-        throw new Error(`result[${i}].columnName3がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-      else{
-        throw new Error(`result[${i}].columnName3が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    if( !Array.isArray(result[i].columnName3_option) ){
-      if( !result[i].columnName3_option ){
-        throw new Error(`result[${i}].columnName3_optionがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-      else{
-        throw new Error(`result[${i}].columnName3_optionが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    for( let j=0; j<result[i].columnName3_option.length; j++ ){
-      if( typeof result[i].columnName3_option[j] !== "string" ){
-        if( !result[i].columnName3_option[j] ){
-          throw new Error(`result[${i}].columnName3_option[${j}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-        }
-        else{
-          throw new Error(`result[${i}].columnName3_option[${j}]が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-        }
-      }
-    }
-    if( typeof result[i].columnName4 !== "string" ){
-      if( !result[i].columnName4 ){
-        throw new Error(`result[${i}].columnName4がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-      else{
-        throw new Error(`result[${i}].columnName4が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    if( !Array.isArray(result[i].columnName4_option) ){
-      if( !result[i].columnName4_option ){
-        throw new Error(`result[${i}].columnName4_optionがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-      else{
-        throw new Error(`result[${i}].columnName4_optionが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    for( let j=0; j<result[i].columnName4_option.length; j++ ){
-      if( typeof result[i].columnName4_option[j] !== "string" ){
-        if( !result[i].columnName4_option[j] ){
-          throw new Error(`result[${i}].columnName4_option[${j}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-        }
-        else{
-          throw new Error(`result[${i}].columnName4_option[${j}]が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-        }
-      }
-    }
-    if( typeof result[i].columnName5 !== "string" ){
-      if( !result[i].columnName5 ){
-        throw new Error(`result[${i}].columnName5がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-      else{
-        throw new Error(`result[${i}].columnName5が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    if( !Array.isArray(result[i].columnName5_option) ){
-      if( !result[i].columnName5_option ){
-        throw new Error(`result[${i}].columnName5_optionがNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-      else{
-        throw new Error(`result[${i}].columnName5_optionが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-      }
-    }
-    for( let j=0; j<result[i].columnName5_option.length; j++ ){
-      if( typeof result[i].columnName5_option[j] !== "string" ){
-        if( !result[i].columnName5_option[j] ){
-          throw new Error(`result[${i}].columnName5_option[${j}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumns`);
-        }
-        else{
-          throw new Error(`result[${i}].columnName5_option[${j}]が文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
-        }
+        throw new Error(`result[${i}].excelColumnTextが文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumns`);
       }
     }
   }
@@ -653,108 +434,6 @@ export async function _deleteViewColumns( viewId ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
-  //
-  //--------------------------------------------------------------------------
-  return result;
-}
-
-
-//#######################################################################################
-// 関数「listViewColumnsForExcel_core」に、引数と戻り値のチェック機能を追加した関数
-//
-export async function listViewColumnsForExcel( viewId ){
-  //--------------------------------------------------------------------------
-  // 引数を検証
-  if( typeof viewId !== "number" ){
-    if( !viewId ){
-      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-    }
-    else{
-      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-    }
-  }
-  else if( isNaN(viewId) ){
-    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-  }
-  //
-  //--------------------------------------------------------------------------
-  // メイン処理を実行
-  let result;
-  try{
-    result = await listViewColumnsForExcel_core( viewId );
-  }
-  catch(error){
-    if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-    }
-    else{
-      throw error;
-    }
-  }
-  //
-  //--------------------------------------------------------------------------
-  // 戻り値を検証
-  if( !Array.isArray(result) ){
-    if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-    }
-    else{
-      throw new Error(`resultが配列ではありません。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-    }
-  }
-  for( let i=0; i<result.length; i++ ){
-    if( typeof result[i] !== "object" ){
-      if( !result[i] ){
-        throw new Error(`result[${i}]がNULLです。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-      }
-      else{
-        throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-      }
-    }
-    if( typeof result[i].viewColumnId !== "string" ){
-      if( !result[i].viewColumnId ){
-        throw new Error(`result[${i}].viewColumnIdがNULLです。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-      }
-      else{
-        throw new Error(`result[${i}].viewColumnIdが文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-      }
-    }
-    if( typeof result[i].viewColumnType !== "string" ){
-      if( !result[i].viewColumnType ){
-        throw new Error(`result[${i}].viewColumnTypeがNULLです。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-      }
-      else{
-        throw new Error(`result[${i}].viewColumnTypeが文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-      }
-    }
-    if( typeof result[i].columnPath !== "string" ){
-      if( !result[i].columnPath ){
-        throw new Error(`result[${i}].columnPathがNULLです。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-      }
-      else{
-        throw new Error(`result[${i}].columnPathが文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-      }
-    }
-    if( typeof result[i].viewColumnName !== "string" ){
-      if( !result[i].viewColumnName ){
-        throw new Error(`result[${i}].viewColumnNameがNULLです。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-      }
-      else{
-        throw new Error(`result[${i}].viewColumnNameが文字列ではありません。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-      }
-    }
-    if( typeof result[i].excelColumnIndex !== "number" ){
-      if( !result[i].excelColumnIndex ){
-        throw new Error(`result[${i}].excelColumnIndexがNULLです。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-      }
-      else{
-        throw new Error(`result[${i}].excelColumnIndexが数値ではありません。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-      }
-    }
-    else if( isNaN(result[i].excelColumnIndex) ){
-      throw new Error(`result[${i}].excelColumnIndexが数値ではありません。\nレイヤー : view_column\n関数 : listViewColumnsForExcel`);
-    }
-  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -1006,13 +685,16 @@ export async function updateView( params ){
   else if( isNaN(params.excelStartRow) ){
     throw new Error(`params.excelStartRowが数値ではありません。\nレイヤー : view_column\n関数 : updateView`);
   }
-  if( typeof params.excelStartColumn !== "string" ){
+  if( typeof params.excelStartColumn !== "number" ){
     if( !params.excelStartColumn ){
       throw new Error(`params.excelStartColumnがNULLです。\nレイヤー : view_column\n関数 : updateView`);
     }
     else{
-      throw new Error(`params.excelStartColumnが文字列ではありません。\nレイヤー : view_column\n関数 : updateView`);
+      throw new Error(`params.excelStartColumnが数値ではありません。\nレイヤー : view_column\n関数 : updateView`);
     }
+  }
+  else if( isNaN(params.excelStartColumn) ){
+    throw new Error(`params.excelStartColumnが数値ではありません。\nレイヤー : view_column\n関数 : updateView`);
   }
   if( !Array.isArray(params.viewColumns) ){
     if( !params.viewColumns ){

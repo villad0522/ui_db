@@ -56,11 +56,9 @@ import {
 import {
   createColumn,
   updateView,
-  _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,
   _deleteViewColumns,
-  listViewColumnsForExcel,
   regenerateInputElements,
   _addViewColumn,
 } from "./058_view_column_validate.js";

@@ -1070,13 +1070,16 @@ export async function listChildrenView( pageId ){
     else if( isNaN(result[i].excelStartRow) ){
       throw new Error(`result[${i}].excelStartRowが数値ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
     }
-    if( typeof result[i].excelStartColumn !== "string" ){
+    if( typeof result[i].excelStartColumn !== "number" ){
       if( !result[i].excelStartColumn ){
         throw new Error(`result[${i}].excelStartColumnがNULLです。\nレイヤー : page_and_view\n関数 : listChildrenView`);
       }
       else{
-        throw new Error(`result[${i}].excelStartColumnが文字列ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+        throw new Error(`result[${i}].excelStartColumnが数値ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
       }
+    }
+    else if( isNaN(result[i].excelStartColumn) ){
+      throw new Error(`result[${i}].excelStartColumnが数値ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
     }
     if( typeof result[i].iframe !== "string" ){
       if( !result[i].iframe ){
@@ -1499,13 +1502,16 @@ export async function getViewInfo( viewId ){
   else if( isNaN(result.excelStartRow) ){
     throw new Error(`result.excelStartRowが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
   }
-  if( typeof result.excelStartColumn !== "string" ){
+  if( typeof result.excelStartColumn !== "number" ){
     if( !result.excelStartColumn ){
       throw new Error(`result.excelStartColumnがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
     }
     else{
-      throw new Error(`result.excelStartColumnが文字列ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+      throw new Error(`result.excelStartColumnが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
     }
+  }
+  else if( isNaN(result.excelStartColumn) ){
+    throw new Error(`result.excelStartColumnが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
   }
   //
   //--------------------------------------------------------------------------
@@ -1693,13 +1699,16 @@ export async function updateView( params ){
   else if( isNaN(params.excelStartRow) ){
     throw new Error(`params.excelStartRowが数値ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
   }
-  if( typeof params.excelStartColumn !== "string" ){
+  if( typeof params.excelStartColumn !== "number" ){
     if( !params.excelStartColumn ){
       throw new Error(`params.excelStartColumnがNULLです。\nレイヤー : page_and_view\n関数 : updateView`);
     }
     else{
-      throw new Error(`params.excelStartColumnが文字列ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
+      throw new Error(`params.excelStartColumnが数値ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
     }
+  }
+  else if( isNaN(params.excelStartColumn) ){
+    throw new Error(`params.excelStartColumnが数値ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
   }
   //
   //--------------------------------------------------------------------------

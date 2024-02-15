@@ -188,7 +188,7 @@ export async function startUp_core( localUrl, isDebug ){
       "one_page_max_size" NUMBER NOT NULL DEFAULT 12,
       "view_type" TEXT NOT NULL DEFAULT 'TABLE',
       "excel_start_row" INTEGER NOT NULL DEFAULT 1,
-      "excel_start_column" TEXT NOT NULL DEFAULT 'A',
+      "excel_start_column" INTEGER NOT NULL DEFAULT 1,
       "sort_number" REAL NOT NULL DEFAULT 64,
       "created_at" INTEGER UNIQUE,
       FOREIGN KEY (page_id) REFERENCES pages(page_id)

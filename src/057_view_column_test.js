@@ -165,14 +165,12 @@ import {
 } from "./064_generate_sql_validate.js";
 import {
   startUp,  // プログラム起動
-  _generateViewColumnSortNumber,  // 【サブ関数】ソート番号を発行する
   addViewColumn,  // ビューカラムを作成
   createColumn,  // カラムを作成
   createView,  // ビューを作成
   listViewColumns,  // ビューカラムの一覧を取得
   deleteView,  // ビューを削除
   _deleteViewColumns,  // 【サブ関数】ビューカラムを一括削除
-  listViewColumnsForExcel,  // ビューカラムの一覧を取得(Excel向け)
   regenerateInputElements,  // 【サブ関数】入力要素を全て作り直す
   _addViewColumn,  // 【サブ関数】ビューカラムを作成
   deletePage,  // ページを削除
@@ -187,7 +185,7 @@ export async function test057() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 43; i++ ) {
+    for ( i = 1; i <= 36; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

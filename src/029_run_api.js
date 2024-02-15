@@ -51,11 +51,9 @@ import {
 import {
   createColumn,
   updateView,
-  _generateViewColumnSortNumber,
   addViewColumn,
   listViewColumns,
   _deleteViewColumns,
-  listViewColumnsForExcel,
   regenerateInputElements,
   _addViewColumn,
 } from "./058_view_column_validate.js";
@@ -299,6 +297,8 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
         "excelStartColumn": viewInfo.excelStartColumn,
         "viewColumns": viewColumns,
         "viewColumns_total": viewColumns.length,
+        "columns": [],
+        "columns_total": 0,
         "records": [],
         "records_total": 0
       };

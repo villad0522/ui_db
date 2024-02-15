@@ -38,9 +38,9 @@
             "example": 8
         },
         "excelStartColumn": {
-            "dataType": "TEXT",
+            "dataType": "INTEGER",
             "description": "Excelの開始位置（列）",
-            "example": "C"
+            "example": 1
         },
         "viewColumns": {
             "title": "ビューカラムの一覧",

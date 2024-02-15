@@ -49,9 +49,9 @@
             "example": 8
         },
         "excelStartColumn": {
-            "dataType": "TEXT",
+            "dataType": "INTEGER",
             "description": "Excelの開始位置（列）",
-            "example": "C"
+            "example": 1
         },
         "viewColumns": {
             "title": "ビューカラムの一覧",
@@ -73,7 +73,7 @@
                     "description": "ビューカラムの種類",
                     "example": "COUNT"
                 },
-                "excelColumnIndex": {
+                "excelColumnText": {
                     "dataType": "TEXT",
                     "description": "Excelの列番",
                     "example": "D"
@@ -82,72 +82,34 @@
                     "dataType": "TEXT",
                     "description": "カラムパス",
                     "example": "main.c2 > c53 > c1"
-                },
-                "columnName0": {
-                    "dataType": "TEXT",
-                    "description": "カラムID0",
-                    "example": "c8"
-                },
-                "columnName0_option": {
-                    "dataType": "TEXT",
-                    "description": "カラムID0の入力予測",
-                    "example": "c8"
-                },
-                "columnName1": {
-                    "dataType": "TEXT",
-                    "description": "カラムID1",
-                    "example": "c8"
-                },
-                "columnName1_option": {
-                    "dataType": "TEXT",
-                    "description": "カラムID1の入力予測",
-                    "example": "c8"
-                },
-                "columnName2": {
-                    "dataType": "TEXT",
-                    "description": "カラムID2",
-                    "example": "c8"
-                },
-                "columnName2_option": {
-                    "dataType": "TEXT",
-                    "description": "カラムID2の入力予測",
-                    "example": "c8"
-                },
-                "columnName3": {
-                    "dataType": "TEXT",
-                    "description": "カラムID3",
-                    "example": "c8"
-                },
-                "columnName3_option": {
-                    "dataType": "TEXT",
-                    "description": "カラムID3の入力予測",
-                    "example": "c8"
-                },
-                "columnName4": {
-                    "dataType": "TEXT",
-                    "description": "カラムID4",
-                    "example": "c8"
-                },
-                "columnName4_option": {
-                    "dataType": "TEXT",
-                    "description": "カラムID4の入力予測",
-                    "example": "c8"
-                },
-                "columnName5": {
-                    "dataType": "TEXT",
-                    "description": "カラムID5",
-                    "example": "c8"
-                },
-                "columnName5_option": {
-                    "dataType": "TEXT",
-                    "description": "カラムID5の入力予測",
-                    "example": "c8"
                 }
             }
         },
         "viewColumns_total": {
             "dataType": "INTEGER",
             "description": "ビューカラムの個数",
+            "example": 10
+        },
+        "columns": {
+            "title": "ビューカラムの一覧",
+            "isArray": true,
+            "onePageMaxSize": 35,
+            "children": {
+                "columnName": {
+                    "dataType": "TEXT",
+                    "description": "カラムパスを構成するカラムの名前",
+                    "example": "氏名"
+                },
+                "columnName_option": {
+                    "dataType": "TEXT",
+                    "description": "カラムパスの入力予測",
+                    "example": "c8"
+                }
+            }
+        },
+        "columns_total": {
+            "dataType": "INTEGER",
+            "description": "カラムの個数",
             "example": 10
         },
         "records_total": {
