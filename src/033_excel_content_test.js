@@ -2,11 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import {
   startUp,
-  createPage,
   deleteTemplate,
-  updateTemplateName,
-  listTemplates,
   getExcelTemplate,
+  updateExcelTemplate,
 } from "./037_excel_template_validate.js";
 import {
   getLocalIp,
@@ -64,6 +62,7 @@ import {
 import {
   createColumn,
   deleteTable,
+  createPage,
   updatePageName,
   createView,
   deleteView,
@@ -217,6 +216,7 @@ import {
 import {
   updateExcel,  // エクセルファイルを更新する関数
   _updateExcelSheet,  // 【サブ】シート１個を編集する関数
+  extractTemplate,  // テンプレートを抽出する関数
 } from "./034_excel_content_validate.js";
 import { setBugMode } from "./035_excel_content.js";
 
@@ -226,7 +226,7 @@ export async function test033() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 34; i++ ) {
+    for ( i = 1; i <= 57; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

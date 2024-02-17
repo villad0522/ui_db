@@ -204,7 +204,7 @@ export async function _launchExcelApp( filePath ){
 //#######################################################################################
 // 関数「_handleEditExcelFile_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function _handleEditExcelFile( filePath, pageId ){
+export async function _handleEditExcelFile( filePath, pageId, sheetInfos ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof filePath !== "string" ){
@@ -226,12 +226,60 @@ export async function _handleEditExcelFile( filePath, pageId ){
   else if( isNaN(pageId) ){
     throw new Error(`pageIdが数値ではありません。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
   }
+  if( !Array.isArray(sheetInfos) ){
+    if( !sheetInfos ){
+      throw new Error(`sheetInfosがNULLです。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
+    }
+    else{
+      throw new Error(`sheetInfosが配列ではありません。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
+    }
+  }
+  for( let i=0; i<sheetInfos.length; i++ ){
+    if( typeof sheetInfos[i] !== "object" ){
+      if( !sheetInfos[i] ){
+        throw new Error(`sheetInfos[${i}]がNULLです。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
+      }
+      else{
+        throw new Error(`sheetInfos[${i}]がオブジェクトではありません。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
+      }
+    }
+    if( typeof sheetInfos[i].sheetName !== "string" ){
+      if( !sheetInfos[i].sheetName ){
+        throw new Error(`sheetInfos[${i}].sheetNameがNULLです。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
+      }
+      else{
+        throw new Error(`sheetInfos[${i}].sheetNameが文字列ではありません。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
+      }
+    }
+    if( typeof sheetInfos[i].excelStartRow !== "number" ){
+      if( !sheetInfos[i].excelStartRow ){
+        throw new Error(`sheetInfos[${i}].excelStartRowがNULLです。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
+      }
+      else{
+        throw new Error(`sheetInfos[${i}].excelStartRowが数値ではありません。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
+      }
+    }
+    else if( isNaN(sheetInfos[i].excelStartRow) ){
+      throw new Error(`sheetInfos[${i}].excelStartRowが数値ではありません。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
+    }
+    if( typeof sheetInfos[i].isTableHeader !== "boolean" ){
+      if( !sheetInfos[i].isTableHeader ){
+        throw new Error(`sheetInfos[${i}].isTableHeaderがNULLです。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
+      }
+      else{
+        throw new Error(`sheetInfos[${i}].isTableHeaderがブール値ではありません。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
+      }
+    }
+    else if( isNaN(sheetInfos[i].isTableHeader) ){
+      throw new Error(`sheetInfos[${i}].isTableHeaderがブール値ではありません。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await _handleEditExcelFile_core( filePath, pageId );
+    result = await _handleEditExcelFile_core( filePath, pageId, sheetInfos );
   }
   catch(error){
     if( typeof error === "string" ){

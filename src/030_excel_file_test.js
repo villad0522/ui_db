@@ -1,11 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  createPage,
   deleteTemplate,
-  updateTemplateName,
-  listTemplates,
   getExcelTemplate,
+  updateExcelTemplate,
 } from "./037_excel_template_validate.js";
 import {
   getLocalIp,
@@ -62,6 +60,7 @@ import {
 import {
   createColumn,
   deleteTable,
+  createPage,
   updatePageName,
   createView,
   deleteView,
@@ -215,6 +214,7 @@ import {
 import {
   updateExcel,
   _updateExcelSheet,
+  extractTemplate,
 } from "./034_excel_content_validate.js";
 import {
   openExcel,  // Excelを開く

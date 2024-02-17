@@ -282,9 +282,16 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
     if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
     sql += `)`;
   }
-  else if(onePageMaxSize){
+  else {
     if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
-    sql += `LIMIT ${onePageMaxSize}`;
+    if(onePageMaxSize){
+      if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+      sql += `LIMIT ${onePageMaxSize}`;
+    }
+    else{
+      if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+      sql += `LIMIT 10000`;
+    }
   }
   //
   return sql;

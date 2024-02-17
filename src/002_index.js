@@ -41,6 +41,7 @@ import {
 import {
   createColumn,
   deleteTable,
+  createPage,
   updatePageName,
   createView,
   deleteView,
@@ -164,13 +165,6 @@ import {
   generateSQL,
 } from "./058_joinedTable_validate.js";
 import {
-  createPage,
-  deleteTemplate,
-  updateTemplateName,
-  listTemplates,
-  getExcelTemplate,
-} from "./037_excel_template_validate.js";
-import {
   getPageInfo,
   listViewsFromTableId,
   getTableFromView,
@@ -222,8 +216,14 @@ import {
   regenerateAPI_delete,
 } from "./043_regenerate_api_info_validate.js";
 import {
+  deleteTemplate,
+  getExcelTemplate,
+  updateExcelTemplate,
+} from "./037_excel_template_validate.js";
+import {
   updateExcel,
   _updateExcelSheet,
+  extractTemplate,
 } from "./034_excel_content_validate.js";
 import {
   transferData,
@@ -409,11 +409,11 @@ export {
   regenerateAPI_delete,
   regeneratePage,
   deleteTemplate,
-  updateTemplateName,
-  listTemplates,
   getExcelTemplate,
+  updateExcelTemplate,
   updateExcel,
   _updateExcelSheet,
+  extractTemplate,
   openExcel,
   _launchExcelApp,
   _handleEditExcelFile,

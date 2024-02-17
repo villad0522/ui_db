@@ -235,54 +235,16 @@ export async function startUp_core( localUrl, isDebug ){
     await runSqlWriteOnly(
         `CREATE TABLE IF NOT EXISTS excel_templates (
             "page_id" INTEGER PRIMARY KEY,
-            "excel_file_data" BLOB,
-            "created_at" INTEGER UNIQUE
+            "excel_file_data" BLOB
         );`,
         {},
     );
-    //
-    /*await reserveWord("excel_sheets"); // 予約語に登録
-    await runSqlWriteOnly(
-        `CREATE TABLE IF NOT EXISTS excel_sheets (
-            "sheet_id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "template_id" INTEGER NOT NULL,
-            "page_id" INTEGER NOT NULL,
-            "sheet_name" TEXT NOT NULL,
-            FOREIGN KEY (template_id) REFERENCES excel_templates(template_id),
-            FOREIGN KEY (page_id) REFERENCES views(page_id)
-        );`,
-        {},
-    );*/
-}
-
-
-
-// ページを作成
-export async function createPage_core( parentPageId ){
-  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    const { pageId } = await createPage( parentPageId );
-    //
-    const staticPath = await getPath( "STATIC_DATA" );
-    const excelPath = path.join(staticPath,"light/template.xlsm");
-    const excelFileData = await fs.promises.readFile(excelPath);
-    //
-    const timestamp = await getTimestamp();
-    await runSqlWriteOnly(
-        `INSERT INTO excel_templates (page_id, excel_file_data, created_at)
-            VALUES ( :pageId, :excelFileData, :createdAt );`,
-        {
-            ":pageId": pageId,
-            ":excelFileData": excelFileData,
-            ":createdAt": timestamp,
-        },
-    );
-    return { pageId };
 }
 
 
 // 不可逆的にテンプレートを削除
 export async function deleteTemplate_core( templateId ){
-  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     await runSqlWriteOnly(
         `DELETE FROM excel_templates
             WHERE template_id = :templateNumber;`,
@@ -296,121 +258,9 @@ export async function deleteTemplate_core( templateId ){
 
 
 
-// テンプレート名を変更
-export async function updateTemplateName_core( templates ){
-  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-    //==========================================================
-    // テンプレート名が重複していないか確認する
-    await _reload();
-    const obj = structuredClone(cacheData1);    // ディープコピー
-    // データの例
-    // obj = {
-    //     "t2": "テンプレート名１",
-    //     "t8": "テンプレート名２"
-    // };
-    for (const { id, name } of templates) {
-        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-        obj[id] = name;
-    }
-    // この時点で、連想配列「obj」には、全てのテンプレート一覧が格納されている。
-    // データの例
-    // obj = {
-    //     "t2": "変更後のテンプレート名１",
-    //     "t8": "テンプレート名２"
-    // };
-    for (const { id, name } of templates) {
-        if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
-        const newObj = structuredClone(obj);    // ディープコピー
-        //
-        // 自分自身を除いた、他のテンプレートと名前が被っていないか確認する
-        delete newObj[id];    //自分自身を除く
-        const templateNameArray = Object.values(newObj);
-        if (templateNameArray.includes(name)) {
-            throw `テンプレート名「${name}」は重複しています。`;
-        }
-    }
-    //
-    //==========================================================
-    // テンプレート名を変更する
-    for (const { id, name } of templates) {
-        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-        let templateNumber = id.replace("t","");
-        if(isNaN(templateNumber)){
-            throw "指定されたテンプレートIDは無効です。";
-        }
-        templateNumber = Number(templateNumber);
-        await runSqlWriteOnly(
-            `UPDATE excel_templates
-                SET template_name = :templateName
-                WHERE template_id = :templateNumber;`,
-            {
-                ":templateName": name,
-                ":templateNumber": templateNumber,
-            },
-        );
-    }
-    //==========================================================
-    await _reload();    // メモリに再読み込み
-    return "テンプレート名を変更しました";
-}
-
-
-// テンプレートの一覧を取得(重)
-export async function listTemplates_core( pageNumber, onePageMaxSize, isTrash ){
-  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-    if ( !pageNumber ) {
-        if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
-        pageNumber = 1;
-    }
-    if (!(pageNumber >= 1)) {
-        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
-        pageNumber = 1;
-    }
-    const [{ "COUNT(*)": total }] = await runSqlReadOnly(
-        `SELECT COUNT(*)
-            FROM excel_templates
-            WHERE enable = :isEnable;`,
-        {
-            // 現存するテンプレート一覧を取得する場合は１
-            // 削除済みのテンプレート一覧を取得する場合は０
-            ":isEnable": isTrash ? 0 : 1,
-        },
-    );
-    let offset = onePageMaxSize * (pageNumber - 1);
-    if( offset >= total ){
-        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
-        offset = total;
-    }
-    // 「sqlite_master」と結合させることで、実際に存在するテンプレートのみに絞り込む
-    const matrix = await runSqlReadOnly(
-        `SELECT
-            ( "t" || excel_templates.template_id ) AS id,
-            excel_templates.template_name AS name
-        FROM excel_templates
-        INNER JOIN sqlite_master
-            ON ( "t" || excel_templates.template_id ) = sqlite_master.name
-        WHERE excel_templates.enable = :isEnable
-        ORDER BY excel_templates.created_at DESC
-        LIMIT :limit OFFSET :offset;`,
-        {
-            // 現存するテンプレート一覧を取得する場合は１
-            // 削除済みのテンプレート一覧を取得する場合は０
-            ":isEnable": isTrash ? 0 : 1,
-            ":limit": onePageMaxSize,
-            ":offset": offset,
-        },
-    );
-    return {
-        "templates": matrix,
-        "total": total,
-    }
-}
-
-
-
 // Excelテンプレートを取得
 export async function getExcelTemplate_core( pageId ){
-  if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
     // データベースからファイルデータを読み込んで、ローカルフォルダに書き出す
     const files = await runSqlReadOnly(
       `SELECT
@@ -423,7 +273,7 @@ export async function getExcelTemplate_core( pageId ){
         },
     );
     if(files.length>=1){
-        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
         // Excelファイルが見つかった場合
         return files[0]["excelFileData"];
     }
@@ -432,15 +282,29 @@ export async function getExcelTemplate_core( pageId ){
     const excelPath = path.join(staticPath,"light/template.xlsm");
     const excelFileData = await fs.promises.readFile(excelPath);
     //
-    const timestamp = await getTimestamp();
     await runSqlWriteOnly(
-        `INSERT INTO excel_templates (page_id, excel_file_data, created_at)
-            VALUES ( :pageId, :excelFileData, :createdAt );`,
+        `INSERT INTO excel_templates (page_id, excel_file_data )
+            VALUES ( :pageId, :excelFileData );`,
         {
             ":pageId": pageId,
             ":excelFileData": excelFileData,
-            ":createdAt": timestamp,
         },
     );
     return excelFileData;
+}
+
+
+
+
+// Excelテンプレートを保存
+export async function updateExcelTemplate_core( pageId, excelFileData ){
+  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+    await runSqlWriteOnly(
+        `INSERT OR REPLACE INTO excel_templates (page_id, excel_file_data )
+            VALUES ( :pageId, :excelFileData );`,
+        {
+            ":pageId": pageId,
+            ":excelFileData": excelFileData,
+        },
+    );
 }

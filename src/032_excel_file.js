@@ -2,11 +2,9 @@
 //
 import {
   startUp,
-  createPage,
   deleteTemplate,
-  updateTemplateName,
-  listTemplates,
   getExcelTemplate,
+  updateExcelTemplate,
 } from "./037_excel_template_validate.js";
 import {
   getLocalIp,
@@ -64,6 +62,7 @@ import {
 import {
   createColumn,
   deleteTable,
+  createPage,
   updatePageName,
   createView,
   deleteView,
@@ -217,6 +216,7 @@ import {
 import {
   updateExcel,
   _updateExcelSheet,
+  extractTemplate,
 } from "./034_excel_content_validate.js";
 
 
@@ -305,8 +305,8 @@ export async function openExcel_core( clientIpAddress, pageId, queryParameters )
     watchers[fileName] = watcher;
     await new Promise((resolve, reject) => watcher.on('ready', resolve ));
     watcher.on('change', function (filePath, stats) {
-        console.log(`\nExcelファイルが編集されました。\n${filePath}`);
-        _handleEditExcelFile_core( filePath, pageId );
+        //console.log(`\nExcelファイルが編集されました。\n${filePath}`);
+        _handleEditExcelFile_core( filePath, pageId, sheetInfos );
     });
     watcher.on('error', function (path) {
         //console.error(`\nExcelファイルの監視中にエラーが発生しました。\n${path}`);
@@ -363,7 +363,25 @@ export async function _launchExcelApp_core( filePath ){
     );
 }
 
+
+
 // 【サブ】ファイルが編集されたとき
-export async function _handleEditExcelFile_core( filePath, pageId ){
+export async function _handleEditExcelFile_core( filePath, pageId, sheetInfos ){
   if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+    try{
+        let excelFileData = await fs.promises.readFile( filePath );
+        excelFileData = await extractTemplate( excelFileData, sheetInfos );
+        await updateExcelTemplate( pageId, excelFileData );
+        //
+        // 以下、デバッグ用にファイルを保存する処理
+        const cacheDirPath = await getPath("CACHE");
+        const filePath2 = path.join( cacheDirPath, "テンプレート.xlsm" );
+        await fs.promises.writeFile( filePath2, excelFileData );
+    }
+    catch( error ){
+        console.error(`\nエラーが発生しました`);
+        console.error(`レイヤー : excel_file`);
+        console.error(`関数 : _handleEditExcelFile`);
+        console.error(error);
+    }
 }

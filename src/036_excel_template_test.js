@@ -3,6 +3,7 @@ import path from 'path';
 import {
   createColumn,
   deleteTable,
+  createPage,
   updatePageName,
   createView,
   deleteView,
@@ -208,11 +209,9 @@ import {
 } from "./043_regenerate_api_info_validate.js";
 import {
   startUp,  // プログラム起動
-  createPage,  // ページを作成
   deleteTemplate,  // 不可逆的にテンプレートを削除
-  updateTemplateName,  // テンプレート名を変更
-  listTemplates,  // テンプレートの一覧を取得(重)
   getExcelTemplate,  // Excelテンプレートを取得
+  updateExcelTemplate,  // Excelテンプレートを保存
 } from "./037_excel_template_validate.js";
 import { setBugMode } from "./038_excel_template.js";
 
@@ -222,7 +221,7 @@ export async function test036() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 13; i++ ) {
+    for ( i = 1; i <= 5; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
