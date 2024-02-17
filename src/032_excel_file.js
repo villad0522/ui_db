@@ -272,7 +272,7 @@ export async function openExcel_core( clientIpAddress, pageId, queryParameters )
     if( clientIpAddress !== serverIpAddress && clientIpAddress!=="127.0.0.1" ){
         if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
         // 子機からシステムにアクセスしている場合、Excelをダウンロードさせる
-        const fileName = pageName + "(閲覧専用).xlsm";
+        const fileName = pageName + "(閲覧専用).xlsx";
         return {
             "fileContents": fileData,
             "fileName": fileName,
@@ -280,7 +280,7 @@ export async function openExcel_core( clientIpAddress, pageId, queryParameters )
     }
     // 親機からシステムにアクセスしている場合、Excelアプリを起動する
     //
-    const fileName = pageName + "(編集可).xlsm";
+    const fileName = pageName + "(編集可).xlsx";
     if( watchers[fileName] ){
         if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
         // ファイルの監視を停止する
@@ -375,7 +375,7 @@ export async function _handleEditExcelFile_core( filePath, pageId, sheetInfos ){
         //
         // 以下、デバッグ用にファイルを保存する処理
         const cacheDirPath = await getPath("CACHE");
-        const filePath2 = path.join( cacheDirPath, "テンプレート.xlsm" );
+        const filePath2 = path.join( cacheDirPath, "テンプレート.xlsx" );
         await fs.promises.writeFile( filePath2, excelFileData );
     }
     catch( error ){

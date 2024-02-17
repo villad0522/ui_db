@@ -279,7 +279,7 @@ export async function getExcelTemplate_core( pageId ){
     }
     // Excelファイルが見つからない場合
     const staticPath = await getPath( "STATIC_DATA" );
-    const excelPath = path.join(staticPath,"light/template.xlsm");
+    const excelPath = path.join(staticPath,"light/template.xlsx");
     const excelFileData = await fs.promises.readFile(excelPath);
     //
     await runSqlWriteOnly(
