@@ -286,9 +286,9 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
                 if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
                 tableLastRows[sheetName] = tableStartRow + 49;
             }
-            if( pageRowSize < tableLastRows[sheetName] + 1 ){
+            if( pageRowSize < tableLastRows[sheetName] + 2 ){
                 if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
-                pageRowSize = tableLastRows[sheetName] + 1;
+                pageRowSize = tableLastRows[sheetName] + 2;
             }
             continue;
         }
@@ -428,15 +428,29 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
                 //
                 // Excelのテンプレートを貼り付ける
                 if( (actualPageCount+displayPageCount) >= 1 ){
-                if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+                    // もし１ページ目以外なら
+                    const maxColumn =  sheet?.usedRange()?.endCell()?.columnNumber() ?? 100;
+                    const excelIndex =  ( pageRowSize * (actualPageCount+displayPageCount) );    // Excelの何行目に書き込むのか
+                    //
+                    for( let i=1; i<=pageRowSize; i++){
+                        if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+                        for( let j= 1; j<= maxColumn; j++){
+                            if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+                            const srcCell = sheet.cell(i,j);
+                            const destCell = sheet.cell(excelIndex+i,j);
+                            destCell.value(srcCell.value());
+                            destCell.style(srcCell.style([]));
+                        }
+                    }
                 }
                 //
                 // 列名
                 if( isTableHeader ){
-                    if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
                     const excelIndex = ( pageRowSize * (actualPageCount+displayPageCount) ) + tableStartRow;    // Excelの何行目に書き込むのか
                     for( const { viewColumnName, excelColumnText } of viewColumns ){  // 列ごとに繰り返す
-                        if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+                        if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
                         if( ! /^[A-Z]+$/g.test(excelColumnText) ){
                             throw `Excelの列番号が不正です。\nexcelColumnText = ${excelColumnText}`;
                         }
@@ -447,18 +461,18 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
                 }
                 //
                 if( !inputIndexes[sheetName] ){
-                    if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
                     inputIndexes[sheetName] = 0;     // 配列の何行目のデータを書き込むのか
                 }
                 //
                 // Excelの行ごとに繰り返す
                 for(let k=tableStartRow; k<=tableLastRow; k++){
-                    if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
                     const excelIndex =  ( pageRowSize * (actualPageCount+displayPageCount) ) + k;    // Excelの何行目に書き込むのか
                     const inputIndex = inputIndexes[sheetName];                   // 配列の何行目のデータを書き込むのか
                     const rowData = (inputIndex<rowDatas.length)? rowDatas[inputIndex] : {};    // 書き込みたいデータ
                     for( const { viewColumnId, excelColumnText } of viewColumns ){  // 列ごとに繰り返す
-                        if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
+                        if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
                         const cell = sheet.cell( excelIndex, excelColumnText );
                         const text = String( rowData[viewColumnId] ?? "" );
                         cell.value( text );                                      // Excelファイルのセルに書き込む
@@ -471,7 +485,7 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
                 const richtext1 = new XlsxPopulate.RichText();
                 richtext1.add("<END_OF_TABLE>", {fontSize: 8,  fontColor: "ffffff" });
                 for( const { excelColumnText } of viewColumns ){  // 列ごとに繰り返す
-                    if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
                     sheet.cell(lastTableRowIndex+1, excelColumnText).value(richtext1);
                 }
                 //
@@ -486,15 +500,15 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
                 sheet.cell(lastRowIndex, 1).value(richtext2);
                 //
                 if( rowDatas.length <= inputIndexes[sheetName] ){
-                    if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
                     // 全データを一通り書き込み終わったら
                     if( rowDatas.length<=tableSize ){
-                        if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
+                        if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
                         // データが１ページに収まった場合は、次のページにも書き込む
                         inputIndexes[sheetName] = 0;
                     }
                     if( !isComplete[sheetName] ){
-                        if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
+                        if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
                         completeCount++;   // 完了カウントを増やす
                     }
                     isComplete[sheetName] = true;   // 完了フラグを立てる
@@ -507,11 +521,11 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
         //
         // シート「日付とページ番号」を追加する
         if (!workbook.sheet("日付とページ番号")) {
-            if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
             workbook.addSheet("日付とページ番号");
         }
         if (workbook.sheet("Gw21b1re3e3T5")) {
-            if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
             workbook.deleteSheet("Gw21b1re3e3T5");
         }
         //
@@ -520,7 +534,7 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
         //
         // ページごとに繰り返す
         for( let i=0; i<pageLength; i++){
-            if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 45) throw "MUTATION45";  // 意図的にバグを混入させる（ミューテーション解析）
             //
             // シート「日付とページ番号」を生成する
             const excelIndex = ( pageRowSize * (actualPageCount+i) ) + 1;    // Excelの何行目に書き込むのか
@@ -561,16 +575,16 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
 
 // テンプレートを抽出する関数
 export async function extractTemplate_core( fileData, sheetInfos ){
-  if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 46) throw "MUTATION46";  // 意図的にバグを混入させる（ミューテーション解析）
     // エクセルファイルを開く
     const workbook = await XlsxPopulate.fromDataAsync(fileData);
     //
     // シート「日付とページ番号」を削除する
     if (workbook.sheet("日付とページ番号")) {
-        if(bugMode === 45) throw "MUTATION45";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 47) throw "MUTATION47";  // 意図的にバグを混入させる（ミューテーション解析）
         // シートが０枚になるとエラーを吐くので、使わないシートを生成する。
         if (!workbook.sheet("Gw21b1re3e3T5")) {
-            if(bugMode === 46) throw "MUTATION46";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 48) throw "MUTATION48";  // 意図的にバグを混入させる（ミューテーション解析）
             workbook.addSheet("Gw21b1re3e3T5");
         }
         workbook.deleteSheet("日付とページ番号");
@@ -579,22 +593,22 @@ export async function extractTemplate_core( fileData, sheetInfos ){
     const metaSheet = workbook.sheet("日付とページ番号");
     let metaLastRowIndex = 10;
     if( metaSheet ){
-        if(bugMode === 47) throw "MUTATION47";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 49) throw "MUTATION49";  // 意図的にバグを混入させる（ミューテーション解析）
         // Excelの行ごとに繰り返す
         for( let i=1; i<1000; i++ ){
-            if(bugMode === 48) throw "MUTATION48";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 50) throw "MUTATION50";  // 意図的にバグを混入させる（ミューテーション解析）
             const value = metaSheet.cell(i,1).value();
             let text = "";
             if( value instanceof XlsxPopulate.RichText ){
-                if(bugMode === 49) throw "MUTATION49";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 51) throw "MUTATION51";  // 意図的にバグを混入させる（ミューテーション解析）
                 text = value.text();
             }
             else{
-                if(bugMode === 50) throw "MUTATION50";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 52) throw "MUTATION52";  // 意図的にバグを混入させる（ミューテーション解析）
                 text = String(value);
             }
             if( text === "<END_OF_PAGE>" ){
-                if(bugMode === 51) throw "MUTATION51";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
                 metaLastRowIndex = i;
                 break;
             }
@@ -603,11 +617,11 @@ export async function extractTemplate_core( fileData, sheetInfos ){
     //
     // Excelのシートごとに繰り返す
     for( const sheetInfo of sheetInfos ){   
-        if(bugMode === 52) throw "MUTATION52";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 54) throw "MUTATION54";  // 意図的にバグを混入させる（ミューテーション解析）
         const sheetName = sheetInfo.sheetName;          // シート名
         const sheet = workbook.sheet(sheetName);
         if (!sheet) {
-            if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 55) throw "MUTATION55";  // 意図的にバグを混入させる（ミューテーション解析）
             // もしシートが存在していない場合
             continue;
         }
@@ -615,19 +629,19 @@ export async function extractTemplate_core( fileData, sheetInfos ){
         // Excelの行ごとに繰り返す
         let lastRowIndex = metaLastRowIndex;
         for( let i=1; i<1000; i++ ){
-            if(bugMode === 54) throw "MUTATION54";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 56) throw "MUTATION56";  // 意図的にバグを混入させる（ミューテーション解析）
             const value = sheet.cell(i,1).value();
             let text = "";
             if( value instanceof XlsxPopulate.RichText ){
-                if(bugMode === 55) throw "MUTATION55";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 57) throw "MUTATION57";  // 意図的にバグを混入させる（ミューテーション解析）
                 text = value.text();
             }
             else{
-                if(bugMode === 56) throw "MUTATION56";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 58) throw "MUTATION58";  // 意図的にバグを混入させる（ミューテーション解析）
                 text = String(value);
             }
             if( text === "<END_OF_PAGE>" ){
-                if(bugMode === 57) throw "MUTATION57";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 59) throw "MUTATION59";  // 意図的にバグを混入させる（ミューテーション解析）
                 lastRowIndex = i;
                 break;
             }
