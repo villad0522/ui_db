@@ -238,22 +238,6 @@ export async function updateExcel_core( fileData, sheetInfos, dataList ){
     // エクセルファイルを、上書き保存モードで開く
     const workbook = await XlsxPopulate.fromDataAsync(fileData);
     //
-    // シート「metadata」を白紙にする
-    if (workbook.sheet("metadata")) {
-        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-        // シートが０枚になるとエラーを吐くので、使わないシートを生成する。
-        if (!workbook.sheet("Gw21b1re3e3T5")) {
-            if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
-            workbook.addSheet("Gw21b1re3e3T5");
-        }
-        workbook.deleteSheet("metadata");
-    }
-    workbook.addSheet("metadata");
-    if (workbook.sheet("Gw21b1re3e3T5")) {
-        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-        workbook.deleteSheet("Gw21b1re3e3T5");
-    }
-    //
     await _updateExcelSheet_core( workbook, sheetInfos, dataList );
     //
     try {
@@ -267,7 +251,19 @@ export async function updateExcel_core( fileData, sheetInfos, dataList ){
 
 // 【サブ】シート１個を編集する関数
 export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
-  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+    //
+    // シート「metadata」を削除する
+    if (workbook.sheet("metadata")) {
+        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+        // シートが０枚になるとエラーを吐くので、使わないシートを生成する。
+        if (!workbook.sheet("Gw21b1re3e3T5")) {
+            if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+            workbook.addSheet("Gw21b1re3e3T5");
+        }
+        workbook.deleteSheet("metadata");
+    }
+    //
     //##############################################################################################
     // 【事前準備】行数と、表の下端を調べる処理（以下の２つの変数を埋める）
     let pageRowSize = 0;      // １ページあたりの行数（空白のテンプレートを印刷したときの行数）
@@ -276,27 +272,27 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
     //
     // Excelのシートごとに繰り返す
     for( const sheetInfo of sheetInfos ){   
-        if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
         const sheetName = sheetInfo.sheetName;          // シート名
         const tableStartRow = sheetInfo.excelStartRow;  // 表の上端
         const isTableHeader = sheetInfo.isTableHeader;  // 表に見出しをつけるか（true:つける false:つけない）
         const viewColumns = sheetInfo.viewColumns;      // 列の一覧
         if (!workbook.sheet(sheetName)) {
-            if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
             // もしシートが存在していない場合
             workbook.addSheet(sheetName);
             tableSizes[sheetName] = 50;
             if( isTableHeader ){
-                if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
                 tableLastRows[sheetName] = tableStartRow + 50;
             }
             else{
-                if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
                 tableLastRows[sheetName] = tableStartRow + 49;
             }
-            if( pageRowSize < tableLastRows[sheetName] ){
-                if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
-                pageRowSize = tableLastRows[sheetName];
+            if( pageRowSize < tableLastRows[sheetName] + 1 ){
+                if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+                pageRowSize = tableLastRows[sheetName] + 1;
             }
             continue;
         }
@@ -305,26 +301,26 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
         //
         // 印刷したときの１ページの行数を調べる
         if( pageRowSize < rowSize ){
-            if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
             pageRowSize = rowSize;
         }
         if( pageRowSize < tableStartRow ){
-            if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
             pageRowSize = tableStartRow;
         }
         //
         // 表の下端を調べる
         tableLastRows[sheetName] = tableStartRow + 50;
         for(let k=tableStartRow; k<=rowSize; k++){   // Excelの行ごとに繰り返す
-            if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
             for( const { excelColumnText } of viewColumns ){  // 列ごとに繰り返す
-                if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
                 if( ! /^[A-Z]+$/g.test(excelColumnText) ){
                     throw `Excelの列番号が不正です。\nexcelColumnText = ${excelColumnText}`;
                 }
                 const cell = sheet.cell( k, excelColumnText );
                 if( String(cell.value())==="[↓表ここまで]" ){
-                    if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
                     // 表の下端を見つけた！
                     tableLastRows[sheetName] = k;
                     k = rowSize+1;
@@ -335,36 +331,36 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
         //
         // 表の行数を調べる
         if( isTableHeader ){
-            if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
             tableSizes[sheetName] = tableLastRows[sheetName] - tableStartRow;
         }
         else{
-            if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
             tableSizes[sheetName] = tableLastRows[sheetName] - tableStartRow + 1;
         }
         //
         // 最低限の書き込むスペースを確保する
         if( tableSizes[sheetName] === 0 ){
-            if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
             tableSizes[sheetName] = 1;
             if( isTableHeader ){
-                if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
                 tableLastRows[sheetName] = tableStartRow + 1;
             }
             else{
-                if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
                 tableLastRows[sheetName] = tableStartRow;
             }
         }
         //
         // 印刷したときの１ページの行数を調べる
         if( pageRowSize < tableLastRows[sheetName] ){
-            if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
             pageRowSize = tableLastRows[sheetName];
         }
     }
     if(pageRowSize===0){
-        if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
         pageRowSize = 1;
     }
     //
@@ -373,7 +369,7 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
     let actualPageCount = 0;    // 実際のページ番号
     //
     for( const sheetDatas of dataList ){  // 冊子ごとに繰り返す
-        if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
         const inputIndexes = {          // 各シートにおいて、配列の何行目まで書き込んだのかを記録する
             // "シート名": 320,
         };
@@ -386,11 +382,11 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
         //                     （全シートのうち、何シートの書き込みが完了したのかをcompleteCountに保存している。）
         let displayPageCount=0;
         for( displayPageCount=0; (displayPageCount<100)&&(completeCount<sheetInfos.length); displayPageCount++){
-            if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
             //
             // Excelのシートごとに繰り返す
             for( const sheetInfo of sheetInfos ){   
-                if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
                 const sheetName = sheetInfo.sheetName;          // シート名
                 const tableSize = tableSizes[sheetName];        // 表の行数
                 let tableStartRow = sheetInfo.excelStartRow;    // 表の上端
@@ -411,10 +407,10 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
                 //
                 // 列名
                 if( isTableHeader ){
-                    if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
                     const excelIndex = ( pageRowSize * (actualPageCount+displayPageCount) ) + tableStartRow;    // Excelの何行目に書き込むのか
                     for( const { viewColumnName, excelColumnText } of viewColumns ){  // 列ごとに繰り返す
-                        if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+                        if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
                         if( ! /^[A-Z]+$/g.test(excelColumnText) ){
                             throw `Excelの列番号が不正です。\nexcelColumnText = ${excelColumnText}`;
                         }
@@ -425,44 +421,41 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
                 }
                 //
                 if( !inputIndexes[sheetName] ){
-                    if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
                     inputIndexes[sheetName] = 0;     // 配列の何行目のデータを書き込むのか
                 }
                 //
                 // Excelの行ごとに繰り返す
                 for(let k=tableStartRow; k<=tableLastRow; k++){
-                    if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
                     const excelIndex =  ( pageRowSize * (actualPageCount+displayPageCount) ) + k;    // Excelの何行目に書き込むのか
                     const inputIndex = inputIndexes[sheetName];                   // 配列の何行目のデータを書き込むのか
                     const rowData = (inputIndex<rowDatas.length)? rowDatas[inputIndex] : {};    // 書き込みたいデータ
                     for( const { viewColumnId, excelColumnText } of viewColumns ){  // 列ごとに繰り返す
-                        if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+                        if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
                         const cell = sheet.cell( excelIndex, excelColumnText );
                         const text = String( rowData[viewColumnId] ?? "" );
                         cell.value( text );                                      // Excelファイルのセルに書き込む
                     }
                     inputIndexes[sheetName]++;  // 「配列の何行目のデータを書き込むのか」を次に進める
                 }
-                console.log(`${inputIndexes[sheetName]}行目を書き込んでいます...`);
                 //
                 // 改ページを入れる
                 const lastRowIndex = pageRowSize * (actualPageCount+displayPageCount+1);  // Excelファイルにおける、ページの最後の行
                 sheet.verticalPageBreaks().add( lastRowIndex );
                 const lastRow = sheet.row( lastRowIndex );
-                lastRow.style("bottomBorderStyle",'thin');
-                lastRow.style("bottomBorderColor", "a0a0a0");
+                lastRow.addPageBreak();
                 //
                 if( rowDatas.length <= inputIndexes[sheetName] ){
-                    if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
                     // 全データを一通り書き込み終わったら
-                    console.log(`シート「${sheetName}」の書き込みが完了しました`);
                     if( rowDatas.length<=tableSize ){
-                        if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+                        if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
                         // データが１ページに収まった場合は、次のページにも書き込む
                         inputIndexes[sheetName] = 0;
                     }
                     if( !isComplete[sheetName] ){
-                        if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+                        if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
                         completeCount++;   // 完了カウントを増やす
                     }
                     isComplete[sheetName] = true;   // 完了フラグを立てる
@@ -472,6 +465,13 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
         //=========================================================================
         //
         const pageLength = displayPageCount;  // 冊子全体のページ数
+        //
+        // シート「metadata」を追加する
+        workbook.addSheet("metadata");
+        if (workbook.sheet("Gw21b1re3e3T5")) {
+            if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+            workbook.deleteSheet("Gw21b1re3e3T5");
+        }
         //
         //=========================================================================
         // 【シート「metadata」にページ番号を入れる処理】
@@ -501,8 +501,8 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
             //
             // 改ページを入れる
             const lastRowIndex = pageRowSize * (actualPageCount+i+1);  // Excelファイルにおける、ページの最後の行
-            metaSheet.verticalPageBreaks().add( lastRowIndex );
             const lastRow = metaSheet.row( lastRowIndex );
+            lastRow.addPageBreak();
             lastRow.style("bottomBorderStyle",'thin');
             lastRow.style("bottomBorderColor", "000000");
         }

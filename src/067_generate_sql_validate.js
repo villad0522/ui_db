@@ -138,13 +138,11 @@ export async function generateSQL( tableId, viewColumns, conditionInfoList, sort
       throw new Error(`sortOrder[${i}].isAscendingがブール値ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
     }
   }
-  if( typeof onePageMaxSize !== "number" ){
-    if( !onePageMaxSize ){
-      throw new Error(`onePageMaxSizeがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
-    }
-    else{
-      throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
-    }
+  if( (onePageMaxSize===null) || (onePageMaxSize===undefined) ){
+    // onePageMaxSizeは空欄OK。
+  }
+  else if( typeof onePageMaxSize !== "number" ){
+    throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
   }
   else if( isNaN(onePageMaxSize) ){
     throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);

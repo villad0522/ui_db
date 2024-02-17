@@ -259,7 +259,7 @@ export async function deleteView_core( viewId ){
 
 
 // SQLクエリを生成
-export async function generateSQL_core( viewId, queryParameters ){
+export async function generateSQL_core( viewId, queryParameters, isExcel ){
   if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
     const  {
         childPageId,
@@ -368,7 +368,7 @@ export async function generateSQL_core( viewId, queryParameters ){
         viewColumns,
         conditionInfoList,
         sortOrders,
-        onePageMaxSize,
+        isExcel ? null : onePageMaxSize,
     );
     return {  normalSQL, countSQL, parameters };
 }

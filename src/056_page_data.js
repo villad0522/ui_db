@@ -203,7 +203,7 @@ export async function getPageDataForGUI_core( pageId, queryParameters ){
   const views = await listChildrenView( pageId );
   for( const { viewId } of views ){
     if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    const { normalSQL, countSQL, parameters } = await generateSQL( viewId, queryParameters );
+    const { normalSQL, countSQL, parameters } = await generateSQL( viewId, queryParameters, false );
     results["view" + viewId + "_"] = await runSqlReadOnly( normalSQL, parameters );
     //
     const [{ "total": total }] = await runSqlReadOnly( countSQL, parameters );
@@ -228,7 +228,7 @@ export async function getPageDataForExcel_core( pageId, queryParameters ){
     const views = await listChildrenView( pageId );
     for( const { viewId, name, excelStartRow } of views ){
       if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-      const { normalSQL, countSQL, parameters } = await generateSQL( viewId, queryParameters );
+      const { normalSQL, countSQL, parameters } = await generateSQL( viewId, queryParameters, true );
       sheetDatas[name] = await runSqlReadOnly( normalSQL, parameters );
     }
     dataList.push(sheetDatas);

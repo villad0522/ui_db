@@ -282,7 +282,7 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
     if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
     sql += `)`;
   }
-  else{
+  else if(onePageMaxSize){
     if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
     sql += `LIMIT ${onePageMaxSize}`;
   }

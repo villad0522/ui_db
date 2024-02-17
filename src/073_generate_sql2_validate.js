@@ -247,13 +247,11 @@ export async function generateSQLwithoutDuplication( tableId, selectData, joinDa
   else if( isNaN(isCount) ){
     throw new Error(`isCountがブール値ではありません。\nレイヤー : generate_sql2\n関数 : generateSQLwithoutDuplication`);
   }
-  if( typeof onePageMaxSize !== "number" ){
-    if( !onePageMaxSize ){
-      throw new Error(`onePageMaxSizeがNULLです。\nレイヤー : generate_sql2\n関数 : generateSQLwithoutDuplication`);
-    }
-    else{
-      throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : generate_sql2\n関数 : generateSQLwithoutDuplication`);
-    }
+  if( (onePageMaxSize===null) || (onePageMaxSize===undefined) ){
+    // onePageMaxSizeは空欄OK。
+  }
+  else if( typeof onePageMaxSize !== "number" ){
+    throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : generate_sql2\n関数 : generateSQLwithoutDuplication`);
   }
   else if( isNaN(onePageMaxSize) ){
     throw new Error(`onePageMaxSizeが数値ではありません。\nレイヤー : generate_sql2\n関数 : generateSQLwithoutDuplication`);

@@ -97,7 +97,7 @@ export async function deleteView( viewId ){
 //#######################################################################################
 // 関数「generateSQL_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function generateSQL( viewId, queryParameters ){
+export async function generateSQL( viewId, queryParameters, isExcel ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewId !== "number" ){
@@ -125,12 +125,23 @@ export async function generateSQL( viewId, queryParameters ){
       throw new Error(`queryParametersのキーが文字列ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
     }
   }
+  if( typeof isExcel !== "boolean" ){
+    if( !isExcel ){
+      throw new Error(`isExcelがNULLです。\nレイヤー : joinedTable\n関数 : generateSQL`);
+    }
+    else{
+      throw new Error(`isExcelがブール値ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+    }
+  }
+  else if( isNaN(isExcel) ){
+    throw new Error(`isExcelがブール値ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await generateSQL_core( viewId, queryParameters );
+    result = await generateSQL_core( viewId, queryParameters, isExcel );
   }
   catch(error){
     if( typeof error === "string" ){
