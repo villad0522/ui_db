@@ -4,7 +4,7 @@ import {
   close_core,  // バックエンドプログラム終了
   _launchExcelApp_core,  // 【サブ】Excelアプリを起動
   _handleEditExcelFile_core,  // 【サブ】ファイルが編集されたとき
-} from "./032_excel_instance.js";
+} from "./032_excel_file.js";
 
 
 //#######################################################################################
@@ -15,35 +15,35 @@ export async function openExcel( clientIpAddress, pageId, queryParameters ){
   // 引数を検証
   if( typeof clientIpAddress !== "string" ){
     if( !clientIpAddress ){
-      throw new Error(`clientIpAddressがNULLです。\nレイヤー : excel_instance\n関数 : openExcel`);
+      throw new Error(`clientIpAddressがNULLです。\nレイヤー : excel_file\n関数 : openExcel`);
     }
     else{
-      throw new Error(`clientIpAddressが文字列ではありません。\nレイヤー : excel_instance\n関数 : openExcel`);
+      throw new Error(`clientIpAddressが文字列ではありません。\nレイヤー : excel_file\n関数 : openExcel`);
     }
   }
   if( typeof pageId !== "number" ){
     if( !pageId ){
-      throw new Error(`pageIdがNULLです。\nレイヤー : excel_instance\n関数 : openExcel`);
+      throw new Error(`pageIdがNULLです。\nレイヤー : excel_file\n関数 : openExcel`);
     }
     else{
-      throw new Error(`pageIdが数値ではありません。\nレイヤー : excel_instance\n関数 : openExcel`);
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : excel_file\n関数 : openExcel`);
     }
   }
   else if( isNaN(pageId) ){
-    throw new Error(`pageIdが数値ではありません。\nレイヤー : excel_instance\n関数 : openExcel`);
+    throw new Error(`pageIdが数値ではありません。\nレイヤー : excel_file\n関数 : openExcel`);
   }
   if( queryParameters===null || queryParameters===undefined ){
-    throw new Error(`queryParametersがNULLです。\nレイヤー : excel_instance\n関数 : openExcel`);
+    throw new Error(`queryParametersがNULLです。\nレイヤー : excel_file\n関数 : openExcel`);
   }
   else if( typeof queryParameters !== "object" ){
-    throw new Error(`queryParametersがオブジェクトではありません。\nレイヤー : excel_instance\n関数 : openExcel`);
+    throw new Error(`queryParametersがオブジェクトではありません。\nレイヤー : excel_file\n関数 : openExcel`);
   }
   else if( queryParameters.constructor !== Object ){
-    throw new Error(`queryParametersが辞書型ではありません。\nレイヤー : excel_instance\n関数 : openExcel`);
+    throw new Error(`queryParametersが辞書型ではありません。\nレイヤー : excel_file\n関数 : openExcel`);
   }
   for( const i in queryParameters ){
     if( typeof i !== "string" ){
-      throw new Error(`queryParametersのキーが文字列ではありません。\nレイヤー : excel_instance\n関数 : openExcel`);
+      throw new Error(`queryParametersのキーが文字列ではありません。\nレイヤー : excel_file\n関数 : openExcel`);
     }
   }
   //
@@ -55,7 +55,7 @@ export async function openExcel( clientIpAddress, pageId, queryParameters ){
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : excel_instance\n関数 : openExcel`);
+      throw new Error(`${error}\nレイヤー : excel_file\n関数 : openExcel`);
     }
     else{
       throw error;
@@ -66,18 +66,18 @@ export async function openExcel( clientIpAddress, pageId, queryParameters ){
   // 戻り値を検証
   if( typeof result !== "object" ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : excel_instance\n関数 : openExcel`);
+      throw new Error(`resultがNULLです。\nレイヤー : excel_file\n関数 : openExcel`);
     }
     else{
-      throw new Error(`resultがオブジェクトではありません。\nレイヤー : excel_instance\n関数 : openExcel`);
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : excel_file\n関数 : openExcel`);
     }
   }
   if( typeof result.fileName !== "string" ){
     if( !result.fileName ){
-      throw new Error(`result.fileNameがNULLです。\nレイヤー : excel_instance\n関数 : openExcel`);
+      throw new Error(`result.fileNameがNULLです。\nレイヤー : excel_file\n関数 : openExcel`);
     }
     else{
-      throw new Error(`result.fileNameが文字列ではありません。\nレイヤー : excel_instance\n関数 : openExcel`);
+      throw new Error(`result.fileNameが文字列ではありません。\nレイヤー : excel_file\n関数 : openExcel`);
     }
   }
   //
@@ -96,18 +96,18 @@ export async function startUp( localUrl, isDebug ){
     // localUrlは空欄OK。
   }
   else if( typeof localUrl !== "string" ){
-    throw new Error(`localUrlが文字列ではありません。\nレイヤー : excel_instance\n関数 : startUp`);
+    throw new Error(`localUrlが文字列ではありません。\nレイヤー : excel_file\n関数 : startUp`);
   }
   if( typeof isDebug !== "boolean" ){
     if( !isDebug ){
-      throw new Error(`isDebugがNULLです。\nレイヤー : excel_instance\n関数 : startUp`);
+      throw new Error(`isDebugがNULLです。\nレイヤー : excel_file\n関数 : startUp`);
     }
     else{
-      throw new Error(`isDebugがブール値ではありません。\nレイヤー : excel_instance\n関数 : startUp`);
+      throw new Error(`isDebugがブール値ではありません。\nレイヤー : excel_file\n関数 : startUp`);
     }
   }
   else if( isNaN(isDebug) ){
-    throw new Error(`isDebugがブール値ではありません。\nレイヤー : excel_instance\n関数 : startUp`);
+    throw new Error(`isDebugがブール値ではありません。\nレイヤー : excel_file\n関数 : startUp`);
   }
   //
   //--------------------------------------------------------------------------
@@ -118,7 +118,7 @@ export async function startUp( localUrl, isDebug ){
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : excel_instance\n関数 : startUp`);
+      throw new Error(`${error}\nレイヤー : excel_file\n関数 : startUp`);
     }
     else{
       throw error;
@@ -148,7 +148,7 @@ export async function close(  ){
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : excel_instance\n関数 : close`);
+      throw new Error(`${error}\nレイヤー : excel_file\n関数 : close`);
     }
     else{
       throw error;
@@ -171,10 +171,10 @@ export async function _launchExcelApp( filePath ){
   // 引数を検証
   if( typeof filePath !== "string" ){
     if( !filePath ){
-      throw new Error(`filePathがNULLです。\nレイヤー : excel_instance\n関数 : _launchExcelApp`);
+      throw new Error(`filePathがNULLです。\nレイヤー : excel_file\n関数 : _launchExcelApp`);
     }
     else{
-      throw new Error(`filePathが文字列ではありません。\nレイヤー : excel_instance\n関数 : _launchExcelApp`);
+      throw new Error(`filePathが文字列ではありません。\nレイヤー : excel_file\n関数 : _launchExcelApp`);
     }
   }
   //
@@ -186,7 +186,7 @@ export async function _launchExcelApp( filePath ){
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : excel_instance\n関数 : _launchExcelApp`);
+      throw new Error(`${error}\nレイヤー : excel_file\n関数 : _launchExcelApp`);
     }
     else{
       throw error;
@@ -209,22 +209,22 @@ export async function _handleEditExcelFile( filePath, pageId ){
   // 引数を検証
   if( typeof filePath !== "string" ){
     if( !filePath ){
-      throw new Error(`filePathがNULLです。\nレイヤー : excel_instance\n関数 : _handleEditExcelFile`);
+      throw new Error(`filePathがNULLです。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
     }
     else{
-      throw new Error(`filePathが文字列ではありません。\nレイヤー : excel_instance\n関数 : _handleEditExcelFile`);
+      throw new Error(`filePathが文字列ではありません。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
     }
   }
   if( typeof pageId !== "number" ){
     if( !pageId ){
-      throw new Error(`pageIdがNULLです。\nレイヤー : excel_instance\n関数 : _handleEditExcelFile`);
+      throw new Error(`pageIdがNULLです。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
     }
     else{
-      throw new Error(`pageIdが数値ではありません。\nレイヤー : excel_instance\n関数 : _handleEditExcelFile`);
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
     }
   }
   else if( isNaN(pageId) ){
-    throw new Error(`pageIdが数値ではありません。\nレイヤー : excel_instance\n関数 : _handleEditExcelFile`);
+    throw new Error(`pageIdが数値ではありません。\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
   }
   //
   //--------------------------------------------------------------------------
@@ -235,7 +235,7 @@ export async function _handleEditExcelFile( filePath, pageId ){
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : excel_instance\n関数 : _handleEditExcelFile`);
+      throw new Error(`${error}\nレイヤー : excel_file\n関数 : _handleEditExcelFile`);
     }
     else{
       throw error;

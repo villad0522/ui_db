@@ -1,20 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  createColumn,
-  deleteTable,
-  updatePageName,
-  createView,
-  deleteView,
-  deletePage,
-  pastePage,
-  updateView,
-  addViewColumn,
-  deleteViewColumn,
-  reorderViewColumnToRight,
-  reorderViewColumnToLeft,
-  regeneratePage,
-} from "./040_regenerate_page_validate.js";
+  startUp,
+  createPage,
+  deleteTemplate,
+  updateTemplateName,
+  listTemplates,
+  getExcelTemplate,
+} from "./037_excel_template_validate.js";
 import {
   getLocalIp,
 } from "./136_ip_address_validate.js";
@@ -68,6 +61,21 @@ import {
   getViewInfo,
   isExistView,
 } from "./064_page_and_view_validate.js";
+import {
+  createColumn,
+  deleteTable,
+  updatePageName,
+  createView,
+  deleteView,
+  deletePage,
+  pastePage,
+  updateView,
+  addViewColumn,
+  deleteViewColumn,
+  reorderViewColumnToRight,
+  reorderViewColumnToLeft,
+  regeneratePage,
+} from "./040_regenerate_page_validate.js";
 import {
   listDataTypes,
 } from "./118_data_type_validate.js";
@@ -207,19 +215,10 @@ import {
   regenerateAPI_delete,
 } from "./043_regenerate_api_info_validate.js";
 import {
-  updateExcel,
-  openExcel,
-  _updateExcelSheet,
-} from "./037_excel_file_validate.js";
-import {
-  startUp,  // プログラム起動
-  createPage,  // ページを作成
-  deleteTemplate,  // 不可逆的にテンプレートを削除
-  updateTemplateName,  // テンプレート名を変更
-  listTemplates,  // テンプレートの一覧を取得(重)
-  getExcelTemplate,  // Excelテンプレートを取得
-} from "./034_excel_template_validate.js";
-import { setBugMode } from "./035_excel_template.js";
+  updateExcel,  // エクセルファイルを更新する関数
+  _updateExcelSheet,  // 【サブ】シート１個を編集する関数
+} from "./034_excel_content_validate.js";
+import { setBugMode } from "./035_excel_content.js";
 
 
 export async function test033() {
@@ -227,7 +226,7 @@ export async function test033() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 13; i++ ) {
+    for ( i = 1; i <= 34; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -246,12 +245,12 @@ export async function test033() {
         }
         // 意図的に埋め込んだバグを検出できなかった場合
         setBugMode(0);    // 意図的なバグの発生を止める
-        console.log(`レイヤー「excel_template」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
+        console.log(`レイヤー「excel_content」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
         return;
     }
     // 意図的に埋め込んだ全てのバグを、正常に検出できた
     setBugMode(0);    // 意図的なバグの発生を止める
-    console.log(`レイヤー「excel_template」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
+    console.log(`レイヤー「excel_content」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
     return;
 }
 
@@ -259,7 +258,6 @@ export async function test033() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
-    await startUp("http://localhost:3000/", true);
-    await close();
+    
 
 }

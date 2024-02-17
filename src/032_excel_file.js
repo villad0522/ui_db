@@ -1,4 +1,4 @@
-// Excelインスタンス
+// Excelファイル
 //
 import {
   startUp,
@@ -7,7 +7,7 @@ import {
   updateTemplateName,
   listTemplates,
   getExcelTemplate,
-} from "./034_excel_template_validate.js";
+} from "./037_excel_template_validate.js";
 import {
   getLocalIp,
 } from "./136_ip_address_validate.js";
@@ -216,9 +216,8 @@ import {
 } from "./043_regenerate_api_info_validate.js";
 import {
   updateExcel,
-  openExcel,
   _updateExcelSheet,
-} from "./037_excel_file_validate.js";
+} from "./034_excel_content_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
@@ -253,13 +252,25 @@ export async function openExcel_core( clientIpAddress, pageId, queryParameters )
     //
     // データを取得する
     const dataList = await getPageDataForExcel( pageId, queryParameters );
+    const sheetInfos = [];
+    const views = await listChildrenView( pageId );
+    for( const { viewId, name, excelStartRow } of views ){
+      if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+      const viewColumns = await listViewColumns( viewId );
+      sheetInfos.push({
+        "sheetName": name,
+        "excelStartRow": excelStartRow,
+        "isTableHeader": true,
+        "viewColumns": viewColumns,
+      });
+    }
     //
     // Excelファイルに情報を追記する
-    const fileData = await updateExcel( templateData, dataList );
+    const fileData = await updateExcel( templateData, sheetInfos, dataList );
     //
     const serverIpAddress = await getLocalIp();
     if( clientIpAddress !== serverIpAddress && clientIpAddress!=="127.0.0.1" ){
-        if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
         // 子機からシステムにアクセスしている場合、Excelをダウンロードさせる
         const fileName = pageName + "(閲覧専用).xlsm";
         return {
@@ -271,7 +282,7 @@ export async function openExcel_core( clientIpAddress, pageId, queryParameters )
     //
     const fileName = pageName + "(編集可).xlsm";
     if( watchers[fileName] ){
-        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
         // ファイルの監視を停止する
         await watchers[fileName].close();
     }
@@ -312,7 +323,7 @@ export async function openExcel_core( clientIpAddress, pageId, queryParameters )
 
 // プログラム起動
 export async function startUp_core( localUrl, isDebug ){
-  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
   await startUp( localUrl, isDebug ); // 下層の関数を呼び出す
 }
 
@@ -320,9 +331,9 @@ export async function startUp_core( localUrl, isDebug ){
 
 // バックエンドプログラム終了
 export async function close_core(  ){
-  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
   for(const fileName in watchers){
-    if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
     await watchers[fileName].close();
   }
   await close(); // 下層の関数を呼び出す
@@ -332,7 +343,7 @@ export async function close_core(  ){
 
 // 【サブ】Excelアプリを起動
 export async function _launchExcelApp_core( filePath ){
-  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
     if(!fs.existsSync(filePath)){
         throw `ファイルが存在しません`;
     }
@@ -342,7 +353,7 @@ export async function _launchExcelApp_core( filePath ){
         {encoding:"Shift_JIS"},
         (err, stdout, stderr) => {
             if (err) {
-                if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
                 console.error(`stderr:${iconv.decode(stderr,"Shift_JIS")}`);
                 console.error(command);
                 return;
@@ -354,5 +365,5 @@ export async function _launchExcelApp_core( filePath ){
 
 // 【サブ】ファイルが編集されたとき
 export async function _handleEditExcelFile_core( filePath, pageId ){
-  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
 }

@@ -224,20 +224,12 @@ export async function getPageDataForExcel_core( pageId, queryParameters ){
   const dataList = [];
   for( let i=0; i<1; i++ ){
     if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-    const sheetDatas = [];
+    const sheetDatas = {};
     const views = await listChildrenView( pageId );
     for( const { viewId, name, excelStartRow } of views ){
       if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
       const { normalSQL, countSQL, parameters } = await generateSQL( viewId, queryParameters );
-      const rowDatas = await runSqlReadOnly( normalSQL, parameters );
-      const viewColumns = await listViewColumns( viewId );
-      sheetDatas.push({
-        "sheetName": name,
-        "excelStartRow": excelStartRow,
-        "isTableHeader": true,
-        "viewColumns": viewColumns,
-        "rowDatas": rowDatas,
-      });
+      sheetDatas[name] = await runSqlReadOnly( normalSQL, parameters );
     }
     dataList.push(sheetDatas);
   }

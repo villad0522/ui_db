@@ -46,18 +46,18 @@
   },
   {
     "layerId": "01HPPGK7JQSHGM7R9822T0MGJC",
-    "layerNameJP": "Excelインスタンス",
-    "layerNameEN": "excel_instance"
+    "layerNameJP": "Excelファイル",
+    "layerNameEN": "excel_file"
+  },
+  {
+    "layerId": "01HMNXBFJ0S33T6WGJCJ0C3YF6",
+    "layerNameJP": "Excel内容",
+    "layerNameEN": "excel_content"
   },
   {
     "layerId": "01HMNZ8SGAZXY68HQTQN230ZHH",
     "layerNameJP": "Excelテンプレート",
     "layerNameEN": "excel_template"
-  },
-  {
-    "layerId": "01HMNXBFJ0S33T6WGJCJ0C3YF6",
-    "layerNameJP": "Excelファイル",
-    "layerNameEN": "excel_file"
   },
   {
     "layerId": "01HMWEPGB1WN73RY4BK4R0QSJ8",

@@ -5,7 +5,7 @@ import {
   updateTemplateName_core,  // テンプレート名を変更
   listTemplates_core,  // テンプレートの一覧を取得(重)
   getExcelTemplate_core,  // Excelテンプレートを取得
-} from "./035_excel_template.js";
+} from "./038_excel_template.js";
 
 
 //#######################################################################################

@@ -5,7 +5,7 @@ import {
   openExcel,
   _launchExcelApp,
   _handleEditExcelFile,
-} from "./031_excel_instance_validate.js";
+} from "./031_excel_file_validate.js";
 import {
   getLocalIp,
 } from "./136_ip_address_validate.js";
@@ -169,7 +169,7 @@ import {
   updateTemplateName,
   listTemplates,
   getExcelTemplate,
-} from "./034_excel_template_validate.js";
+} from "./037_excel_template_validate.js";
 import {
   getPageInfo,
   listViewsFromTableId,
@@ -224,7 +224,7 @@ import {
 import {
   updateExcel,
   _updateExcelSheet,
-} from "./037_excel_file_validate.js";
+} from "./034_excel_content_validate.js";
 import {
   transferData,
   masterFaculty,
@@ -408,13 +408,13 @@ export {
   regenerateAPI_update,
   regenerateAPI_delete,
   regeneratePage,
-  updateExcel,
-  openExcel,
-  _updateExcelSheet,
   deleteTemplate,
   updateTemplateName,
   listTemplates,
   getExcelTemplate,
+  updateExcel,
+  _updateExcelSheet,
+  openExcel,
   _launchExcelApp,
   _handleEditExcelFile,
   transferData,

@@ -208,11 +208,6 @@ import {
   regenerateAPI_update,
   regenerateAPI_delete,
 } from "./043_regenerate_api_info_validate.js";
-import {
-  updateExcel,
-  openExcel,
-  _updateExcelSheet,
-} from "./037_excel_file_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）

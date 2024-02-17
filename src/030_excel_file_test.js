@@ -1,27 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  startUp,
-  createColumn,
-  deleteTable,
   createPage,
-  updatePageName,
-  createView,
-  deleteView,
-  deletePage,
-  pastePage,
-  updateView,
-  addViewColumn,
-  deleteViewColumn,
-  reorderViewColumnToRight,
-  reorderViewColumnToLeft,
-  regeneratePage,
-} from "./040_regenerate_page_validate.js";
+  deleteTemplate,
+  updateTemplateName,
+  listTemplates,
+  getExcelTemplate,
+} from "./037_excel_template_validate.js";
 import {
   getLocalIp,
 } from "./136_ip_address_validate.js";
 import {
-  close,
   createDirectories,
 } from "./052_frontend_files_validate.js";
 import {
@@ -70,6 +59,21 @@ import {
   getViewInfo,
   isExistView,
 } from "./064_page_and_view_validate.js";
+import {
+  createColumn,
+  deleteTable,
+  updatePageName,
+  createView,
+  deleteView,
+  deletePage,
+  pastePage,
+  updateView,
+  addViewColumn,
+  deleteViewColumn,
+  reorderViewColumnToRight,
+  reorderViewColumnToLeft,
+  regeneratePage,
+} from "./040_regenerate_page_validate.js";
 import {
   listDataTypes,
 } from "./118_data_type_validate.js";
@@ -209,19 +213,25 @@ import {
   regenerateAPI_delete,
 } from "./043_regenerate_api_info_validate.js";
 import {
-  updateExcel,  // エクセルファイルを更新する関数
-  openExcel,  // Excelファイルを開く関数
-  _updateExcelSheet,  // 【サブ】シート１個を編集する関数
-} from "./037_excel_file_validate.js";
-import { setBugMode } from "./038_excel_file.js";
+  updateExcel,
+  _updateExcelSheet,
+} from "./034_excel_content_validate.js";
+import {
+  openExcel,  // Excelを開く
+  startUp,  // プログラム起動
+  close,  // バックエンドプログラム終了
+  _launchExcelApp,  // 【サブ】Excelアプリを起動
+  _handleEditExcelFile,  // 【サブ】ファイルが編集されたとき
+} from "./031_excel_file_validate.js";
+import { setBugMode } from "./032_excel_file.js";
 
 
-export async function test036() {
+export async function test030() {
     setBugMode(0);    // バグを混入させない（通常動作）
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 34; i++ ) {
+    for ( i = 1; i <= 10; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -253,6 +263,8 @@ export async function test036() {
 // このレイヤーの動作テストを実行する関数
 async function _test(){
     
-    
+    await startUp("http://localhost:3000/", true);
+    await openExcel( "172.0.0.1", 1, {} );
+    await close();
 
 }

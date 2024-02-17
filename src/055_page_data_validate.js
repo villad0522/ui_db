@@ -132,116 +132,40 @@ export async function getPageDataForExcel( pageId, queryParameters ){
     }
   }
   for( let i=0; i<result.length; i++ ){
-    if( !Array.isArray(result[i]) ){
-      if( !result[i] ){
-        throw new Error(`result[${i}]がNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-      }
-      else{
-        throw new Error(`result[${i}]が配列ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-      }
+    if( result[i]===null || result[i]===undefined ){
+      throw new Error(`result[${i}]がNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
     }
-    for( let j=0; j<result[i].length; j++ ){
-      if( typeof result[i][j] !== "object" ){
+    else if( typeof result[i] !== "object" ){
+      throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
+    }
+    else if( result[i].constructor !== Object ){
+      throw new Error(`result[${i}]が辞書型ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
+    }
+    for( const j in result[i] ){
+      if( typeof j !== "string" ){
+        throw new Error(`result[${i}]のキーが文字列ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
+      }
+      if( !Array.isArray(result[i][j]) ){
         if( !result[i][j] ){
-          throw new Error(`result[${i}][${j}]がNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
+          throw new Error(`result[${i}]["${j}"]がNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
         }
         else{
-          throw new Error(`result[${i}][${j}]がオブジェクトではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
+          throw new Error(`result[${i}]["${j}"]が配列ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
         }
       }
-      if( typeof result[i][j].sheetName !== "string" ){
-        if( !result[i][j].sheetName ){
-          throw new Error(`result[${i}][${j}].sheetNameがNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
+      for( let k=0; k<result[i][j].length; k++ ){
+        if( result[i][j][k]===null || result[i][j][k]===undefined ){
+          throw new Error(`result[${i}]["${j}"][${k}]がNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
         }
-        else{
-          throw new Error(`result[${i}][${j}].sheetNameが文字列ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
+        else if( typeof result[i][j][k] !== "object" ){
+          throw new Error(`result[${i}]["${j}"][${k}]がオブジェクトではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
         }
-      }
-      if( typeof result[i][j].excelStartRow !== "number" ){
-        if( !result[i][j].excelStartRow ){
-          throw new Error(`result[${i}][${j}].excelStartRowがNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
+        else if( result[i][j][k].constructor !== Object ){
+          throw new Error(`result[${i}]["${j}"][${k}]が辞書型ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
         }
-        else{
-          throw new Error(`result[${i}][${j}].excelStartRowが数値ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-        }
-      }
-      else if( isNaN(result[i][j].excelStartRow) ){
-        throw new Error(`result[${i}][${j}].excelStartRowが数値ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-      }
-      if( typeof result[i][j].isTableHeader !== "boolean" ){
-        if( !result[i][j].isTableHeader ){
-          throw new Error(`result[${i}][${j}].isTableHeaderがNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-        }
-        else{
-          throw new Error(`result[${i}][${j}].isTableHeaderがブール値ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-        }
-      }
-      else if( isNaN(result[i][j].isTableHeader) ){
-        throw new Error(`result[${i}][${j}].isTableHeaderがブール値ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-      }
-      if( !Array.isArray(result[i][j].viewColumns) ){
-        if( !result[i][j].viewColumns ){
-          throw new Error(`result[${i}][${j}].viewColumnsがNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-        }
-        else{
-          throw new Error(`result[${i}][${j}].viewColumnsが配列ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-        }
-      }
-      for( let k=0; k<result[i][j].viewColumns.length; k++ ){
-        if( typeof result[i][j].viewColumns[k] !== "object" ){
-          if( !result[i][j].viewColumns[k] ){
-            throw new Error(`result[${i}][${j}].viewColumns[${k}]がNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-          }
-          else{
-            throw new Error(`result[${i}][${j}].viewColumns[${k}]がオブジェクトではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-          }
-        }
-        if( typeof result[i][j].viewColumns[k].viewColumnId !== "string" ){
-          if( !result[i][j].viewColumns[k].viewColumnId ){
-            throw new Error(`result[${i}][${j}].viewColumns[${k}].viewColumnIdがNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-          }
-          else{
-            throw new Error(`result[${i}][${j}].viewColumns[${k}].viewColumnIdが文字列ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-          }
-        }
-        if( typeof result[i][j].viewColumns[k].viewColumnName !== "string" ){
-          if( !result[i][j].viewColumns[k].viewColumnName ){
-            throw new Error(`result[${i}][${j}].viewColumns[${k}].viewColumnNameがNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-          }
-          else{
-            throw new Error(`result[${i}][${j}].viewColumns[${k}].viewColumnNameが文字列ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-          }
-        }
-        if( typeof result[i][j].viewColumns[k].excelColumnText !== "string" ){
-          if( !result[i][j].viewColumns[k].excelColumnText ){
-            throw new Error(`result[${i}][${j}].viewColumns[${k}].excelColumnTextがNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-          }
-          else{
-            throw new Error(`result[${i}][${j}].viewColumns[${k}].excelColumnTextが文字列ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-          }
-        }
-      }
-      if( !Array.isArray(result[i][j].rowDatas) ){
-        if( !result[i][j].rowDatas ){
-          throw new Error(`result[${i}][${j}].rowDatasがNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-        }
-        else{
-          throw new Error(`result[${i}][${j}].rowDatasが配列ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-        }
-      }
-      for( let k=0; k<result[i][j].rowDatas.length; k++ ){
-        if( result[i][j].rowDatas[k]===null || result[i][j].rowDatas[k]===undefined ){
-          throw new Error(`result[${i}][${j}].rowDatas[${k}]がNULLです。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-        }
-        else if( typeof result[i][j].rowDatas[k] !== "object" ){
-          throw new Error(`result[${i}][${j}].rowDatas[${k}]がオブジェクトではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-        }
-        else if( result[i][j].rowDatas[k].constructor !== Object ){
-          throw new Error(`result[${i}][${j}].rowDatas[${k}]が辞書型ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
-        }
-        for( const l in result[i][j].rowDatas[k] ){
+        for( const l in result[i][j][k] ){
           if( typeof l !== "string" ){
-            throw new Error(`result[${i}][${j}].rowDatas[${k}]のキーが文字列ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
+            throw new Error(`result[${i}]["${j}"][${k}]のキーが文字列ではありません。\nレイヤー : page_data\n関数 : getPageDataForExcel`);
           }
         }
       }
