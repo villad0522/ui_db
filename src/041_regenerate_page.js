@@ -184,10 +184,14 @@ import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
 import {
-  getPageData,
+  getPageDataForGUI,
+  getPageDataForExcel,
+  myFunc,
 } from "./055_page_data_validate.js";
 import {
-  generateViewHTML,
+  generateViewHTML_table,
+  generateViewHTML_card,
+  generateViewHTML_button,
 } from "./049_regenerate_view_html_validate.js";
 import {
   regenerateHTML,
@@ -483,4 +487,57 @@ export async function deleteTable_core( tableId ){
         await regeneratePage_core( pageId );
     }
     return result;
+}
+
+// ビューの情報を更新
+export async function updateView_core( params ){
+  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+    const result = await updateView( params );    // 下層の関数を呼び出す
+    const { viewId } = params;
+    const { pageId } = await getViewInfo( viewId );
+    await regeneratePage_core( pageId );
+    return result;
+}
+
+// ビューカラムを作成
+export async function addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName ){
+  if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+    const result = await addViewColumn( viewId, viewColumnType, columnPath, viewColumnName );    // 下層の関数を呼び出す
+    const { pageId } = await getViewInfo( viewId );
+    await regeneratePage_core( pageId );
+    return result;
+}
+
+// カラムを作成
+export async function createColumn_core( tableId, columnName, dataType, parentTableId ){
+  if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+    const result = await createColumn( tableId, columnName, dataType, parentTableId );    // 下層の関数を呼び出す
+    const pages = await listAllPages();
+    for( const pageId of pages ){
+        if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+        await regeneratePage_core( pageId );
+    }
+    return result;
+}
+
+// ビューカラムを左へ移動
+export async function reorderViewColumnToLeft_core( viewColumnId ){
+  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+    const result = await updateView( params );    // 下層の関数を呼び出す
+    const { viewId } = params;
+    const { pageId } = await getViewInfo( viewId );
+    await regeneratePage_core( pageId );
+    return result;
+}
+
+// ビューカラムを右へ移動
+export async function reorderViewColumnToRight_core( viewColumnId ){
+  if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+  throw "この関数は未実装です。";
+}
+
+// ビューカラムを削除
+export async function deleteViewColumn_core( viewColumnId ){
+  if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+  throw "この関数は未実装です。";
 }

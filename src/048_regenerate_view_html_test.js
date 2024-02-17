@@ -184,10 +184,14 @@ import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
 import {
-  getPageData,
+  getPageDataForGUI,
+  getPageDataForExcel,
+  myFunc,
 } from "./055_page_data_validate.js";
 import {
-  generateViewHTML,  // ビューのHTMLを生成
+  generateViewHTML_table,  // ビューのHTMLを生成（表）
+  generateViewHTML_card,  // ビューのHTMLを生成（カード）
+  generateViewHTML_button,  // ビューのHTMLを生成（ボタン）
 } from "./049_regenerate_view_html_validate.js";
 import { setBugMode } from "./050_regenerate_view_html.js";
 
@@ -197,7 +201,7 @@ export async function test048() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 18; i++ ) {
+    for ( i = 1; i <= 20; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

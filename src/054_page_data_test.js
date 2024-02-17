@@ -181,7 +181,9 @@ import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
 import {
-  getPageData,  // データを取得
+  getPageDataForGUI,  // データを取得(GUI向け)
+  getPageDataForExcel,  // データを取得(Excel向け)
+  myFunc,  // 新しい関数
 } from "./055_page_data_validate.js";
 import { setBugMode } from "./056_page_data.js";
 
@@ -191,7 +193,7 @@ export async function test054() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 2; i++ ) {
+    for ( i = 1; i <= 6; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

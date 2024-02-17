@@ -687,6 +687,7 @@ export async function listChildrenView_core( pageId ){
   const views = await runSqlReadOnly(
     `SELECT 
         pages.page_id AS childPageId,
+        views.page_id AS pageId,
         view_name AS name,
         views.view_id AS viewId,
         views.table_id AS tableId,
@@ -912,7 +913,8 @@ export async function getViewInfo_core( viewId ){
   const views = await runSqlReadOnly(
     `SELECT 
         pages.page_id AS childPageId,
-        view_name AS name,
+        views.page_id AS pageId,
+        views.view_name AS name,
         views.view_id AS viewId,
         views.table_id AS tableId,
         views.one_page_max_size AS onePageMaxSize,
@@ -952,6 +954,7 @@ export async function isExistView_core( viewId ){
   const views = await runSqlReadOnly(
     `SELECT 
         pages.page_id AS childPageId,
+        views.page_id AS pageId,
         view_name AS name,
         views.view_id AS viewId,
         views.table_id AS tableId,
@@ -998,6 +1001,9 @@ export async function updateView_core( params ){
     excelStartRow,
     excelStartColumn,
   } = params;
+  if( viewType!=="TABLE" && viewType!=="BUTTON" && viewType!=="CARD" ){
+    throw `ビューの種類(viewType)がサポートされていません。\nviewType = ${viewType}`;
+  }
   await runSqlWriteOnly(
     `UPDATE views
         SET view_name = :viewName,

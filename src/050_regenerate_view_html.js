@@ -184,7 +184,9 @@ import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
 import {
-  getPageData,
+  getPageDataForGUI,
+  getPageDataForExcel,
+  myFunc,
 } from "./055_page_data_validate.js";
 
 
@@ -202,8 +204,8 @@ export function setBugMode( mode ){
 
 
 
-// ビューのHTMLを生成
-export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, childPageId ){
+// ビューのHTMLを生成（表）
+export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSize, childPageId ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
     const viewColumns = await listViewColumns( viewId );
     let mainHtmlText = "";
@@ -541,4 +543,16 @@ export async function generateViewHTML_core( viewId, tableId, onePageMaxSize, ch
         <br>`;
     mainHtmlText = mainHtmlText.replaceAll("\n",`\n        `);
     return mainHtmlText;
+}
+
+// ビューのHTMLを生成（カード）
+export async function generateViewHTML_card_core( viewId, tableId, onePageMaxSize, childPageId ){
+  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+    return "";
+}
+
+// ビューのHTMLを生成（ボタン）
+export async function generateViewHTML_button_core( viewId, tableId, onePageMaxSize, childPageId ){
+  if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+    return "";
 }

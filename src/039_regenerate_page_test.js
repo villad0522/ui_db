@@ -54,16 +54,10 @@ import {
   isExistView,
 } from "./064_page_and_view_validate.js";
 import {
-  createColumn,
-  updateView,
-  addViewColumn,
   listViewColumns,
   _deleteViewColumns,
   regenerateInputElements,
   _addViewColumn,
-  deleteViewColumn,
-  reorderViewColumnToRight,
-  reorderViewColumnToLeft,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -176,10 +170,14 @@ import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
 import {
-  getPageData,
+  getPageDataForGUI,
+  getPageDataForExcel,
+  myFunc,
 } from "./055_page_data_validate.js";
 import {
-  generateViewHTML,
+  generateViewHTML_table,
+  generateViewHTML_card,
+  generateViewHTML_button,
 } from "./049_regenerate_view_html_validate.js";
 import {
   regenerateHTML,
@@ -203,6 +201,12 @@ import {
   deletePage,  // ページを再帰的に削除
   pastePage,  // ページを貼り付ける
   deleteTable,  // 不可逆的にテーブルを削除
+  updateView,  // ビューの情報を更新
+  addViewColumn,  // ビューカラムを作成
+  createColumn,  // カラムを作成
+  reorderViewColumnToLeft,  // ビューカラムを左へ移動
+  reorderViewColumnToRight,  // ビューカラムを右へ移動
+  deleteViewColumn,  // ビューカラムを削除
 } from "./040_regenerate_page_validate.js";
 import { setBugMode } from "./041_regenerate_page.js";
 
@@ -212,7 +216,7 @@ export async function test039() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 25; i++ ) {
+    for ( i = 1; i <= 32; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

@@ -2,6 +2,7 @@
 //
 import {
   startUp,
+  createColumn,
   deleteTable,
   createPage,
   updatePageName,
@@ -9,6 +10,11 @@ import {
   deleteView,
   deletePage,
   pastePage,
+  updateView,
+  addViewColumn,
+  deleteViewColumn,
+  reorderViewColumnToRight,
+  reorderViewColumnToLeft,
   regeneratePage,
 } from "./040_regenerate_page_validate.js";
 import {
@@ -64,18 +70,6 @@ import {
   getViewInfo,
   isExistView,
 } from "./064_page_and_view_validate.js";
-import {
-  createColumn,
-  updateView,
-  addViewColumn,
-  listViewColumns,
-  _deleteViewColumns,
-  regenerateInputElements,
-  _addViewColumn,
-  deleteViewColumn,
-  reorderViewColumnToRight,
-  reorderViewColumnToLeft,
-} from "./061_view_column_validate.js";
 import {
   listDataTypes,
 } from "./118_data_type_validate.js";
@@ -187,10 +181,20 @@ import {
   generateSQL,
 } from "./058_joinedTable_validate.js";
 import {
-  getPageData,
+  listViewColumns,
+  _deleteViewColumns,
+  regenerateInputElements,
+  _addViewColumn,
+} from "./061_view_column_validate.js";
+import {
+  getPageDataForGUI,
+  getPageDataForExcel,
+  myFunc,
 } from "./055_page_data_validate.js";
 import {
-  generateViewHTML,
+  generateViewHTML_table,
+  generateViewHTML_card,
+  generateViewHTML_button,
 } from "./049_regenerate_view_html_validate.js";
 import {
   regenerateHTML,
@@ -207,6 +211,7 @@ import {
 import {
   updateExcel,
   openExcel,
+  _updateExcelSheet,
 } from "./037_excel_file_validate.js";
 
 

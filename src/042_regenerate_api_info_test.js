@@ -184,10 +184,14 @@ import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
 import {
-  getPageData,
+  getPageDataForGUI,
+  getPageDataForExcel,
+  myFunc,
 } from "./055_page_data_validate.js";
 import {
-  generateViewHTML,
+  generateViewHTML_table,
+  generateViewHTML_card,
+  generateViewHTML_button,
 } from "./049_regenerate_view_html_validate.js";
 import {
   regenerateHTML,

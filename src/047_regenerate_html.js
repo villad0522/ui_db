@@ -184,10 +184,14 @@ import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
 import {
-  getPageData,
+  getPageDataForGUI,
+  getPageDataForExcel,
+  myFunc,
 } from "./055_page_data_validate.js";
 import {
-  generateViewHTML,
+  generateViewHTML_table,
+  generateViewHTML_card,
+  generateViewHTML_button,
 } from "./049_regenerate_view_html_validate.js";
 
 
@@ -331,8 +335,20 @@ export async function regenerateHTML_core( pageId ){
     for( const { viewId, tableId, onePageMaxSize, viewType, childPageId } of views ){
         if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
         switch( viewType ){
+            case "BUTTON":
+                if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+                mainHtmlText += await generateViewHTML_button( viewId, tableId, onePageMaxSize, childPageId );
+                break;
+            case "TABLE":
+                if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+                mainHtmlText += await generateViewHTML_table( viewId, tableId, onePageMaxSize, childPageId );
+                break;
+            case "CARD":
+                if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+                mainHtmlText += await generateViewHTML_card( viewId, tableId, onePageMaxSize, childPageId );
+                break;
             default:
-                mainHtmlText += await generateViewHTML( viewId, tableId, onePageMaxSize, childPageId );
+                throw `ビューの種類(viewType)がサポートされていません。\nviewType = ${viewType}`;
         }
     }
     //
@@ -375,7 +391,7 @@ function _getBreadcrumbHTML({ breadcrumbs, pageId }){
 
 // HTMLエスケープ
 export async function escapeHTML_core( text ){
-  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
   return text.replace(/[&'`"<>]/g, function(match) {
     return {
       '&': '&amp;',

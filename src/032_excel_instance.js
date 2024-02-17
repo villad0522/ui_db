@@ -63,16 +63,19 @@ import {
 } from "./064_page_and_view_validate.js";
 import {
   createColumn,
+  deleteTable,
+  updatePageName,
+  createView,
+  deleteView,
+  deletePage,
+  pastePage,
   updateView,
   addViewColumn,
-  listViewColumns,
-  _deleteViewColumns,
-  regenerateInputElements,
-  _addViewColumn,
   deleteViewColumn,
   reorderViewColumnToRight,
   reorderViewColumnToLeft,
-} from "./061_view_column_validate.js";
+  regeneratePage,
+} from "./040_regenerate_page_validate.js";
 import {
   listDataTypes,
 } from "./118_data_type_validate.js";
@@ -93,15 +96,6 @@ import {
   reserveWord,
   checkReservedWord,
 } from "./106_reserved_word_validate.js";
-import {
-  deleteTable,
-  updatePageName,
-  createView,
-  deleteView,
-  deletePage,
-  pastePage,
-  regeneratePage,
-} from "./040_regenerate_page_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -193,10 +187,20 @@ import {
   generateSQL,
 } from "./058_joinedTable_validate.js";
 import {
-  getPageData,
+  listViewColumns,
+  _deleteViewColumns,
+  regenerateInputElements,
+  _addViewColumn,
+} from "./061_view_column_validate.js";
+import {
+  getPageDataForGUI,
+  getPageDataForExcel,
+  myFunc,
 } from "./055_page_data_validate.js";
 import {
-  generateViewHTML,
+  generateViewHTML_table,
+  generateViewHTML_card,
+  generateViewHTML_button,
 } from "./049_regenerate_view_html_validate.js";
 import {
   regenerateHTML,
@@ -213,6 +217,7 @@ import {
 import {
   updateExcel,
   openExcel,
+  _updateExcelSheet,
 } from "./037_excel_file_validate.js";
 
 
@@ -229,38 +234,125 @@ export function setBugMode( mode ){
 
 
 
+
 import fs from 'fs';
 import path from 'path';
+import chokidar from 'chokidar';
+import childProcess from 'child_process';
+import iconv from 'iconv-lite';
+
+const watchers = {};
 
 // Excelを開く
 export async function openExcel_core( clientIpAddress, pageId, queryParameters ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
-    const templateData = await getExcelTemplate( pageId );
     const { pageName } = await getPageInfo( pageId );
+    //
+    // テンプレートを取得する
+    const templateData = await getExcelTemplate( pageId );
+    //
+    // データを取得する
+    const dataList = await getPageDataForExcel( pageId, queryParameters );
+    //
+    // Excelファイルに情報を追記する
+    const fileData = await updateExcel( templateData, dataList );
+    //
     const serverIpAddress = await getLocalIp();
     if( clientIpAddress !== serverIpAddress && clientIpAddress!=="127.0.0.1" ){
         if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
         // 子機からシステムにアクセスしている場合、Excelをダウンロードさせる
         const fileName = pageName + "(閲覧専用).xlsm";
         return {
-            "fileContents": templateData,
+            "fileContents": fileData,
             "fileName": fileName,
         };
     }
     // 親機からシステムにアクセスしている場合、Excelアプリを起動する
-    const fileName = pageName + "(書き換えた内容が反映されます).xlsm";
+    //
+    const fileName = pageName + "(編集可).xlsm";
+    if( watchers[fileName] ){
+        if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+        // ファイルの監視を停止する
+        await watchers[fileName].close();
+    }
+    //
+    // Excelデータをファイルとして保存する
     const cacheDirPath = await getPath("CACHE");
     const filePath = path.join( cacheDirPath, fileName );
     try{
-        await fs.promises.writeFile( filePath, templateData );
+        await fs.promises.writeFile( filePath, fileData );
     }
     catch (error) {
-        console.error(`\nExcelファイルの書き出し中にエラーが発生しました`);
-        throw error;
+        console.error(`既にファイルを開いています。Excelファイル「${fileName}」を閉じて再試行してください。`);
+        throw `既にファイルを開いています。Excelファイル「${fileName}」を閉じて再試行してください。`;
     }
-    await openExcel( filePath );
+    //
+    // ファイルの監視をスタートする
+    const watcher = chokidar.watch(filePath, {
+        persistent: true,
+    });
+    watchers[fileName] = watcher;
+    await new Promise((resolve, reject) => watcher.on('ready', resolve ));
+    watcher.on('change', function (filePath, stats) {
+        console.log(`\nExcelファイルが編集されました。\n${filePath}`);
+        _handleEditExcelFile_core( filePath, pageId );
+    });
+    watcher.on('error', function (path) {
+        //console.error(`\nExcelファイルの監視中にエラーが発生しました。\n${path}`);
+    });
+    await _launchExcelApp_core( filePath );
     return {
         "fileContents": null,
         "fileName": fileName,
     };
+}
+
+
+
+
+// プログラム起動
+export async function startUp_core( localUrl, isDebug ){
+  if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+  await startUp( localUrl, isDebug ); // 下層の関数を呼び出す
+}
+
+
+
+// バックエンドプログラム終了
+export async function close_core(  ){
+  if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+  for(const fileName in watchers){
+    if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+    await watchers[fileName].close();
+  }
+  await close(); // 下層の関数を呼び出す
+}
+
+
+
+// 【サブ】Excelアプリを起動
+export async function _launchExcelApp_core( filePath ){
+  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(!fs.existsSync(filePath)){
+        throw `ファイルが存在しません`;
+    }
+    const command = `"C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE" "${filePath}"`;
+    childProcess.exec(
+        command,
+        {encoding:"Shift_JIS"},
+        (err, stdout, stderr) => {
+            if (err) {
+                if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+                console.error(`stderr:${iconv.decode(stderr,"Shift_JIS")}`);
+                console.error(command);
+                return;
+            }
+            // console.log(`stdout:${iconv.decode(stdout,"Shift_JIS")}`);
+        }
+    );
+}
+
+// 【サブ】ファイルが編集されたとき
+export async function _handleEditExcelFile_core( filePath, pageId ){
+  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
 }

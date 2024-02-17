@@ -1434,6 +1434,17 @@ export async function getViewInfo( viewId ){
       throw new Error(`resultがオブジェクトではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
     }
   }
+  if( typeof result.pageId !== "number" ){
+    if( !result.pageId ){
+      throw new Error(`result.pageIdがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`result.pageIdが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
+  else if( isNaN(result.pageId) ){
+    throw new Error(`result.pageIdが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+  }
   if( typeof result.viewId !== "number" ){
     if( !result.viewId ){
       throw new Error(`result.viewIdがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);

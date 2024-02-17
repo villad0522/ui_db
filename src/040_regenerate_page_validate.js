@@ -8,6 +8,12 @@ import {
   deletePage_core,  // ページを再帰的に削除
   pastePage_core,  // ページを貼り付ける
   deleteTable_core,  // 不可逆的にテーブルを削除
+  updateView_core,  // ビューの情報を更新
+  addViewColumn_core,  // ビューカラムを作成
+  createColumn_core,  // カラムを作成
+  reorderViewColumnToLeft_core,  // ビューカラムを左へ移動
+  reorderViewColumnToRight_core,  // ビューカラムを右へ移動
+  deleteViewColumn_core,  // ビューカラムを削除
 } from "./041_regenerate_page.js";
 
 
@@ -443,6 +449,372 @@ export async function deleteTable( tableId ){
     }
     else{
       throw new Error(`resultが文字列ではありません。\nレイヤー : regenerate_page\n関数 : deleteTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「updateView_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function updateView( params ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof params !== "object" ){
+    if( !params ){
+      throw new Error(`paramsがNULLです。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`paramsがオブジェクトではありません。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+  }
+  if( typeof params.viewName !== "string" ){
+    if( !params.viewName ){
+      throw new Error(`params.viewNameがNULLです。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.viewNameが文字列ではありません。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+  }
+  if( typeof params.viewType !== "string" ){
+    if( !params.viewType ){
+      throw new Error(`params.viewTypeがNULLです。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.viewTypeが文字列ではありません。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+  }
+  if( typeof params.onePageMaxSize !== "number" ){
+    if( !params.onePageMaxSize ){
+      throw new Error(`params.onePageMaxSizeがNULLです。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.onePageMaxSizeが数値ではありません。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+  }
+  else if( isNaN(params.onePageMaxSize) ){
+    throw new Error(`params.onePageMaxSizeが数値ではありません。\nレイヤー : regenerate_page\n関数 : updateView`);
+  }
+  if( typeof params.excelStartRow !== "number" ){
+    if( !params.excelStartRow ){
+      throw new Error(`params.excelStartRowがNULLです。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.excelStartRowが数値ではありません。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+  }
+  else if( isNaN(params.excelStartRow) ){
+    throw new Error(`params.excelStartRowが数値ではありません。\nレイヤー : regenerate_page\n関数 : updateView`);
+  }
+  if( typeof params.excelStartColumn !== "number" ){
+    if( !params.excelStartColumn ){
+      throw new Error(`params.excelStartColumnがNULLです。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.excelStartColumnが数値ではありません。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+  }
+  else if( isNaN(params.excelStartColumn) ){
+    throw new Error(`params.excelStartColumnが数値ではありません。\nレイヤー : regenerate_page\n関数 : updateView`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await updateView_core( params );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : regenerate_page\n関数 : updateView`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「addViewColumn_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function addViewColumn( viewId, viewColumnType, columnPath, viewColumnName ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : regenerate_page\n関数 : addViewColumn`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : regenerate_page\n関数 : addViewColumn`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : regenerate_page\n関数 : addViewColumn`);
+  }
+  if( typeof viewColumnType !== "string" ){
+    if( !viewColumnType ){
+      throw new Error(`viewColumnTypeがNULLです。\nレイヤー : regenerate_page\n関数 : addViewColumn`);
+    }
+    else{
+      throw new Error(`viewColumnTypeが文字列ではありません。\nレイヤー : regenerate_page\n関数 : addViewColumn`);
+    }
+  }
+  if( typeof columnPath !== "string" ){
+    if( !columnPath ){
+      throw new Error(`columnPathがNULLです。\nレイヤー : regenerate_page\n関数 : addViewColumn`);
+    }
+    else{
+      throw new Error(`columnPathが文字列ではありません。\nレイヤー : regenerate_page\n関数 : addViewColumn`);
+    }
+  }
+  if( typeof viewColumnName !== "string" ){
+    if( !viewColumnName ){
+      throw new Error(`viewColumnNameがNULLです。\nレイヤー : regenerate_page\n関数 : addViewColumn`);
+    }
+    else{
+      throw new Error(`viewColumnNameが文字列ではありません。\nレイヤー : regenerate_page\n関数 : addViewColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : regenerate_page\n関数 : addViewColumn`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「createColumn_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function createColumn( tableId, columnName, dataType, parentTableId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+  }
+  if( typeof columnName !== "string" ){
+    if( !columnName ){
+      throw new Error(`columnNameがNULLです。\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`columnNameが文字列ではありません。\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+  }
+  if( typeof dataType !== "string" ){
+    if( !dataType ){
+      throw new Error(`dataTypeがNULLです。\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`dataTypeが文字列ではありません。\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+  }
+  if( (parentTableId===null) || (parentTableId===undefined) ){
+    // parentTableIdは空欄OK。
+  }
+  else if( typeof parentTableId !== "string" ){
+    throw new Error(`parentTableIdが文字列ではありません。\nレイヤー : regenerate_page\n関数 : createColumn`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await createColumn_core( tableId, columnName, dataType, parentTableId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "object" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+  }
+  if( typeof result.message !== "string" ){
+    if( !result.message ){
+      throw new Error(`result.messageがNULLです。\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`result.messageが文字列ではありません。\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+  }
+  if( typeof result.columnId !== "string" ){
+    if( !result.columnId ){
+      throw new Error(`result.columnIdがNULLです。\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+    else{
+      throw new Error(`result.columnIdが文字列ではありません。\nレイヤー : regenerate_page\n関数 : createColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「reorderViewColumnToLeft_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function reorderViewColumnToLeft( viewColumnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewColumnId !== "string" ){
+    if( !viewColumnId ){
+      throw new Error(`viewColumnIdがNULLです。\nレイヤー : regenerate_page\n関数 : reorderViewColumnToLeft`);
+    }
+    else{
+      throw new Error(`viewColumnIdが文字列ではありません。\nレイヤー : regenerate_page\n関数 : reorderViewColumnToLeft`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await reorderViewColumnToLeft_core( viewColumnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : regenerate_page\n関数 : reorderViewColumnToLeft`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「reorderViewColumnToRight_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function reorderViewColumnToRight( viewColumnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewColumnId !== "string" ){
+    if( !viewColumnId ){
+      throw new Error(`viewColumnIdがNULLです。\nレイヤー : regenerate_page\n関数 : reorderViewColumnToRight`);
+    }
+    else{
+      throw new Error(`viewColumnIdが文字列ではありません。\nレイヤー : regenerate_page\n関数 : reorderViewColumnToRight`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await reorderViewColumnToRight_core( viewColumnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : regenerate_page\n関数 : reorderViewColumnToRight`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「deleteViewColumn_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function deleteViewColumn( viewColumnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewColumnId !== "string" ){
+    if( !viewColumnId ){
+      throw new Error(`viewColumnIdがNULLです。\nレイヤー : regenerate_page\n関数 : deleteViewColumn`);
+    }
+    else{
+      throw new Error(`viewColumnIdが文字列ではありません。\nレイヤー : regenerate_page\n関数 : deleteViewColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await deleteViewColumn_core( viewColumnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : regenerate_page\n関数 : deleteViewColumn`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : regenerate_page\n関数 : deleteViewColumn`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : regenerate_page\n関数 : deleteViewColumn`);
     }
   }
   //

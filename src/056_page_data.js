@@ -196,8 +196,8 @@ export function setBugMode( mode ){
 
 
 
-// データを取得
-export async function getPageData_core( pageId, queryParameters ){
+// データを取得(GUI向け)
+export async function getPageDataForGUI_core( pageId, queryParameters ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   const results = {};
   const views = await listChildrenView( pageId );
@@ -213,4 +213,42 @@ export async function getPageData_core( pageId, queryParameters ){
     results["view" + viewId + "__total"] = total;
   }
   return results;
+}
+
+
+
+
+// データを取得(Excel向け)
+export async function getPageDataForExcel_core( pageId, queryParameters ){
+  if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+  const dataList = [];
+  for( let i=0; i<1; i++ ){
+    if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+    const sheetDatas = [];
+    const views = await listChildrenView( pageId );
+    for( const { viewId, name, excelStartRow } of views ){
+      if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+      const { normalSQL, countSQL, parameters } = await generateSQL( viewId, queryParameters );
+      const rowDatas = await runSqlReadOnly( normalSQL, parameters );
+      const viewColumns = await listViewColumns( viewId );
+      sheetDatas.push({
+        "sheetName": name,
+        "excelStartRow": excelStartRow,
+        "isTableHeader": true,
+        "viewColumns": viewColumns,
+        "rowDatas": rowDatas,
+      });
+    }
+    dataList.push(sheetDatas);
+  }
+  return dataList;
+}
+
+
+
+
+// 新しい関数
+export async function myFunc_core(  ){
+  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+  throw "この関数は未実装です。";
 }
