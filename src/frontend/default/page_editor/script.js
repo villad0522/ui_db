@@ -38,3 +38,16 @@ window.getChildPageId = function (i) {
 }
 //
 //###############################################################
+// Excelを開く関数
+window.openExcel = function (i) {
+    const params = new URL(location.href).searchParams;
+    const pageId = params.get("page_id");
+    if (isNaN(pageId)) {
+        alert("クエリパラメータ―「page_id」が指定されていません");
+        return;
+    }
+    jumpWithQuery('/open_excel/' + pageId, { isNewTab: true });
+}
+//
+//###############################################################
+

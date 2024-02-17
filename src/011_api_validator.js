@@ -513,37 +513,17 @@ function _validator({ value, dataType, isRequired }) {
             if (value === true) {
                 return true;
             }
-            else if (value === false) {
-                return false;
-            }
             if (String(value).toLowerCase() === "on") {
                 return true;
             }
-            else if (String(value).toLowerCase() === "off") {
-                return false;
-            }
             else if (String(value).toLowerCase() === "true") {
                 return true;
-            }
-            else if (String(value).toLowerCase() === "false") {
-                return false;
             }
             if (!isNaN(value)) {
                 // 数値に変換できる場合
                 return Number(value) !== 0;
             }
-            // 数値に変換できない場合
-            if (value) {
-                // 空欄ではない場合
-                throw "指定できるのはBOOL値のみです。";
-            }
-            // 空欄の場合
-            if (isRequired === false) {
-                // 空欄OKの場合
-                return null;
-            }
-            // 空欄NGの場合
-            throw "必須項目が空欄です。";
+            return false;
         default:
             throw `サポートされていないデータ型です。detaType="${dataType}"`;
     }

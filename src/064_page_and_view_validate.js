@@ -140,7 +140,7 @@ export async function createPage( parentPageId ){
 //#######################################################################################
 // 関数「updatePageName_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function updatePageName( pageId, pageName, memo ){
+export async function updatePageName( pageId, pageName, memo, isExcel ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof pageId !== "number" ){
@@ -170,12 +170,23 @@ export async function updatePageName( pageId, pageName, memo ){
       throw new Error(`memoが文字列ではありません。\nレイヤー : page_and_view\n関数 : updatePageName`);
     }
   }
+  if( typeof isExcel !== "boolean" ){
+    if( !isExcel ){
+      throw new Error(`isExcelがNULLです。\nレイヤー : page_and_view\n関数 : updatePageName`);
+    }
+    else{
+      throw new Error(`isExcelがブール値ではありません。\nレイヤー : page_and_view\n関数 : updatePageName`);
+    }
+  }
+  else if( isNaN(isExcel) ){
+    throw new Error(`isExcelがブール値ではありません。\nレイヤー : page_and_view\n関数 : updatePageName`);
+  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await updatePageName_core( pageId, pageName, memo );
+    result = await updatePageName_core( pageId, pageName, memo, isExcel );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -260,6 +271,17 @@ export async function getPageInfo( pageId ){
     else{
       throw new Error(`result.memoが文字列ではありません。\nレイヤー : page_and_view\n関数 : getPageInfo`);
     }
+  }
+  if( typeof result.isExcel !== "boolean" ){
+    if( !result.isExcel ){
+      throw new Error(`result.isExcelがNULLです。\nレイヤー : page_and_view\n関数 : getPageInfo`);
+    }
+    else{
+      throw new Error(`result.isExcelがブール値ではありません。\nレイヤー : page_and_view\n関数 : getPageInfo`);
+    }
+  }
+  else if( isNaN(result.isExcel) ){
+    throw new Error(`result.isExcelがブール値ではありません。\nレイヤー : page_and_view\n関数 : getPageInfo`);
   }
   //
   //--------------------------------------------------------------------------

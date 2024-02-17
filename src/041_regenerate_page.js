@@ -351,10 +351,10 @@ export async function startUp_core( localUrl, isDebug ){
 
 
 // ページ名やメモを変更
-export async function updatePageName_core( pageId, pageName, memo ){
+export async function updatePageName_core( pageId, pageName, memo, isExcel ){
   if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
     // 下層の関数を呼び出す
-    const result = await updatePageName( pageId, pageName, memo );
+    const result = await updatePageName( pageId, pageName, memo, isExcel );
     //
     // 名前を変更したページのHTMLを生成する
     await regeneratePage_core( pageId );

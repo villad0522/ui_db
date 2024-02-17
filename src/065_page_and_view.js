@@ -170,6 +170,7 @@ export async function startUp_core( localUrl, isDebug ){
       "page_id" INTEGER PRIMARY KEY AUTOINCREMENT,
       "static_parent_id" INTEGER,
       "dynamic_parent_id" INTEGER UNIQUE,
+      "is_excel" INTEGER  NOT NULL DEFAULT 0,
       "page_name" TEXT NOT NULL DEFAULT '新しいページ',
       "memo" TEXT NOT NULL DEFAULT '',
       "sort_number" REAL NOT NULL DEFAULT 64,
@@ -297,17 +298,19 @@ export async function createPage_core( parentPageId ){
 
 
 // ページ名やメモを変更
-export async function updatePageName_core( pageId, pageName, memo ){
+export async function updatePageName_core( pageId, pageName, memo, isExcel ){
   if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
   await runSqlWriteOnly(
     `UPDATE pages
         SET page_name = :pageName,
-          memo = :memo
+          memo = :memo,
+          is_excel = :isExcel
         WHERE page_id = :pageId;`,
     {
         ":pageId": pageId,
         ":pageName": pageName,
         ":memo": memo,
+        ":isExcel": isExcel,
     },
   );
   return "ページ名を変更しました";
@@ -324,7 +327,8 @@ export async function getPageInfo_core( pageId ){
   const pages = await runSqlReadOnly(
     `SELECT
         pages.page_name AS pageName,
-        pages.memo AS memo
+        pages.memo AS memo,
+        is_excel AS isExcel
       FROM pages
       WHERE pages.page_id = :pageId
       LIMIT 1;`,
@@ -338,6 +342,7 @@ export async function getPageInfo_core( pageId ){
   return {
     "pageName": pages[0]["pageName"],
     "memo": pages[0]["memo"] ?? "",
+    "isExcel": pages[0]["isExcel"] ? true : false,
   };
 }
 
@@ -751,6 +756,8 @@ export async function getParentPage_core( pageId ){
   }
   return 0;
 }
+
+
 
 // 子ページの一覧を再帰的に取得
 export async function listChildrenPage_core( parentId ){

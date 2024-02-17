@@ -213,7 +213,7 @@ export async function regenerateHTML_core( pageId ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
     //
     // ページの情報を取得する
-    const { pageName, memo } = await getPageInfo( pageId );
+    const { pageName, memo, isExcel } = await getPageInfo( pageId );
     //
     // パンくずリストを取得する
     const breadcrumbs = await getBreadcrumbs( pageId );
@@ -273,7 +273,7 @@ export async function regenerateHTML_core( pageId ){
                         表示設定
                     </label>
                 </div>
-                <button onclick="jumpWithQuery('/open_excel/${pageId}',{ isNewTab: true })" type="button" class="btn btn-success d-none d-md-inline" style="border: solid 2px #fff;">
+                <button onclick="jumpWithQuery('/open_excel/${pageId}',{ isNewTab: true })" type="button" class="btn btn-success d-none d-md-inline" style="${isExcel ? "" : "visibility: hidden;" } margin-left: 40px; border: solid 2px #fff;">
                     Excel
                 </button>
                 <a href="/default/tables/index.html" class="btn btn-dark me-2 d-none d-md-inline" target="_blank">

@@ -25,35 +25,39 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-dark bg-primary">
-            <div class="container-fluid">
-                <button disabled type="button" class="btn btn-light me-2" style="color: #fff;">
-                    戻る
-                </button>
-                <div class="d-flex" role="search" style="width: 270px;">
+        <form>
+            <nav class="navbar navbar-dark bg-primary">
+                <div class="container-fluid">
+                    <button disabled type="button" class="btn btn-light me-2" style="color: #fff;">
+                        戻る
+                    </button>
+                    <div class="d-flex" role="search" style="width: 270px;">
+                    </div>
+                    <div class="form-check form-switch d-none d-md-inline">
+                        <input checked onchange="handleEditSwitch(event)" class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
+                        <label class="form-check-label" for="edit_mode_switch" style="color:#fff">
+                            表示設定
+                        </label>
+                    </div>
+                    <div class="form-check form-switch d-none d-md-inline">
+                        <input onchange="myFetch('./rename_page/json');" name="isExcel" class="form-check-input" type="checkbox" role="switch" id="excel_switch" style="margin-top: 12px;">
+                        <button onclick="openExcel()" type="button" class="btn btn-success" style="border: solid 2px #ccc;">
+                            Excel
+                        </button>
+                    </div>
+                    <a href="/default/tables/index.html" class="btn btn-dark me-2 d-none d-md-inline" target="_blank">
+                        本体データ
+                        &nbsp;
+                        <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
                 </div>
-                <div class="form-check form-switch d-none d-md-inline">
-                    <input checked onchange="handleEditSwitch(event)" class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
-                    <label class="form-check-label" for="edit_mode_switch" style="color:#fff">
-                        表示設定
-                    </label>
-                </div>
-                <button type="button" class="btn btn-success d-none d-md-inline" disabled style="border: solid 2px #ccc;">
-                    Excel
-                </button>
-                <a href="/default/tables/index.html" class="btn btn-dark me-2 d-none d-md-inline" target="_blank">
-                    本体データ
-                    &nbsp;
-                    <i class="bi bi-box-arrow-up-right"></i>
-                </a>
-            </div>
-        </nav>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <script>
-                    let htmlText2 = "";
-                    for (let i = 0; i < 35; i++) {
-                        htmlText2 += `
+            </nav>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <script>
+                        let htmlText2 = "";
+                        for (let i = 0; i < 35; i++) {
+                            htmlText2 += `
                 <input name="breadcrumbs${i}_pageId" style="display: none;">
                 <!--  -->
                 <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
@@ -64,13 +68,12 @@
                     </span>
                     &#047;
                 </li>`;
-                    }
-                    document.write(htmlText2);
-                </script>
-            </ol>
-        </nav>
-        <main>
-            <form>
+                        }
+                        document.write(htmlText2);
+                    </script>
+                </ol>
+            </nav>
+            <main>
                 <div class="container">
                     <!--  -->
                     <!--  -->
@@ -80,6 +83,7 @@
                     <!--  -->
                     <!-- メモ -->
                     <textarea name="memo" onchange="myFetch('./rename_page/json');" placeholder="メモ" class="auto_save form-control"></textarea>
+
                     <!--  -->
                     <!--  -->
                     <!-- 子ページへのリンクここから -->
@@ -245,8 +249,8 @@
                         </div>
                     </div>
                 </div>
-            </form>
-        </main>
+            </main>
+        </form>
     </body>
 
 </html>

@@ -22,6 +22,11 @@
             "description": "メモ",
             "isRequired": false,
             "example": "○○を入力する際は、○○してください。"
+        },
+        "isExcel": {
+            "dataType": "BOOL",
+            "description": "このページをエクセルファイルに変換するか否か",
+            "example": true
         }
     },
     "response": {}

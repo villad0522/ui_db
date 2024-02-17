@@ -351,13 +351,14 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     case "GET_PAGE_INFO":{
       if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
-      const { pageName, memo } = await getPageInfo( pageId );
+      const { pageName, memo, isExcel } = await getPageInfo( pageId );
       const staticChildren = await listStaticChildren( pageId );
       const views = await listChildrenView( pageId );
       const breadcrumbs = await getBreadcrumbs( pageId );
       return {
         "pageName": pageName,
         "memo": memo ?? "",
+        "isExcel": isExcel,
         "breadcrumbs": breadcrumbs,
         "breadcrumbs_total": breadcrumbs.length,
         "staticChildren": staticChildren,
@@ -586,7 +587,8 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       const pageId = Number(queryParameters["page_id"]);
       const pageName = requestBody["pageName"];
       const memo = requestBody["memo"] ?? "";
-      await updatePageName( pageId, pageName, memo );
+      const isExcel = requestBody["isExcel"] ? true : false;
+      await updatePageName( pageId, pageName, memo, isExcel );
       return {};
     }
     //======================================================================

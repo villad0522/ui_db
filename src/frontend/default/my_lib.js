@@ -19,7 +19,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     // 一か所でも編集されたかどうかを記録する変数
     window.isEdit = false;
     //
-    // 変更された項目を水色にする
+    await _sleep(1000);
     const inputElements = document.querySelectorAll("form input, form select, form textarea");
     for (const inputElement of inputElements) {
         if (inputElement.classList.contains("auto_save")) {
@@ -38,7 +38,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 // 現在のページのクエリパラメータ―を維持したまま、別のページに移動する関数
 export function jumpWithQuery(url, params) {
     const { isNewTab } = params ?? {};
-    if (window.isEdit) {
+    if (!isNewTab && window.isEdit) {
         if (confirm("編集内容は破棄されます。よろしいですか？") == false) {
             return;
         }

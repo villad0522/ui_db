@@ -19,10 +19,26 @@
 /* 表示設定スイッチ */
 #edit_mode_switch {
     background-color: #555;
-    /* Change the color of the toggle when it is checked */
     border-color: #555;
-    /* Change the border color of the toggle when it is checked */
 }
+
+
+/* Excel切り替えスイッチ */
+#excel_switch {
+    background-color: #555;
+    border-color: #555;
+}
+
+#excel_switch+button {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+#excel_switch:checked+button {
+    opacity: 1;
+    pointer-events: all;
+}
+
 
 .breadcrumb-item:hover {
     cursor: pointer;

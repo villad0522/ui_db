@@ -23,6 +23,11 @@
             "example": "○○を入力する際は、○○してください。",
             "isRequired": false
         },
+        "isExcel": {
+            "dataType": "BOOL",
+            "description": "このページをエクセルファイルに変換するか否か",
+            "example": true
+        },
         "tableName_option": {
             "description": "テーブル名の候補",
             "dataType": "TEXT",
