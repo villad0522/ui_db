@@ -138,7 +138,10 @@ export async function myFetch(url, parameters) {
                 alert(jsonData.userMessage);
             }
             if (jsonData.nextUrl) {
-                location.href = jsonData.nextUrl;
+                const nextUrl = formData.get("nextUrl");
+                if (nextUrl) {
+                    location.href = nextUrl;
+                }
             }
             return jsonData;
         }
@@ -154,7 +157,10 @@ export async function myFetch(url, parameters) {
                 alert(formData.get("userMessage"));
             }
             if (formData.has("nextUrl")) {
-                location.href = formData.get("nextUrl");
+                const nextUrl = formData.get("nextUrl");
+                if (nextUrl) {
+                    location.href = nextUrl;
+                }
             }
             return formData;
         }

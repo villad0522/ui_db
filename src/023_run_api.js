@@ -283,22 +283,50 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       };
     }
     //======================================================================
-    case "REORDER_VIEW_COLUMN_LEFT":{
+    case "DELETE_RECORD_FROM_VIEW":{
       if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
+      const viewId = queryParameters["view_id"];
+      const tableId = await getTableFromView( viewId );
+      const recordId = Number(queryParameters["record_id"]);
+      return {
+        "userMessage": await deleteRecords( tableId, [ recordId ] ),
+        "nextUrl": "./?" + await convertQuery_core(queryParameters),
+      };
+    }
+    //======================================================================
+    case "CREATE_RECORD_FROM_VIEW":{
+      if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+      const result = await createRecordFromView( apiInfo.viewId, requestBody );
+      let nextUrl = "";
+      if(result.isSuccess){
+        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+        nextUrl = "./?" + await convertQuery_core(queryParameters);
+      }
+      return {
+        ...result.outputTexts,
+        "isSuccess": result.isSuccess,
+        "recordId": result.recordId,
+        "userMessage": result.userMessage,
+        "nextUrl": nextUrl,
+      };
+    }
+    //======================================================================
+    case "REORDER_VIEW_COLUMN_LEFT":{
+      if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
       const viewColumnId = queryParameters["view_column"];
       await reorderViewColumnToRight(viewColumnId);
       return {};
     }
     //======================================================================
     case "REORDER_VIEW_COLUMN_RIGHT":{
-      if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
       const viewColumnId = queryParameters["view_column"];
       await reorderViewColumnToRight(viewColumnId);
       return {};
     }
     //======================================================================
     case "DELETE_VIEW_COLUMN":{
-      if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
       const viewColumnId = queryParameters["view_column"];
       return {
         "userMessage": await deleteViewColumn(viewColumnId),
@@ -306,7 +334,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "DELETE_VIEW":{
-      if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
       const viewId = Number(queryParameters["view"]);
       return {
         "userMessage": await deleteView(viewId),
@@ -314,7 +342,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "UPDATE_VIEW":{
-      if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
       const viewId = Number(queryParameters["view"]);
       const viewIndex = Number(queryParameters["view_index"]);
       return {
@@ -327,7 +355,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "GET_VIEW_INFO":{
-      if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
       const viewId = Number(queryParameters["view"]);
       const viewInfo = await getViewInfo( viewId );
       const viewColumns = await listViewColumns( viewId );
@@ -353,7 +381,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "GET_PAGE_INFO":{
-      if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       const { pageName, memo, isExcel } = await getPageInfo( pageId );
       const staticChildren = await listStaticChildren( pageId );
@@ -376,7 +404,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "SET_TITLE_COLUMNS":{
-      if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
       await setTitleColumnsFromUI( requestBody.columns );
       return {
         "nextUrl": `./?` + await convertQuery_core(queryParameters),
@@ -384,7 +412,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "DELETE_TABLE":{
-      if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
       return {
         "userMessage": await deleteTable( queryParameters.table ),
         "nextUrl": `/default/tables/index.html`,
@@ -392,7 +420,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "TRANSFER_DATA":{
-      if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
       return {
         "userMessage": await transferData( requestBody.processName ),
         "nextUrl": `/default/tables/index.html`,
@@ -400,19 +428,19 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "GET_CSV_PROGRESS":{
-      if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
       return await getCsvProgress();
     }
     //======================================================================
     case "DESTROY_CSV_PROGRESS":{
-      if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
       return {
         "userMessage": await destroyCSV(),
       };
     }
     //======================================================================
     case "CLEAR_CACHE":{
-      if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
       await clearCache();
       return {
         "userMessage": "キャッシュデータを削除しました。"
@@ -420,7 +448,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "LIST_TABLES":{
-      if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
       const { tables, total } = await listTables(
         queryParameters["page_tables"],
         35,
@@ -433,7 +461,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CREATE_RECORD":{
-      if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
       const tableId = queryParameters["table"];
       const columns = requestBody["columns"];
       const { recordId, userMessage } = await createRecordFromUI( tableId, columns );
@@ -445,7 +473,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "LIST_RECORDS":{
-      if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
       const focusRecordId = queryParameters["record"];
       const pasteRecordId = queryParameters["paste"];
       const oldPageNumber = queryParameters["page_records"];
@@ -473,7 +501,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "COPY_RECORD":{
-      if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageNumber = queryParameters["page_records"];
       const tableId = queryParameters["table"];
       const recordId = queryParameters["record_id"];
@@ -484,7 +512,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CUT_RECORD":{
-      if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageNumber = queryParameters["page_records"];
       const tableId = queryParameters["table"];
       const recordId = queryParameters["record_id"];
@@ -495,7 +523,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "PASTE_RECORD":{
-      if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
       const tableId = queryParameters["table"];
       const pageNumber = queryParameters["page_records"];
       const beforeRecordId = queryParameters["before_id"];
@@ -507,7 +535,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CREATE_TABLE":{
-      if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
       const { tableId, message } = await createTable( requestBody["tableName"] );
       return {
         "tableId": tableId,
@@ -517,18 +545,18 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CREATE_COLUMN":{
-      if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
       const columnType = requestBody["columnType"];
       const tables = requestBody["tables"];
       let dataType = "";
       let parentTableId = null;
       if( isNaN(columnType) ){
-        if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
         dataType = columnType;
         parentTableId = null;
       }
       else{
-        if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
         dataType = "POINTER";
         parentTableId = tables[Number(columnType)]?.id;
       }
@@ -547,7 +575,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "UPDATE_TABLE_NAME":{
-      if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
       const message = await updateTableName(
         requestBody["tables"],
       );
@@ -558,7 +586,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "UPDATE_COLUMN_NAME":{
-      if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
       const message = await updateColumnName(
         requestBody["columns"],
       );
@@ -569,7 +597,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "REGENERATE_PAGE":{
-      if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       await regeneratePage( pageId );
       return {
@@ -578,7 +606,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CREATE_PAGE":{
-      if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
       const parentId = Number(queryParameters["page_id"]);
       await createPage( parentId );
       return {
@@ -587,7 +615,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "RENAME_PAGE":{
-      if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       const pageName = requestBody["pageName"];
       const memo = requestBody["memo"] ?? "";
@@ -597,7 +625,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "DELETE_PAGE":{
-      if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       const newQueryParameters = {
         ...queryParameters,
@@ -610,21 +638,21 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "COPY_PAGE":{
-      if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       await copyPage( pageId );
       return {};
     }
     //======================================================================
     case "CUT_PAGE":{
-      if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       await cutPage( pageId );
       return {};
     }
     //======================================================================
     case "PASTE_PAGE":{
-      if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
       const parentPageId = Number(queryParameters["page_id"]);
       const afterPageId = Number(queryParameters["after_id"]);
       await pastePage( parentPageId, afterPageId );
@@ -634,36 +662,19 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "AUTO_CORRECT_TABLE_NAME":{
-      if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
       return {
         "tableName_option": await autoCorrectTableName(requestBody["tableName"]),
       };
     }
     //======================================================================
-    case "CREATE_RECORD_FROM_VIEW":{
-      if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
-      const result = await createRecordFromView( apiInfo.viewId, requestBody );
-      let nextUrl = null;
-      if(result.isSuccess){
-        if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
-        nextUrl = "./?" + await convertQuery_core(queryParameters);
-      }
-      return {
-        ...result.outputTexts,
-        "isSuccess": result.isSuccess,
-        "recordId": result.recordId,
-        "userMessage": result.userMessage,
-        "nextUrl": nextUrl,
-      };
-    }
-    //======================================================================
     case "UPDATE_RECORDS":{
-      if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
       const viewId = Number(apiInfo.viewId);
       const result = await updateRecordsFromView( viewId, requestBody["view" + viewId + "_"] );
       let nextUrl = null;
       if(result.isSuccess){
-        if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
         nextUrl = "./?" + await convertQuery_core(queryParameters);
       }
       return {
@@ -676,7 +687,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "DELETE_RECORD":{
-      if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
       const tableId = apiInfo.tableId ?? queryParameters["table"];
       const recordId = Number(queryParameters["record_id"]);
       return {
@@ -686,12 +697,12 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "GET_PAGE_DATA":{
-      if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
       return await getPageDataForGUI( apiInfo.pageId, queryParameters );
     }
     //======================================================================
     case "AUTO_CORRECT":{
-      if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
       const isClick = queryParameters["is_click"] ? true : false;
       return await autoFill(
         apiInfo.viewId,
@@ -706,7 +717,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     }
     //======================================================================
     case "CREATE_VIEW":{
-      if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
       const pageId = Number(queryParameters["page_id"]);
       const tableName = requestBody["tableName"];
       await  createView( pageId, tableName );
@@ -724,7 +735,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
 
 // 連想配列をクエリパラメータに変換
 export async function convertQuery_core( obj ){
-  if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 45) throw "MUTATION45";  // 意図的にバグを混入させる（ミューテーション解析）
   return Object.keys(obj)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
     .join('&');

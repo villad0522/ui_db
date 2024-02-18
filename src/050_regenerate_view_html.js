@@ -227,6 +227,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                     </label>
                     <div class="col-md-9">
                         <input type="text" readonly class="form-control-plaintext" name="${viewColumnId}" id="${viewColumnId}">
+                        <div class="invalid-feedback" name="${viewColumnId}_message" style="display: block;"></div>
                     </div>
                 </div>`;
             continue;
@@ -239,6 +240,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                         <input name="${viewColumnId}" type="email" placeholder="${placeholder}" class="form-control" id="${viewColumnId}" list="${viewColumnId}_options">
                         <datalist id="${viewColumnId}_options">
                         </datalist>
+                        <div class="invalid-feedback" name="${viewColumnId}_message" style="display: block;"></div>
                     </div>`;
         /*
         switch( inputType ){
@@ -421,6 +423,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                     </label>
                     <div class="col-md-9">
                         <input type="text" readonly class="form-control-plaintext" name="${elementName}" id="${elementName}">
+                        <div class="invalid-feedback" name="${elementName}_message" style="display: block;"></div>
                     </div>
                 </div>`;
                 continue;
@@ -433,6 +436,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                         <input name="${elementName}" type="email" placeholder="${placeholder}" class="form-control" id="${elementName}" list="${elementName}_options">
                         <datalist id="${elementName}_options">
                         </datalist>
+                        <div class="invalid-feedback" name="${elementName}_message" style="display: block;"></div>
                     </div>`;
             /*
             switch( inputType ){
@@ -483,7 +487,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
         }
         mainHtmlText += `
                 <div class="col-12" style="text-align: right;">
-                    <button type="button" class="btn btn-outline-danger btn-sm">
+                    <button onclick="handleDeleteButton(${viewId},${i})" type="button" class="btn btn-outline-danger btn-sm">
                         削除
                     </button>
                 </div>

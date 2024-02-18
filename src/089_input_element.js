@@ -912,7 +912,7 @@ export async function _convertToRecord_core( viewId, inputTexts ){
     // 入力された文字を正規化する
     let value;
     try{
-      value = await formatField( inputText, columnId, true );
+      value = await formatField( inputText, columnId, false );
     }
     catch(err){
       outputTexts[viewColumnId+"_message"] = String(err);

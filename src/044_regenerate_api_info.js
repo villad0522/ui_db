@@ -298,7 +298,7 @@ export async function regenerateAPI_create_core( viewId, tableId, onePageMaxSize
                 "dataType": "INTEGER",
                 "description": "新しく生成したレコードのID",
                 "example": 230,
-                "isRequired": true,
+                "isRequired": false,
             },
             "userMessage": {
                 "dataType": "TEXT",

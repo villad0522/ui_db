@@ -5,6 +5,43 @@ import { myFetch, jumpWithQuery } from "/default/my_lib.js";
 // ページを読み込んだら、はじめに実行する関数
 window.addEventListener('DOMContentLoaded', async () => {
     await myFetch("./form" + location.search, { method: "GET" });
+    //
+    //---------------------------------------------------------------
+    // 以前開いていたスクロール位置を読み込む
+    const scrollXText = sessionStorage.getItem("scrollX");
+    const scrollYText = sessionStorage.getItem("scrollY");
+    if (scrollXText && scrollYText) {
+        const scrollX = Number(scrollXText);
+        const scrollY = Number(scrollYText);
+        if (!isNaN(scrollX) && !isNaN(scrollY)) {
+            window.scroll({
+                top: scrollY,
+                left: scrollX,
+                behavior: "instant", // スクロールを単一のジャンプで即座に行う
+            });
+        }
+    }
+    //---------------------------------------------------------------
+    // スクロール位置を保存する
+    let pastScrollTime = 0;
+    let timerId = null;
+    window.addEventListener("scroll", () => {
+        const nowTime = new Date().getTime();
+        if (nowTime - pastScrollTime < 200) return;
+        if (timerId) {
+            window.clearTimeout(timerId);
+            timerId = null;
+        }
+        timerId = window.setTimeout(() => {
+            sessionStorage.setItem("scrollX", document.documentElement.scrollLeft);
+            sessionStorage.setItem("scrollY", document.documentElement.scrollTop);
+        }, 300);
+    });
+    //---------------------------------------------------------------
+    //
+    document.body.style.visibility = "visible";
+    //
+    //---------------------------------------------------------------
 });
 //
 //###############################################################
@@ -15,6 +52,13 @@ window.handleEditSwitch = function (event) {
     // ↑ この処理の意義は、
     // 「編集内容は破棄されます。よろしいですか？」に
     // Noと答えた場合に、スイッチを戻すため。
+}
+//
+//###############################################################
+// 削除ボタンが押されたとき
+window.handleDeleteButton = async function (viewId, i) {
+    const recordId = document.getElementsByName(`view${viewId}_${i}_id`)[0].value;
+    await myFetch(`./delete_record/form?view_id=${viewId}&record_id=${recordId}`);
 }
 //
 //###############################################################
