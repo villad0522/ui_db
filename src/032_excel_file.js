@@ -254,13 +254,14 @@ export async function openExcel_core( clientIpAddress, pageId, queryParameters )
     const dataList = await getPageDataForExcel( pageId, queryParameters );
     const sheetInfos = [];
     const views = await listChildrenView( pageId );
-    for( const { viewId, name, excelStartRow } of views ){
+    for( const { viewId, sheetName, isTableHeader, excelStartRow } of views ){
       if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
       const viewColumns = await listViewColumns( viewId );
       sheetInfos.push({
-        "sheetName": name,
+        "viewId": viewId,
+        "sheetName": sheetName,
         "excelStartRow": excelStartRow,
-        "isTableHeader": true,
+        "isTableHeader": isTableHeader,
         "viewColumns": viewColumns,
       });
     }

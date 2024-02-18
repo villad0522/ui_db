@@ -132,8 +132,10 @@ function _getErrorText(params){
   const newParams = structuredClone(params);
   for( const key in newParams ){
     const value = newParams[key];
-    if( value.length > 20 ){
-      newParams[key] = [ "配列のサイズが大きいので表示できません" ];
+    if( Array.isArray(value) ){
+      if( value.length > 20 ){
+        newParams[key] = [ "配列のサイズが大きいので表示できません" ];
+      }
     }
   }
   return JSON.stringify(newParams, null, 2);

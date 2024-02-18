@@ -1035,6 +1035,25 @@ export async function listChildrenView( pageId ){
     else if( isNaN(result[i].viewId) ){
       throw new Error(`result[${i}].viewIdが数値ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
     }
+    if( typeof result[i].sheetName !== "string" ){
+      if( !result[i].sheetName ){
+        throw new Error(`result[${i}].sheetNameがNULLです。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].sheetNameが文字列ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+      }
+    }
+    if( typeof result[i].isTableHeader !== "boolean" ){
+      if( !result[i].isTableHeader ){
+        throw new Error(`result[${i}].isTableHeaderがNULLです。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+      }
+      else{
+        throw new Error(`result[${i}].isTableHeaderがブール値ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+      }
+    }
+    else if( isNaN(result[i].isTableHeader) ){
+      throw new Error(`result[${i}].isTableHeaderがブール値ではありません。\nレイヤー : page_and_view\n関数 : listChildrenView`);
+    }
     if( typeof result[i].name !== "string" ){
       if( !result[i].name ){
         throw new Error(`result[${i}].nameがNULLです。\nレイヤー : page_and_view\n関数 : listChildrenView`);
@@ -1478,6 +1497,25 @@ export async function getViewInfo( viewId ){
   else if( isNaN(result.viewId) ){
     throw new Error(`result.viewIdが数値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
   }
+  if( typeof result.isTableHeader !== "boolean" ){
+    if( !result.isTableHeader ){
+      throw new Error(`result.isTableHeaderがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`result.isTableHeaderがブール値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
+  else if( isNaN(result.isTableHeader) ){
+    throw new Error(`result.isTableHeaderがブール値ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+  }
+  if( typeof result.sheetName !== "string" ){
+    if( !result.sheetName ){
+      throw new Error(`result.sheetNameがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+    else{
+      throw new Error(`result.sheetNameが文字列ではありません。\nレイヤー : page_and_view\n関数 : getViewInfo`);
+    }
+  }
   if( typeof result.childPageId !== "number" ){
     if( !result.childPageId ){
       throw new Error(`result.childPageIdがNULLです。\nレイヤー : page_and_view\n関数 : getViewInfo`);
@@ -1702,6 +1740,25 @@ export async function updateView( params ){
       throw new Error(`params.viewNameが文字列ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
     }
   }
+  if( typeof params.isTableHeader !== "boolean" ){
+    if( !params.isTableHeader ){
+      throw new Error(`params.isTableHeaderがNULLです。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.isTableHeaderがブール値ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+  }
+  else if( isNaN(params.isTableHeader) ){
+    throw new Error(`params.isTableHeaderがブール値ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
+  }
+  if( typeof params.sheetName !== "string" ){
+    if( !params.sheetName ){
+      throw new Error(`params.sheetNameがNULLです。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.sheetNameが文字列ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
+    }
+  }
   if( typeof params.viewType !== "string" ){
     if( !params.viewType ){
       throw new Error(`params.viewTypeがNULLです。\nレイヤー : page_and_view\n関数 : updateView`);
@@ -1709,17 +1766,6 @@ export async function updateView( params ){
     else{
       throw new Error(`params.viewTypeが文字列ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
     }
-  }
-  if( typeof params.onePageMaxSize !== "number" ){
-    if( !params.onePageMaxSize ){
-      throw new Error(`params.onePageMaxSizeがNULLです。\nレイヤー : page_and_view\n関数 : updateView`);
-    }
-    else{
-      throw new Error(`params.onePageMaxSizeが数値ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
-    }
-  }
-  else if( isNaN(params.onePageMaxSize) ){
-    throw new Error(`params.onePageMaxSizeが数値ではありません。\nレイヤー : page_and_view\n関数 : updateView`);
   }
   if( typeof params.excelStartRow !== "number" ){
     if( !params.excelStartRow ){

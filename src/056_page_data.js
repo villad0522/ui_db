@@ -226,10 +226,10 @@ export async function getPageDataForExcel_core( pageId, queryParameters ){
     if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
     const sheetDatas = {};
     const views = await listChildrenView( pageId );
-    for( const { viewId, name, excelStartRow } of views ){
+    for( const { viewId } of views ){
       if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
       const { normalSQL, countSQL, parameters } = await generateSQL( viewId, queryParameters, true );
-      sheetDatas[name] = await runSqlReadOnly( normalSQL, parameters );
+      sheetDatas[viewId] = await runSqlReadOnly( normalSQL, parameters );
     }
     dataList.push(sheetDatas);
   }

@@ -143,28 +143,33 @@ export async function clearCache_core(  ){
 export async function createTable_core( tableName ){
   if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
   cacheTableNames = {};
+  return await createTable( tableName );
 }
 
 // テーブル名を変更
 export async function updateTableName_core( tables ){
   if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
   cacheTableNames = {};
+  return await updateTableName( tables );
 }
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
   if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
   cacheTableNames = {};
+  return await deleteTable( tableId );
 }
 
 // カラムを作成
 export async function createColumn_core( tableId, columnName, dataType, parentTableId ){
   if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
   cacheTableNames = {};
+  return await createColumn( tableId, columnName, dataType, parentTableId );
 }
 
 // カラム名を変更
 export async function updateColumnName_core( columns ){
   if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
   cacheTableNames = {};
+  return await updateColumnName( columns );
 }

@@ -49,6 +49,22 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 mb-3">
+                        <label for="viewType" class="form-label">
+                            画面の表示形式
+                        </label>
+                        <select name="viewType" id="viewType" class="form-select">
+                            <option value="TABLE">表</option>
+                            <option value="BUTTON">ボタン</option>
+                            <option value="CARD">カード</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4 mb-3" name="isExcel_flag">
+                        <label for="sheetName" class="form-label">
+                            Excelファイルに書き出す際のシート名
+                        </label>
+                        <input type="text" class="form-control" id="sheetName" name="sheetName">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4 mb-3" name="isExcel_flag">
                         <label class="form-label">
                             Excelの開始位置
                         </label>
@@ -112,23 +128,13 @@
                             <input type="number" class="form-control" name="excelStartRow">
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-4 mb-3">
-                        <label for="onePageMaxSize" class="form-label">
-                            １ページあたりの最大表示件数
-                        </label>
-                        <div class="input-group">
-                            <input type="number" class="form-control" id="onePageMaxSize" name="onePageMaxSize">
-                            <span class="input-group-text">件</span>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-4 mb-3">
-                        <div class="form-floating">
-                            <select name="viewType" id="viewType" class="form-select">
-                                <option value="TABLE">表</option>
-                                <option value="BUTTON">ボタン</option>
-                                <option value="CARD">カード</option>
-                            </select>
-                            <label for="viewType">表示形式</label>
+                    <div class="col-12 col-md-6" name="isExcel_flag">
+                        <br>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="isTableHeader" name="isTableHeader">
+                            <label class="form-check-label" for="isTableHeader">
+                                Excelファイルに書き出す際に、列名を出力する
+                            </label>
                         </div>
                     </div>
                 </div>

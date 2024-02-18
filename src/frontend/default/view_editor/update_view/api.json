@@ -22,15 +22,20 @@
             "description": "ビュー名",
             "example": "○○一覧"
         },
+        "sheetName": {
+            "dataType": "TEXT",
+            "description": "Excelファイルに書き出す際のシート名",
+            "example": "Sheet1"
+        },
+        "isTableHeader": {
+            "dataType": "BOOL",
+            "description": "Excelファイルに書き出す際に、列名を出力するか否か。",
+            "example": true
+        },
         "viewType": {
             "dataType": "TEXT",
             "description": "表示の種類",
             "example": "TABLE"
-        },
-        "onePageMaxSize": {
-            "dataType": "INTEGER",
-            "description": "１ページあたりの最大表示数",
-            "example": 50
         },
         "excelStartRow": {
             "dataType": "INTEGER",

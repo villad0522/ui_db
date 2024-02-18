@@ -658,6 +658,25 @@ export async function updateView( params ){
       throw new Error(`params.viewNameが文字列ではありません。\nレイヤー : view_column\n関数 : updateView`);
     }
   }
+  if( typeof params.isTableHeader !== "boolean" ){
+    if( !params.isTableHeader ){
+      throw new Error(`params.isTableHeaderがNULLです。\nレイヤー : view_column\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.isTableHeaderがブール値ではありません。\nレイヤー : view_column\n関数 : updateView`);
+    }
+  }
+  else if( isNaN(params.isTableHeader) ){
+    throw new Error(`params.isTableHeaderがブール値ではありません。\nレイヤー : view_column\n関数 : updateView`);
+  }
+  if( typeof params.sheetName !== "string" ){
+    if( !params.sheetName ){
+      throw new Error(`params.sheetNameがNULLです。\nレイヤー : view_column\n関数 : updateView`);
+    }
+    else{
+      throw new Error(`params.sheetNameが文字列ではありません。\nレイヤー : view_column\n関数 : updateView`);
+    }
+  }
   if( typeof params.viewType !== "string" ){
     if( !params.viewType ){
       throw new Error(`params.viewTypeがNULLです。\nレイヤー : view_column\n関数 : updateView`);
@@ -665,17 +684,6 @@ export async function updateView( params ){
     else{
       throw new Error(`params.viewTypeが文字列ではありません。\nレイヤー : view_column\n関数 : updateView`);
     }
-  }
-  if( typeof params.onePageMaxSize !== "number" ){
-    if( !params.onePageMaxSize ){
-      throw new Error(`params.onePageMaxSizeがNULLです。\nレイヤー : view_column\n関数 : updateView`);
-    }
-    else{
-      throw new Error(`params.onePageMaxSizeが数値ではありません。\nレイヤー : view_column\n関数 : updateView`);
-    }
-  }
-  else if( isNaN(params.onePageMaxSize) ){
-    throw new Error(`params.onePageMaxSizeが数値ではありません。\nレイヤー : view_column\n関数 : updateView`);
   }
   if( typeof params.excelStartRow !== "number" ){
     if( !params.excelStartRow ){

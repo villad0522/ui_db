@@ -184,6 +184,8 @@ export async function startUp_core( localUrl, isDebug ){
     `CREATE TABLE IF NOT EXISTS views (
       "view_id" INTEGER PRIMARY KEY,
       "view_name" TEXT NOT NULL,
+      "sheet_name" TEXT NOT NULL DEFAULT 'Sheet1',
+      "is_table_header" INTEGER NOT NULL DEFAULT 1,
       "page_id" INTEGER NOT NULL,
       "table_id" TEXT NOT NULL,
       "one_page_max_size" NUMBER NOT NULL DEFAULT 12,
@@ -677,6 +679,8 @@ let cacheViews = {
   // viewId: {
   //   viewId,
   //   childPageId,
+  //   sheetName,
+  //   isTableHeader,
   //   tableId,
   //   onePageMaxSize,
   //   viewType,
@@ -694,6 +698,8 @@ export async function listChildrenView_core( pageId ){
         pages.page_id AS childPageId,
         views.page_id AS pageId,
         view_name AS name,
+        views.sheet_name AS sheetName,
+        views.is_table_header AS isTableHeader,
         views.view_id AS viewId,
         views.table_id AS tableId,
         views.one_page_max_size AS onePageMaxSize,
@@ -709,13 +715,28 @@ export async function listChildrenView_core( pageId ){
       ":parentPageId": pageId,
     },
   );
+  const results = [];
   for( let i=0; i<views.length; i++ ){
     if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
     const viewId = views[i].viewId;
-    cacheViews[viewId] = views[i];
-    views[i]["iframe"] = `<iframe src="/default/view_editor/index.html?view=${viewId}&view_index=${i}"></iframe>`;
+    const result = {
+      pageId: views[i].pageId,
+      childPageId: views[i].childPageId,
+      viewId: views[i].viewId,
+      name: views[i].name,
+      sheetName: views[i].sheetName,
+      isTableHeader: views[i].isTableHeader ? true : false,
+      onePageMaxSize: views[i].onePageMaxSize,
+      tableId: views[i].tableId,
+      viewType: views[i].viewType,
+      excelStartRow: views[i].excelStartRow,
+      excelStartColumn: views[i].excelStartColumn,
+      iframe: `<iframe src="/default/view_editor/index.html?view=${viewId}&view_index=${i}"></iframe>`
+    };
+    cacheViews[viewId] = result;
+    results.push(result);
   }
-  return views;
+  return results;
 }
 
 
@@ -922,6 +943,8 @@ export async function getViewInfo_core( viewId ){
         pages.page_id AS childPageId,
         views.page_id AS pageId,
         views.view_name AS name,
+        views.sheet_name AS sheetName,
+        views.is_table_header AS isTableHeader,
         views.view_id AS viewId,
         views.table_id AS tableId,
         views.one_page_max_size AS onePageMaxSize,
@@ -940,8 +963,21 @@ export async function getViewInfo_core( viewId ){
   if( views.length===0 ){
     throw `ビューの情報を取得しようとしましたが、該当するビューは存在しません。`;
   }
-  cacheViews[viewId] = views[0];
-  return views[0];
+  const result = {
+    pageId: views[0].pageId,
+    childPageId: views[0].childPageId,
+    viewId: views[0].viewId,
+    name: views[0].name,
+    sheetName: views[0].sheetName,
+    isTableHeader: views[0].isTableHeader ? true : false,
+    onePageMaxSize: views[0].onePageMaxSize,
+    tableId: views[0].tableId,
+    viewType: views[0].viewType,
+    excelStartRow: views[0].excelStartRow,
+    excelStartColumn: views[0].excelStartColumn,
+  };
+  cacheViews[viewId] = result;
+  return result;
 }
 
 // インメモリキャッシュを削除する
@@ -963,6 +999,8 @@ export async function isExistView_core( viewId ){
         pages.page_id AS childPageId,
         views.page_id AS pageId,
         view_name AS name,
+        views.sheet_name AS sheetName,
+        views.is_table_header AS isTableHeader,
         views.view_id AS viewId,
         views.table_id AS tableId,
         views.one_page_max_size AS onePageMaxSize,
@@ -982,6 +1020,19 @@ export async function isExistView_core( viewId ){
     if(bugMode === 52) throw "MUTATION52";  // 意図的にバグを混入させる（ミューテーション解析）
     return false;
   }
+  cacheViews[viewId] = {
+    pageId: views[0].pageId,
+    childPageId: views[0].childPageId,
+    viewId: views[0].viewId,
+    name: views[0].name,
+    sheetName: views[0].sheetName,
+    isTableHeader: views[0].isTableHeader ? true : false,
+    onePageMaxSize: views[0].onePageMaxSize,
+    tableId: views[0].tableId,
+    viewType: views[0].viewType,
+    excelStartRow: views[0].excelStartRow,
+    excelStartColumn: views[0].excelStartColumn,
+  };
   return true;
 }
 
@@ -1003,8 +1054,9 @@ export async function updateView_core( params ){
   const {
     viewId,
     viewName,
+    sheetName,
+    isTableHeader,
     viewType,
-    onePageMaxSize,
     excelStartRow,
     excelStartColumn,
   } = params;
@@ -1014,16 +1066,18 @@ export async function updateView_core( params ){
   await runSqlWriteOnly(
     `UPDATE views
         SET view_name = :viewName,
+          sheet_name = :sheetName,
+          is_table_header = :isTableHeader,
           view_type = :viewType,
-          one_page_max_size = :onePageMaxSize,
           excel_start_row = :excelStartRow,
           excel_start_column = :excelStartColumn
         WHERE view_id = :viewId;`,
     {
       ":viewId": viewId,
       ":viewName": viewName,
+      ":sheetName": sheetName,
+      ":isTableHeader": isTableHeader,
       ":viewType": viewType,
-      ":onePageMaxSize": onePageMaxSize,
       ":excelStartRow": excelStartRow,
       ":excelStartColumn": excelStartColumn,
     },

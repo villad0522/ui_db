@@ -28,6 +28,21 @@
             "description": "ビュー名",
             "example": "○○一覧"
         },
+        "isExcel_flag": {
+            "dataType": "BOOL",
+            "description": "このページをエクセルファイルに変換するか否か",
+            "example": true
+        },
+        "sheetName": {
+            "dataType": "TEXT",
+            "description": "Excelファイルに書き出す際のシート名",
+            "example": "Sheet1"
+        },
+        "isTableHeader": {
+            "dataType": "BOOL",
+            "description": "Excelファイルに書き出す際に、列名を出力するか否か。",
+            "example": true
+        },
         "childPageId": {
             "dataType": "INTEGER",
             "description": "子ページのID",

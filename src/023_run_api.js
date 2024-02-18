@@ -331,8 +331,12 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       const viewId = Number(queryParameters["view"]);
       const viewInfo = await getViewInfo( viewId );
       const viewColumns = await listViewColumns( viewId );
+      const { isExcel } = await getPageInfo( viewInfo.pageId );
       return {
         "viewId": viewId,
+        "isExcel_flag": isExcel,
+        "isTableHeader":  viewInfo.isTableHeader,
+        "sheetName":  viewInfo.sheetName,
         "childPageId": viewInfo.childPageId,
         "viewType":  viewInfo.viewType,
         "onePageMaxSize": viewInfo.onePageMaxSize,

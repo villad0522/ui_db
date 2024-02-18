@@ -28,6 +28,17 @@ export async function updateExcel( fileData, sheetInfos, dataList ){
         throw new Error(`sheetInfos[${i}]がオブジェクトではありません。\nレイヤー : excel_content\n関数 : updateExcel`);
       }
     }
+    if( typeof sheetInfos[i].viewId !== "number" ){
+      if( !sheetInfos[i].viewId ){
+        throw new Error(`sheetInfos[${i}].viewIdがNULLです。\nレイヤー : excel_content\n関数 : updateExcel`);
+      }
+      else{
+        throw new Error(`sheetInfos[${i}].viewIdが数値ではありません。\nレイヤー : excel_content\n関数 : updateExcel`);
+      }
+    }
+    else if( isNaN(sheetInfos[i].viewId) ){
+      throw new Error(`sheetInfos[${i}].viewIdが数値ではありません。\nレイヤー : excel_content\n関数 : updateExcel`);
+    }
     if( typeof sheetInfos[i].sheetName !== "string" ){
       if( !sheetInfos[i].sheetName ){
         throw new Error(`sheetInfos[${i}].sheetNameがNULLです。\nレイヤー : excel_content\n関数 : updateExcel`);
@@ -195,6 +206,17 @@ export async function _updateExcelSheet( workbook, sheetInfos, dataList ){
       else{
         throw new Error(`sheetInfos[${i}]がオブジェクトではありません。\nレイヤー : excel_content\n関数 : _updateExcelSheet`);
       }
+    }
+    if( typeof sheetInfos[i].viewId !== "number" ){
+      if( !sheetInfos[i].viewId ){
+        throw new Error(`sheetInfos[${i}].viewIdがNULLです。\nレイヤー : excel_content\n関数 : _updateExcelSheet`);
+      }
+      else{
+        throw new Error(`sheetInfos[${i}].viewIdが数値ではありません。\nレイヤー : excel_content\n関数 : _updateExcelSheet`);
+      }
+    }
+    else if( isNaN(sheetInfos[i].viewId) ){
+      throw new Error(`sheetInfos[${i}].viewIdが数値ではありません。\nレイヤー : excel_content\n関数 : _updateExcelSheet`);
     }
     if( typeof sheetInfos[i].sheetName !== "string" ){
       if( !sheetInfos[i].sheetName ){

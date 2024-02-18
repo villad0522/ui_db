@@ -38,6 +38,13 @@ window.getChildPageId = function (i) {
 }
 //
 //###############################################################
+// Excelのスイッチが切り替えられたとき
+window.handleExcelSwitch = async function (i) {
+    await myFetch('./rename_page/json');
+    location.reload();  // iframeを再読み込みするため
+}
+//
+//###############################################################
 // Excelを開く関数
 window.openExcel = function (i) {
     const params = new URL(location.href).searchParams;
