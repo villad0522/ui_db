@@ -411,21 +411,19 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
                 }
                 //
                 // Excelのテンプレートを貼り付ける
-                if( (actualPageCount+displayPageCount) >= 1 ){
+                if( actualPageCount !== 1 ){
                     if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
                     // もし１ページ目以外なら
-                    const excelIndex = ( pageRowSize * (actualPageCount+displayPageCount) );    // Excelの何行目に書き込むのか
                     for( let i=1; i<pageRowSize; i++ ){
                         if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+                        const excelIndex = pageRowSize * (actualPageCount+displayPageCount);    // Excelの何行目に書き込むのか
                         for( const { excelColumnText } of viewColumns ){  // 列ごとに繰り返す
                             if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
                             const sourceCell = worksheet.getRow(i).getCell(excelColumnText);
                             const targetCell = worksheet.getRow(excelIndex + i).getCell(excelColumnText);
-                            targetCell.style = sourceCell.style;
                             const formula = String(sourceCell.formula);
                             if( /[A-Z]{1,2}[1-9][0-9]*$/g.test(formula) ){
                                 if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
-                                const match1 = formula.match(/[A-Z]/g);
                                 const match2 = formula.match(/[1-9][0-9]*$/g);
                                 const pastRowNumber = Number(match2[0]);
                                 const nextRowNumber = Number(match2[0]) + excelIndex;
@@ -437,6 +435,7 @@ export async function _updateExcelSheet_core( workbook, sheetInfos, dataList ){
                                 if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
                                 targetCell.value = sourceCell.value;
                             }
+                            targetCell.style = sourceCell.style;
                         }
                     }
                 }
@@ -622,7 +621,11 @@ export async function extractTemplate_core( fileData, sheetInfos ){
                 break;
             }
         }
-        worksheet.spliceRows(lastRowIndex+1, worksheet.rowCount);
+        const maxRow = worksheet.rowCount;
+        for( let i=maxRow; i>lastRowIndex; i--){
+            if(bugMode === 52) throw "MUTATION52";  // 意図的にバグを混入させる（ミューテーション解析）
+            worksheet.spliceRows(i, 1);
+        }
         //
         // 終端文字を入れる
         worksheet.getRow(lastRowIndex).getCell(1).value = "<END_OF_PAGE>";
@@ -630,10 +633,10 @@ export async function extractTemplate_core( fileData, sheetInfos ){
     //
     // シート「日付とページ番号」を削除する
     if ( metaSheet ) {
-        if(bugMode === 52) throw "MUTATION52";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
         // シートが０枚になるとエラーを吐くので、使わないシートを生成する。
         if ( workbook.worksheets.length <= 1 ) {
-            if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 54) throw "MUTATION54";  // 意図的にバグを混入させる（ミューテーション解析）
             workbook.addWorksheet("Gw21b1re3e3T5");
         }
         workbook.removeWorksheet(metaSheet.id);
