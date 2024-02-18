@@ -306,7 +306,8 @@ export async function autoFill_core( viewId, inputTexts, isClick ){
     }
     conditions[nextGroupId][nextColumnId] = result.recordId;
   }
-  return structuredClone(inputTexts);
+  const result = structuredClone(inputTexts);
+  return result;
 }
 
 
@@ -356,7 +357,8 @@ export async function _autoFill_core( params ){
     const inputText = inputTexts[ viewColumnId ];
     if( dataType==="FILE" || dataType==="BOOL" || dataType==="POINTER" ){
       if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
-      continue; // 予測変換を生成しない
+      results[ viewColumnId + "_option" ] = [];  // 予測変換を生成しない
+      continue; 
     }
     else if( dataType==="INTEGER" || dataType==="REAL" || dataType==="TEXT" ){
     if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）

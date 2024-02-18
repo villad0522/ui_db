@@ -249,6 +249,7 @@ export async function regenerateHTML_core( pageId ){
         <!--  -->
         <!-- 自作CSSを読み込む -->
         <link rel="stylesheet" href="./style.css" type="text/css">
+        <link rel="stylesheet" href="/default/auto_correct.css" type="text/css">
         <!--  -->
         <!-- 自作JavaScriptを読み込む -->
         <script src="./script.js" type="module"></script>
