@@ -2,12 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import {
   startUp,
-  createColumn,
   createRecord,
   updateRecords,
   checkField,
   checkRecord,
-  deleteTable,
   getDataType,
   listColumnsForGUI,
   listColumnsAll,
@@ -46,9 +44,6 @@ import {
   listDataTypes,
 } from "./118_data_type_validate.js";
 import {
-  createTable,
-  updateTableName,
-  updateColumnName,
   reserveWord,
   checkReservedWord,
 } from "./106_reserved_word_validate.js";
@@ -84,6 +79,11 @@ import {
   autoCorrectTableName,  // テーブル名を入力させる
   autoCorrectColumnName,  // カラム名を入力させる
   clearCache,  // インメモリキャッシュを削除する
+  createTable,  // テーブルを作成
+  updateTableName,  // テーブル名を変更
+  deleteTable,  // 不可逆的にテーブルを削除
+  createColumn,  // カラムを作成
+  updateColumnName,  // カラム名を変更
 } from "./097_system_auto_correct_validate.js";
 import { setBugMode } from "./098_system_auto_correct.js";
 
@@ -93,7 +93,7 @@ export async function test096() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 5; i++ ) {
+    for ( i = 1; i <= 10; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

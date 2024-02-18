@@ -135,12 +135,36 @@ export async function autoCorrectColumnName_core( inputText, tableName ){
 // インメモリキャッシュを削除する
 export async function clearCache_core(  ){
   if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-    await _reload();    // メモリに再読み込み
+  cacheTableNames = {};
     return await clearCache();   // 下層の関数を呼び出す
 }
 
+// テーブルを作成
+export async function createTable_core( tableName ){
+  if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+  cacheTableNames = {};
+}
 
-// 【サブ】メモリに再読み込み
-async function _reload(  ){
+// テーブル名を変更
+export async function updateTableName_core( tables ){
+  if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+  cacheTableNames = {};
+}
+
+// 不可逆的にテーブルを削除
+export async function deleteTable_core( tableId ){
+  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+  cacheTableNames = {};
+}
+
+// カラムを作成
+export async function createColumn_core( tableId, columnName, dataType, parentTableId ){
+  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+  cacheTableNames = {};
+}
+
+// カラム名を変更
+export async function updateColumnName_core( columns ){
+  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
   cacheTableNames = {};
 }

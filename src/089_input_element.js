@@ -2,12 +2,10 @@
 //
 import {
   startUp,
-  createColumn,
   createRecord,
   updateRecords,
   checkField,
   checkRecord,
-  deleteTable,
   getDataType,
   listColumnsForGUI,
   listColumnsAll,
@@ -44,19 +42,17 @@ import {
 } from "./121_primary_key_validate.js";
 import {
   clearCache,
+  createColumn,
+  createTable,
+  deleteTable,
+  updateTableName,
+  updateColumnName,
   autoCorrectTableName,
   autoCorrectColumnName,
 } from "./097_system_auto_correct_validate.js";
 import {
   listDataTypes,
 } from "./118_data_type_validate.js";
-import {
-  createTable,
-  updateTableName,
-  updateColumnName,
-  reserveWord,
-  checkReservedWord,
-} from "./106_reserved_word_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -85,6 +81,10 @@ import {
   _copyRecord,
   _generateRecordSortNumber,
 } from "./115_sort_validate.js";
+import {
+  reserveWord,
+  checkReservedWord,
+} from "./106_reserved_word_validate.js";
 import {
   formatField,
 } from "./094_db_formatter_validate.js";
@@ -227,7 +227,7 @@ async function _reload() {
     for( const viewColumnId of viewColumnIdList ){
       const columnId = cacheData1[viewColumnId];
       if( tableId !== await getTableId(columnId) ){
-        throw `指定されたテーブルIDとカラムIDの辻褄が合いません。\nviewColumnId = ${viewColumnId}\ntableId = ${tableId}\ncolumnId = ${columnId}`;
+        throw `指定されたテーブルIDとカラムIDの辻褄が合いません。\nviewColumnId = ${viewColumnId}\ntableId = ${tableId}\ncolumnId = ${columnId}\ninputGroups = ${JSON.stringify(inputGroups,null,2)}\ninputElements = ${JSON.stringify(inputElements,null,2)}`;
       }
     }
     cacheData2[viewId].push({
@@ -548,7 +548,18 @@ export async function clearCache_core(  ){
 // 入力グループを作成
 export async function createInputGroup_core( inputGroupId, viewId, tableId, nextGroupId, nextColumnId, processingOrder ){
   if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
-  const inputGroups = await runSqlReadOnly(
+  const inputGroups1 = await runSqlReadOnly(
+    `SELECT input_group_id AS inputGroupId
+      FROM input_group
+      WHERE input_group_id = :inputGroupId;`,
+    {
+      ":inputGroupId": inputGroupId,
+    },
+  );
+  if( inputGroups1.length >= 1 ){
+    throw `入力グループを作成しようとしましたが失敗しました。入力グループIDが重複しています。`;
+  }
+  const inputGroups2 = await runSqlReadOnly(
     `SELECT *
       FROM input_group
       WHERE view_id != :viewId
@@ -558,11 +569,11 @@ export async function createInputGroup_core( inputGroupId, viewId, tableId, next
       ":nextGroupId": nextGroupId,
     },
   );
-  if( inputGroups.length >= 1 ){
+  if( inputGroups2.length >= 1 ){
     throw `入力グループを作成しようとしましたが失敗しました。入力グループは、異なるビューに属する入力グループに情報を送ることはできません。`;
   }
   await runSqlWriteOnly(
-    `INSERT OR REPLACE INTO input_group (
+    `INSERT INTO input_group (
       input_group_id,
       view_id,
       table_id,

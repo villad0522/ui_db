@@ -2,12 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import {
   startUp,
-  createColumn,
   createRecord,
   updateRecords,
   checkField,
   checkRecord,
-  deleteTable,
   getDataType,
   listColumnsForGUI,
   listColumnsAll,
@@ -44,19 +42,17 @@ import {
 } from "./121_primary_key_validate.js";
 import {
   clearCache,
+  createColumn,
+  createTable,
+  deleteTable,
+  updateTableName,
+  updateColumnName,
   autoCorrectTableName,
   autoCorrectColumnName,
 } from "./097_system_auto_correct_validate.js";
 import {
   listDataTypes,
 } from "./118_data_type_validate.js";
-import {
-  createTable,
-  updateTableName,
-  updateColumnName,
-  reserveWord,
-  checkReservedWord,
-} from "./106_reserved_word_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -85,6 +81,10 @@ import {
   _copyRecord,
   _generateRecordSortNumber,
 } from "./115_sort_validate.js";
+import {
+  reserveWord,
+  checkReservedWord,
+} from "./106_reserved_word_validate.js";
 import {
   formatField,
 } from "./094_db_formatter_validate.js";

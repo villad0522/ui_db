@@ -94,9 +94,9 @@ import {
   createTable,
   updateTableName,
   updateColumnName,
-  reserveWord,
-  checkReservedWord,
-} from "./106_reserved_word_validate.js";
+  autoCorrectTableName,
+  autoCorrectColumnName,
+} from "./097_system_auto_correct_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -125,9 +125,9 @@ import {
   _generateRecordSortNumber,
 } from "./115_sort_validate.js";
 import {
-  autoCorrectTableName,
-  autoCorrectColumnName,
-} from "./097_system_auto_correct_validate.js";
+  reserveWord,
+  checkReservedWord,
+} from "./106_reserved_word_validate.js";
 import {
   formatField,
 } from "./094_db_formatter_validate.js";
@@ -424,7 +424,7 @@ export async function regenerateInputElements_core( viewId ){
     const mainTableId = await getTableFromView( viewId );
     // 入力グループを作成
     await createInputGroup(
-        "main",     // inputGroupId
+        viewId + "/main",     // inputGroupId
         viewId,
         mainTableId,
         null,   // nextGroupId
@@ -447,7 +447,7 @@ export async function regenerateInputElements_core( viewId ){
     //
     for( const columnPath in joinIdMap ){
         if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
-        const inputGroupId = joinIdMap[columnPath];
+        const inputGroupId = viewId + "/" + joinIdMap[columnPath];
         const columnId = await pathToColumnId( columnPath );
         const tableId = await getParentTableId(columnId);
         //
@@ -461,12 +461,12 @@ export async function regenerateInputElements_core( viewId ){
             const childColumnId = await pathToColumnId( childColumnPath );
             //
             // 子（参照元）のグループID
-            nextGroupId = joinIdMap[childColumnPath];
+            nextGroupId =  viewId + "/" + joinIdMap[childColumnPath];
             nextColumnId = childColumnId;
         }
         else{
             if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
-            nextGroupId = "main";
+            nextGroupId = viewId + "/main";
             nextColumnId = columnId;
         }
         //
@@ -486,13 +486,13 @@ export async function regenerateInputElements_core( viewId ){
     //
     for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
         if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
-        let inputGroupId = "main";
+        let inputGroupId = viewId + "/main";
         const pathLength = await getPathLength( columnPath );
         if( pathLength >= 2 ){
             if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
             // 子（参照元）のカラムパス
             const childColumnPath = await slicePath( columnPath, pathLength-1 );
-            inputGroupId = joinIdMap[childColumnPath];
+            inputGroupId = viewId + "/" + joinIdMap[childColumnPath];
             if( !inputGroupId ){
                 throw `入力要素を作り直そうとしましたが、所属している入力グループが見つかりません。\ncolumnPath = ${columnPath}\njoinIdMap = ${JSON.stringify(joinIdMap,null,2)}`;
             }

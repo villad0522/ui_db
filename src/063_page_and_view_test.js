@@ -64,9 +64,9 @@ import {
   createTable,
   updateTableName,
   updateColumnName,
-  reserveWord,
-  checkReservedWord,
-} from "./106_reserved_word_validate.js";
+  autoCorrectTableName,
+  autoCorrectColumnName,
+} from "./097_system_auto_correct_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -95,9 +95,9 @@ import {
   _generateRecordSortNumber,
 } from "./115_sort_validate.js";
 import {
-  autoCorrectTableName,
-  autoCorrectColumnName,
-} from "./097_system_auto_correct_validate.js";
+  reserveWord,
+  checkReservedWord,
+} from "./106_reserved_word_validate.js";
 import {
   formatField,
 } from "./094_db_formatter_validate.js";
