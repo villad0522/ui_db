@@ -47,7 +47,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 //###############################################################
 // 編集スイッチが切り替えられたとき
 window.handleEditSwitch = function (event) {
-    jumpWithQuery(`/default/page_editor/index.html?page_id=PAGE_ID`);
+    jumpWithQuery(`/default/page_editor/index.html?page_id=1`);
     event.target.checked = false;   // スイッチを「編集中ではない」に戻す
     // ↑ この処理の意義は、
     // 「編集内容は破棄されます。よろしいですか？」に
@@ -74,46 +74,46 @@ window.tableButton = function (i) {
 //
 //###############################################################
 // ページネーションボタンの「First」がクリックされたときに実行する関数
-window.paginationButtonFirst = function (arrayName) {
+window.paginationButtonFirst = function (viewId) {
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", 1);
+    searchParams.set(`page_view${viewId}_`, 1);
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
 //
 //###############################################################
 // ページネーションボタンの「Prev」がクリックされたときに実行する関数
-window.paginationButtonPrev = function () {
+window.paginationButtonPrev = function (viewId) {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("tables_pagePrev")[0].value;
+    const pageNumber = document.getElementsByName(`view${viewId}__pagePrev`)[0].innerText;
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", pageNumber);
+    searchParams.set(`page_view${viewId}_`, pageNumber);
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
 //
 //###############################################################
 // ページネーションボタンの「Next」がクリックされたときに実行する関数
-window.paginationButtonNext = function () {
+window.paginationButtonNext = function (viewId) {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("tables_pageNext")[0].value;
+    const pageNumber = document.getElementsByName(`view${viewId}__pageNext`)[0].innerText;
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", pageNumber);
+    searchParams.set(`page_view${viewId}_`, pageNumber);
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
 //
 //###############################################################
 // ページネーションボタンの「Last」がクリックされたときに実行する関数
-window.paginationButtonLast = function () {
+window.paginationButtonLast = function (viewId) {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("tables_pageLast")[0].value;
+    const pageNumber = document.getElementsByName(`view${viewId}__pageLast`)[0].value;
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_tables", pageNumber);
+    searchParams.set(`page_view${viewId}_`, pageNumber);
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }

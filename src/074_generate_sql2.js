@@ -289,11 +289,11 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
     if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
     if(onePageMaxSize){
       if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
-      sql += `LIMIT ${onePageMaxSize}`;
+      sql += `LIMIT ${onePageMaxSize} OFFSET :offset`;
     }
     else{
       if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
-      sql += `LIMIT 10000`;
+      sql += `LIMIT 10000 OFFSET :offset`;
     }
   }
   //

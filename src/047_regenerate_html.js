@@ -257,7 +257,7 @@ export async function regenerateHTML_core( pageId ){
         <!-- 自作JavaScriptを読み込む -->
         <script src="./script.js" type="module"></script>
     </head>
-    <body>
+    <body style="visibility: hidden;">
         <nav class="navbar navbar-dark bg-primary">
             <div class="container-fluid">
                 <button ${ parentPageId ? "" : "disabled" } onclick="jumpWithQuery('/custom/${parentPageId}/index.html')" type="button" class="btn btn-light me-2">

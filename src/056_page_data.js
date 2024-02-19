@@ -206,17 +206,18 @@ export async function getPageDataForGUI_core( pageId, queryParameters ){
   const views = await listChildrenView( pageId );
   for( const { viewId } of views ){
     if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
-    const { normalSQL, countSQL, parameters } = await generateSQL( viewId, queryParameters, false );
+    const { normalSQL, countSQL, normalParameters, countParameters } = await generateSQL( viewId, queryParameters, false );
     //
-    const [{ "total": total }] = await runSqlReadOnly( countSQL, parameters );
+    const [{ "total": total }] = await runSqlReadOnly( countSQL, countParameters );
     if( isNaN(total) ){
       throw "件数を取得できません";
     }
+    //
     results = {
       ...await autoFill( viewId, {}, false ),
       ...results,
       ["view" + viewId + "__total"]: total,
-      ["view" + viewId + "_"]: await runSqlReadOnly( normalSQL, parameters ),
+      ["view" + viewId + "_"]: await runSqlReadOnly( normalSQL, normalParameters ),
     };
   }
   return results;
@@ -235,8 +236,8 @@ export async function getPageDataForExcel_core( pageId, queryParameters ){
     const views = await listChildrenView( pageId );
     for( const { viewId } of views ){
       if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-      const { normalSQL, countSQL, parameters } = await generateSQL( viewId, queryParameters, true );
-      sheetDatas[viewId] = await runSqlReadOnly( normalSQL, parameters );
+      const { normalSQL, countSQL, normalParameters } = await generateSQL( viewId, queryParameters, true );
+      sheetDatas[viewId] = await runSqlReadOnly( normalSQL, normalParameters );
     }
     dataList.push(sheetDatas);
   }

@@ -511,7 +511,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                 <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
                 <input name="view${viewId}__pageFirst_flag" class="flag" type="checkbox" style="display: none;">
                 <li class="page-item">
-                    <button onclick="paginationButtonFirst()" type="button" class="page-link">
+                    <button onclick="paginationButtonFirst(${viewId})" type="button" class="page-link">
                         <span aria-hidden="true">&laquo;</span>
                     </button>
                 </li>
@@ -519,7 +519,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                 <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
                 <input name="view${viewId}__pagePrev_flag" class="flag" type="checkbox" style="display: none;">
                 <li class="page-item">
-                    <button name="view${viewId}__pagePrev" onclick="paginationButtonPrev()" type="button" class="page-link">
+                    <button name="view${viewId}__pagePrev" onclick="paginationButtonPrev(${viewId})" type="button" class="page-link">
                     </button>
                 </li>
                 <!--  -->
@@ -532,14 +532,14 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                 <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
                 <input name="view${viewId}__pageNext_flag" class="flag" type="checkbox" style="display: none;">
                 <li class="page-item">
-                    <button name="view${viewId}__pageNext" onclick="paginationButtonNext()" type="button" class="page-link">
+                    <button name="view${viewId}__pageNext" onclick="paginationButtonNext(${viewId})" type="button" class="page-link">
                     </button>
                 </li>
                 <!--  -->
                 <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
                 <input name="view${viewId}__pageLast_flag" class="flag" type="checkbox" style="display: none;">
                 <li class="page-item">
-                    <button onclick="paginationButtonLast()" type="button" class="page-link">
+                    <button onclick="paginationButtonLast(${viewId})" type="button" class="page-link">
                         <span aria-hidden="true">&raquo;</span>
                     </button>
                 </li>

@@ -192,6 +192,9 @@ async function _setFormData(formData) {
         // "tableName": true,
     };
     for (let [key, value] of formData.entries()) {
+        if (String(key).startsWith("view1__page")) {
+            console.log(key, value);
+        }
         if (String(key).includes("_option")) {
             key = key.split("_option")[0];
             const optionValue = value;

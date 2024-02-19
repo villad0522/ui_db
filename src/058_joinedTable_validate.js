@@ -178,18 +178,32 @@ export async function generateSQL( viewId, queryParameters, isExcel ){
       throw new Error(`result.countSQLが文字列ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
     }
   }
-  if( result.parameters===null || result.parameters===undefined ){
-    throw new Error(`result.parametersがNULLです。\nレイヤー : joinedTable\n関数 : generateSQL`);
+  if( result.normalParameters===null || result.normalParameters===undefined ){
+    throw new Error(`result.normalParametersがNULLです。\nレイヤー : joinedTable\n関数 : generateSQL`);
   }
-  else if( typeof result.parameters !== "object" ){
-    throw new Error(`result.parametersがオブジェクトではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+  else if( typeof result.normalParameters !== "object" ){
+    throw new Error(`result.normalParametersがオブジェクトではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
   }
-  else if( result.parameters.constructor !== Object ){
-    throw new Error(`result.parametersが辞書型ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+  else if( result.normalParameters.constructor !== Object ){
+    throw new Error(`result.normalParametersが辞書型ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
   }
-  for( const i in result.parameters ){
+  for( const i in result.normalParameters ){
     if( typeof i !== "string" ){
-      throw new Error(`result.parametersのキーが文字列ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+      throw new Error(`result.normalParametersのキーが文字列ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+    }
+  }
+  if( result.countParameters===null || result.countParameters===undefined ){
+    throw new Error(`result.countParametersがNULLです。\nレイヤー : joinedTable\n関数 : generateSQL`);
+  }
+  else if( typeof result.countParameters !== "object" ){
+    throw new Error(`result.countParametersがオブジェクトではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+  }
+  else if( result.countParameters.constructor !== Object ){
+    throw new Error(`result.countParametersが辞書型ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
+  }
+  for( const i in result.countParameters ){
+    if( typeof i !== "string" ){
+      throw new Error(`result.countParametersのキーが文字列ではありません。\nレイヤー : joinedTable\n関数 : generateSQL`);
     }
   }
   //

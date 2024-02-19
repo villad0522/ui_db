@@ -373,17 +373,30 @@ export async function generateSQL_core( viewId, queryParameters, isExcel ){
         sortOrders,
         isExcel ? null : onePageMaxSize,
     );
-    return {  normalSQL, countSQL, parameters };
+    let pageNumber = Number(queryParameters[`page_view${viewId}_`] ?? 1);
+    if(isNaN(pageNumber)){
+        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+        pageNumber = 1;
+    }
+    if(pageNumber<=0){
+        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        pageNumber = 1;
+    }
+    const normalParameters = {
+        ":offset": onePageMaxSize * (pageNumber - 1),
+    };
+    const countParameters = parameters;
+    return {  normalSQL, countSQL, normalParameters, countParameters };
 }
 
 
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
-  if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
     const views = await listViewsFromTableId( tableId );
     for( const viewId of views ){
-        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
         // 外部キー制約があるため、消す順番に注意！
         await runSqlWriteOnly(
             `DELETE FROM sort_orders

@@ -335,12 +335,24 @@ export async function regenerateAPI_read_core( pageId ){
     // ビューの一覧
     const views = await listChildrenView( pageId );
     //
-    for( const { viewId, tableId, onePageMaxSize, viewType, childPageId } of views ){
+    const queryParameters = {};
+    //
+    for( const { viewId } of views ){
         if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+        queryParameters[`page_view${viewId}_`] = {
+            "dataType": "INTEGER",
+            "description": "ページ番号。１ページに収まらなかった場合に活用します。このパラメータを2,3,4...と増やすことで、次のページを閲覧できます。",
+            "isRequired": false,
+            "example": 1
+        }
+    }
+    //
+    for( const { viewId, tableId, onePageMaxSize, viewType, childPageId } of views ){
+        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
         const viewColumns = await listViewColumns( viewId );
         const children = {};
         for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
-            if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
             const columnId = await pathToColumnId( columnPath );
             // レスポンス
             children[viewColumnId] = {
@@ -390,7 +402,7 @@ export async function regenerateAPI_read_core( pageId ){
         "httpMethod": "GET",
         "description": "データを１ページぶん取得します。",
         "commandName": "GET_PAGE_DATA",
-        "queryParameters": {},
+        "queryParameters": queryParameters,
         "requestBody": {},
         "response": response,
     };
@@ -399,12 +411,12 @@ export async function regenerateAPI_read_core( pageId ){
 
 // APIを再生成(UPDATE)
 export async function regenerateAPI_update_core( viewId, tableId, onePageMaxSize, childPageId ){
-  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
     const viewColumns = await listViewColumns( viewId );
     const requestBody = {};
     const response = {};
     for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
-        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
         // リクエストボディ
         requestBody[viewColumnId] = {
             "dataType": "TEXT",
@@ -488,7 +500,7 @@ export async function regenerateAPI_update_core( viewId, tableId, onePageMaxSize
 
 // APIを再生成(DELETE)
 export async function regenerateAPI_delete_core( viewId, tableId, onePageMaxSize, childPageId ){
-  if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
     return {
         "tableId": tableId,
         "httpMethod": "POST",
@@ -535,25 +547,25 @@ export async function regenerateAPI_delete_core( viewId, tableId, onePageMaxSize
 
 // 【サブ】データ型を取得する関数
 export async function _getDataType_core( columnId ){
-  if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
     const dataType = await getDataType( columnId );
     switch (dataType) {
         case "POINTER":
-            if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
             const parentTableId = await getTableId( columnId );
             const parentColumnId = await getTitleColumnId( parentTableId );
             return await _getDataType_core( parentColumnId );
         case "INTEGER":
-            if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
             return "INTEGER";
         case "REAL":
-            if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
             return "REAL";
         case "TEXT":
-            if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
             return "TEXT";
         case "BOOL":
-            if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
             return "BOOL";
         default:
             throw `サポートされていないデータ型です。detaType="${dataType}"`;
