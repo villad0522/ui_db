@@ -1,0 +1,21 @@
+{
+    "httpMethod": "POST",
+    "description": "キーワードをスキャンします。",
+    "commandName": "SCAN_KEYWORDS",
+    "queryParameters": {
+        "table": {
+            "dataType": "TEXT",
+            "description": "テーブルID",
+            "isRequired": true,
+            "example": "t3"
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "../?table=t6"
+        }
+    }
+}

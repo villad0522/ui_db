@@ -138,7 +138,7 @@ export async function myFetch(url, parameters) {
                 alert(jsonData.userMessage);
             }
             if (jsonData.nextUrl) {
-                const nextUrl = formData.get("nextUrl");
+                const nextUrl = jsonData.nextUrl;
                 if (nextUrl) {
                     location.href = nextUrl;
                 }

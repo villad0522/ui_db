@@ -84,8 +84,9 @@ import {
   enableColumn,
   autoCorrect,
   autoCorrectFromArray,
-  scanTexts,
-  getConvertProgress,
+  scanKeywords,
+  getScanKeywordsProgress,
+  stopScanKeywords,
 } from "./103_search_text_validate.js";
 import {
   reload,
@@ -268,7 +269,7 @@ export async function test021() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 45; i++ ) {
+    for ( i = 1; i <= 48; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

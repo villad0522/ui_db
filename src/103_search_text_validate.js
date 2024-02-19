@@ -10,8 +10,9 @@ import {
   enableColumn_core,  // カラムを再度有効化
   autoCorrect_core,  // レコードの予測変換
   autoCorrectFromArray_core,  // 配列の予測変換
-  scanTexts_core,  // 文字列を再スキャンする
-  getConvertProgress_core,  // 変換の進捗状況を取得する関数
+  scanKeywords_core,  // 検索用キーワードをスキャンする
+  getScanKeywordsProgress_core,  // 変換の進捗状況を取得する関数
+  stopScanKeywords_core,  // キーワードのスキャンを中断する関数
 } from "./104_search_text.js";
 
 
@@ -661,17 +662,17 @@ export async function autoCorrectFromArray( inputText, candidateArray ){
 
 
 //#######################################################################################
-// 関数「scanTexts_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「scanKeywords_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function scanTexts( tableId ){
+export async function scanKeywords( tableId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : search_text\n関数 : scanTexts`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : search_text\n関数 : scanKeywords`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : search_text\n関数 : scanTexts`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : search_text\n関数 : scanKeywords`);
     }
   }
   //
@@ -679,11 +680,11 @@ export async function scanTexts( tableId ){
   // メイン処理を実行
   let result;
   try{
-    result = await scanTexts_core( tableId );
+    result = await scanKeywords_core( tableId );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : search_text\n関数 : scanTexts`);
+      throw new Error(`${error}\nレイヤー : search_text\n関数 : scanKeywords`);
     }
     else{
       throw error;
@@ -699,9 +700,9 @@ export async function scanTexts( tableId ){
 
 
 //#######################################################################################
-// 関数「getConvertProgress_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「getScanKeywordsProgress_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function getConvertProgress(  ){
+export async function getScanKeywordsProgress(  ){
   //--------------------------------------------------------------------------
   // 引数を検証
   //
@@ -709,11 +710,11 @@ export async function getConvertProgress(  ){
   // メイン処理を実行
   let result;
   try{
-    result = await getConvertProgress_core(  );
+    result = await getScanKeywordsProgress_core(  );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : search_text\n関数 : getConvertProgress`);
+      throw new Error(`${error}\nレイヤー : search_text\n関数 : getScanKeywordsProgress`);
     }
     else{
       throw error;
@@ -724,41 +725,79 @@ export async function getConvertProgress(  ){
   // 戻り値を検証
   if( typeof result !== "object" ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : search_text\n関数 : getConvertProgress`);
+      throw new Error(`resultがNULLです。\nレイヤー : search_text\n関数 : getScanKeywordsProgress`);
     }
     else{
-      throw new Error(`resultがオブジェクトではありません。\nレイヤー : search_text\n関数 : getConvertProgress`);
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : search_text\n関数 : getScanKeywordsProgress`);
     }
   }
   if( typeof result.progressMessage !== "string" ){
     if( !result.progressMessage ){
-      throw new Error(`result.progressMessageがNULLです。\nレイヤー : search_text\n関数 : getConvertProgress`);
+      throw new Error(`result.progressMessageがNULLです。\nレイヤー : search_text\n関数 : getScanKeywordsProgress`);
     }
     else{
-      throw new Error(`result.progressMessageが文字列ではありません。\nレイヤー : search_text\n関数 : getConvertProgress`);
+      throw new Error(`result.progressMessageが文字列ではありません。\nレイヤー : search_text\n関数 : getScanKeywordsProgress`);
     }
   }
   if( typeof result.progress !== "number" ){
     if( !result.progress ){
-      throw new Error(`result.progressがNULLです。\nレイヤー : search_text\n関数 : getConvertProgress`);
+      throw new Error(`result.progressがNULLです。\nレイヤー : search_text\n関数 : getScanKeywordsProgress`);
     }
     else{
-      throw new Error(`result.progressが数値ではありません。\nレイヤー : search_text\n関数 : getConvertProgress`);
+      throw new Error(`result.progressが数値ではありません。\nレイヤー : search_text\n関数 : getScanKeywordsProgress`);
     }
   }
   else if( isNaN(result.progress) ){
-    throw new Error(`result.progressが数値ではありません。\nレイヤー : search_text\n関数 : getConvertProgress`);
+    throw new Error(`result.progressが数値ではありません。\nレイヤー : search_text\n関数 : getScanKeywordsProgress`);
   }
   if( typeof result.rowSize !== "number" ){
     if( !result.rowSize ){
-      throw new Error(`result.rowSizeがNULLです。\nレイヤー : search_text\n関数 : getConvertProgress`);
+      throw new Error(`result.rowSizeがNULLです。\nレイヤー : search_text\n関数 : getScanKeywordsProgress`);
     }
     else{
-      throw new Error(`result.rowSizeが数値ではありません。\nレイヤー : search_text\n関数 : getConvertProgress`);
+      throw new Error(`result.rowSizeが数値ではありません。\nレイヤー : search_text\n関数 : getScanKeywordsProgress`);
     }
   }
   else if( isNaN(result.rowSize) ){
-    throw new Error(`result.rowSizeが数値ではありません。\nレイヤー : search_text\n関数 : getConvertProgress`);
+    throw new Error(`result.rowSizeが数値ではありません。\nレイヤー : search_text\n関数 : getScanKeywordsProgress`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「stopScanKeywords_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function stopScanKeywords(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await stopScanKeywords_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : search_text\n関数 : stopScanKeywords`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : search_text\n関数 : stopScanKeywords`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : search_text\n関数 : stopScanKeywords`);
+    }
   }
   //
   //--------------------------------------------------------------------------

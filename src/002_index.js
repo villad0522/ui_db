@@ -82,8 +82,9 @@ import {
   enableColumn,
   autoCorrect,
   autoCorrectFromArray,
-  scanTexts,
-  getConvertProgress,
+  scanKeywords,
+  getScanKeywordsProgress,
+  stopScanKeywords,
 } from "./103_search_text_validate.js";
 import {
   reload,
@@ -319,8 +320,9 @@ export {
   checkReservedWord,
   autoCorrect,
   autoCorrectFromArray,
-  scanTexts,
-  getConvertProgress,
+  scanKeywords,
+  getScanKeywordsProgress,
+  stopScanKeywords,
   getParentTableId,
   autoCorrectTableName,
   autoCorrectColumnName,

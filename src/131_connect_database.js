@@ -132,6 +132,9 @@ function _getErrorText(params){
   const newParams = structuredClone(params);
   for( const key in newParams ){
     const value = newParams[key];
+    if( Object.values(value)?.length > 20 ){
+        newParams[key] = { "xxx":"連想配列のサイズが大きいので表示できません" };
+    }
     if( Array.isArray(value) ){
       if( value.length > 20 ){
         newParams[key] = [ "配列のサイズが大きいので表示できません" ];

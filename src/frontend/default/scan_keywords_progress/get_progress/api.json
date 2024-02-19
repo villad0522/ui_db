@@ -1,0 +1,24 @@
+{
+    "httpMethod": "GET",
+    "description": "検索用キーワードをスキャンする際の、進捗を取得します。",
+    "commandName": "GET_SCAN_KEYWORDS_PROGRESS",
+    "queryParameters": {},
+    "requestBody": {},
+    "response": {
+        "progressMessage": {
+            "dataType": "TEXT",
+            "description": "進捗を表すメッセージ",
+            "example": "アップロードが完了しました"
+        },
+        "progress": {
+            "dataType": "INTEGER",
+            "description": "キーワードを登録した行数",
+            "example": 148
+        },
+        "rowSize": {
+            "dataType": "INTEGER",
+            "description": "変換対象テーブルの行数",
+            "example": 29274
+        }
+    }
+}

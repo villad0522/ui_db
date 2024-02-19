@@ -1,0 +1,14 @@
+{
+    "httpMethod": "POST",
+    "description": "キーワードのスキャン処理を中止します。再開はできません。",
+    "commandName": "STOP_SCAN_KEYWORDS",
+    "queryParameters": {},
+    "requestBody": {},
+    "response": {
+        "userMessage": {
+            "dataType": "TEXT",
+            "description": "完了を表すメッセージ",
+            "example": "アップロードを中止しました"
+        }
+    }
+}
