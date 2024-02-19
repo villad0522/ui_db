@@ -220,6 +220,7 @@ export async function regenerateAPI_autoCorrect_core( viewId, tableId, onePageMa
     const response = {};
     for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
         if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
+        const columnId = await pathToColumnId( columnPath );
         // リクエストボディ
         requestBody[viewColumnId] = {
             "dataType": "TEXT",
@@ -229,14 +230,14 @@ export async function regenerateAPI_autoCorrect_core( viewId, tableId, onePageMa
         };
         // レスポンス（自動入力）
         response[viewColumnId] = {
-            "dataType": "TEXT",
+            "dataType": await _getDataType_core( columnId ),
             "description": viewColumnName,
             "isRequired": false,
             "example": await _getExample_core( viewId, viewColumnId ),
         };
         // レスポンス（予測変換の候補）
         response[viewColumnId+"_option"] = {
-            "dataType": "TEXT",
+            "dataType": await _getDataType_core( columnId ),
             "description": viewColumnName,
             "isRequired": false,
             "example": await _getExample_core( viewId, viewColumnId ),
@@ -337,12 +338,27 @@ export async function regenerateAPI_read_core( pageId ){
         const children = {};
         for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
             if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+            const columnId = await pathToColumnId( columnPath );
             // レスポンス
             children[viewColumnId] = {
                 "dataType": "TEXT",
                 "description": viewColumnName,
                 "isRequired": false,
                 "example": await _getExample_core( viewId, viewColumnId ),
+            };
+            // レスポンス（自動入力）
+            response[viewColumnId] = {
+                "dataType": await _getDataType_core( columnId ),
+                "description": viewColumnName,
+                "example": await _getExample_core( viewId, viewColumnId ),
+                "isRequired": false,
+            };
+            // レスポンス（予測変換の候補）
+            response[viewColumnId+"_option"] = {
+                "dataType": await _getDataType_core( columnId ),
+                "description": viewColumnName,
+                "example": await _getExample_core( viewId, viewColumnId ),
+                "isRequired": false,
             };
         }
         response["view" + viewId + "_"] = {
@@ -512,4 +528,31 @@ export async function regenerateAPI_delete_core( viewId, tableId, onePageMaxSize
             }
         },
     };
+}
+
+// 【サブ】データ型を取得する関数
+export async function _getDataType_core( columnId ){
+  if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+    const dataType = await getDataType( columnId );
+    switch (dataType) {
+        case "POINTER":
+            if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+            const parentTableId = await getTableId( columnId );
+            const parentColumnId = await getTitleColumnId( parentTableId );
+            return await _getDataType_core( parentColumnId );
+        case "INTEGER":
+            if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+            return "INTEGER";
+        case "REAL":
+            if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+            return "REAL";
+        case "TEXT":
+            if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+            return "TEXT";
+        case "BOOL":
+            if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+            return "BOOL";
+        default:
+            throw `サポートされていないデータ型です。detaType="${dataType}"`;
+    }
 }

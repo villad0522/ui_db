@@ -214,6 +214,7 @@ import {
   regenerateAPI_read,
   regenerateAPI_update,
   regenerateAPI_delete,
+  _getDataType,
 } from "./043_regenerate_api_info_validate.js";
 import {
   deleteTemplate,
@@ -407,6 +408,7 @@ export {
   regenerateAPI_read,
   regenerateAPI_update,
   regenerateAPI_delete,
+  _getDataType,
   regeneratePage,
   deleteTemplate,
   getExcelTemplate,

@@ -5,6 +5,7 @@ import {
   regenerateAPI_read_core,  // APIを再生成(READ)
   regenerateAPI_update_core,  // APIを再生成(UPDATE)
   regenerateAPI_delete_core,  // APIを再生成(DELETE)
+  _getDataType_core,  // 【サブ】データ型を取得する関数
 } from "./044_regenerate_api_info.js";
 
 
@@ -1546,6 +1547,52 @@ export async function regenerateAPI_delete( viewId, tableId, onePageMaxSize, chi
     }
     else if( isNaN(result.response[i].onePageMaxSize) ){
       throw new Error(`result.response["${i}"].onePageMaxSizeが数値ではありません。\nレイヤー : regenerate_api_info\n関数 : regenerateAPI_delete`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「_getDataType_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function _getDataType( columnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof columnId !== "string" ){
+    if( !columnId ){
+      throw new Error(`columnIdがNULLです。\nレイヤー : regenerate_api_info\n関数 : _getDataType`);
+    }
+    else{
+      throw new Error(`columnIdが文字列ではありません。\nレイヤー : regenerate_api_info\n関数 : _getDataType`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await _getDataType_core( columnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : regenerate_api_info\n関数 : _getDataType`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : regenerate_api_info\n関数 : _getDataType`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : regenerate_api_info\n関数 : _getDataType`);
     }
   }
   //

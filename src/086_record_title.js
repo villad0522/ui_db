@@ -177,7 +177,7 @@ export async function setTitleColumn_core( columnId ){
   await _reload();    // メモリに再読み込み
 }
 
-// 【サブ】見出しの役割を果たすカラムを取得する
+// 見出しの役割を果たすカラムを取得する
 export async function getTitleColumnId_core( tableId ){
   if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData[tableId];

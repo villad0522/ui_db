@@ -104,7 +104,7 @@ import {
 import {
   startUp,  // プログラム起動
   setTitleColumn,  // 【サブ】見出しの役割を果たすカラムを登録する
-  getTitleColumnId,  // 【サブ】見出しの役割を果たすカラムを取得する
+  getTitleColumnId,  // 見出しの役割を果たすカラムを取得する
   listTables,  // テーブルの一覧を取得(重)
   deleteTable,  // 不可逆的にテーブルを削除
   clearCache,  // インメモリキャッシュを削除する

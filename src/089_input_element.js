@@ -354,7 +354,7 @@ export async function _autoFill_core( params ){
       throw `指定されたテーブルIDとカラムIDの辻褄が合いません。\nviewColumnId = ${viewColumnId}\ntableId = ${tableId}\ncolumnId = ${columnId}`;
     }
     const dataType = await getDataType( columnId );
-    const inputText = inputTexts[ viewColumnId ];
+    const inputText = inputTexts[ viewColumnId ] ?? "";
     if( dataType==="FILE" || dataType==="BOOL" || dataType==="POINTER" ){
       if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
       results[ viewColumnId + "_option" ] = [];  // 予測変換を生成しない

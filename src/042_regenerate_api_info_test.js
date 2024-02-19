@@ -204,6 +204,7 @@ import {
   regenerateAPI_read,  // APIを再生成(READ)
   regenerateAPI_update,  // APIを再生成(UPDATE)
   regenerateAPI_delete,  // APIを再生成(DELETE)
+  _getDataType,  // 【サブ】データ型を取得する関数
 } from "./043_regenerate_api_info_validate.js";
 import { setBugMode } from "./044_regenerate_api_info.js";
 
@@ -213,7 +214,7 @@ export async function test042() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 11; i++ ) {
+    for ( i = 1; i <= 17; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

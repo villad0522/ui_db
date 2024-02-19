@@ -1,7 +1,7 @@
 import {
   startUp_core,  // プログラム起動
   setTitleColumn_core,  // 【サブ】見出しの役割を果たすカラムを登録する
-  getTitleColumnId_core,  // 【サブ】見出しの役割を果たすカラムを取得する
+  getTitleColumnId_core,  // 見出しの役割を果たすカラムを取得する
   listTables_core,  // テーブルの一覧を取得(重)
   deleteTable_core,  // 不可逆的にテーブルを削除
   clearCache_core,  // インメモリキャッシュを削除する

@@ -199,18 +199,22 @@ export function setBugMode( mode ){
 // データを取得(GUI向け)
 export async function getPageDataForGUI_core( pageId, queryParameters ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
-  const results = {};
+  let results = {};
   const views = await listChildrenView( pageId );
   for( const { viewId } of views ){
     if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     const { normalSQL, countSQL, parameters } = await generateSQL( viewId, queryParameters, false );
-    results["view" + viewId + "_"] = await runSqlReadOnly( normalSQL, parameters );
     //
     const [{ "total": total }] = await runSqlReadOnly( countSQL, parameters );
     if( isNaN(total) ){
       throw "件数を取得できません";
     }
-    results["view" + viewId + "__total"] = total;
+    results = {
+      ...await autoFill( viewId, {}, false ),
+      ...results,
+      ["view" + viewId + "__total"]: total,
+      ["view" + viewId + "_"]: await runSqlReadOnly( normalSQL, parameters ),
+    };
   }
   return results;
 }
