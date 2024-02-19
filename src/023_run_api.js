@@ -84,6 +84,8 @@ import {
   enableColumn,
   autoCorrect,
   autoCorrectFromArray,
+  scanTexts,
+  getConvertProgress,
 } from "./103_search_text_validate.js";
 import {
   reload,
@@ -112,7 +114,7 @@ import {
   _getRecordIdFromTitle,
   setTitleColumnsFromUI,
   _deleteTitleColumn,
-  _getParentValue,
+  getParentValue,
   _getRecordOffset,
 } from "./085_record_title_validate.js";
 import {
@@ -704,7 +706,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
     //======================================================================
     case "AUTO_CORRECT":{
       if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
-      const isClick = queryParameters["is_click"] ? true : false;
+      const isAutoFill = queryParameters["is_auto_fill"] ? true : false;
       return await autoFill(
         apiInfo.viewId,
         {
@@ -713,7 +715,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
           //  "vc10": 3,
           ...requestBody,
         },
-        isClick
+        isAutoFill
       );
     }
     //======================================================================

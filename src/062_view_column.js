@@ -74,7 +74,7 @@ import {
   _getRecordIdFromTitle,
   setTitleColumnsFromUI,
   _deleteTitleColumn,
-  _getParentValue,
+  getParentValue,
   _getRecordOffset,
 } from "./085_record_title_validate.js";
 import {
@@ -105,6 +105,8 @@ import {
   enableColumn,
   autoCorrect,
   autoCorrectFromArray,
+  scanTexts,
+  getConvertProgress,
 } from "./103_search_text_validate.js";
 import {
   reload,
@@ -504,7 +506,6 @@ export async function regenerateInputElements_core( viewId ){
             viewColumnId,
             inputGroupId,
             columnId,
-            "TEXTBOX", // inputType
         );
     }
 }

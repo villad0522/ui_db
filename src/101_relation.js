@@ -12,6 +12,8 @@ import {
   enableColumn,
   autoCorrect,
   autoCorrectFromArray,
+  scanTexts,
+  getConvertProgress,
 } from "./103_search_text_validate.js";
 import {
   getLocalIp,

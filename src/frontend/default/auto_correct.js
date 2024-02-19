@@ -1,7 +1,5 @@
 
 
-const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
-
 // 予測変換を表示する関数
 export default async function setAutoCorrect({
     inputElement,
@@ -11,6 +9,7 @@ export default async function setAutoCorrect({
     if (!inputElement || !optionValue) {
         throw "引数が足りません";
     }
+    inputElement.setAttribute("autocomplete", "off");
     //
     // input要素の直後の要素
     let nextElement = inputElement.nextElementSibling;
@@ -20,7 +19,6 @@ export default async function setAutoCorrect({
             nextElement.remove();
         }
         nextElement = null;
-        inputElement.setAttribute("autocomplete", "off");
     }
     //
     let dataListOuterElement;

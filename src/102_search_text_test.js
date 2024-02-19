@@ -77,6 +77,8 @@ import {
   enableColumn,  // カラムを再度有効化
   autoCorrect,  // レコードの予測変換
   autoCorrectFromArray,  // 配列の予測変換
+  scanTexts,  // 文字列を再スキャンする
+  getConvertProgress,  // 変換の進捗状況を取得する関数
 } from "./103_search_text_validate.js";
 import { setBugMode } from "./104_search_text.js";
 
@@ -86,7 +88,7 @@ export async function test102() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 25; i++ ) {
+    for ( i = 1; i <= 41; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行
@@ -120,6 +122,7 @@ async function _test(){
     
   await startUp("http://localhost:3000/", true);
   const { tableId: tableId } = await createTable("名簿");
+  await scanTexts( tableId );
   const { columnId: columnId1 } = await createColumn( tableId, "学年", "INTEGER", null );
   const { columnId: columnId2 } = await createColumn( tableId, "氏名", "TEXT", null );
   await createRecord( tableId, {

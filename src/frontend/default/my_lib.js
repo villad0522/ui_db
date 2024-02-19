@@ -221,6 +221,7 @@ async function _setFormData(formData) {
                     });
                 }
             }
+            isInitialized[key] = true;
         }
         else if (String(key).endsWith("_flag")) {
             // name属性の値が変数keyと等しいHTML要素を探す。
@@ -253,7 +254,6 @@ async function _setFormData(formData) {
                 }
             }
         }
-        isInitialized[key] = true;
     }
     _setupTextarea();
 }

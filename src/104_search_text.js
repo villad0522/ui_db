@@ -487,3 +487,172 @@ export async function autoCorrectFromArray_core( inputText, candidateArray ){
   }
   return Array.from(outputs);
 }
+
+
+
+
+
+
+let rowSize = 0;
+let progress = 0;
+let isInProcess = false;
+let progressMessage = "何も処理をしていません";
+let stmt;
+
+// 文字列を再スキャンする
+export async function scanTexts_core( tableId ){
+  if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+  if( isInProcess ){
+    throw `既に別の処理が動いています`;
+  }
+  isInProcess = true;
+  const db = await getDB();
+  if(!db){
+    throw "データベースオブジェクト(db)がNULLです。";
+  }
+  progress = 0;
+  //
+  //==============================================================================
+  // 全体の行数を調べる
+  const matrix1 = await runSqlReadOnly(
+    `SELECT COUNT(*) AS rowSize FROM ${tableId};`,
+    {},
+  );
+  rowSize = matrix1[0]["rowSize"];
+  //
+  //==============================================================================
+  // 過去に登録したデータを削除する
+  await runSqlWriteOnly(
+    `DELETE FROM search_text WHERE table_id = :tableId;`,
+    {
+      ":tableId": tableId,
+    },
+  );
+  //
+  //==============================================================================
+  const primaryKey = await getPrimaryKey( tableId );
+  const columns = await listColumnsAll( tableId );
+  for( let i=0; isInProcess&&(i<10000); i++ ){
+    if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+    progressMessage = `【処理中】トランザクション処理を開始しています。`;
+    await startTransaction();  // 開始
+    if(stmt){
+      if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+      progressMessage = `【処理中】データベースに送信した命令の完了を待っています。`;
+      await stmt.finalize();
+    }
+    progressMessage = `【処理中】レコードを取得しています。`;
+    const records = await runSqlReadOnly(
+      `SELECT * FROM ${tableId} LIMIT 1000 OFFSET :offset;`,
+      {
+        ":offset": i * 1000,
+      },
+    );
+    if( records.length===0 ){
+      if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+      // 処理を終了する
+      break;
+    }
+    progressMessage = `【処理中】キーワードを抽出しています。`;
+    const keywordInfos = [];
+    // レコードごとに繰り返す
+    for( const recordData of records ){
+      if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+      const recordId = recordData[primaryKey];
+      // 検索キーワードを登録する
+      //
+      // カラムごとに繰り返す
+      for( const columnData of columns ){
+        if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+        const value = recordData[columnData.id];
+        if (!value && value !== 0) {
+          if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+          continue;
+        }
+        let originalText = String(value);
+        let keywords = [];
+        switch (columnData.dataType) {
+          case "INTEGER":
+            if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+            keywords = [String(value)];
+            break;    // 文字列検索に登録する（処理を続行する）
+          case "REAL":
+            if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
+            keywords = [String(value)];
+            break;    // 文字列検索に登録する（処理を続行する）
+          case "TEXT":
+            if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
+            // 形態素解析を行う
+            keywords = await _convertKeywords(originalText);
+            break;    // 文字列検索に登録する（処理を続行する）
+          case "BOOL":
+            if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
+            continue; // 文字列検索に登録しない
+          case "FILE":
+            if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
+            continue; // 文字列検索に登録しない
+          case "POINTER":
+            if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
+            continue; // 文字列検索に登録しない
+          default:
+            throw `データ型「${columnData.dataType}」はサポートされていません。`;
+        }
+        // キーワードごとに繰り返す
+        for( const keyword of keywords ){
+          if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
+          // 検索ワードを配列に登録する
+          keywordInfos.push({
+            ":tableId": tableId,
+            ":columnId": columnData.id,
+            ":recordId": recordId,
+            ":originalText": originalText,
+            ":keyword": keyword
+          });
+        }
+      }
+    }
+    progressMessage = `【処理中】SQLの命令文を準備しています。`;
+    stmt = await db.prepare(`
+      INSERT INTO search_text (
+        table_id,
+        column_id,
+        record_id,
+        original_text,
+        keyword
+      ) VALUES (
+        :tableId,
+        :columnId,
+        :recordId,
+        :originalText,
+        :keyword
+      );
+    `);
+    progressMessage = `【処理中】データベースに命令を送信しています。`;
+    // レコードごとに繰り返す
+    for( const keywordInfo of keywordInfos ){
+      if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
+      // 検索ワードをデータベースに登録する
+      await stmt.run(keywordInfo);
+      progress++;
+    }
+    progressMessage = `【処理中】データベースに送信した${buf.length}件の命令の完了を待っています。`;
+    await stmt.finalize();
+    stmt = null;
+    progressMessage = `【処理中】トランザクション処理を確定させています。`;
+    await endTransaction();    // 終了
+  }
+  isInProcess = false;
+  progressMessage = `完了しました。`;
+}
+
+
+
+// 変換の進捗状況を取得する関数
+export async function getConvertProgress_core(  ){
+  if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
+  return {
+    "progressMessage": progressMessage,
+    "progress": progress,
+    "rowSize": rowSize,
+  }
+}

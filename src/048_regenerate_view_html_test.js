@@ -104,6 +104,8 @@ import {
   enableColumn,
   autoCorrect,
   autoCorrectFromArray,
+  scanTexts,
+  getConvertProgress,
 } from "./103_search_text_validate.js";
 import {
   reload,
@@ -132,7 +134,7 @@ import {
   _getRecordIdFromTitle,
   setTitleColumnsFromUI,
   _deleteTitleColumn,
-  _getParentValue,
+  getParentValue,
   _getRecordOffset,
 } from "./085_record_title_validate.js";
 import {
@@ -201,7 +203,7 @@ export async function test048() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 20; i++ ) {
+    for ( i = 1; i <= 17; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

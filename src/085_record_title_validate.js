@@ -10,7 +10,7 @@ import {
   setTitleColumnsFromUI_core,  // 見出しの役割を果たすカラムを登録する
   _deleteTitleColumn_core,  // 【サブ】見出しを登録解除する
   listRecords_core,  // レコードの一覧を取得(GUI)
-  _getParentValue_core,  // 【サブ】親テーブルの値を取得
+  getParentValue_core,  // 親テーブルの値を取得
   createRecordFromUI_core,  // レコードを追加
   _getRecordOffset_core,  // 【サブ】親テーブルのスクロール位置を取得
 } from "./086_record_title.js";
@@ -807,49 +807,49 @@ export async function listRecords( tableId, oldPageNumber, onePageMaxSize, focus
 
 
 //#######################################################################################
-// 関数「_getParentValue_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「getParentValue_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function _getParentValue( tableId, recordId, nestLevel ){
+export async function getParentValue( tableId, recordId, nestLevel ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof tableId !== "string" ){
     if( !tableId ){
-      throw new Error(`tableIdがNULLです。\nレイヤー : record_title\n関数 : _getParentValue`);
+      throw new Error(`tableIdがNULLです。\nレイヤー : record_title\n関数 : getParentValue`);
     }
     else{
-      throw new Error(`tableIdが文字列ではありません。\nレイヤー : record_title\n関数 : _getParentValue`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : record_title\n関数 : getParentValue`);
     }
   }
   if( typeof recordId !== "number" ){
     if( !recordId ){
-      throw new Error(`recordIdがNULLです。\nレイヤー : record_title\n関数 : _getParentValue`);
+      throw new Error(`recordIdがNULLです。\nレイヤー : record_title\n関数 : getParentValue`);
     }
     else{
-      throw new Error(`recordIdが数値ではありません。\nレイヤー : record_title\n関数 : _getParentValue`);
+      throw new Error(`recordIdが数値ではありません。\nレイヤー : record_title\n関数 : getParentValue`);
     }
   }
   else if( isNaN(recordId) ){
-    throw new Error(`recordIdが数値ではありません。\nレイヤー : record_title\n関数 : _getParentValue`);
+    throw new Error(`recordIdが数値ではありません。\nレイヤー : record_title\n関数 : getParentValue`);
   }
   if( (nestLevel===null) || (nestLevel===undefined) ){
     // nestLevelは空欄OK。
   }
   else if( typeof nestLevel !== "number" ){
-    throw new Error(`nestLevelが数値ではありません。\nレイヤー : record_title\n関数 : _getParentValue`);
+    throw new Error(`nestLevelが数値ではありません。\nレイヤー : record_title\n関数 : getParentValue`);
   }
   else if( isNaN(nestLevel) ){
-    throw new Error(`nestLevelが数値ではありません。\nレイヤー : record_title\n関数 : _getParentValue`);
+    throw new Error(`nestLevelが数値ではありません。\nレイヤー : record_title\n関数 : getParentValue`);
   }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await _getParentValue_core( tableId, recordId, nestLevel );
+    result = await getParentValue_core( tableId, recordId, nestLevel );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : record_title\n関数 : _getParentValue`);
+      throw new Error(`${error}\nレイヤー : record_title\n関数 : getParentValue`);
     }
     else{
       throw error;
@@ -862,7 +862,7 @@ export async function _getParentValue( tableId, recordId, nestLevel ){
     // resultは空欄OK。
   }
   else if( typeof result !== "string" ){
-    throw new Error(`resultが文字列ではありません。\nレイヤー : record_title\n関数 : _getParentValue`);
+    throw new Error(`resultが文字列ではありません。\nレイヤー : record_title\n関数 : getParentValue`);
   }
   //
   //--------------------------------------------------------------------------

@@ -69,7 +69,7 @@ export async function startUp( localUrl, isDebug ){
 //#######################################################################################
 // 関数「autoFill_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function autoFill( viewId, inputTexts, isClick ){
+export async function autoFill( viewId, inputTexts, isAutoFill ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewId !== "number" ){
@@ -97,23 +97,23 @@ export async function autoFill( viewId, inputTexts, isClick ){
       throw new Error(`inputTextsのキーが文字列ではありません。\nレイヤー : input_element\n関数 : autoFill`);
     }
   }
-  if( typeof isClick !== "boolean" ){
-    if( !isClick ){
-      throw new Error(`isClickがNULLです。\nレイヤー : input_element\n関数 : autoFill`);
+  if( typeof isAutoFill !== "boolean" ){
+    if( !isAutoFill ){
+      throw new Error(`isAutoFillがNULLです。\nレイヤー : input_element\n関数 : autoFill`);
     }
     else{
-      throw new Error(`isClickがブール値ではありません。\nレイヤー : input_element\n関数 : autoFill`);
+      throw new Error(`isAutoFillがブール値ではありません。\nレイヤー : input_element\n関数 : autoFill`);
     }
   }
-  else if( isNaN(isClick) ){
-    throw new Error(`isClickがブール値ではありません。\nレイヤー : input_element\n関数 : autoFill`);
+  else if( isNaN(isAutoFill) ){
+    throw new Error(`isAutoFillがブール値ではありません。\nレイヤー : input_element\n関数 : autoFill`);
   }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await autoFill_core( viewId, inputTexts, isClick );
+    result = await autoFill_core( viewId, inputTexts, isAutoFill );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -185,17 +185,6 @@ export async function _autoFill( params ){
     else{
       throw new Error(`params.tableIdが文字列ではありません。\nレイヤー : input_element\n関数 : _autoFill`);
     }
-  }
-  if( typeof params.isClick !== "boolean" ){
-    if( !params.isClick ){
-      throw new Error(`params.isClickがNULLです。\nレイヤー : input_element\n関数 : _autoFill`);
-    }
-    else{
-      throw new Error(`params.isClickがブール値ではありません。\nレイヤー : input_element\n関数 : _autoFill`);
-    }
-  }
-  else if( isNaN(params.isClick) ){
-    throw new Error(`params.isClickがブール値ではありません。\nレイヤー : input_element\n関数 : _autoFill`);
   }
   if( params.inputTexts===null || params.inputTexts===undefined ){
     throw new Error(`params.inputTextsがNULLです。\nレイヤー : input_element\n関数 : _autoFill`);
@@ -661,7 +650,7 @@ export async function createInputGroup( inputGroupId, viewId, tableId, nextGroup
 //#######################################################################################
 // 関数「createInputElement_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function createInputElement( viewColumnId, inputGroupId, columnId, inputType ){
+export async function createInputElement( viewColumnId, inputGroupId, columnId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewColumnId !== "string" ){
@@ -688,20 +677,12 @@ export async function createInputElement( viewColumnId, inputGroupId, columnId, 
       throw new Error(`columnIdが文字列ではありません。\nレイヤー : input_element\n関数 : createInputElement`);
     }
   }
-  if( typeof inputType !== "string" ){
-    if( !inputType ){
-      throw new Error(`inputTypeがNULLです。\nレイヤー : input_element\n関数 : createInputElement`);
-    }
-    else{
-      throw new Error(`inputTypeが文字列ではありません。\nレイヤー : input_element\n関数 : createInputElement`);
-    }
-  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await createInputElement_core( viewColumnId, inputGroupId, columnId, inputType );
+    result = await createInputElement_core( viewColumnId, inputGroupId, columnId );
   }
   catch(error){
     if( typeof error === "string" ){

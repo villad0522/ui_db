@@ -77,6 +77,8 @@ import {
   enableColumn,
   autoCorrect,
   autoCorrectFromArray,
+  scanTexts,
+  getConvertProgress,
 } from "./103_search_text_validate.js";
 import {
   reload,
@@ -411,7 +413,7 @@ export async function listRecords_core( tableId, oldPageNumber, onePageMaxSize, 
           continue;
         }
         const recordId = Number(value);
-        const parentText = await _getParentValue_core( parentTableId, recordId );
+        const parentText = await getParentValue_core( parentTableId, recordId );
         if(!parentText){
           if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
           if( value ){
@@ -447,8 +449,8 @@ export async function listRecords_core( tableId, oldPageNumber, onePageMaxSize, 
   };
 }
 
-// 【サブ】親テーブルの値を取得
-export async function _getParentValue_core( tableId, recordId, nestLevel ){
+// 親テーブルの値を取得
+export async function getParentValue_core( tableId, recordId, nestLevel ){
   if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
   if( isNaN(recordId) || !recordId ){
     if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）

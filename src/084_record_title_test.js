@@ -73,6 +73,8 @@ import {
   enableColumn,
   autoCorrect,
   autoCorrectFromArray,
+  scanTexts,
+  getConvertProgress,
 } from "./103_search_text_validate.js";
 import {
   reload,
@@ -113,7 +115,7 @@ import {
   setTitleColumnsFromUI,  // 見出しの役割を果たすカラムを登録する
   _deleteTitleColumn,  // 【サブ】見出しを登録解除する
   listRecords,  // レコードの一覧を取得(GUI)
-  _getParentValue,  // 【サブ】親テーブルの値を取得
+  getParentValue,  // 親テーブルの値を取得
   createRecordFromUI,  // レコードを追加
   _getRecordOffset,  // 【サブ】親テーブルのスクロール位置を取得
 } from "./085_record_title_validate.js";

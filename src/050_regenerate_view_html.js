@@ -104,6 +104,8 @@ import {
   enableColumn,
   autoCorrect,
   autoCorrectFromArray,
+  scanTexts,
+  getConvertProgress,
 } from "./103_search_text_validate.js";
 import {
   reload,
@@ -132,7 +134,7 @@ import {
   _getRecordIdFromTitle,
   setTitleColumnsFromUI,
   _deleteTitleColumn,
-  _getParentValue,
+  getParentValue,
   _getRecordOffset,
 } from "./085_record_title_validate.js";
 import {
@@ -211,7 +213,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
     let mainHtmlText = "";
     mainHtmlText += `
         <div class="card">
-            <div class="card-body row" oninput="myFetch('./auto_correct_view${viewId}/form')">`;
+            <div class="card-body row" oninput="myFetch('./auto_correct_view${viewId}/form?is_auto_fill=false')">`;
     //
     for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
         if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -232,58 +234,62 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                 </div>`;
             continue;
         }
-        let subHtmlText = "";
         const placeholder = ""; // 入力例（未実装）
         const inputType = await getInputType( viewColumnId );
-        subHtmlText = `
-                    <div class="col-md-9">
-                        <input name="${viewColumnId}" type="email" placeholder="${placeholder}" class="form-control" id="${viewColumnId}" list="${viewColumnId}_options">
-                        <datalist id="${viewColumnId}_options">
-                        </datalist>
-                        <div class="invalid-feedback" name="${viewColumnId}_message" style="display: block;"></div>
-                    </div>`;
-        /*
         switch( inputType ){
-            case "TEXTBOX":
+            case "TEXTBOX_NUMBER":
                 if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-                subHtmlText = `
-                    <input type="email" class="form-control" id="inputEmail4" disabled>`;
-                break;
-            case "EMAIL":
-                if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-                subHtmlText = `
-                    <div class="col-sm-10">
-                        <input name="${viewColumnId}" type="email" placeholder="${placeholder}" class="form-control" id="${viewColumnId}" list="${viewColumnId}_options">
-                        <datalist id="${viewColumnId}_options">
-                            <option value="読み込み中...">
-                        </datalist>
-                    </div>`;
-                break;
-            case "TEXTAREA":
-                if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
-                break;
-            case "SELECT":
-                if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-                break;
-            case "NUMBER":
-                if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-                break;
-            case "DATE":
-                if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
-                break;
-            default:
-                throw `サポートされていない入力方式です。\ninputType = ${inputType}`;
-        }
-        */
-        mainHtmlText += `
+                mainHtmlText += `
                 <div class="col-xl-6 row mb-3">
                     <label for="${viewColumnId}" class="col-md-3 form-label d-md-none">
                         ${viewColumnName}
                     </label>
                     <label for="${viewColumnId}" class="col-md-3 form-label d-none d-md-block text-end">
                         ${viewColumnName}
-                    </label>${subHtmlText}
+                    </label>
+                    <div class="col-md-9">
+                        <input name="${viewColumnId}" type="number" placeholder="${placeholder}" class="form-control" id="${viewColumnId}">
+                        <div class="invalid-feedback" name="${viewColumnId}_message" style="display: block;"></div>
+                    </div>
                 </div>`;
+                break;
+            case "TEXTBOX":
+                if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+                mainHtmlText += `
+                <div class="col-xl-6 row mb-3">
+                    <label for="${viewColumnId}" class="col-md-3 form-label d-md-none">
+                        ${viewColumnName}
+                    </label>
+                    <label for="${viewColumnId}" class="col-md-3 form-label d-none d-md-block text-end">
+                        ${viewColumnName}
+                    </label>
+                    <div class="col-md-9">
+                        <input name="${viewColumnId}" type="text" placeholder="${placeholder}" class="form-control" id="${viewColumnId}">
+                        <datalist id="${viewColumnId}_options">
+                        </datalist>
+                        <div class="invalid-feedback" name="${viewColumnId}_message" style="display: block;"></div>
+                    </div>
+                </div>`;
+                break;
+            case "CHECKBOX":
+                if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+                mainHtmlText += `
+                <div class="col-xl-6 row mb-3">
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-9">
+                        <div class="form-check">
+                            <input name="${viewColumnId}" class="form-check-input" type="checkbox" id="${viewColumnId}">
+                            <label class="form-check-label" for="${viewColumnId}">
+                                ${viewColumnName}
+                            </label>
+                        </div>
+                    </div>
+                </div>`;
+                break;
+            default:
+                throw `サポートされていない入力方式です。\ninputType = ${inputType}`;
+        }
     }
     //
     mainHtmlText += `
@@ -397,7 +403,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
         </div>`;
     //
     for( let i=0; i<onePageMaxSize; i++ ){
-        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
         mainHtmlText += `
         <!--  -->
         <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後のcard要素が表示される -->
@@ -409,10 +415,10 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
             </div>
             <div class="card-body row">`;
         for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
-            if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
             const elementName = `view${viewId}_${i}_${viewColumnId}`;
             if( viewColumnType!=="RAW" ) {
-                if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
                 mainHtmlText += `
                 <div class="col-xl-6 row mb-3">
                     <label for="${elementName}" class="col-md-3 form-label d-md-none">
@@ -441,13 +447,13 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
             /*
             switch( inputType ){
                 case "TEXTBOX":
-                    if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
                     subHtmlText = `
                     <label for="inputEmail4" class="form-label">Email</label>
                     <input type="email" class="form-control" id="inputEmail4" disabled>`;
                     break;
                 case "EMAIL":
-                    if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
                     subHtmlText = `
                     <label for="${viewColumnId}" class="form-label">
                         ${viewColumnName}
@@ -460,16 +466,16 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                     </div>`;
                     break;
                 case "TEXTAREA":
-                    if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
                     break;
                 case "SELECT":
-                    if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
                     break;
                 case "NUMBER":
-                    if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
                     break;
                 case "DATE":
-                    if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+                    if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
                     break;
                 default:
                     throw `サポートされていない入力方式です。\ninputType = ${inputType}`;
@@ -551,12 +557,12 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
 
 // ビューのHTMLを生成（カード）
 export async function generateViewHTML_card_core( viewId, tableId, onePageMaxSize, childPageId ){
-  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
     return "";
 }
 
 // ビューのHTMLを生成（ボタン）
 export async function generateViewHTML_button_core( viewId, tableId, onePageMaxSize, childPageId ){
-  if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     return "";
 }
