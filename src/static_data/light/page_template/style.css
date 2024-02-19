@@ -1,3 +1,7 @@
+body {
+    background: #f0f0f0;
+}
+
 /* 画面最上部の検索ボックス */
 .search_box {
     background: none;
@@ -30,7 +34,6 @@ hr {
 
 /* カード */
 .card {
-    background: #fafafa;
     margin: 20px 0;
 }
 
@@ -99,4 +102,17 @@ hr {
 .tile:hover {
     background: #fff;
     border-color: #f5f5f5;
+}
+
+
+/* タブ */
+
+.nav-tabs a.nav-link.active {
+    background: #fafafa;
+}
+
+.tab-pane {
+    background: #fafafa;
+    padding: 10px;
+    min-height: 70vh;
 }

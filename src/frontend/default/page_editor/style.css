@@ -1,3 +1,7 @@
+body {
+    background: #f0f0f0;
+}
+
 /* 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される */
 .flag {
     display: none;
@@ -39,7 +43,7 @@
     pointer-events: all;
 }
 
-
+/* パンくずリスト */
 .breadcrumb-item:hover {
     cursor: pointer;
     color: #999;
@@ -50,11 +54,8 @@ hr {
     margin: 50px 0;
 }
 
-.card {
-    margin: 20px 0;
-}
 
-
+/* 子ページへのボタン */
 .tile,
 .tile_dimple,
 .tile_empty,
@@ -108,6 +109,8 @@ hr {
     border-color: #f5f5f5;
 }
 
+
+/* タブ */
 .nav-tabs a.nav-link.active {
     background: #fafafa;
 }

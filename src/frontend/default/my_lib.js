@@ -26,7 +26,9 @@ window.addEventListener('DOMContentLoaded', async () => {
             continue;
         }
         inputElement.addEventListener("input", () => {
-            window.isEdit = true;
+            if (inputElement.id !== "edit_mode_switch") {
+                window.isEdit = true;
+            }
         });
         inputElement.addEventListener("change", () => {
             window.isEdit = true;

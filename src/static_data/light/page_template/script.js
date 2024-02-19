@@ -46,8 +46,8 @@ window.addEventListener('DOMContentLoaded', async () => {
 //
 //###############################################################
 // 編集スイッチが切り替えられたとき
-window.handleEditSwitch = function (event) {
-    jumpWithQuery(`/default/page_editor/index.html?page_id=1`);
+window.handleEditSwitch = function (event, pageId) {
+    jumpWithQuery(`/default/page_editor/index.html?page_id=${pageId}`);
     event.target.checked = false;   // スイッチを「編集中ではない」に戻す
     // ↑ この処理の意義は、
     // 「編集内容は破棄されます。よろしいですか？」に

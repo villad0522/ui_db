@@ -258,113 +258,130 @@ export async function regenerateHTML_core( pageId ){
         <script src="./script.js" type="module"></script>
     </head>
     <body style="visibility: hidden;">
-        <nav class="navbar navbar-dark bg-primary">
-            <div class="container-fluid">
-                <button ${ parentPageId ? "" : "disabled" } onclick="jumpWithQuery('/custom/${parentPageId}/index.html')" type="button" class="btn btn-light me-2">
-                    戻る
-                </button>
-                <div class="d-flex" role="search" style="width: 270px;">
-                    <div class="input-group">
-                        <span class="input-group-text" style="background: none; color: #fff;">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <input class="form-control search_box" type="search" placeholder="検索" aria-label="Search">
+        <form>
+            <nav class="navbar navbar-dark bg-primary">
+                <div class="container-fluid">
+                    <button ${ parentPageId ? "" : "disabled" } onclick="jumpWithQuery('/custom/${parentPageId}/index.html')" type="button" class="btn btn-light me-2">
+                        戻る
+                    </button>
+                    <div class="d-flex" role="search" style="width: 270px;">
+                        <div class="input-group">
+                            <span class="input-group-text" style="background: none; color: #fff;">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input class="form-control search_box" type="search" placeholder="検索" aria-label="Search">
+                        </div>
                     </div>
+                    <div class="form-check form-switch d-none d-md-inline">
+                        <input onchange="handleEditSwitch(event,${pageId})" class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
+                        <label class="form-check-label" for="edit_mode_switch" style="color:#fff">
+                            表示設定
+                        </label>
+                    </div>
+                    <button onclick="jumpWithQuery('/open_excel/${pageId}',{ isNewTab: true })" type="button" class="btn btn-success d-none d-md-inline" style="${isExcel ? "" : "visibility: hidden;" } margin-left: 40px; border: solid 2px #fff;">
+                        Excel
+                    </button>
+                    <a href="/default/tables/index.html" class="btn btn-dark me-2 d-none d-md-inline" target="_blank">
+                        本体データ
+                        &nbsp;
+                        <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
                 </div>
-                <div class="form-check form-switch d-none d-md-inline">
-                    <input onchange="handleEditSwitch(event)" class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
-                    <label class="form-check-label" for="edit_mode_switch" style="color:#fff">
-                        表示設定
-                    </label>
-                </div>
-                <button onclick="jumpWithQuery('/open_excel/${pageId}',{ isNewTab: true })" type="button" class="btn btn-success d-none d-md-inline" style="${isExcel ? "" : "visibility: hidden;" } margin-left: 40px; border: solid 2px #fff;">
-                    Excel
-                </button>
-                <a href="/default/tables/index.html" class="btn btn-dark me-2 d-none d-md-inline" target="_blank">
-                    本体データ
-                    &nbsp;
-                    <i class="bi bi-box-arrow-up-right"></i>
-                </a>
-            </div>
-        </nav>
-        <nav aria-label="breadcrumb">
-            <!-- パンくずリストをクリックすると、クエリパラメータ―を維持したまま別のページへジャンプする -->
-            <ol class="breadcrumb">${ _getBreadcrumbHTML({ breadcrumbs, pageId }) }
-            </ol>
-        </nav>
-        <main class="container">
-            <!--  -->
-            <!--  -->
-            <!-- 見出し -->
-            <h1>${ await  escapeHTML_core( pageName ) }</h1>
-            <!--  -->
-            <!--  -->
-            <!-- メモ -->
-            <textarea class="form-control-plaintext" readonly>${ await  escapeHTML_core( memo ) }</textarea>
-            <!--  -->
-            <!--  -->
-            <!-- 子ページへのリンクここから -->
-            <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
-                <!-- 正方形のアイコンをクリックすると、クエリパラメータ―を維持したまま別のページへジャンプする -->`;
+            </nav>
+            <nav aria-label="breadcrumb">
+                <!-- パンくずリストをクリックすると、クエリパラメータ―を維持したまま別のページへジャンプする -->
+                <ol class="breadcrumb">${ _getBreadcrumbHTML({ breadcrumbs, pageId }) }
+                </ol>
+            </nav>
+            <main>
+                <div class="container">
+                    <!--  -->
+                    <!--  -->
+                    <!-- 見出し -->
+                    <h1>${ await  escapeHTML_core( pageName ) }</h1>
+                    <!--  -->
+                    <!--  -->
+                    <!-- メモ -->
+                    <textarea class="form-control-plaintext" readonly>${ await  escapeHTML_core( memo ) }</textarea>
+                    <!--  -->
+                    <!--  -->
+                    <!-- 子ページへのリンクここから -->
+                    <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+                        <!-- 正方形のアイコンをクリックすると、クエリパラメータ―を維持したまま別のページへジャンプする -->`;
     //
     for( const { pageId, pageName } of staticChildren ){
         if(bugMode === 3) throw "MUTATION3";  // 意図的にバグを混入させる（ミューテーション解析）
         mainHtmlText += `
-                <div class="tile" onclick="jumpWithQuery('/custom/${pageId}/index.html')">
-                    ${pageName}
-                </div>`;
+                        <div class="tile" onclick="jumpWithQuery('/custom/${pageId}/index.html')">
+                            ${pageName}
+                        </div>`;
     }
     //
     mainHtmlText += `
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-                <div class="tile_empty"></div>
-            </div>
-            <br>
-            <form>
-                <!-- 基本データここから -->
-                <div class="row">
-                    <div class="col-md-6">
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
+                        <div class="tile_empty"></div>
                     </div>
                 </div>
-                <!-- 基本データここまで -->
+                <br>
                 <!--  -->
-                <!--  -->`;
+                <!-- タブの上部 -->
+                <ul class="nav nav-tabs justify-content-center">`;
     //
-    for( const { viewId, tableId, onePageMaxSize, viewType, childPageId } of views ){
+    for( let i=0; i<views.length; i++ ){
         if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+        const { viewId, name } = views[i];
+        mainHtmlText += `
+                    <li class="nav-item">
+                        <a class="nav-link ${ (i===0) ? "active" : "" }" data-bs-toggle="tab" href="#tab${viewId}">
+                            ${name}
+                        </a>
+                    </li>`;
+    }
+    //
+    mainHtmlText += `
+                </ul>
+                <!--  -->
+                <!-- タブの本体 -->
+                <div class="tab-content">`;
+    //
+    for( let i=0; i<views.length; i++ ){
+        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+        const { viewId, tableId, onePageMaxSize, viewType, childPageId } = views[i];
+        mainHtmlText += `
+                    <div id="tab${viewId}" class="tab-pane ${ (i===0) ? "active" : "" }">
+                        <div class="container">
+                            <br>`;
         switch( viewType ){
             case "BUTTON":
-                if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
                 mainHtmlText += await generateViewHTML_button( viewId, tableId, onePageMaxSize, childPageId );
                 break;
             case "TABLE":
-                if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
                 mainHtmlText += await generateViewHTML_table( viewId, tableId, onePageMaxSize, childPageId );
                 break;
             case "CARD":
-                if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
                 mainHtmlText += await generateViewHTML_card( viewId, tableId, onePageMaxSize, childPageId );
                 break;
             default:
                 throw `ビューの種類(viewType)がサポートされていません。\nviewType = ${viewType}`;
         }
+        mainHtmlText += `
+                        </div>
+                    </div>`;
     }
     //
     mainHtmlText += `
-            </form>
-        </main>
-        <footer>
-            <div class="container">
-                <br>
-                <br>
-            </div>
-        </footer>
+                </div>
+            </main>
+        </form>
     </body>
 </html>`;
     //
@@ -395,7 +412,7 @@ function _getBreadcrumbHTML({ breadcrumbs, pageId }){
 
 // HTMLエスケープ
 export async function escapeHTML_core( text ){
-  if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
   return text.replace(/[&'`"<>]/g, function(match) {
     return {
       '&': '&amp;',
