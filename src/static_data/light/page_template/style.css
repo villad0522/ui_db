@@ -116,3 +116,20 @@ hr {
     padding: 10px;
     min-height: 70vh;
 }
+
+/* 「上書き保存」ボタンがあるフッター */
+.result_footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 8;
+    background: #fafafa;
+    padding-top: 5px;
+    border-top: solid 0.5px #ccc;
+    padding: 10px 10px 0 10px;
+}
+
+.extract_box {
+    background: #eee;
+    padding: 20px 3%;
+    border-radius: 10px;
+}

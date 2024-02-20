@@ -25,7 +25,7 @@ import { test069 } from "./069_generate_sql1_test.js";
 import { test066 } from "./066_generate_sql_test.js";
 import { test063 } from "./063_page_and_view_test.js";
 import { test060 } from "./060_view_column_test.js";
-import { test057 } from "./057_joinedTable_test.js";
+import { test057 } from "./057_extract_and_sort_test.js";
 import { test054 } from "./054_page_data_test.js";
 import { test051 } from "./051_frontend_files_test.js";
 import { test048 } from "./048_regenerate_view_html_test.js";

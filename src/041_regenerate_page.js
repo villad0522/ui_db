@@ -95,7 +95,7 @@ import {
   deleteTable,
   generateSQL,
   deleteView,
-} from "./058_joinedTable_validate.js";
+} from "./058_extract_and_sort_validate.js";
 import {
   deleteRecords,
   disableTable,

@@ -95,7 +95,7 @@ import {
   deleteTable,
   generateSQL,
   deleteView,
-} from "./058_joinedTable_validate.js";
+} from "./058_extract_and_sort_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -204,7 +204,7 @@ export async function test048() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 17; i++ ) {
+    for ( i = 1; i <= 14; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

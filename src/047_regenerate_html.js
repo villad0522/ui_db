@@ -95,7 +95,7 @@ import {
   deleteTable,
   generateSQL,
   deleteView,
-} from "./058_joinedTable_validate.js";
+} from "./058_extract_and_sort_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -256,6 +256,9 @@ export async function regenerateHTML_core( pageId ){
         <!--  -->
         <!-- 自作JavaScriptを読み込む -->
         <script src="./script.js" type="module"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+        <script src="/default/bootstrap_save_tab.js"></script>
     </head>
     <body style="visibility: hidden;">
         <form>
@@ -338,7 +341,7 @@ export async function regenerateHTML_core( pageId ){
         const { viewId, name } = views[i];
         mainHtmlText += `
                     <li class="nav-item">
-                        <a class="nav-link ${ (i===0) ? "active" : "" }" data-bs-toggle="tab" href="#tab${viewId}">
+                        <a class="nav-link ${ (i===0) ? "active" : "" }" data-bs-toggle="tab" href="#tab${viewId}" data-toggle="tab">
                             ${name}
                         </a>
                     </li>`;

@@ -166,7 +166,7 @@ import {
 } from "./070_generate_sql1_validate.js";
 import {
   generateSQL,
-} from "./058_joinedTable_validate.js";
+} from "./058_extract_and_sort_validate.js";
 import {
   getPageInfo,
   listViewsFromTableId,

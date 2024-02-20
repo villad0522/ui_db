@@ -184,8 +184,8 @@ import {
   deleteView,  // ビューを削除
   generateSQL,  // SQLクエリを生成
   deleteTable,  // 不可逆的にテーブルを削除
-} from "./058_joinedTable_validate.js";
-import { setBugMode } from "./059_joinedTable.js";
+} from "./058_extract_and_sort_validate.js";
+import { setBugMode } from "./059_extract_and_sort.js";
 
 
 export async function test057() {
@@ -212,12 +212,12 @@ export async function test057() {
         }
         // 意図的に埋め込んだバグを検出できなかった場合
         setBugMode(0);    // 意図的なバグの発生を止める
-        console.log(`レイヤー「joinedTable」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
+        console.log(`レイヤー「extract_and_sort」からバグは見つかりませんでしたが、テストコードが不十分です。意図的に発生させたバグ(bugMode: ${ i })を検出できませんでした。\n\n`);
         return;
     }
     // 意図的に埋め込んだ全てのバグを、正常に検出できた
     setBugMode(0);    // 意図的なバグの発生を止める
-    console.log(`レイヤー「joinedTable」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
+    console.log(`レイヤー「extract_and_sort」からバグは見つかりませんでした。また、意図的に${ i-1 }件のバグを発生させたところ、全てのバグを検知できました。\n\n`);
     return;
 }
 

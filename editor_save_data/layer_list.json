@@ -91,8 +91,8 @@
   },
   {
     "layerId": "01HMP19J9MP2XK0MN03KMVTWP0",
-    "layerNameJP": "テーブル結合",
-    "layerNameEN": "joinedTable"
+    "layerNameJP": "抽出と並び変え",
+    "layerNameEN": "extract_and_sort"
   },
   {
     "layerId": "01HND1HRYNST6CSZA3CEAXBQH9",
