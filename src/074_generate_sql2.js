@@ -216,32 +216,32 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
   }
   //===================================================================================
   const whereList = [];
-  for( const { viewColumnId, conditionalExpression, columnName } of whereData ){
+  for( const { conditionId, viewColumnId, conditionalExpression, columnName } of whereData ){
     if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
     switch(conditionalExpression.trim()){
       case "=":
         if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
-        whereList.push(`( ${columnName} = :${viewColumnId} )`);
+        whereList.push(`( ${columnName} = :${conditionId} )`);
         break;
       case "!=":
         if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
-        whereList.push(`( ${columnName} != :${viewColumnId} )`);
+        whereList.push(`( ${columnName} != :${conditionId} )`);
         break;
       case ">":
         if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
-        whereList.push(`( ${columnName} > :${viewColumnId} )`);
+        whereList.push(`( ${columnName} > :${conditionId} )`);
         break;
       case "<":
         if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
-        whereList.push(`( ${columnName} < :${viewColumnId} )`);
+        whereList.push(`( ${columnName} < :${conditionId} )`);
         break;
       case ">=":
         if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
-        whereList.push(`( ${columnName} >= :${viewColumnId} )`);
+        whereList.push(`( ${columnName} >= :${conditionId} )`);
         break;
       case "<=":
         if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
-        whereList.push(`( ${columnName} <= :${viewColumnId} )`);
+        whereList.push(`( ${columnName} <= :${conditionId} )`);
         break;
       default:
         throw `サポートされていない条件演算子が指定されました。conditionalExpression = ${conditionalExpression}`;

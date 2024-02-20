@@ -49,6 +49,7 @@ import {
   reorderViewColumnToLeft,
   getViewColumnFromColumn,
   getViewColumnName,
+  getViewColumnFromName,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -72,10 +73,13 @@ import {
 } from "./097_system_auto_correct_validate.js";
 import {
   deleteTable,
+  _getConditions,
   generateSQL,
   deleteView,
   getExtractionsAsJP,
-  _getExtractions,
+  autoCorrectConditionalValue,
+  deleteCondition,
+  addCondition,
 } from "./058_extract_and_sort_validate.js";
 import {
   deleteRecords,
@@ -129,7 +133,6 @@ import {
 import {
   autoFill,
   _autoFill,
-  _getConditions,
   _listPredictions,
   _listRecords,
   createInputGroup,
@@ -474,7 +477,8 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                     <div class="row">
                         <div class="col-lg-10 mb-2">
                             <div class="input-group flex-nowrap">
-                                <input name="newExtractionTarget${viewId}" type="text" class="form-control">
+                                <select name="newExtractionTarget${viewId}" class="form-select">
+                                </select>
                                 <span class="input-group-text">が</span>
                                 <input name="newExtractionValue${viewId}" type="text" class="form-control">
                                 <select name="newExtractionExpression${viewId}" class="form-select" style="max-width: 150px;">
@@ -498,7 +502,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
         mainHtmlText += `
                         <div class="col-lg-6" name="extraction${viewId}_${i}_flag">
                             <div class="input-group flex-nowrap">
-                                <input name="extraction${viewId}_${i}_viewColumnId" type="text" style="display: none;">
+                                <input name="extraction${viewId}_${i}_conditionId" type="text" style="display: none;">
                                 <input name="extraction${viewId}_${i}_text" disabled type="text" class="form-control" style="border: solid 1px #aaa;">
                                 <button onclick="deleteExtraction(${viewId},${i})" type="button" class="btn btn-outline-danger">
                                     <i class="bi bi-trash"></i>

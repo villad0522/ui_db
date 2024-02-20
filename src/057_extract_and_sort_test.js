@@ -16,6 +16,7 @@ import {
   reorderViewColumnToLeft,
   getViewColumnFromColumn,
   getViewColumnName,
+  getViewColumnFromName,
 } from "./061_view_column_validate.js";
 import {
   getLocalIp,
@@ -123,7 +124,6 @@ import {
 import {
   autoFill,
   _autoFill,
-  _getConditions,
   _listPredictions,
   _listRecords,
   createInputGroup,
@@ -187,7 +187,10 @@ import {
   generateSQL,  // SQLクエリを生成
   deleteTable,  // 不可逆的にテーブルを削除
   getExtractionsAsJP,  // 抽出条件を日本語で取得
-  _getExtractions,  // 【サブ】抽出条件を取得
+  _getConditions,  // 【サブ】抽出条件を取得
+  autoCorrectConditionalValue,  // 条件値の候補を取得する
+  deleteCondition,  // 抽出条件を削除する
+  addCondition,  // 抽出条件を追加する
 } from "./058_extract_and_sort_validate.js";
 import { setBugMode } from "./059_extract_and_sort.js";
 
@@ -197,7 +200,7 @@ export async function test057() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 20; i++ ) {
+    for ( i = 1; i <= 41; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

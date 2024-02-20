@@ -17,6 +17,7 @@ import {
   getViewColumnFromColumn_core,  // カラムIDからビューカラムIDを取得
   clearCache_core,  // インメモリキャッシュを削除する
   getViewColumnName_core,  // ビューカラムの名前を取得
+  getViewColumnFromName_core,  // 名前からビューカラムの情報を取得
 } from "./062_view_column.js";
 
 
@@ -1034,6 +1035,84 @@ export async function getViewColumnName( viewId, viewColumnId ){
     }
     else{
       throw new Error(`resultが文字列ではありません。\nレイヤー : view_column\n関数 : getViewColumnName`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「getViewColumnFromName_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function getViewColumnFromName( viewColumnName ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewColumnName !== "string" ){
+    if( !viewColumnName ){
+      throw new Error(`viewColumnNameがNULLです。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+    else{
+      throw new Error(`viewColumnNameが文字列ではありません。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await getViewColumnFromName_core( viewColumnName );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "object" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+    else{
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+  }
+  if( typeof result.viewColumnType !== "string" ){
+    if( !result.viewColumnType ){
+      throw new Error(`result.viewColumnTypeがNULLです。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+    else{
+      throw new Error(`result.viewColumnTypeが文字列ではありません。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+  }
+  if( typeof result.columnPath !== "string" ){
+    if( !result.columnPath ){
+      throw new Error(`result.columnPathがNULLです。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+    else{
+      throw new Error(`result.columnPathが文字列ではありません。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+  }
+  if( typeof result.viewColumnName !== "string" ){
+    if( !result.viewColumnName ){
+      throw new Error(`result.viewColumnNameがNULLです。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+    else{
+      throw new Error(`result.viewColumnNameが文字列ではありません。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+  }
+  if( typeof result.excelColumnText !== "string" ){
+    if( !result.excelColumnText ){
+      throw new Error(`result.excelColumnTextがNULLです。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+    else{
+      throw new Error(`result.excelColumnTextが文字列ではありません。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
     }
   }
   //

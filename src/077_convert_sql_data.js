@@ -398,7 +398,7 @@ export async function getWhereData_core( viewColumns, conditionInfoList, joinIdM
   }
   //-------------------------------------------------------
   const whereData = [];
-  for( const { viewColumnId, conditionalExpression } of conditionInfoList ){
+  for( const { conditionId, viewColumnId, conditionalExpression } of conditionInfoList ){
     if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
     const columnPath = pathMap[viewColumnId];
     const pathLength = await getPathLength( columnPath );
@@ -414,6 +414,7 @@ export async function getWhereData_core( viewColumns, conditionInfoList, joinIdM
       joinId = "main";
     }
     whereData.push({
+      conditionId: conditionId,
       viewColumnId: viewColumnId,
       joinId: joinId,
       columnName: await pathToColumnId( columnPath ),

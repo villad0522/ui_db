@@ -2,10 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import {
   deleteTable,
+  _getConditions,
   generateSQL,
   deleteView,
   getExtractionsAsJP,
-  _getExtractions,
+  autoCorrectConditionalValue,
+  deleteCondition,
+  addCondition,
 } from "./058_extract_and_sort_validate.js";
 import {
   getLocalIp,
@@ -56,6 +59,7 @@ import {
   reorderViewColumnToLeft,
   getViewColumnFromColumn,
   getViewColumnName,
+  getViewColumnFromName,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -129,7 +133,6 @@ import {
 import {
   autoFill,
   _autoFill,
-  _getConditions,
   _listPredictions,
   _listRecords,
   createInputGroup,

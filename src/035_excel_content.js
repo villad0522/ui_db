@@ -46,6 +46,7 @@ import {
   _addViewColumn,
   getViewColumnFromColumn,
   getViewColumnName,
+  getViewColumnFromName,
 } from "./061_view_column_validate.js";
 import {
   createColumn,
@@ -135,7 +136,6 @@ import {
 import {
   autoFill,
   _autoFill,
-  _getConditions,
   _listPredictions,
   _listRecords,
   createInputGroup,
@@ -148,6 +148,14 @@ import {
   createRecordFromView,
   _convertToRecord,
 } from "./088_input_element_validate.js";
+import {
+  _getConditions,
+  generateSQL,
+  getExtractionsAsJP,
+  autoCorrectConditionalValue,
+  deleteCondition,
+  addCondition,
+} from "./058_extract_and_sort_validate.js";
 import {
   createRecordsFromCsv,
   getCsvProgress,
@@ -173,11 +181,6 @@ import {
 import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
-import {
-  generateSQL,
-  getExtractionsAsJP,
-  _getExtractions,
-} from "./058_extract_and_sort_validate.js";
 import {
   getPageInfo,
   listViewsFromTableId,

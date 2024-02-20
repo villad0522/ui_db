@@ -184,6 +184,7 @@ import {
   getViewColumnFromColumn,  // カラムIDからビューカラムIDを取得
   clearCache,  // インメモリキャッシュを削除する
   getViewColumnName,  // ビューカラムの名前を取得
+  getViewColumnFromName,  // 名前からビューカラムの情報を取得
 } from "./061_view_column_validate.js";
 import { setBugMode } from "./062_view_column.js";
 
@@ -193,7 +194,7 @@ export async function test060() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 50; i++ ) {
+    for ( i = 1; i <= 53; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

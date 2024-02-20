@@ -49,6 +49,7 @@ import {
   reorderViewColumnToLeft,
   getViewColumnFromColumn,
   getViewColumnName,
+  getViewColumnFromName,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -72,10 +73,13 @@ import {
 } from "./097_system_auto_correct_validate.js";
 import {
   deleteTable,
+  _getConditions,
   generateSQL,
   deleteView,
   getExtractionsAsJP,
-  _getExtractions,
+  autoCorrectConditionalValue,
+  deleteCondition,
+  addCondition,
 } from "./058_extract_and_sort_validate.js";
 import {
   deleteRecords,
@@ -129,7 +133,6 @@ import {
 import {
   autoFill,
   _autoFill,
-  _getConditions,
   _listPredictions,
   _listRecords,
   createInputGroup,

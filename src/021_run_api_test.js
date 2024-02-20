@@ -128,7 +128,6 @@ import {
 import {
   autoFill,
   _autoFill,
-  _getConditions,
   _listPredictions,
   _listRecords,
   createInputGroup,
@@ -141,6 +140,14 @@ import {
   createRecordFromView,
   _convertToRecord,
 } from "./088_input_element_validate.js";
+import {
+  _getConditions,
+  generateSQL,
+  getExtractionsAsJP,
+  autoCorrectConditionalValue,
+  deleteCondition,
+  addCondition,
+} from "./058_extract_and_sort_validate.js";
 import {
   createRecordsFromCsv,
   getCsvProgress,
@@ -166,11 +173,6 @@ import {
 import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
-import {
-  generateSQL,
-  getExtractionsAsJP,
-  _getExtractions,
-} from "./058_extract_and_sort_validate.js";
 import {
   getPageInfo,
   listViewsFromTableId,
@@ -198,6 +200,7 @@ import {
   _addViewColumn,
   getViewColumnFromColumn,
   getViewColumnName,
+  getViewColumnFromName,
 } from "./061_view_column_validate.js";
 import {
   getPageDataForGUI,
@@ -273,7 +276,7 @@ export async function test021() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 48; i++ ) {
+    for ( i = 1; i <= 51; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

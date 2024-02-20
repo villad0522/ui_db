@@ -717,7 +717,6 @@ let buf = {
 };
 
 
-
 // カラムIDからビューカラムIDを取得
 export async function getViewColumnFromColumn_core( columnId, viewId ){
   if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -793,6 +792,40 @@ export async function getViewColumnName_core( viewId, viewColumnId ){
     if(viewColumns.length===0){
         throw `ビューカラムが見つかりません。\nviewColumnId = ${viewColumnId}`;
     }
+    if(!buf2[viewId]){
+        if(bugMode === 51) throw "MUTATION51";  // 意図的にバグを混入させる（ミューテーション解析）
+        buf2[viewId] = {};
+    }
     buf2[viewId][viewColumnId] = viewColumns[0];
     return viewColumns[0].viewColumnName;
+}
+
+// 名前からビューカラムの情報を取得
+export async function getViewColumnFromName_core( viewColumnName ){
+  if(bugMode === 52) throw "MUTATION52";  // 意図的にバグを混入させる（ミューテーション解析）
+    const viewColumns = await runSqlReadOnly(
+        `SELECT
+            "d" || view_column_id AS viewColumnId,
+            view_id AS viewId,
+            view_column_type AS viewColumnType,
+            column_path AS columnPath,
+            view_column_name AS viewColumnName,
+            excel_column_index AS excelColumnIndex
+        FROM view_columns
+        WHERE view_column_name = :viewColumnName
+        LIMIT 1;`,
+        {
+            ":viewColumnName": viewColumnName,
+        },
+    );
+    if(viewColumns.length===0){
+        throw `ビューカラムが見つかりません。\nviewColumnId = ${viewColumnId}`;
+    }
+    if(!buf2[viewId]){
+        if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
+        buf2[viewId] = {};
+    }
+    const viewId = viewColumns[0].viewId;
+    buf2[viewId][viewColumnId] = viewColumns[0];
+    return viewColumns[0];
 }

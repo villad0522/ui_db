@@ -510,6 +510,14 @@ export async function getWhereData( viewColumns, conditionInfoList, joinIdMap ){
         throw new Error(`conditionInfoList[${i}].viewColumnIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
+    if( typeof conditionInfoList[i].conditionId !== "string" ){
+      if( !conditionInfoList[i].conditionId ){
+        throw new Error(`conditionInfoList[${i}].conditionIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+      }
+      else{
+        throw new Error(`conditionInfoList[${i}].conditionIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+      }
+    }
     if( typeof conditionInfoList[i].conditionalExpression !== "string" ){
       if( !conditionInfoList[i].conditionalExpression ){
         throw new Error(`conditionInfoList[${i}].conditionalExpressionがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
@@ -574,6 +582,14 @@ export async function getWhereData( viewColumns, conditionInfoList, joinIdMap ){
       }
       else{
         throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+      }
+    }
+    if( typeof result[i].conditionId !== "string" ){
+      if( !result[i].conditionId ){
+        throw new Error(`result[${i}].conditionIdがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
+      }
+      else{
+        throw new Error(`result[${i}].conditionIdが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
     if( typeof result[i].viewColumnId !== "string" ){

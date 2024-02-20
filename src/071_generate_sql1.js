@@ -177,32 +177,32 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
     }
     const selectList = [];
     selectList.push(`main.${primaryKey} AS 'id'`);
-    for( const { viewColumnId, viewColumnType, joinId, columnName, viewColumnName } of selectData ){
+    for( const { conditionId, viewColumnId, viewColumnType, joinId, columnName, viewColumnName } of selectData ){
       if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
       switch(viewColumnType){
         case "RAW":
           if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
-          selectList.push(`${joinId}.${columnName} AS '${viewColumnId}'`);
+          selectList.push(`${joinId}.${columnName} AS '${conditionId}'`);
           break;
         case "SUM":
           if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-          selectList.push(`SUM(${joinId}.${columnName}) AS '${viewColumnId}'`);
+          selectList.push(`SUM(${joinId}.${columnName}) AS '${conditionId}'`);
           break;
         case "MAX":
           if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-          selectList.push(`MAX(${joinId}.${columnName}) AS '${viewColumnId}'`);
+          selectList.push(`MAX(${joinId}.${columnName}) AS '${conditionId}'`);
           break;
         case "MIN":
           if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
-          selectList.push(`MIN(${joinId}.${columnName}) AS '${viewColumnId}'`);
+          selectList.push(`MIN(${joinId}.${columnName}) AS '${conditionId}'`);
           break;
         case "AVG":
           if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
-          selectList.push(`AVG(${joinId}.${columnName}) AS '${viewColumnId}'`);
+          selectList.push(`AVG(${joinId}.${columnName}) AS '${conditionId}'`);
           break;
         case "COUNT":
           if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
-          selectList.push(`COUNT(${joinId}.${columnName}) AS '${viewColumnId}'`);
+          selectList.push(`COUNT(${joinId}.${columnName}) AS '${conditionId}'`);
           break;
         default:
           throw `サポートされていない集合関数が指定されました。viewColumnType = ${viewColumnType}`;

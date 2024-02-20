@@ -40,6 +40,7 @@ import {
   _addViewColumn,
   getViewColumnFromColumn,
   getViewColumnName,
+  getViewColumnFromName,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -62,9 +63,12 @@ import {
   autoCorrectColumnName,
 } from "./097_system_auto_correct_validate.js";
 import {
+  _getConditions,
   generateSQL,
   getExtractionsAsJP,
-  _getExtractions,
+  autoCorrectConditionalValue,
+  deleteCondition,
+  addCondition,
 } from "./058_extract_and_sort_validate.js";
 import {
   deleteRecords,
@@ -118,7 +122,6 @@ import {
 import {
   autoFill,
   _autoFill,
-  _getConditions,
   _listPredictions,
   _listRecords,
   createInputGroup,

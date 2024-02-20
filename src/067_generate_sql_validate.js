@@ -92,6 +92,14 @@ export async function generateSQL( tableId, viewColumns, conditionInfoList, sort
         throw new Error(`conditionInfoList[${i}].viewColumnIdが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
       }
     }
+    if( typeof conditionInfoList[i].conditionId !== "string" ){
+      if( !conditionInfoList[i].conditionId ){
+        throw new Error(`conditionInfoList[${i}].conditionIdがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
+      }
+      else{
+        throw new Error(`conditionInfoList[${i}].conditionIdが文字列ではありません。\nレイヤー : generate_sql\n関数 : generateSQL`);
+      }
+    }
     if( typeof conditionInfoList[i].conditionalExpression !== "string" ){
       if( !conditionInfoList[i].conditionalExpression ){
         throw new Error(`conditionInfoList[${i}].conditionalExpressionがNULLです。\nレイヤー : generate_sql\n関数 : generateSQL`);
