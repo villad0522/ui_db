@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import {
-  clearCache,
   createPage,
   updatePageName,
   getPageInfo,
@@ -182,6 +181,9 @@ import {
   deleteViewColumn,  // ビューカラムを削除
   reorderViewColumnToRight,  // ビューカラムを右へ移動
   reorderViewColumnToLeft,  // ビューカラムを左へ移動
+  getViewColumnFromColumn,  // カラムIDからビューカラムIDを取得
+  clearCache,  // インメモリキャッシュを削除する
+  getViewColumnName,  // ビューカラムの名前を取得
 } from "./061_view_column_validate.js";
 import { setBugMode } from "./062_view_column.js";
 
@@ -191,7 +193,7 @@ export async function test060() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 39; i++ ) {
+    for ( i = 1; i <= 50; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

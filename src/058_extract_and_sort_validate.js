@@ -3,6 +3,8 @@ import {
   deleteView_core,  // ビューを削除
   generateSQL_core,  // SQLクエリを生成
   deleteTable_core,  // 不可逆的にテーブルを削除
+  getExtractionsAsJP_core,  // 抽出条件を日本語で取得
+  _getExtractions_core,  // 【サブ】抽出条件を取得
 } from "./059_extract_and_sort.js";
 
 
@@ -250,6 +252,164 @@ export async function deleteTable( tableId ){
     }
     else{
       throw new Error(`resultが文字列ではありません。\nレイヤー : extract_and_sort\n関数 : deleteTable`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「getExtractionsAsJP_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function getExtractionsAsJP( viewId, queryParameters ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+  }
+  if( queryParameters===null || queryParameters===undefined ){
+    throw new Error(`queryParametersがNULLです。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+  }
+  else if( typeof queryParameters !== "object" ){
+    throw new Error(`queryParametersがオブジェクトではありません。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+  }
+  else if( queryParameters.constructor !== Object ){
+    throw new Error(`queryParametersが辞書型ではありません。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+  }
+  for( const i in queryParameters ){
+    if( typeof i !== "string" ){
+      throw new Error(`queryParametersのキーが文字列ではありません。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await getExtractionsAsJP_core( viewId, queryParameters );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( !Array.isArray(result) ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+    }
+    else{
+      throw new Error(`resultが配列ではありません。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+    }
+  }
+  for( let i=0; i<result.length; i++ ){
+    if( typeof result[i] !== "object" ){
+      if( !result[i] ){
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+      }
+      else{
+        throw new Error(`result[${i}]がオブジェクトではありません。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+      }
+    }
+    if( typeof result[i].viewColumnId !== "string" ){
+      if( !result[i].viewColumnId ){
+        throw new Error(`result[${i}].viewColumnIdがNULLです。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+      }
+      else{
+        throw new Error(`result[${i}].viewColumnIdが文字列ではありません。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+      }
+    }
+    if( typeof result[i].text !== "string" ){
+      if( !result[i].text ){
+        throw new Error(`result[${i}].textがNULLです。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+      }
+      else{
+        throw new Error(`result[${i}].textが文字列ではありません。\nレイヤー : extract_and_sort\n関数 : getExtractionsAsJP`);
+      }
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「_getExtractions_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function _getExtractions( viewId, queryParameters ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : extract_and_sort\n関数 : _getExtractions`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : extract_and_sort\n関数 : _getExtractions`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : extract_and_sort\n関数 : _getExtractions`);
+  }
+  if( queryParameters===null || queryParameters===undefined ){
+    throw new Error(`queryParametersがNULLです。\nレイヤー : extract_and_sort\n関数 : _getExtractions`);
+  }
+  else if( typeof queryParameters !== "object" ){
+    throw new Error(`queryParametersがオブジェクトではありません。\nレイヤー : extract_and_sort\n関数 : _getExtractions`);
+  }
+  else if( queryParameters.constructor !== Object ){
+    throw new Error(`queryParametersが辞書型ではありません。\nレイヤー : extract_and_sort\n関数 : _getExtractions`);
+  }
+  for( const i in queryParameters ){
+    if( typeof i !== "string" ){
+      throw new Error(`queryParametersのキーが文字列ではありません。\nレイヤー : extract_and_sort\n関数 : _getExtractions`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await _getExtractions_core( viewId, queryParameters );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : extract_and_sort\n関数 : _getExtractions`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( result===null || result===undefined ){
+    throw new Error(`resultがNULLです。\nレイヤー : extract_and_sort\n関数 : _getExtractions`);
+  }
+  else if( typeof result !== "object" ){
+    throw new Error(`resultがオブジェクトではありません。\nレイヤー : extract_and_sort\n関数 : _getExtractions`);
+  }
+  else if( result.constructor !== Object ){
+    throw new Error(`resultが辞書型ではありません。\nレイヤー : extract_and_sort\n関数 : _getExtractions`);
+  }
+  for( const i in result ){
+    if( typeof i !== "string" ){
+      throw new Error(`resultのキーが文字列ではありません。\nレイヤー : extract_and_sort\n関数 : _getExtractions`);
     }
   }
   //

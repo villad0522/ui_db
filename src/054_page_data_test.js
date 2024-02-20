@@ -5,6 +5,8 @@ import {
   deleteTable,
   generateSQL,
   deleteView,
+  getExtractionsAsJP,
+  _getExtractions,
 } from "./058_extract_and_sort_validate.js";
 import {
   getLocalIp,
@@ -42,29 +44,6 @@ import {
 } from "./121_primary_key_validate.js";
 import {
   clearCache,
-  createPage,
-  updatePageName,
-  getPageInfo,
-  listViewsFromTableId,
-  getTableFromView,
-  getBreadcrumbs,
-  cutPage,
-  copyPage,
-  pastePage,
-  getCuttingPage,
-  getCopyingPage,
-  listAllPages,
-  listStaticChildren,
-  listChildrenView,
-  getParentPage,
-  listChildrenPage,
-  _movePage,
-  _generatePageSortNumber,
-  _copyPage,
-  getViewInfo,
-  isExistView,
-} from "./064_page_and_view_validate.js";
-import {
   createColumn,
   createView,
   deletePage,
@@ -77,6 +56,8 @@ import {
   deleteViewColumn,
   reorderViewColumnToRight,
   reorderViewColumnToLeft,
+  getViewColumnFromColumn,
+  getViewColumnName,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -184,6 +165,29 @@ import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
 import {
+  createPage,
+  updatePageName,
+  getPageInfo,
+  listViewsFromTableId,
+  getTableFromView,
+  getBreadcrumbs,
+  cutPage,
+  copyPage,
+  pastePage,
+  getCuttingPage,
+  getCopyingPage,
+  listAllPages,
+  listStaticChildren,
+  listChildrenView,
+  getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
+  _copyPage,
+  getViewInfo,
+  isExistView,
+} from "./064_page_and_view_validate.js";
+import {
   getPageDataForGUI,  // データを取得(GUI向け)
   getPageDataForExcel,  // データを取得(Excel向け)
   myFunc,  // 新しい関数
@@ -252,7 +256,7 @@ async function _test(){
   // ページにビューを追加
   const { viewId: viewId1 } = await createView( pageId1, "名簿テーブル" );
   //
-  const pageData = await getPageData(
+  const pageData = await getPageDataForGUI(
     pageId1,
     {
         ["p5"+columnId2]: recordId,

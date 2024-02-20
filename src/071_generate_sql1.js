@@ -173,7 +173,7 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
     if(selectData.length===0){
       if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
       // SELECT句の長さがゼロの場合
-      return `SELECT * FROM ${tableId} WHERE 0`;
+      return `SELECT * FROM ${tableId} WHERE 0 LIMIT 0 OFFSET :offset`;
     }
     const selectList = [];
     selectList.push(`main.${primaryKey} AS 'id'`);

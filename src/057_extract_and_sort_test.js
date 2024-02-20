@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import {
+  clearCache,
   createColumn,
   createView,
   deletePage,
@@ -13,6 +14,8 @@ import {
   deleteViewColumn,
   reorderViewColumnToRight,
   reorderViewColumnToLeft,
+  getViewColumnFromColumn,
+  getViewColumnName,
 } from "./061_view_column_validate.js";
 import {
   getLocalIp,
@@ -48,30 +51,6 @@ import {
 import {
   getPrimaryKey,
 } from "./121_primary_key_validate.js";
-import {
-  clearCache,
-  createPage,
-  updatePageName,
-  getPageInfo,
-  listViewsFromTableId,
-  getTableFromView,
-  getBreadcrumbs,
-  cutPage,
-  copyPage,
-  pastePage,
-  getCuttingPage,
-  getCopyingPage,
-  listAllPages,
-  listStaticChildren,
-  listChildrenView,
-  getParentPage,
-  listChildrenPage,
-  _movePage,
-  _generatePageSortNumber,
-  _copyPage,
-  getViewInfo,
-  isExistView,
-} from "./064_page_and_view_validate.js";
 import {
   listDataTypes,
 } from "./118_data_type_validate.js";
@@ -180,10 +159,35 @@ import {
 import {
 } from "./067_generate_sql_validate.js";
 import {
+  createPage,
+  updatePageName,
+  getPageInfo,
+  listViewsFromTableId,
+  getTableFromView,
+  getBreadcrumbs,
+  cutPage,
+  copyPage,
+  pastePage,
+  getCuttingPage,
+  getCopyingPage,
+  listAllPages,
+  listStaticChildren,
+  listChildrenView,
+  getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
+  _copyPage,
+  getViewInfo,
+  isExistView,
+} from "./064_page_and_view_validate.js";
+import {
   startUp,  // プログラム起動
   deleteView,  // ビューを削除
   generateSQL,  // SQLクエリを生成
   deleteTable,  // 不可逆的にテーブルを削除
+  getExtractionsAsJP,  // 抽出条件を日本語で取得
+  _getExtractions,  // 【サブ】抽出条件を取得
 } from "./058_extract_and_sort_validate.js";
 import { setBugMode } from "./059_extract_and_sort.js";
 
@@ -193,7 +197,7 @@ export async function test057() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 16; i++ ) {
+    for ( i = 1; i <= 20; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

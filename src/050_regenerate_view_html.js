@@ -35,29 +35,6 @@ import {
 } from "./121_primary_key_validate.js";
 import {
   clearCache,
-  createPage,
-  updatePageName,
-  getPageInfo,
-  listViewsFromTableId,
-  getTableFromView,
-  getBreadcrumbs,
-  cutPage,
-  copyPage,
-  pastePage,
-  getCuttingPage,
-  getCopyingPage,
-  listAllPages,
-  listStaticChildren,
-  listChildrenView,
-  getParentPage,
-  listChildrenPage,
-  _movePage,
-  _generatePageSortNumber,
-  _copyPage,
-  getViewInfo,
-  isExistView,
-} from "./064_page_and_view_validate.js";
-import {
   createColumn,
   createView,
   deletePage,
@@ -70,6 +47,8 @@ import {
   deleteViewColumn,
   reorderViewColumnToRight,
   reorderViewColumnToLeft,
+  getViewColumnFromColumn,
+  getViewColumnName,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -95,6 +74,8 @@ import {
   deleteTable,
   generateSQL,
   deleteView,
+  getExtractionsAsJP,
+  _getExtractions,
 } from "./058_extract_and_sort_validate.js";
 import {
   deleteRecords,
@@ -186,6 +167,29 @@ import {
 import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
+import {
+  createPage,
+  updatePageName,
+  getPageInfo,
+  listViewsFromTableId,
+  getTableFromView,
+  getBreadcrumbs,
+  cutPage,
+  copyPage,
+  pastePage,
+  getCuttingPage,
+  getCopyingPage,
+  listAllPages,
+  listStaticChildren,
+  listChildrenView,
+  getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
+  _copyPage,
+  getViewInfo,
+  isExistView,
+} from "./064_page_and_view_validate.js";
 import {
   getPageDataForGUI,
   getPageDataForExcel,
@@ -457,7 +461,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                     <button data-bs-toggle="collapse" data-bs-target="#extract_collapse_${viewId}" class="btn btn-outline-secondary" type="button">
                         <i class="bi bi-funnel"></i>
                         抽出
-                        <span class="badge text-bg-secondary">4</span>
+                        <span name="extraction${viewId}__total" class="badge text-bg-secondary"></span>
                     </button>
                     <button onclick="myFetch('./update_from_view${viewId}/form');" type="button" class="btn btn-outline-primary">
                         <i class="bi bi-pen"></i>
@@ -470,29 +474,40 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                     <div class="row">
                         <div class="col-lg-10 mb-2">
                             <div class="input-group flex-nowrap">
-                                <input type="text" class="form-control">
+                                <input name="newExtractionTarget${viewId}" type="text" class="form-control">
                                 <span class="input-group-text">が</span>
-                                <input type="text" class="form-control">
-                                <select class="form-select" style="max-width: 150px;">
-                                    <option selected>と等しい</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                <input name="newExtractionValue${viewId}" type="text" class="form-control">
+                                <select name="newExtractionExpression${viewId}" class="form-select" style="max-width: 150px;">
+                                    <option value="LIKE" selected>を含む</option>
+                                    <option value="=">と等しい</option>
+                                    <option value="!=">以外</option>
+                                    <option value="<">より小さい</option>
+                                    <option value=">">より大きい</option>
+                                    <option value="<=">以下</option>
+                                    <option value=">-">以上</option>
                                 </select>
-                                <button type="button" class="btn btn-primary">
+                                <button onclick="myFetch('./add_extraction_view${viewId}/form');" type="button" class="btn btn-primary">
                                     <i class="bi bi-plus"></i>
                                     条件追加
                                 </button>
                             </div>
-                        </div>
-                        <div class="col-lg-6">
+                        </div>`;
+    //
+    for( let i=0; i<10; i++ ){
+        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+        mainHtmlText += `
+                        <div class="col-lg-6" name="extraction${viewId}_${i}_flag">
                             <div class="input-group flex-nowrap">
-                                <input disabled type="text" class="form-control" style="border: solid 1px #aaa;">
-                                <button type="button" class="btn btn-outline-danger">
+                                <input name="extraction${viewId}_${i}_viewColumnId" type="text" style="display: none;">
+                                <input name="extraction${viewId}_${i}_text" disabled type="text" class="form-control" style="border: solid 1px #aaa;">
+                                <button onclick="deleteExtraction(${viewId},${i})" type="button" class="btn btn-outline-danger">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>
-                        </div>
+                        </div>`;
+    }
+    //
+    mainHtmlText += `
                     </div>
                 </div>
             </div>
@@ -506,12 +521,12 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
 
 // ビューのHTMLを生成（カード）
 export async function generateViewHTML_card_core( viewId, tableId, onePageMaxSize, childPageId ){
-  if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
     return "";
 }
 
 // ビューのHTMLを生成（ボタン）
 export async function generateViewHTML_button_core( viewId, tableId, onePageMaxSize, childPageId ){
-  if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
     return "";
 }

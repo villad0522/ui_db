@@ -167,6 +167,8 @@ import {
 } from "./070_generate_sql1_validate.js";
 import {
   generateSQL,
+  getExtractionsAsJP,
+  _getExtractions,
 } from "./058_extract_and_sort_validate.js";
 import {
   getPageInfo,
@@ -193,6 +195,8 @@ import {
   _deleteViewColumns,
   regenerateInputElements,
   _addViewColumn,
+  getViewColumnFromColumn,
+  getViewColumnName,
 } from "./061_view_column_validate.js";
 import {
   getPageDataForGUI,

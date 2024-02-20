@@ -5,6 +5,8 @@ import {
   deleteTable,
   generateSQL,
   deleteView,
+  getExtractionsAsJP,
+  _getExtractions,
 } from "./058_extract_and_sort_validate.js";
 import {
   getLocalIp,
@@ -42,29 +44,6 @@ import {
 } from "./121_primary_key_validate.js";
 import {
   clearCache,
-  createPage,
-  updatePageName,
-  getPageInfo,
-  listViewsFromTableId,
-  getTableFromView,
-  getBreadcrumbs,
-  cutPage,
-  copyPage,
-  pastePage,
-  getCuttingPage,
-  getCopyingPage,
-  listAllPages,
-  listStaticChildren,
-  listChildrenView,
-  getParentPage,
-  listChildrenPage,
-  _movePage,
-  _generatePageSortNumber,
-  _copyPage,
-  getViewInfo,
-  isExistView,
-} from "./064_page_and_view_validate.js";
-import {
   createColumn,
   createView,
   deletePage,
@@ -77,6 +56,8 @@ import {
   deleteViewColumn,
   reorderViewColumnToRight,
   reorderViewColumnToLeft,
+  getViewColumnFromColumn,
+  getViewColumnName,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -183,6 +164,29 @@ import {
 import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
+import {
+  createPage,
+  updatePageName,
+  getPageInfo,
+  listViewsFromTableId,
+  getTableFromView,
+  getBreadcrumbs,
+  cutPage,
+  copyPage,
+  pastePage,
+  getCuttingPage,
+  getCopyingPage,
+  listAllPages,
+  listStaticChildren,
+  listChildrenView,
+  getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
+  _copyPage,
+  getViewInfo,
+  isExistView,
+} from "./064_page_and_view_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
@@ -212,12 +216,18 @@ export async function getPageDataForGUI_core( pageId, queryParameters ){
     if( isNaN(total) ){
       throw "件数を取得できません";
     }
+    const extractions = await getExtractionsAsJP( viewId, queryParameters );
+    const viewColumns = await listViewColumns(viewId);
+    const viewColumnNames = viewColumns.map( ({viewColumnName})=>viewColumnName);
     //
     results = {
       ...await autoFill( viewId, {}, false ),
       ...results,
-      ["view" + viewId + "__total"]: total,
+      [`extraction${viewId}_`]: extractions,
+      [`extraction${viewId}__total`]: extractions.length,
+      [`newExtractionTarget${viewId}_option`]: viewColumnNames,
       ["view" + viewId + "_"]: await runSqlReadOnly( normalSQL, normalParameters ),
+      ["view" + viewId + "__total"]: total,
     };
   }
   return results;

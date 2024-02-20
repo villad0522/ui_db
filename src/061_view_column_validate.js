@@ -14,6 +14,9 @@ import {
   deleteViewColumn_core,  // ビューカラムを削除
   reorderViewColumnToRight_core,  // ビューカラムを右へ移動
   reorderViewColumnToLeft_core,  // ビューカラムを左へ移動
+  getViewColumnFromColumn_core,  // カラムIDからビューカラムIDを取得
+  clearCache_core,  // インメモリキャッシュを削除する
+  getViewColumnName_core,  // ビューカラムの名前を取得
 } from "./062_view_column.js";
 
 
@@ -889,6 +892,150 @@ export async function reorderViewColumnToLeft( viewColumnId ){
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「getViewColumnFromColumn_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function getViewColumnFromColumn( columnId, viewId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof columnId !== "string" ){
+    if( !columnId ){
+      throw new Error(`columnIdがNULLです。\nレイヤー : view_column\n関数 : getViewColumnFromColumn`);
+    }
+    else{
+      throw new Error(`columnIdが文字列ではありません。\nレイヤー : view_column\n関数 : getViewColumnFromColumn`);
+    }
+  }
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : getViewColumnFromColumn`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : getViewColumnFromColumn`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : getViewColumnFromColumn`);
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await getViewColumnFromColumn_core( columnId, viewId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : getViewColumnFromColumn`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : getViewColumnFromColumn`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : view_column\n関数 : getViewColumnFromColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「clearCache_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function clearCache(  ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await clearCache_core(  );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : clearCache`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「getViewColumnName_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function getViewColumnName( viewId, viewColumnId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : getViewColumnName`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : getViewColumnName`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : getViewColumnName`);
+  }
+  if( typeof viewColumnId !== "string" ){
+    if( !viewColumnId ){
+      throw new Error(`viewColumnIdがNULLです。\nレイヤー : view_column\n関数 : getViewColumnName`);
+    }
+    else{
+      throw new Error(`viewColumnIdが文字列ではありません。\nレイヤー : view_column\n関数 : getViewColumnName`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await getViewColumnName_core( viewId, viewColumnId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : getViewColumnName`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : getViewColumnName`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : view_column\n関数 : getViewColumnName`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;

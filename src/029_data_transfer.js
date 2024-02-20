@@ -37,25 +37,13 @@ import {
 } from "./121_primary_key_validate.js";
 import {
   clearCache,
-  getPageInfo,
-  listViewsFromTableId,
-  getTableFromView,
-  getBreadcrumbs,
-  cutPage,
-  copyPage,
-  getCuttingPage,
-  getCopyingPage,
-  listAllPages,
-  listStaticChildren,
-  listChildrenView,
-  getParentPage,
-  listChildrenPage,
-  _movePage,
-  _generatePageSortNumber,
-  _copyPage,
-  getViewInfo,
-  isExistView,
-} from "./064_page_and_view_validate.js";
+  listViewColumns,
+  _deleteViewColumns,
+  regenerateInputElements,
+  _addViewColumn,
+  getViewColumnFromColumn,
+  getViewColumnName,
+} from "./061_view_column_validate.js";
 import {
   createColumn,
   deleteTable,
@@ -184,13 +172,29 @@ import {
 } from "./070_generate_sql1_validate.js";
 import {
   generateSQL,
+  getExtractionsAsJP,
+  _getExtractions,
 } from "./058_extract_and_sort_validate.js";
 import {
-  listViewColumns,
-  _deleteViewColumns,
-  regenerateInputElements,
-  _addViewColumn,
-} from "./061_view_column_validate.js";
+  getPageInfo,
+  listViewsFromTableId,
+  getTableFromView,
+  getBreadcrumbs,
+  cutPage,
+  copyPage,
+  getCuttingPage,
+  getCopyingPage,
+  listAllPages,
+  listStaticChildren,
+  listChildrenView,
+  getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
+  _copyPage,
+  getViewInfo,
+  isExistView,
+} from "./064_page_and_view_validate.js";
 import {
   getPageDataForGUI,
   getPageDataForExcel,

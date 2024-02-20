@@ -223,6 +223,8 @@ export async function addViewColumn_core( viewId, viewColumnType, columnPath, vi
         // 入力要素を再構築する
         await regenerateInputElements_core( viewId );
     }
+    buf[viewId] = {};
+    buf2[viewId] = {};
 }
 
 
@@ -339,10 +341,16 @@ export async function createView_core( pageId, tableName ){
 }
 
 
+let buf2 = {};
+
 
 // ビューカラムの一覧を取得
 export async function listViewColumns_core( viewId ){
   if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+    if( buf2[viewId] ){
+        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        return buf2[viewId];
+    }
     const viewColumns1 = await runSqlReadOnly(
         `SELECT
             "d" || view_column_id AS viewColumnId,
@@ -362,7 +370,7 @@ export async function listViewColumns_core( viewId ){
     //
     const viewColumns2 = [];
     for( const viewColumn of viewColumns1 ){
-        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
         const offset = viewColumn.excelColumnIndex;
         viewColumns2.push({
             "viewColumnId": viewColumn.viewColumnId,
@@ -372,6 +380,7 @@ export async function listViewColumns_core( viewId ){
             "columnPath": viewColumn.columnPath
         });
     }
+    buf2[viewId] = viewColumns2;
     return viewColumns2;
 }
 
@@ -389,14 +398,16 @@ function _convertToExcelColumn(number) {
 
 // ビューを削除
 export async function deleteView_core( viewId ){
-  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+    buf[viewId] = {};
+    buf2[viewId] = [];
     await _deleteViewColumns_core( viewId );
     return await deleteView( viewId );  // 下層の関数を実行する
 }
 
 // 【サブ関数】ビューカラムを一括削除
 export async function _deleteViewColumns_core( viewId ){
-  if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     await runSqlWriteOnly(
         `DELETE FROM view_columns
             WHERE view_id = :viewId;`,
@@ -412,15 +423,17 @@ export async function _deleteViewColumns_core( viewId ){
     const { childPageId } = await getViewInfo( viewId );
     const views = await listChildrenView( childPageId );
     for( const { viewId } of views ){
-        if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
         // ビューカラムを一括削除（再帰呼び出し）
         await _deleteViewColumns_core( viewId );
     }
+    buf[viewId] = {};
+    buf2[viewId] = [];
 }
 
 // 【サブ関数】入力要素を全て作り直す
 export async function regenerateInputElements_core( viewId ){
-  if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
     // 入力要素と入力グループを全て消し去る
     await deleteViewInput(viewId);
     //
@@ -449,7 +462,7 @@ export async function regenerateInputElements_core( viewId ){
     // };
     //
     for( const columnPath in joinIdMap ){
-        if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
         const inputGroupId = viewId + "/" + joinIdMap[columnPath];
         const columnId = await pathToColumnId( columnPath );
         const tableId = await getParentTableId(columnId);
@@ -459,7 +472,7 @@ export async function regenerateInputElements_core( viewId ){
         let nextColumnId = null;
         const pathLength = await getPathLength( columnPath );
         if( pathLength >= 2 ){
-            if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
             const childColumnPath = await slicePath( columnPath, pathLength-1 );
             const childColumnId = await pathToColumnId( childColumnPath );
             //
@@ -468,7 +481,7 @@ export async function regenerateInputElements_core( viewId ){
             nextColumnId = childColumnId;
         }
         else{
-            if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
             nextGroupId = viewId + "/main";
             nextColumnId = columnId;
         }
@@ -488,11 +501,11 @@ export async function regenerateInputElements_core( viewId ){
     }
     //
     for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
-        if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
         let inputGroupId = viewId + "/main";
         const pathLength = await getPathLength( columnPath );
         if( pathLength >= 2 ){
-            if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
             // 子（参照元）のカラムパス
             const childColumnPath = await slicePath( columnPath, pathLength-1 );
             inputGroupId = viewId + "/" + joinIdMap[childColumnPath];
@@ -509,13 +522,15 @@ export async function regenerateInputElements_core( viewId ){
             columnId,
         );
     }
+    buf[viewId] = {};
+    buf2[viewId] = [];
 }
 
 
 
 // 【サブ関数】ビューカラムを作成
 export async function _addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName ){
-  if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
     if( typeof viewId !== "number" || isNaN(viewId) ){
         throw `ビューIDが数値ではありません`;
     }
@@ -537,14 +552,14 @@ export async function _addViewColumn_core( viewId, viewColumnType, columnPath, v
     );
     const numbers = new Set();
     for( const { excelColumnIndex } of matrix ){
-        if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
         numbers.add( excelColumnIndex );
     }
     let excelColumnIndex;
     for( let i=0; i<=numbers.size; i++ ){
-        if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
         if(!numbers.has(i)){
-            if(bugMode === 27) throw "MUTATION27";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
             excelColumnIndex = i;
             break;
         }
@@ -572,18 +587,22 @@ export async function _addViewColumn_core( viewId, viewColumnType, columnPath, v
             ":excelColumnIndex": excelColumnIndex,
         },
     );
+    buf[viewId] = {};
+    buf2[viewId] = [];
 }
 
 // ページを削除
 export async function deletePage_core( pageId ){
-  if(bugMode === 28) throw "MUTATION28";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
   //
   // ビューの一覧を取得する
   const views = await listChildrenView( pageId );
   for( const { viewId } of views ){
-    if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
     // ビューカラムを一括削除
     await _deleteViewColumns_core( viewId );
+    buf[viewId] = {};
+    buf2[viewId] = [];
   }
   // 親のビューを取得
   const view = await runSqlReadOnly(
@@ -597,10 +616,10 @@ export async function deletePage_core( pageId ){
   );
   // もし親のビューが存在したら
   if(view.length>=1){
-    if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
     const parentViewId = view[0]["viewId"];
     if( parentViewId && !isNaN(parentViewId) ){
-        if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
         // ビューカラムを一括削除
         await _deleteViewColumns_core( parentViewId );
     }
@@ -610,10 +629,10 @@ export async function deletePage_core( pageId ){
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
-  if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
     const views = await listViewsFromTableId( tableId );
     for( const viewId of views ){
-        if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
         await runSqlWriteOnly(
             `DELETE FROM view_columns WHERE view_id = :viewId;`,
             {
@@ -626,10 +645,10 @@ export async function deleteTable_core( tableId ){
 
 // ビューの情報を更新
 export async function updateView_core( params ){
-  if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
     const viewColumns = params.viewColumns;
     for( const { viewColumnId, viewColumnName } of viewColumns ){
-        if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
         await runSqlWriteOnly(
             `UPDATE view_columns
                 SET view_column_name = :viewColumnName
@@ -647,10 +666,10 @@ export async function updateView_core( params ){
 
 // ビューカラムを削除
 export async function deleteViewColumn_core( viewColumnId ){
-  if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
     // 削除
     if(true/*一番左のビューカラムを削除する場合 */){
-        if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
         // Excelデータの開始位置を、ひとつ右にずらす
         // すべてのビューカラムのオフセットを、ひとつ左にずらす
     }
@@ -663,19 +682,21 @@ export async function deleteViewColumn_core( viewColumnId ){
     );
     // 入力要素と入力グループを全て消し去る
     await deleteViewInput(viewId);
+    buf[viewId] = {};
+    buf2[viewId] = [];
     return "ビューカラムを削除しました";
 }
 
 // ビューカラムを右へ移動
 export async function reorderViewColumnToRight_core( viewColumnId ){
-  if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
     // もし隣のビューカラムとの間に隙間があったら、そこへ移動。
     // もし隙間がなかったら、隣のビューカラムと交換。
 }
 
 // ビューカラムを左へ移動
 export async function reorderViewColumnToLeft_core( viewColumnId ){
-  if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
     // もし、すでにA列にいるなら、
     // もし、すでにビューカラムの中で一番左にいるなら、
     //
@@ -684,4 +705,94 @@ export async function reorderViewColumnToLeft_core( viewColumnId ){
         //   このビューカラムのオフセットをゼロにする
     // もし隣のビューカラムとの間に隙間があったら、そこへ移動。
     // もし隙間がなかったら、隣のビューカラムと交換。
+}
+
+
+
+let buf = {
+    // "34": {
+    //   "c78": [ "d45", "d99" ],
+    //   "c6": [ "d12" ],
+    // },
+};
+
+
+
+// カラムIDからビューカラムIDを取得
+export async function getViewColumnFromColumn_core( columnId, viewId ){
+  if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(buf[viewId] && buf[viewId][columnId]){
+        if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
+        return buf[viewId][columnId][0];
+    }
+    let viewColumns = await listViewColumns(viewId);
+    for( let i=0; i<viewColumns.length; i++ ){
+        if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
+        const columnPath = viewColumns[i].columnPath;
+        viewColumns[i].pathLength = await getPathLength(columnPath);
+        viewColumns[i].columnId = await pathToColumnId(columnPath);
+    }
+    viewColumns = viewColumns.sort((a,b)=>{
+        if( a.pathLength > b.pathLength ){
+            if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
+            return 1;
+        }
+        else{
+            if(bugMode === 45) throw "MUTATION45";  // 意図的にバグを混入させる（ミューテーション解析）
+            return -1;
+        }
+    });
+    buf[viewId] = {
+        //  "c78": [ "d45", "d99" ],
+        //  "c6": [ "d12" ],
+    };
+    buf2[viewId] = [];
+    for( const { viewColumnId, columnId } of viewColumns ){
+        if(bugMode === 46) throw "MUTATION46";  // 意図的にバグを混入させる（ミューテーション解析）
+        if( !buf[viewId][columnId] ){
+            if(bugMode === 47) throw "MUTATION47";  // 意図的にバグを混入させる（ミューテーション解析）
+            buf[viewId][columnId] = [];
+        }
+        buf[viewId][columnId].push(viewColumnId);
+    }
+    return buf[viewId][columnId][0];
+}
+
+
+
+// インメモリキャッシュを削除する
+export async function clearCache_core(  ){
+  if(bugMode === 48) throw "MUTATION48";  // 意図的にバグを混入させる（ミューテーション解析）
+  buf = {};
+  buf2 = {};
+  return await clearCache(  );
+}
+
+
+// ビューカラムの名前を取得
+export async function getViewColumnName_core( viewId, viewColumnId ){
+  if(bugMode === 49) throw "MUTATION49";  // 意図的にバグを混入させる（ミューテーション解析）
+    if( buf2[viewId] && buf2[viewId][viewColumnId] ){
+        if(bugMode === 50) throw "MUTATION50";  // 意図的にバグを混入させる（ミューテーション解析）
+        return buf2[viewId][viewColumnId].viewColumnName;
+    }
+    const viewColumns = await runSqlReadOnly(
+        `SELECT
+            "d" || view_column_id AS viewColumnId,
+            view_column_type AS viewColumnType,
+            column_path AS columnPath,
+            view_column_name AS viewColumnName,
+            excel_column_index AS excelColumnIndex
+        FROM view_columns
+        WHERE view_column_id = :viewColumnNumber
+        LIMIT 1;`,
+        {
+            ":viewColumnNumber": viewColumnId.replace("d",""),
+        },
+    );
+    if(viewColumns.length===0){
+        throw `ビューカラムが見つかりません。\nviewColumnId = ${viewColumnId}`;
+    }
+    buf2[viewId][viewColumnId] = viewColumns[0];
+    return viewColumns[0].viewColumnName;
 }

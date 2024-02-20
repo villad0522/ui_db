@@ -2,6 +2,7 @@
 //
 import {
   startUp,
+  clearCache,
   createColumn,
   deleteTable,
   createView,
@@ -16,6 +17,8 @@ import {
   deleteViewColumn,
   reorderViewColumnToRight,
   reorderViewColumnToLeft,
+  getViewColumnFromColumn,
+  getViewColumnName,
 } from "./061_view_column_validate.js";
 import {
   getLocalIp,
@@ -51,30 +54,6 @@ import {
 import {
   getPrimaryKey,
 } from "./121_primary_key_validate.js";
-import {
-  clearCache,
-  createPage,
-  updatePageName,
-  getPageInfo,
-  listViewsFromTableId,
-  getTableFromView,
-  getBreadcrumbs,
-  cutPage,
-  copyPage,
-  pastePage,
-  getCuttingPage,
-  getCopyingPage,
-  listAllPages,
-  listStaticChildren,
-  listChildrenView,
-  getParentPage,
-  listChildrenPage,
-  _movePage,
-  _generatePageSortNumber,
-  _copyPage,
-  getViewInfo,
-  isExistView,
-} from "./064_page_and_view_validate.js";
 import {
   listDataTypes,
 } from "./118_data_type_validate.js";
@@ -183,6 +162,29 @@ import {
 import {
   generateSQL,
 } from "./067_generate_sql_validate.js";
+import {
+  createPage,
+  updatePageName,
+  getPageInfo,
+  listViewsFromTableId,
+  getTableFromView,
+  getBreadcrumbs,
+  cutPage,
+  copyPage,
+  pastePage,
+  getCuttingPage,
+  getCopyingPage,
+  listAllPages,
+  listStaticChildren,
+  listChildrenView,
+  getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
+  _copyPage,
+  getViewInfo,
+  isExistView,
+} from "./064_page_and_view_validate.js";
 
 
 //【グローバル変数】意図的にバグを混入させるか？（ミューテーション解析）
@@ -288,67 +290,26 @@ export async function generateSQL_core( viewId, queryParameters, isExcel ){
             ":viewId": viewId,
         },
     );
-    let viewColumns = await listViewColumns(viewId);
-    for( let i=0; i<viewColumns.length; i++ ){
-        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
-        const columnPath = viewColumns[i].columnPath;
-        viewColumns[i].pathLength = await getPathLength(columnPath);
-        viewColumns[i].columnId = await pathToColumnId(columnPath);
-    }
-    viewColumns = viewColumns.sort((a,b)=>{
-        if( a.pathLength > b.pathLength ){
-            if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
-            return 1;
-        }
-        else{
-            if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
-            return -1;
-        }
-    });
-    const buf = {
-        //  "c78": [ "d45", "d99" ],
-        //  "c6": [ "d12" ],
-    };
-    for( const { viewColumnId, columnId } of viewColumns ){
-        if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-        if( !buf[columnId] ){
-            if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-            buf[columnId] = [];
-        }
-        buf[columnId].push(viewColumnId);
-    }
+    const parameters2 = await _getExtractions_core( viewId, queryParameters );
     const parameters = {};
-    for( const key in queryParameters ){
-        if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
-        // クエリパラメータ―のキーは「p4c8」などの形式。
-        if (!/^p(\d+)c(\d+)$/.test(key)) continue;
-        const match = key.match(/\d+/g);
-        if (!match || match.length!==2)continue;
-        const pageNumber = parseInt(match[0], 10);
-        const columnNumber = parseInt(match[1], 10);
-        const columnId = "c" + columnNumber;
-        if( !buf[columnId] ) continue;
-        if( !Array.isArray(buf[columnId]) ) continue;
-        const viewColumnId = buf[columnId][0];
-        buf[columnId].shift();  // 先頭を削除
-        const inputText = queryParameters[key];
-        const value = await formatField( inputText, columnId, false );
-        parameters[":"+viewColumnId] = value;
+    for( const viewColumnId in parameters2 ){
+        if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
+        parameters[":"+viewColumnId] = parameters2[viewColumnId];
         conditionInfoList.push({
             "viewColumnId" : viewColumnId,
             "conditionalExpression": "=",
         });
     }
     for( const { viewColumnId, conditionalValue, viewColumnType, columnPath } of conditionInfoList ){
-        if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 5) throw "MUTATION5";  // 意図的にバグを混入させる（ミューテーション解析）
         if( viewColumnType==="RAW" ){
-            if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
             const columnId = await pathToColumnId(columnPath);
             const value = await formatField( conditionalValue, columnId, false );
             parameters[":"+viewColumnId] = value;
         }
         else{
-            if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
             // MAX や SUM などの集合関数の場合
             if(isNaN(conditionalValue))continue;
             parameters[":"+viewColumnId] = Number(conditionalValue);
@@ -366,6 +327,7 @@ export async function generateSQL_core( viewId, queryParameters, isExcel ){
             ":viewId": viewId,
         },
     );
+    const viewColumns = await listViewColumns(viewId);
     const { normalSQL, countSQL } = await generateSQL(
         tableId,
         viewColumns,
@@ -375,11 +337,11 @@ export async function generateSQL_core( viewId, queryParameters, isExcel ){
     );
     let pageNumber = Number(queryParameters[`page_view${viewId}_`] ?? 1);
     if(isNaN(pageNumber)){
-        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
         pageNumber = 1;
     }
     if(pageNumber<=0){
-        if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
         pageNumber = 1;
     }
     const normalParameters = {
@@ -394,10 +356,10 @@ export async function generateSQL_core( viewId, queryParameters, isExcel ){
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
-  if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
     const views = await listViewsFromTableId( tableId );
     for( const viewId of views ){
-        if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
         // 外部キー制約があるため、消す順番に注意！
         await runSqlWriteOnly(
             `DELETE FROM sort_orders
@@ -425,4 +387,80 @@ export async function deleteTable_core( tableId ){
         );
     }
     return await deleteTable( tableId );    // 下層の関数を呼び出す
+}
+
+
+
+
+
+// 抽出条件を日本語で取得
+export async function getExtractionsAsJP_core( viewId, queryParameters ){
+  if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
+    const extractions = [];
+    const parameters2 = await _getExtractions_core( viewId, queryParameters );
+    for( const viewColumnId in parameters2 ){
+        if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
+        const value = parameters2[viewColumnId];
+        const viewColumnName = await getViewColumnName( viewId, viewColumnId );
+        extractions.push({
+            "viewColumnId" : viewColumnId,
+            "text": `${viewColumnName}が${value}と等しい`,
+        });
+    }
+    return extractions;
+}
+
+
+
+// 【サブ】抽出条件を取得
+export async function _getExtractions_core( viewId, queryParameters ){
+  if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
+    let viewColumns = await listViewColumns(viewId);
+    for( let i=0; i<viewColumns.length; i++ ){
+        if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
+        const columnPath = viewColumns[i].columnPath;
+        viewColumns[i].pathLength = await getPathLength(columnPath);
+        viewColumns[i].columnId = await pathToColumnId(columnPath);
+    }
+    viewColumns = viewColumns.sort((a,b)=>{
+        if( a.pathLength > b.pathLength ){
+            if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+            return 1;
+        }
+        else{
+            if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+            return -1;
+        }
+    });
+    const buf = {
+        //  "c78": [ "d45", "d99" ],
+        //  "c6": [ "d12" ],
+    };
+    for( const { viewColumnId, columnId } of viewColumns ){
+        if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+        if( !buf[columnId] ){
+            if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+            buf[columnId] = [];
+        }
+        buf[columnId].push(viewColumnId);
+    }
+    const parameters = {};
+    for( const key in queryParameters ){
+        if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+        // クエリパラメータ―のキーは「p4c8」などの形式。
+        if (!/^p(\d+)c(\d+)$/.test(key)) continue;
+        const match = key.match(/\d+/g);
+        if (!match || match.length!==2)continue;
+        const pageNumber = parseInt(match[0], 10);
+        const columnNumber = parseInt(match[1], 10);
+        const columnId = "c" + columnNumber;
+        if( !buf[columnId] ) continue;
+        if( !Array.isArray(buf[columnId]) ) continue;
+        const viewColumnId = buf[columnId][0];
+        const inputText = queryParameters[key];
+        const value = await formatField( inputText, columnId, false );
+        buf[columnId].shift();  // 先頭を削除
+        parameters[viewColumnId] = value;
+    }
+    return parameters;
 }

@@ -35,29 +35,6 @@ import {
 } from "./121_primary_key_validate.js";
 import {
   clearCache,
-  createPage,
-  updatePageName,
-  getPageInfo,
-  listViewsFromTableId,
-  getTableFromView,
-  getBreadcrumbs,
-  cutPage,
-  copyPage,
-  pastePage,
-  getCuttingPage,
-  getCopyingPage,
-  listAllPages,
-  listStaticChildren,
-  listChildrenView,
-  getParentPage,
-  listChildrenPage,
-  _movePage,
-  _generatePageSortNumber,
-  _copyPage,
-  getViewInfo,
-  isExistView,
-} from "./064_page_and_view_validate.js";
-import {
   createColumn,
   createView,
   deletePage,
@@ -70,6 +47,8 @@ import {
   deleteViewColumn,
   reorderViewColumnToRight,
   reorderViewColumnToLeft,
+  getViewColumnFromColumn,
+  getViewColumnName,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -95,6 +74,8 @@ import {
   deleteTable,
   generateSQL,
   deleteView,
+  getExtractionsAsJP,
+  _getExtractions,
 } from "./058_extract_and_sort_validate.js";
 import {
   deleteRecords,
@@ -186,6 +167,29 @@ import {
 import {
   generateSQLwithDuplication,
 } from "./070_generate_sql1_validate.js";
+import {
+  createPage,
+  updatePageName,
+  getPageInfo,
+  listViewsFromTableId,
+  getTableFromView,
+  getBreadcrumbs,
+  cutPage,
+  copyPage,
+  pastePage,
+  getCuttingPage,
+  getCopyingPage,
+  listAllPages,
+  listStaticChildren,
+  listChildrenView,
+  getParentPage,
+  listChildrenPage,
+  _movePage,
+  _generatePageSortNumber,
+  _copyPage,
+  getViewInfo,
+  isExistView,
+} from "./064_page_and_view_validate.js";
 import {
   getPageDataForGUI,
   getPageDataForExcel,
@@ -347,9 +351,10 @@ export async function regenerateAPI_read_core( pageId ){
         }
     }
     //
-    for( const { viewId, tableId, onePageMaxSize, viewType, childPageId } of views ){
+    for( const { viewId, name, tableId, onePageMaxSize, viewType, childPageId } of views ){
         if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
         const viewColumns = await listViewColumns( viewId );
+        const tableName = await getTableName(tableId);
         const children = {};
         for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
             if(bugMode === 9) throw "MUTATION9";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -377,24 +382,59 @@ export async function regenerateAPI_read_core( pageId ){
             };
         }
         response["view" + viewId + "_"] = {
-            "title": "レコードの一覧",
+            "title": `${name}(view${viewId})`,
             "isArray": true,
             "onePageMaxSize": onePageMaxSize,
             "children": {
                 ...children,
                 "id": {
                     "dataType": "INTEGER",
-                    "description": "レコードID",
+                    "description": `テーブル「${tableName}」のレコードのID`,
                     "example": 2,
                     "isRequired": true,
                 }
             }
         };
+        // レコードの件数
         response["view" + viewId + "__total"] = {
             "dataType": "INTEGER",
-            "description": `view${viewId}の件数`,
+            "description": `${name}(view${viewId})の件数`,
             "example": 2000,
             "isRequired": true,
+        };
+        // 抽出条件
+        response["extraction" + viewId + "_"] = {
+            "title": `${name}(view${viewId})を集計する際の抽出条件。`,
+            "isArray": true,
+            "onePageMaxSize": 10,
+            "children": {
+                "key": {
+                    "dataType": "TEXT",
+                    "description": `抽出条件ごとに固有の識別子。"condition_id" または "view_column_id" が返却されます。`,
+                    "example": "p3c6",
+                    "isRequired": true,
+                },
+                "text": {
+                    "dataType": "TEXT",
+                    "description": `抽出条件を分かりやすく表現した文字列。`,
+                    "example": "身長が230より大きい",
+                    "isRequired": true,
+                }
+            }
+        };
+        // 抽出条件の個数
+        response["extraction" + viewId + "__total"] = {
+            "dataType": "INTEGER",
+            "description": `${name}(view${viewId})を集計する際の、抽出条件の個数。`,
+            "example": 2,
+            "isRequired": true,
+        };
+        // 抽出条件の予測変換
+        response[`newExtractionTarget${viewId}_option`] = {
+            "dataType": "TEXT",
+            "description": `${name}(view${viewId})の列名（ビューカラム名）の一覧。`,
+            "example": "",
+            "isRequired": false,
         };
     }
     return {
