@@ -273,6 +273,21 @@ export async function generateSQL_core( viewId, queryParameters, isExcel ){
     if( !tableId ){
         throw `指定されたページには、動的リストが登録されていません。\nviewId = ${viewId}`;
     }
+    const conditionInfoList = await runSqlReadOnly(
+        `SELECT
+            "d" || conditions.view_column_id AS viewColumnId,
+            conditions.conditional_expression AS conditionalExpression,
+            conditions.conditional_value AS conditionalValue,
+            view_columns.view_column_type AS viewColumnType,
+            view_columns.column_path AS columnPath
+        FROM conditions
+        INNER JOIN view_columns
+            ON conditions.view_column_id = view_columns.view_column_id
+        WHERE view_columns.view_id = :viewId;`,
+        {
+            ":viewId": viewId,
+        },
+    );
     let viewColumns = await listViewColumns(viewId);
     for( let i=0; i<viewColumns.length; i++ ){
         if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -318,40 +333,25 @@ export async function generateSQL_core( viewId, queryParameters, isExcel ){
         buf[columnId].shift();  // 先頭を削除
         const inputText = queryParameters[key];
         const value = await formatField( inputText, columnId, false );
-        parameters[viewColumnId] = value;
+        parameters[":"+viewColumnId] = value;
         conditionInfoList.push({
             "viewColumnId" : viewColumnId,
             "conditionalExpression": "=",
         });
     }
-    const conditionInfoList = await runSqlReadOnly(
-        `SELECT
-            "d" || conditions.view_column_id AS viewColumnId,
-            conditions.conditional_expression AS conditionalExpression,
-            conditions.conditional_value AS conditionalValue,
-            view_columns.view_column_type AS viewColumnType,
-            view_columns.column_path AS columnPath
-        FROM conditions
-        INNER JOIN view_columns
-            ON conditions.view_column_id = view_columns.view_column_id
-        WHERE view_columns.view_id = :viewId;`,
-        {
-            ":viewId": viewId,
-        },
-    );
     for( const { viewColumnId, conditionalValue, viewColumnType, columnPath } of conditionInfoList ){
         if(bugMode === 10) throw "MUTATION10";  // 意図的にバグを混入させる（ミューテーション解析）
         if( viewColumnType==="RAW" ){
             if(bugMode === 11) throw "MUTATION11";  // 意図的にバグを混入させる（ミューテーション解析）
             const columnId = await pathToColumnId(columnPath);
             const value = await formatField( conditionalValue, columnId, false );
-            parameters[viewColumnId] = value;
+            parameters[":"+viewColumnId] = value;
         }
         else{
             if(bugMode === 12) throw "MUTATION12";  // 意図的にバグを混入させる（ミューテーション解析）
             // MAX や SUM などの集合関数の場合
             if(isNaN(conditionalValue))continue;
-            parameters[viewColumnId] = Number(conditionalValue);
+            parameters[":"+viewColumnId] = Number(conditionalValue);
         }
     }
     const sortOrders = await runSqlReadOnly(
@@ -383,6 +383,7 @@ export async function generateSQL_core( viewId, queryParameters, isExcel ){
         pageNumber = 1;
     }
     const normalParameters = {
+        ...parameters,
         ":offset": onePageMaxSize * (pageNumber - 1),
     };
     const countParameters = parameters;

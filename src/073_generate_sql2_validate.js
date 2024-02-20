@@ -182,14 +182,6 @@ export async function generateSQLwithoutDuplication( tableId, selectData, joinDa
         throw new Error(`whereData[${i}].columnNameが文字列ではありません。\nレイヤー : generate_sql2\n関数 : generateSQLwithoutDuplication`);
       }
     }
-    if( typeof whereData[i].viewColumnName !== "string" ){
-      if( !whereData[i].viewColumnName ){
-        throw new Error(`whereData[${i}].viewColumnNameがNULLです。\nレイヤー : generate_sql2\n関数 : generateSQLwithoutDuplication`);
-      }
-      else{
-        throw new Error(`whereData[${i}].viewColumnNameが文字列ではありません。\nレイヤー : generate_sql2\n関数 : generateSQLwithoutDuplication`);
-      }
-    }
   }
   if( !Array.isArray(orderData) ){
     if( !orderData ){

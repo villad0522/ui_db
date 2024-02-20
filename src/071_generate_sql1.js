@@ -210,7 +210,6 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
     }
     sql += `SELECT ${selectList.join(",\n  ")}\n`;
   }
-  sql += `\n`;
   //===================================================================================
   sql += `FROM ${tableId} AS main\n`;
   for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnName } of joinData ){
@@ -218,10 +217,9 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
     sql += `  LEFT OUTER JOIN ${toTableName} AS ${toJoinId}\n`;
     sql += `    ON ${fromJoinId}.${fromColumnName} = ${toJoinId}.${toColumnName}\n`;
   }
-  sql += `\n`;
   //===================================================================================
   const whereList = [];
-  for( const { viewColumnId, conditionalExpression, joinId, columnName, conditionValue } of whereData ){
+  for( const { viewColumnId, conditionalExpression, joinId, columnName } of whereData ){
     if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
     switch(conditionalExpression.trim()){
       case "=":
@@ -251,16 +249,13 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
       default:
         throw `サポートされていない条件演算子が指定されました。conditionalExpression = ${conditionalExpression}`;
     }
-    parameterCount++;
   }
   if( whereList.length > 0 ){
     if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
     sql += `WHERE ${whereList.join("\n  AND ")}\n`;
-    sql += `\n`;
   }
   //===================================================================================
   sql += `GROUP BY main.${primaryKey}\n`;
-  sql += `\n`;
   //===================================================================================
   const orderByList = [];
   for( const { joinId, columnName, isAscending } of orderData ){
@@ -281,7 +276,6 @@ export async function generateSQLwithDuplication_core( tableId, selectData, join
   if( orderByList.length > 0 ){
     if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
     sql += `ORDER BY ${orderByList.join(",\n  ")}\n`;
-    sql += `\n`;
   }
   //===================================================================================
   if(isCount){

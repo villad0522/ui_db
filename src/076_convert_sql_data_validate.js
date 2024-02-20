@@ -608,14 +608,6 @@ export async function getWhereData( viewColumns, conditionInfoList, joinIdMap ){
         throw new Error(`result[${i}].columnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
       }
     }
-    if( typeof result[i].viewColumnName !== "string" ){
-      if( !result[i].viewColumnName ){
-        throw new Error(`result[${i}].viewColumnNameがNULLです。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
-      }
-      else{
-        throw new Error(`result[${i}].viewColumnNameが文字列ではありません。\nレイヤー : convert_sql_data\n関数 : getWhereData`);
-      }
-    }
   }
   //
   //--------------------------------------------------------------------------

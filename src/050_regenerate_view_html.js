@@ -213,7 +213,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
     const viewColumns = await listViewColumns( viewId );
     let mainHtmlText = "";
     mainHtmlText += `
-        <div class="card">
+        <div class="card" style="background: none; ">
             <div class="card-body row" oninput="myFetch('./auto_correct_view${viewId}/form?is_auto_fill=false')">`;
     //
     for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
@@ -454,7 +454,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                     <input name="view${viewId}__pageLast" type="text" style="display: none;">
                 </ul>
                 <div style="text-align: right; max-height: 45px;">
-                    <button data-bs-toggle="collapse" data-bs-target="#extract_collapse_${viewId}" class="btn btn-outline-primary" type="button">
+                    <button data-bs-toggle="collapse" data-bs-target="#extract_collapse_${viewId}" class="btn btn-outline-secondary" type="button">
                         <i class="bi bi-funnel"></i>
                         抽出
                         <span class="badge text-bg-secondary">4</span>
@@ -481,7 +481,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                                 </select>
                                 <button type="button" class="btn btn-primary">
                                     <i class="bi bi-plus"></i>
-                                    追加
+                                    条件追加
                                 </button>
                             </div>
                         </div>

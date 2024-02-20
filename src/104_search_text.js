@@ -425,7 +425,7 @@ export async function autoCorrect_core( tableId, columnId, inputText, conditions
     sql += `\n        AND ${tableId}.${columnId} = :${columnId}`;
     statements[`:${columnId}`] = conditions[columnId];
   }
-  sql += `\n      GROUP BY original_text;`;
+  sql += `\n      GROUP BY original_text\n      ORDER BY MAX(${tableId}.sort_number) DESC;`;
   const matrix = await runSqlReadOnly( sql, {
     ...statements,
     ":tableId": tableId,

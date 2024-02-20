@@ -207,7 +207,6 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
     }
     sql += `SELECT ${selectList.join(",\n  ")}\n`;
   }
-  sql += `\n`;
   //===================================================================================
   sql += `FROM ${tableId}\n`;
   for( const { fromJoinId, fromColumnName, toJoinId, toTableName, toColumnName } of joinData ){
@@ -215,10 +214,9 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
     sql += `  LEFT OUTER JOIN ${toTableName}\n`;
     sql += `    ON ${fromColumnName} = ${toColumnName}\n`;
   }
-  sql += `\n`;
   //===================================================================================
   const whereList = [];
-  for( const { viewColumnId, conditionalExpression, joinId, columnName, conditionValue } of whereData ){
+  for( const { viewColumnId, conditionalExpression, columnName } of whereData ){
     if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
     switch(conditionalExpression.trim()){
       case "=":
@@ -248,16 +246,13 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
       default:
         throw `サポートされていない条件演算子が指定されました。conditionalExpression = ${conditionalExpression}`;
     }
-    parameterCount++;
   }
   if( whereList.length > 0 ){
     if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
     sql += `WHERE ${whereList.join("\n  AND ")}\n`;
-    sql += `\n`;
   }
   //===================================================================================
   sql += `GROUP BY ${primaryKey}\n`;
-  sql += `\n`;
   //===================================================================================
   const orderByList = [];
   for( const { joinId, columnName, isAscending } of orderData ){
@@ -278,7 +273,6 @@ export async function generateSQLwithoutDuplication_core( tableId, selectData, j
   if( orderByList.length > 0 ){
     if(bugMode === 25) throw "MUTATION25";  // 意図的にバグを混入させる（ミューテーション解析）
     sql += `ORDER BY ${orderByList.join(",\n  ")}\n`;
-    sql += `\n`;
   }
   //===================================================================================
   if(isCount){

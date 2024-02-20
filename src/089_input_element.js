@@ -418,7 +418,7 @@ export async function _autoFill_core( params ){
     if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     const columnId = cacheData1[viewColumnId];
     // 自動入力を行う
-    results[ viewColumnId ] = records[0][columnId];  // 結果
+    // results[ viewColumnId ] = records[0][columnId];  // 結果
   }
   return {
     inputTextsAndAutocorrection: results,
@@ -516,6 +516,13 @@ export async function _listPredictions_core( params ){
     const records = await _listRecords_core( tableId, newConditions, 10 );
     predictions = records.map( recordData => recordData[columnId] );
   }
+  predictions = Array.from( new Set(predictions) );
+  //
+  // 配列の長さが20を超える場合に制限する
+  if (predictions.length >= 19) {
+    if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+    predictions = predictions.slice(0, 19);
+  }
   return predictions;
 }
 
@@ -523,22 +530,23 @@ export async function _listPredictions_core( params ){
 
 // 【サブ関数】レコードを取得
 export async function _listRecords_core( tableId, conditions, limitSize ){
-  if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
   let sql = `
     SELECT *
       FROM ${tableId}`;
   const whereTexts = [];
   const statements = {};
   for( const columnId in conditions ){
-    if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
     whereTexts.push( `${columnId} = :${columnId}`);
     statements[`:${columnId}`] = conditions[columnId];
   }
   if(whereTexts.length>0){
-    if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
     sql += `\n        WHERE ` + whereTexts.join(`\n        AND `);
   }
   sql += `
+      ORDER BY sort_number DESC
       LIMIT ${limitSize};`;
   const result = await runSqlReadOnly( sql, statements );
   return result;
@@ -548,7 +556,7 @@ export async function _listRecords_core( tableId, conditions, limitSize ){
 
 // インメモリキャッシュを削除する
 export async function clearCache_core(  ){
-  if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
     await _reload();    // メモリに再読み込み
     return await clearCache();   // 下層の関数を呼び出す
 }
@@ -556,7 +564,7 @@ export async function clearCache_core(  ){
 
 // 入力グループを作成
 export async function createInputGroup_core( inputGroupId, viewId, tableId, nextGroupId, nextColumnId, processingOrder ){
-  if(bugMode === 34) throw "MUTATION34";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
   const inputGroups1 = await runSqlReadOnly(
     `SELECT input_group_id AS inputGroupId
       FROM input_group
@@ -613,7 +621,7 @@ export async function createInputGroup_core( inputGroupId, viewId, tableId, next
 
 // 入力要素を作成
 export async function createInputElement_core( viewColumnId, inputGroupId, columnId ){
-  if(bugMode === 35) throw "MUTATION35";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
   const inputGroups = await runSqlReadOnly(
     `SELECT
         table_id AS tableId
@@ -637,19 +645,19 @@ export async function createInputElement_core( viewColumnId, inputGroupId, colum
     case "POINTER":
       throw "POINTER型の入力要素を作ることはできません";
     case "INTEGER":
-      if(bugMode === 36) throw "MUTATION36";  // 意図的にバグを混入させる（ミューテーション解析）
-      inputType = "TEXTBOX_NUMBER";
-      break;
-    case "REAL":
       if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
       inputType = "TEXTBOX_NUMBER";
       break;
-    case "TEXT":
+    case "REAL":
       if(bugMode === 38) throw "MUTATION38";  // 意図的にバグを混入させる（ミューテーション解析）
+      inputType = "TEXTBOX_NUMBER";
+      break;
+    case "TEXT":
+      if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
       inputType = "TEXTBOX";
       break;
     case "BOOL":
-      if(bugMode === 39) throw "MUTATION39";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
       inputType = "CHECKBOX";
       break;
     default:
@@ -681,7 +689,7 @@ export async function createInputElement_core( viewColumnId, inputGroupId, colum
 
 // ビューを削除
 export async function deleteViewInput_core( viewId ){
-  if(bugMode === 40) throw "MUTATION40";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
   const inputGroups = await runSqlReadOnly(
     `SELECT *
       FROM input_group
@@ -724,22 +732,22 @@ export async function deleteViewInput_core( viewId ){
 
 // 入力方式を変更
 export async function changeInputType_core( viewColumnId, inputType ){
-  if(bugMode === 41) throw "MUTATION41";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
   switch( inputType ){
     case "TEXTBOX":
-      if(bugMode === 42) throw "MUTATION42";  // 意図的にバグを混入させる（ミューテーション解析）
-      break;
-    case "TEXTAREA":
       if(bugMode === 43) throw "MUTATION43";  // 意図的にバグを混入させる（ミューテーション解析）
       break;
-    case "SELECT":
+    case "TEXTAREA":
       if(bugMode === 44) throw "MUTATION44";  // 意図的にバグを混入させる（ミューテーション解析）
       break;
-    case "NUMBER":
+    case "SELECT":
       if(bugMode === 45) throw "MUTATION45";  // 意図的にバグを混入させる（ミューテーション解析）
       break;
-    case "DATE":
+    case "NUMBER":
       if(bugMode === 46) throw "MUTATION46";  // 意図的にバグを混入させる（ミューテーション解析）
+      break;
+    case "DATE":
+      if(bugMode === 47) throw "MUTATION47";  // 意図的にバグを混入させる（ミューテーション解析）
       break;
     default:
       throw `入力方式を変更しようとしましたが、サポートされていない入力方式が指定されました。\ninputType = ${inputType}`;
@@ -761,27 +769,27 @@ export async function changeInputType_core( viewColumnId, inputType ){
 
 // 【サブ関数】マスターデータの入力欄を埋める
 export async function _fillMasterData_core( viewId, childGroupId, childRecordData ){
-  if(bugMode === 47) throw "MUTATION47";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 48) throw "MUTATION48";  // 意図的にバグを混入させる（ミューテーション解析）
   return {};
 }
 
 // 入力方式を取得
 export async function getInputType_core( viewColumnId ){
-  if(bugMode === 48) throw "MUTATION48";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 49) throw "MUTATION49";  // 意図的にバグを混入させる（ミューテーション解析）
   return cacheData3[viewColumnId];
 }
 
 
 // レコードを上書き
 export async function updateRecordsFromView_core( viewId, inputTexts ){
-  if(bugMode === 49) throw "MUTATION49";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 50) throw "MUTATION50";  // 意図的にバグを混入させる（ミューテーション解析）
   const recordDatas = [];
   let tableId2;
   let isSuccess = true;
   const outputTexts = [];
   // 行ごとに繰り返す
   for( let i=0; i<inputTexts.length; i++ ){
-    if(bugMode === 50) throw "MUTATION50";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 51) throw "MUTATION51";  // 意図的にバグを混入させる（ミューテーション解析）
     outputTexts[i] = {};
     if(!inputTexts[i]["id"]){
       throw "上書き対象のプライマリキー「id」が指定されていません";
@@ -793,7 +801,7 @@ export async function updateRecordsFromView_core( viewId, inputTexts ){
       outputTexts: messages
     } = await _convertToRecord_core( viewId, inputTexts[i] );
     if( flag===false ){
-      if(bugMode === 51) throw "MUTATION51";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 52) throw "MUTATION52";  // 意図的にバグを混入させる（ミューテーション解析）
       outputTexts[i] = messages;
       isSuccess = false;
       continue;
@@ -805,7 +813,7 @@ export async function updateRecordsFromView_core( viewId, inputTexts ){
     tableId2 = tableId;
   }
   if(isSuccess===true){
-    if(bugMode === 52) throw "MUTATION52";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
     if( recordDatas.length===0 ){
       throw "上書きすべきレコードが０件です。";
     }
@@ -816,7 +824,7 @@ export async function updateRecordsFromView_core( viewId, inputTexts ){
     };
   }
   else{
-    if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 54) throw "MUTATION54";  // 意図的にバグを混入させる（ミューテーション解析）
     return {
       "isSuccess": false,
       "outputTexts": outputTexts,
@@ -828,7 +836,7 @@ export async function updateRecordsFromView_core( viewId, inputTexts ){
 
 // レコードを追加
 export async function createRecordFromView_core( viewId, inputTexts ){
-  if(bugMode === 54) throw "MUTATION54";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 55) throw "MUTATION55";  // 意図的にバグを混入させる（ミューテーション解析）
   const {
     isSuccess,
     tableId,
@@ -836,7 +844,7 @@ export async function createRecordFromView_core( viewId, inputTexts ){
     outputTexts
   } = await _convertToRecord_core( viewId, inputTexts );
   if(isSuccess===true){
-    if(bugMode === 55) throw "MUTATION55";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 56) throw "MUTATION56";  // 意図的にバグを混入させる（ミューテーション解析）
     return {
       ...await createRecord( tableId, recordData ),
       "isSuccess": true,
@@ -844,7 +852,7 @@ export async function createRecordFromView_core( viewId, inputTexts ){
     };
   }
   else{
-    if(bugMode === 56) throw "MUTATION56";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 57) throw "MUTATION57";  // 意図的にバグを混入させる（ミューテーション解析）
     return {
       "isSuccess": false,
       "outputTexts": outputTexts,
@@ -857,7 +865,7 @@ export async function createRecordFromView_core( viewId, inputTexts ){
 
 // 【サブ関数】入力データをレコードに変換
 export async function _convertToRecord_core( viewId, inputTexts ){
-  if(bugMode === 57) throw "MUTATION57";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 58) throw "MUTATION58";  // 意図的にバグを混入させる（ミューテーション解析）
   const conditions = {
     // 代入例
     // inputGroupId: {
@@ -879,7 +887,7 @@ export async function _convertToRecord_core( viewId, inputTexts ){
   //
   // 入力グループごとに繰り返す（最後の一つ手前まで）
   for( let j=0; j<inputGroups.length-1; j++ ){
-    if(bugMode === 58) throw "MUTATION58";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 59) throw "MUTATION59";  // 意図的にバグを混入させる（ミューテーション解析）
     const {
       inputGroupId,
       viewColumnIdList,
@@ -889,7 +897,7 @@ export async function _convertToRecord_core( viewId, inputTexts ){
     } = inputGroups[j];
     //
     if( !conditions[inputGroupId] ){
-      if(bugMode === 59) throw "MUTATION59";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 60) throw "MUTATION60";  // 意図的にバグを混入させる（ミューテーション解析）
       conditions[inputGroupId] = {};
     }
     //
@@ -901,10 +909,10 @@ export async function _convertToRecord_core( viewId, inputTexts ){
     //
     const records = await _listRecords_core( tableId, conditionThisGroup, 1 );
     if( records.length === 0 ){
-      if(bugMode === 60) throw "MUTATION60";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 61) throw "MUTATION61";  // 意図的にバグを混入させる（ミューテーション解析）
       // 合致するデータが見つからない場合
       for(let viewColumnId of viewColumnIdList){
-        if(bugMode === 61) throw "MUTATION61";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 62) throw "MUTATION62";  // 意図的にバグを混入させる（ミューテーション解析）
         outputTexts[viewColumnId+"_message"] = "該当なし";
       }
       isSuccess = false;
@@ -917,7 +925,7 @@ export async function _convertToRecord_core( viewId, inputTexts ){
     // 子に情報を伝える
     if(!nextGroupId || !nextColumnId) continue; 
     if( !conditions[nextGroupId] ){
-      if(bugMode === 62) throw "MUTATION62";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 63) throw "MUTATION63";  // 意図的にバグを混入させる（ミューテーション解析）
       conditions[nextGroupId] = {};
     }
     conditions[nextGroupId][nextColumnId] = recordId;
@@ -928,7 +936,7 @@ export async function _convertToRecord_core( viewId, inputTexts ){
     tableId,
   } = inputGroups[inputGroups.length-1];
   if( !conditions[inputGroupId] ){
-    if(bugMode === 63) throw "MUTATION63";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 64) throw "MUTATION64";  // 意図的にバグを混入させる（ミューテーション解析）
     conditions[inputGroupId] = {};
   }
   //
@@ -937,7 +945,7 @@ export async function _convertToRecord_core( viewId, inputTexts ){
   //
   // 入力項目ごとに繰り返す（列ごとに繰り返す）
   for(let viewColumnId of viewColumnIdList){
-    if(bugMode === 64) throw "MUTATION64";  // 意図的にバグを混入させる（ミューテーション解析）
+    if(bugMode === 65) throw "MUTATION65";  // 意図的にバグを混入させる（ミューテーション解析）
     const columnId = cacheData1[viewColumnId];
     if( tableId !== await getTableId( columnId ) ) continue;
     const inputText = inputTexts[viewColumnId];
@@ -957,7 +965,7 @@ export async function _convertToRecord_core( viewId, inputTexts ){
     // フィールドを検証する
     const { isOK, message } = await checkField( columnId, value );
     if( isOK===false ){
-      if(bugMode === 65) throw "MUTATION65";  // 意図的にバグを混入させる（ミューテーション解析）
+      if(bugMode === 66) throw "MUTATION66";  // 意図的にバグを混入させる（ミューテーション解析）
       outputTexts[viewColumnId+"_message"] = message;
       isSuccess = false;
       continue;
@@ -973,7 +981,7 @@ export async function _convertToRecord_core( viewId, inputTexts ){
 
 // 不可逆的にテーブルを削除
 export async function deleteTable_core( tableId ){
-  if(bugMode === 66) throw "MUTATION66";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 67) throw "MUTATION67";  // 意図的にバグを混入させる（ミューテーション解析）
     await runSqlWriteOnly(
       `DELETE FROM input_elements
         WHERE input_group_id IN (

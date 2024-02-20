@@ -365,7 +365,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
 function _validateQueryParameters({ endpointPath, endpointInfo, queryParameters }) {
     // クエリパラメータ―をチェックする（可能なら変換も行う）
     // queryParameters を queryParameters2 に変換する
-    const queryParameters2 = {};
+    const queryParameters2 = structuredClone(queryParameters);
     for (const parentKey in endpointInfo.queryParameters) {
         const parentInfo = endpointInfo.queryParameters[parentKey];
         let parentValue = queryParameters[parentKey];
