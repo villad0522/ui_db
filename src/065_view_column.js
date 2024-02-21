@@ -691,13 +691,13 @@ export async function deleteViewColumn_core( viewId, viewColumnId ){
         `DELETE FROM view_columns
             WHERE view_column_id = :viewColumnId;`,
         {
-            ":viewColumnId": viewColumnId,
+            ":viewColumnId": viewColumnId.replace("d",""),
         },
     );
-    // 入力要素と入力グループを全て消し去る
-    await deleteViewInput(viewId);
     buf[viewId] = undefined;
     buf2[viewId] = undefined;
+    // 入力要素と入力グループを再生成する
+    await regenerateInputElements_core(viewId);
     return "ビューカラムを削除しました";
 }
 
@@ -813,7 +813,7 @@ export async function getViewColumnName_core( viewId, viewColumnId ){
         "excelColumnText": _convertToExcelColumn(excelStartColumn + offset),
         "columnPath": viewColumns[0].columnPath
     };
-    return result;
+    return result.viewColumnName;
 }
 
 // 名前からビューカラムの情報を取得

@@ -288,6 +288,7 @@ export async function regenerateHTML_core( pageId ){
                     <button ${ parentPageId ? "" : "disabled" } onclick="jumpWithQuery('/custom/${parentPageId}/index.html')" type="button" class="btn btn-light me-2">
                         戻る
                     </button>
+                    <!--
                     <div class="d-flex" role="search" style="width: 270px;">
                         <div class="input-group">
                             <span class="input-group-text" style="background: none; color: #fff;">
@@ -296,6 +297,7 @@ export async function regenerateHTML_core( pageId ){
                             <input class="form-control search_box" type="search" placeholder="検索" aria-label="Search">
                         </div>
                     </div>
+                    -->
                     <div class="form-check form-switch d-none d-md-inline">
                         <input onchange="handleEditSwitch(event,${pageId})" class="form-check-input" type="checkbox" role="switch" id="edit_mode_switch">
                         <label class="form-check-label" for="edit_mode_switch" style="color:#fff">
@@ -384,7 +386,7 @@ export async function regenerateHTML_core( pageId ){
         switch( viewType ){
             case "BUTTON":
                 if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
-                mainHtmlText += await generateViewHTML_button( viewId, tableId, onePageMaxSize, childPageId, i );
+                mainHtmlText += await generateViewHTML_button( pageId, viewId, tableId, onePageMaxSize, childPageId, i );
                 break;
             case "TABLE":
                 if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）

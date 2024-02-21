@@ -542,8 +542,138 @@ export async function generateViewHTML_card_core( viewId, tableId, onePageMaxSiz
     return "";
 }
 
+
+
 // ビューのHTMLを生成（ボタン）
-export async function generateViewHTML_button_core( viewId, tableId, onePageMaxSize, childPageId, number ){
+export async function generateViewHTML_button_core( pageId, viewId, tableId, onePageMaxSize, childPageId, viewIndex ){
   if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
-    return "";
+    const viewColumns = await listViewColumns( viewId );
+    let titleViewColumnId = null;
+    let titleColumnId = null;
+    let numberViewColumnId = null;
+    for( const { viewColumnId, viewColumnType, columnPath, viewColumnName } of viewColumns ){
+        if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
+        if( viewColumnType!=="RAW" ){
+            if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
+            numberViewColumnId = numberViewColumnId ?? viewColumnId;
+            continue;
+        }
+        const columnId = await pathToColumnId(columnPath);
+        const dataType = await getDataType( columnId );
+        switch (dataType) {
+            case "POINTER":
+                if(bugMode === 18) throw "MUTATION18";  // 意図的にバグを混入させる（ミューテーション解析）
+                break;
+            case "INTEGER":
+                if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
+                numberViewColumnId = numberViewColumnId ?? viewColumnId;
+                break;
+            case "REAL":
+                if(bugMode === 20) throw "MUTATION20";  // 意図的にバグを混入させる（ミューテーション解析）
+                numberViewColumnId = numberViewColumnId ?? viewColumnId;
+                break;
+            case "TEXT":
+                if(bugMode === 21) throw "MUTATION21";  // 意図的にバグを混入させる（ミューテーション解析）
+                titleViewColumnId = titleViewColumnId ?? viewColumnId;
+                titleColumnId = titleColumnId ?? columnId;
+                break;
+            case "BOOL":
+                if(bugMode === 22) throw "MUTATION22";  // 意図的にバグを混入させる（ミューテーション解析）
+                break;
+            default:
+                throw `サポートされていないデータ型です。detaType="${dataType}"`;
+        }
+    }
+    //
+    let mainHtmlText = "";
+    mainHtmlText += `
+        <input type="checkbox" name="views${viewIndex}_flag" style="display: none;">
+        <input type="text" name="views${viewIndex}_viewId" style="display: none;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+            <div class="tile" onclick="jumpWithQuery('/custom/${childPageId}/index.html')">
+                全て
+            </div>`;
+    //
+    if( titleViewColumnId && titleColumnId){
+        if(bugMode === 23) throw "MUTATION23";  // 意図的にバグを混入させる（ミューテーション解析）
+        for( let i=0; i<onePageMaxSize; i++ ){
+            if(bugMode === 24) throw "MUTATION24";  // 意図的にバグを混入させる（ミューテーション解析）
+            const titleKey = `view${viewId}_${i}_${ titleViewColumnId }`;
+            const numberKey = `view${viewId}_${i}_${numberViewColumnId}`;
+            mainHtmlText += `
+            <!--  -->
+            <div name="view${viewId}_${i}_flag" class="tile" onclick="clickDynamicButton(event,${childPageId},${pageId},'${titleColumnId}')">
+                <span name="${titleKey}"></span>
+            </div>`;
+        }
+    }
+    //
+    mainHtmlText += `
+            <div class="tile_empty"></div>
+            <div class="tile_empty"></div>
+            <div class="tile_empty"></div>
+            <div class="tile_empty"></div>
+            <div class="tile_empty"></div>
+            <div class="tile_empty"></div>
+            <div class="tile_empty"></div>
+            <div class="tile_empty"></div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="result_footer">
+            <div style="display: flex; justify-content: space-between; padding-top: 5px;">
+                <div style="font-size: 20px;">
+                    <span name="view${viewId}__total"></span>件
+                </div>
+                <ul class="pagination">
+                    <!--  -->
+                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                    <input name="view${viewId}__pageFirst_flag" class="flag" type="checkbox" style="display: none;">
+                    <li class="page-item">
+                        <button onclick="paginationButtonFirst(${viewId})" type="button" class="page-link">
+                            <span aria-hidden="true">&laquo;</span>
+                        </button>
+                    </li>
+                    <!--  -->
+                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                    <input name="view${viewId}__pagePrev_flag" class="flag" type="checkbox" style="display: none;">
+                    <li class="page-item">
+                        <button name="view${viewId}__pagePrev" onclick="paginationButtonPrev(${viewId})" type="button" class="page-link">
+                        </button>
+                    </li>
+                    <!--  -->
+                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                    <input name="view${viewId}__pageNow_flag" class="flag" type="checkbox" style="display: none;">
+                    <li class="page-item active">
+                        <span class="page-link" name="view${viewId}__pageNow"> </span>
+                    </li>
+                    <!--  -->
+                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                    <input name="view${viewId}__pageNext_flag" class="flag" type="checkbox" style="display: none;">
+                    <li class="page-item">
+                        <button name="view${viewId}__pageNext" onclick="paginationButtonNext(${viewId})" type="button" class="page-link">
+                        </button>
+                    </li>
+                    <!--  -->
+                    <!-- 不可視のチェックボックスにチェックが入っているときだけ、直後の要素が表示される -->
+                    <input name="view${viewId}__pageLast_flag" class="flag" type="checkbox" style="display: none;">
+                    <li class="page-item">
+                        <button onclick="paginationButtonLast(${viewId})" type="button" class="page-link">
+                            <span aria-hidden="true">&raquo;</span>
+                        </button>
+                    </li>
+                    <!--  -->
+                    <!-- 不可視のテキストボックス -->
+                    <input name="view${viewId}__pageLast" type="text" style="display: none;">
+                </ul>
+                <div style="text-align: right; max-height: 45px;">
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>`;
+    mainHtmlText = mainHtmlText.replaceAll("\n",`\n        `);
+    return mainHtmlText;
 }

@@ -244,7 +244,7 @@ export async function getPageDataForGUI_core( pageId, queryParameters ){
     ...results,
     "views": views.map( ({ viewId }) => ({
       "viewId": viewId,
-      "newExtractionTarget_option": viewColumnNames[viewId],
+      "newExtractionTarget_option": viewColumnNames[viewId].slice(0,19),
     }) ),
     "views_total": views.length,
   };

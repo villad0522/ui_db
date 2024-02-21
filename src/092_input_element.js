@@ -127,7 +127,6 @@ export async function startUp_core( localUrl, isDebug ){
       next_group_id TEXT,
       next_column_id TEXT,
       processing_order REAL NOT NULL,
-      UNIQUE (view_id, processing_order),
       UNIQUE (next_group_id, next_column_id),
       FOREIGN KEY (next_group_id) REFERENCES input_group(input_group_id)
     );`,

@@ -69,14 +69,11 @@ window.deleteCondition = async function (viewId, i) {
 }
 //
 //###############################################################
-// テーブルがクリックされたときに実行する関数
-window.tableButton = function (i) {
-    // テーブル名
-    let tableId = document.getElementsByName(`tables${i}_id`)[0].value;
-    //
-    // 別のページに移動する
-    tableId = encodeURIComponent(tableId);
-    window.location.href = `../records?table=${tableId}`;
+// 動的ボタンがクリックされたときに実行する関数
+window.clickDynamicButton = function (event, childPageId, pageId, columnId) {
+    let value = event.target.children[0].innerText;
+    value = encodeURIComponent(value);
+    jumpWithQuery(`/custom/${childPageId}/index.html?p${pageId}${columnId}=${value}`);
 }
 //
 //###############################################################

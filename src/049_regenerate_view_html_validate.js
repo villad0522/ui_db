@@ -188,9 +188,20 @@ export async function generateViewHTML_card( viewId, tableId, onePageMaxSize, ch
 //#######################################################################################
 // 関数「generateViewHTML_button_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function generateViewHTML_button( viewId, tableId, onePageMaxSize, childPageId, number ){
+export async function generateViewHTML_button( pageId, viewId, tableId, onePageMaxSize, childPageId, viewIndex ){
   //--------------------------------------------------------------------------
   // 引数を検証
+  if( typeof pageId !== "number" ){
+    if( !pageId ){
+      throw new Error(`pageIdがNULLです。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
+    }
+    else{
+      throw new Error(`pageIdが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
+    }
+  }
+  else if( isNaN(pageId) ){
+    throw new Error(`pageIdが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
+  }
   if( typeof viewId !== "number" ){
     if( !viewId ){
       throw new Error(`viewIdがNULLです。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
@@ -232,23 +243,23 @@ export async function generateViewHTML_button( viewId, tableId, onePageMaxSize, 
   else if( isNaN(childPageId) ){
     throw new Error(`childPageIdが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
   }
-  if( typeof number !== "number" ){
-    if( !number ){
-      throw new Error(`numberがNULLです。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
+  if( typeof viewIndex !== "number" ){
+    if( !viewIndex ){
+      throw new Error(`viewIndexがNULLです。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
     }
     else{
-      throw new Error(`numberが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
+      throw new Error(`viewIndexが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
     }
   }
-  else if( isNaN(number) ){
-    throw new Error(`numberが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
+  else if( isNaN(viewIndex) ){
+    throw new Error(`viewIndexが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
   }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await generateViewHTML_button_core( viewId, tableId, onePageMaxSize, childPageId, number );
+    result = await generateViewHTML_button_core( pageId, viewId, tableId, onePageMaxSize, childPageId, viewIndex );
   }
   catch(error){
     if( typeof error === "string" ){
