@@ -1,6 +1,6 @@
 import {
   startUp_core,  // プログラム起動
-  addViewColumn_core,  // ビューカラムを作成
+  _addViewColumn_core,  // 【サブ】ビューカラムを作成
   createColumn_core,  // カラムを作成
   createView_core,  // ビューを作成
   listViewColumns_core,  // ビューカラムの一覧を取得
@@ -18,9 +18,12 @@ import {
   clearCache_core,  // インメモリキャッシュを削除する
   getViewColumnName_core,  // ビューカラムの名前を取得
   getViewColumnFromName_core,  // 名前からビューカラムの情報を取得
-  autoCorrectColumnsToParents_core,  // 新しいビューカラムの予測を取得（子→親）
-  autoCorrectColumnsToChild_core,  // 新しいビューカラムの予測を取得（親→子）
+  _autoCorrectColumnsToParents_core,  // 新しいビューカラムの予測を取得（子→親）
+  _autoCorrectColumnsToChildren_core,  // 新しいビューカラムの予測を取得（親→子）
   getViewColumnInfo_core,  // ビューカラムの情報を取得
+  addColumnPath_core,  // カラムパスを伸ばす
+  autoCorrectColumnPath_core,  // カラムパスの予測変換
+  createViewColumn_core,  // ビューカラムを新規作成
 } from "./062_view_column.js";
 
 
@@ -72,44 +75,44 @@ export async function startUp( localUrl, isDebug ){
 
 
 //#######################################################################################
-// 関数「addViewColumn_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「_addViewColumn_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function addViewColumn( viewId, viewColumnType, columnPath, viewColumnName ){
+export async function _addViewColumn( viewId, viewColumnType, columnPath, viewColumnName ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewId !== "number" ){
     if( !viewId ){
-      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : addViewColumn`);
+      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : _addViewColumn`);
     }
     else{
-      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : addViewColumn`);
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : _addViewColumn`);
     }
   }
   else if( isNaN(viewId) ){
-    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : addViewColumn`);
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : _addViewColumn`);
   }
   if( typeof viewColumnType !== "string" ){
     if( !viewColumnType ){
-      throw new Error(`viewColumnTypeがNULLです。\nレイヤー : view_column\n関数 : addViewColumn`);
+      throw new Error(`viewColumnTypeがNULLです。\nレイヤー : view_column\n関数 : _addViewColumn`);
     }
     else{
-      throw new Error(`viewColumnTypeが文字列ではありません。\nレイヤー : view_column\n関数 : addViewColumn`);
+      throw new Error(`viewColumnTypeが文字列ではありません。\nレイヤー : view_column\n関数 : _addViewColumn`);
     }
   }
   if( typeof columnPath !== "string" ){
     if( !columnPath ){
-      throw new Error(`columnPathがNULLです。\nレイヤー : view_column\n関数 : addViewColumn`);
+      throw new Error(`columnPathがNULLです。\nレイヤー : view_column\n関数 : _addViewColumn`);
     }
     else{
-      throw new Error(`columnPathが文字列ではありません。\nレイヤー : view_column\n関数 : addViewColumn`);
+      throw new Error(`columnPathが文字列ではありません。\nレイヤー : view_column\n関数 : _addViewColumn`);
     }
   }
   if( typeof viewColumnName !== "string" ){
     if( !viewColumnName ){
-      throw new Error(`viewColumnNameがNULLです。\nレイヤー : view_column\n関数 : addViewColumn`);
+      throw new Error(`viewColumnNameがNULLです。\nレイヤー : view_column\n関数 : _addViewColumn`);
     }
     else{
-      throw new Error(`viewColumnNameが文字列ではありません。\nレイヤー : view_column\n関数 : addViewColumn`);
+      throw new Error(`viewColumnNameが文字列ではありません。\nレイヤー : view_column\n関数 : _addViewColumn`);
     }
   }
   //
@@ -117,11 +120,11 @@ export async function addViewColumn( viewId, viewColumnType, columnPath, viewCol
   // メイン処理を実行
   let result;
   try{
-    result = await addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName );
+    result = await _addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : view_column\n関数 : addViewColumn`);
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : _addViewColumn`);
     }
     else{
       throw error;
@@ -1136,61 +1139,46 @@ export async function getViewColumnFromName( viewColumnName ){
 
 
 //#######################################################################################
-// 関数「autoCorrectColumnsToParents_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「_autoCorrectColumnsToParents_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function autoCorrectColumnsToParents( viewId, inputText, columnNames ){
+export async function _autoCorrectColumnsToParents( viewId, inputText, lastColumnName ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewId !== "number" ){
     if( !viewId ){
-      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToParents`);
     }
     else{
-      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToParents`);
     }
   }
   else if( isNaN(viewId) ){
-    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToParents`);
   }
   if( typeof inputText !== "string" ){
     if( !inputText ){
-      throw new Error(`inputTextがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+      throw new Error(`inputTextがNULLです。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToParents`);
     }
     else{
-      throw new Error(`inputTextが文字列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+      throw new Error(`inputTextが文字列ではありません。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToParents`);
     }
   }
-  if( !Array.isArray(columnNames) ){
-    if( !columnNames ){
-      throw new Error(`columnNamesがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
-    }
-    else{
-      throw new Error(`columnNamesが配列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
-    }
+  if( (lastColumnName===null) || (lastColumnName===undefined) ){
+    // lastColumnNameは空欄OK。
   }
-  for( let i=0; i<columnNames.length; i++ ){
-    if( typeof columnNames[i] !== "number" ){
-      if( !columnNames[i] ){
-        throw new Error(`columnNames[${i}]がNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
-      }
-      else{
-        throw new Error(`columnNames[${i}]が数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
-      }
-    }
-    else if( isNaN(columnNames[i]) ){
-      throw new Error(`columnNames[${i}]が数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
-    }
+  else if( typeof lastColumnName !== "string" ){
+    throw new Error(`lastColumnNameが文字列ではありません。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToParents`);
   }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await autoCorrectColumnsToParents_core( viewId, inputText, columnNames );
+    result = await _autoCorrectColumnsToParents_core( viewId, inputText, lastColumnName );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : _autoCorrectColumnsToParents`);
     }
     else{
       throw error;
@@ -1201,19 +1189,19 @@ export async function autoCorrectColumnsToParents( viewId, inputText, columnName
   // 戻り値を検証
   if( !Array.isArray(result) ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToParents`);
     }
     else{
-      throw new Error(`resultが配列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+      throw new Error(`resultが配列ではありません。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToParents`);
     }
   }
   for( let i=0; i<result.length; i++ ){
     if( typeof result[i] !== "string" ){
       if( !result[i] ){
-        throw new Error(`result[${i}]がNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToParents`);
       }
       else{
-        throw new Error(`result[${i}]が文字列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+        throw new Error(`result[${i}]が文字列ではありません。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToParents`);
       }
     }
   }
@@ -1224,61 +1212,46 @@ export async function autoCorrectColumnsToParents( viewId, inputText, columnName
 
 
 //#######################################################################################
-// 関数「autoCorrectColumnsToChild_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「_autoCorrectColumnsToChildren_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function autoCorrectColumnsToChild( viewId, inputText, columnNames ){
+export async function _autoCorrectColumnsToChildren( viewId, inputText, lastColumnName ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewId !== "number" ){
     if( !viewId ){
-      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToChildren`);
     }
     else{
-      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToChildren`);
     }
   }
   else if( isNaN(viewId) ){
-    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToChildren`);
   }
   if( typeof inputText !== "string" ){
     if( !inputText ){
-      throw new Error(`inputTextがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+      throw new Error(`inputTextがNULLです。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToChildren`);
     }
     else{
-      throw new Error(`inputTextが文字列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+      throw new Error(`inputTextが文字列ではありません。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToChildren`);
     }
   }
-  if( !Array.isArray(columnNames) ){
-    if( !columnNames ){
-      throw new Error(`columnNamesがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
-    }
-    else{
-      throw new Error(`columnNamesが配列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
-    }
+  if( (lastColumnName===null) || (lastColumnName===undefined) ){
+    // lastColumnNameは空欄OK。
   }
-  for( let i=0; i<columnNames.length; i++ ){
-    if( typeof columnNames[i] !== "number" ){
-      if( !columnNames[i] ){
-        throw new Error(`columnNames[${i}]がNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
-      }
-      else{
-        throw new Error(`columnNames[${i}]が数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
-      }
-    }
-    else if( isNaN(columnNames[i]) ){
-      throw new Error(`columnNames[${i}]が数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
-    }
+  else if( typeof lastColumnName !== "string" ){
+    throw new Error(`lastColumnNameが文字列ではありません。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToChildren`);
   }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await autoCorrectColumnsToChild_core( viewId, inputText, columnNames );
+    result = await _autoCorrectColumnsToChildren_core( viewId, inputText, lastColumnName );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : _autoCorrectColumnsToChildren`);
     }
     else{
       throw error;
@@ -1289,19 +1262,19 @@ export async function autoCorrectColumnsToChild( viewId, inputText, columnNames 
   // 戻り値を検証
   if( !Array.isArray(result) ){
     if( !result ){
-      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToChildren`);
     }
     else{
-      throw new Error(`resultが配列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+      throw new Error(`resultが配列ではありません。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToChildren`);
     }
   }
   for( let i=0; i<result.length; i++ ){
     if( typeof result[i] !== "string" ){
       if( !result[i] ){
-        throw new Error(`result[${i}]がNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToChildren`);
       }
       else{
-        throw new Error(`result[${i}]が文字列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+        throw new Error(`result[${i}]が文字列ではありません。\nレイヤー : view_column\n関数 : _autoCorrectColumnsToChildren`);
       }
     }
   }
@@ -1389,6 +1362,377 @@ export async function getViewColumnInfo( viewColumnId ){
     }
     else{
       throw new Error(`result.excelColumnTextが文字列ではありません。\nレイヤー : view_column\n関数 : getViewColumnInfo`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「addColumnPath_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function addColumnPath( viewId, requestBody ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+  }
+  if( typeof requestBody !== "object" ){
+    if( !requestBody ){
+      throw new Error(`requestBodyがNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+    else{
+      throw new Error(`requestBodyがオブジェクトではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+  }
+  if( (requestBody.isToParent===null) || (requestBody.isToParent===undefined) ){
+    // requestBody.isToParentは空欄OK。
+  }
+  else if( typeof requestBody.isToParent !== "boolean" ){
+    throw new Error(`requestBody.isToParentがブール値ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+  }
+  else if( isNaN(requestBody.isToParent) ){
+    throw new Error(`requestBody.isToParentがブール値ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+  }
+  if( !Array.isArray(requestBody.newColumnPath) ){
+    if( !requestBody.newColumnPath ){
+      throw new Error(`requestBody.newColumnPathがNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+    else{
+      throw new Error(`requestBody.newColumnPathが配列ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+  }
+  for( let i=0; i<requestBody.newColumnPath.length; i++ ){
+    if( typeof requestBody.newColumnPath[i] !== "object" ){
+      if( !requestBody.newColumnPath[i] ){
+        throw new Error(`requestBody.newColumnPath[${i}]がNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+      }
+      else{
+        throw new Error(`requestBody.newColumnPath[${i}]がオブジェクトではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+      }
+    }
+    if( typeof requestBody.newColumnPath[i].columnName !== "string" ){
+      if( !requestBody.newColumnPath[i].columnName ){
+        throw new Error(`requestBody.newColumnPath[${i}].columnNameがNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+      }
+      else{
+        throw new Error(`requestBody.newColumnPath[${i}].columnNameが文字列ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+      }
+    }
+  }
+  if( typeof requestBody.newColumnPathInput !== "string" ){
+    if( !requestBody.newColumnPathInput ){
+      throw new Error(`requestBody.newColumnPathInputがNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+    else{
+      throw new Error(`requestBody.newColumnPathInputが文字列ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await addColumnPath_core( viewId, requestBody );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "object" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+    else{
+      throw new Error(`resultがオブジェクトではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+  }
+  if( (result.isToParent===null) || (result.isToParent===undefined) ){
+    // result.isToParentは空欄OK。
+  }
+  else if( typeof result.isToParent !== "boolean" ){
+    throw new Error(`result.isToParentがブール値ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+  }
+  else if( isNaN(result.isToParent) ){
+    throw new Error(`result.isToParentがブール値ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+  }
+  if( !Array.isArray(result.newColumnPath) ){
+    if( !result.newColumnPath ){
+      throw new Error(`result.newColumnPathがNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+    else{
+      throw new Error(`result.newColumnPathが配列ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+  }
+  for( let i=0; i<result.newColumnPath.length; i++ ){
+    if( typeof result.newColumnPath[i] !== "object" ){
+      if( !result.newColumnPath[i] ){
+        throw new Error(`result.newColumnPath[${i}]がNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+      }
+      else{
+        throw new Error(`result.newColumnPath[${i}]がオブジェクトではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+      }
+    }
+    if( typeof result.newColumnPath[i].columnName !== "string" ){
+      if( !result.newColumnPath[i].columnName ){
+        throw new Error(`result.newColumnPath[${i}].columnNameがNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+      }
+      else{
+        throw new Error(`result.newColumnPath[${i}].columnNameが文字列ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+      }
+    }
+  }
+  if( typeof result.newColumnPathInput !== "string" ){
+    if( !result.newColumnPathInput ){
+      throw new Error(`result.newColumnPathInputがNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+    else{
+      throw new Error(`result.newColumnPathInputが文字列ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+  }
+  if( !Array.isArray(result.newColumnPathInput_option) ){
+    if( !result.newColumnPathInput_option ){
+      throw new Error(`result.newColumnPathInput_optionがNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+    else{
+      throw new Error(`result.newColumnPathInput_optionが配列ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+  }
+  for( let i=0; i<result.newColumnPathInput_option.length; i++ ){
+    if( typeof result.newColumnPathInput_option[i] !== "string" ){
+      if( !result.newColumnPathInput_option[i] ){
+        throw new Error(`result.newColumnPathInput_option[${i}]がNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+      }
+      else{
+        throw new Error(`result.newColumnPathInput_option[${i}]が文字列ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+      }
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「autoCorrectColumnPath_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function autoCorrectColumnPath( viewId, requestBody ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+  }
+  if( typeof requestBody !== "object" ){
+    if( !requestBody ){
+      throw new Error(`requestBodyがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+    }
+    else{
+      throw new Error(`requestBodyがオブジェクトではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+    }
+  }
+  if( (requestBody.isToParent===null) || (requestBody.isToParent===undefined) ){
+    // requestBody.isToParentは空欄OK。
+  }
+  else if( typeof requestBody.isToParent !== "boolean" ){
+    throw new Error(`requestBody.isToParentがブール値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+  }
+  else if( isNaN(requestBody.isToParent) ){
+    throw new Error(`requestBody.isToParentがブール値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+  }
+  if( !Array.isArray(requestBody.newColumnPath) ){
+    if( !requestBody.newColumnPath ){
+      throw new Error(`requestBody.newColumnPathがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+    }
+    else{
+      throw new Error(`requestBody.newColumnPathが配列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+    }
+  }
+  for( let i=0; i<requestBody.newColumnPath.length; i++ ){
+    if( typeof requestBody.newColumnPath[i] !== "object" ){
+      if( !requestBody.newColumnPath[i] ){
+        throw new Error(`requestBody.newColumnPath[${i}]がNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+      }
+      else{
+        throw new Error(`requestBody.newColumnPath[${i}]がオブジェクトではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+      }
+    }
+    if( typeof requestBody.newColumnPath[i].columnName !== "string" ){
+      if( !requestBody.newColumnPath[i].columnName ){
+        throw new Error(`requestBody.newColumnPath[${i}].columnNameがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+      }
+      else{
+        throw new Error(`requestBody.newColumnPath[${i}].columnNameが文字列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+      }
+    }
+  }
+  if( typeof requestBody.newColumnPathInput !== "string" ){
+    if( !requestBody.newColumnPathInput ){
+      throw new Error(`requestBody.newColumnPathInputがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+    }
+    else{
+      throw new Error(`requestBody.newColumnPathInputが文字列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await autoCorrectColumnPath_core( viewId, requestBody );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( !Array.isArray(result) ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+    }
+    else{
+      throw new Error(`resultが配列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+    }
+  }
+  for( let i=0; i<result.length; i++ ){
+    if( typeof result[i] !== "string" ){
+      if( !result[i] ){
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+      }
+      else{
+        throw new Error(`result[${i}]が文字列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnPath`);
+      }
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「createViewColumn_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function createViewColumn( viewId, requestBody ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : createViewColumn`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : createViewColumn`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : createViewColumn`);
+  }
+  if( typeof requestBody !== "object" ){
+    if( !requestBody ){
+      throw new Error(`requestBodyがNULLです。\nレイヤー : view_column\n関数 : createViewColumn`);
+    }
+    else{
+      throw new Error(`requestBodyがオブジェクトではありません。\nレイヤー : view_column\n関数 : createViewColumn`);
+    }
+  }
+  if( (requestBody.isToParent===null) || (requestBody.isToParent===undefined) ){
+    // requestBody.isToParentは空欄OK。
+  }
+  else if( typeof requestBody.isToParent !== "boolean" ){
+    throw new Error(`requestBody.isToParentがブール値ではありません。\nレイヤー : view_column\n関数 : createViewColumn`);
+  }
+  else if( isNaN(requestBody.isToParent) ){
+    throw new Error(`requestBody.isToParentがブール値ではありません。\nレイヤー : view_column\n関数 : createViewColumn`);
+  }
+  if( !Array.isArray(requestBody.newColumnPath) ){
+    if( !requestBody.newColumnPath ){
+      throw new Error(`requestBody.newColumnPathがNULLです。\nレイヤー : view_column\n関数 : createViewColumn`);
+    }
+    else{
+      throw new Error(`requestBody.newColumnPathが配列ではありません。\nレイヤー : view_column\n関数 : createViewColumn`);
+    }
+  }
+  for( let i=0; i<requestBody.newColumnPath.length; i++ ){
+    if( typeof requestBody.newColumnPath[i] !== "object" ){
+      if( !requestBody.newColumnPath[i] ){
+        throw new Error(`requestBody.newColumnPath[${i}]がNULLです。\nレイヤー : view_column\n関数 : createViewColumn`);
+      }
+      else{
+        throw new Error(`requestBody.newColumnPath[${i}]がオブジェクトではありません。\nレイヤー : view_column\n関数 : createViewColumn`);
+      }
+    }
+    if( typeof requestBody.newColumnPath[i].columnName !== "string" ){
+      if( !requestBody.newColumnPath[i].columnName ){
+        throw new Error(`requestBody.newColumnPath[${i}].columnNameがNULLです。\nレイヤー : view_column\n関数 : createViewColumn`);
+      }
+      else{
+        throw new Error(`requestBody.newColumnPath[${i}].columnNameが文字列ではありません。\nレイヤー : view_column\n関数 : createViewColumn`);
+      }
+    }
+  }
+  if( typeof requestBody.newColumnPathInput !== "string" ){
+    if( !requestBody.newColumnPathInput ){
+      throw new Error(`requestBody.newColumnPathInputがNULLです。\nレイヤー : view_column\n関数 : createViewColumn`);
+    }
+    else{
+      throw new Error(`requestBody.newColumnPathInputが文字列ではありません。\nレイヤー : view_column\n関数 : createViewColumn`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await createViewColumn_core( viewId, requestBody );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : createViewColumn`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : createViewColumn`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : view_column\n関数 : createViewColumn`);
     }
   }
   //

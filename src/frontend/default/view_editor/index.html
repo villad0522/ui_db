@@ -166,7 +166,7 @@
                                 document.write(htmlText3);
                             </script>
                             <th scope="col" rowspan="2" style="border-bottom: solid; vertical-align: middle;">
-                                <button class="btn btn-outline-primary" type="button">
+                                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
                                     <i class="bi bi-arrow-left"></i>
                                     もっと列を表示する
                                 </button>
@@ -223,6 +223,71 @@
                         </script>
                     </tbody>
                 </table>
+            </div>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+                        もっと列を表示する
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div>
+                        表示したい列名を入力してください。
+                    </div>
+                    <br>
+                    <input class="form-check-input" type="checkbox" name="isToParent" style="display: none;">
+                    <ul class="list-group">
+                        <input name="newColumnPath0_flag" class="form-check-input flag" type="checkbox">
+                        <li class="list-group-item">
+                            <input name="newColumnPath0_columnName" type="text" readonly class="form-control-plaintext">
+                        </li>
+                        <!--  -->
+                        <input name="newColumnPath1_flag" class="form-check-input flag" type="checkbox">
+                        <li class="list-group-item">
+                            <input name="newColumnPath1_columnName" type="text" readonly class="form-control-plaintext">
+                        </li>
+                        <!--  -->
+                        <input name="newColumnPath2_flag" class="form-check-input flag" type="checkbox">
+                        <li class="list-group-item">
+                            <input name="newColumnPath2_columnName" type="text" readonly class="form-control-plaintext">
+                        </li>
+                        <!--  -->
+                        <input name="newColumnPath3_flag" class="form-check-input flag" type="checkbox">
+                        <li class="list-group-item">
+                            <input name="newColumnPath3_columnName" type="text" readonly class="form-control-plaintext">
+                        </li>
+                        <!--  -->
+                        <input name="newColumnPath4_flag" class="form-check-input flag" type="checkbox">
+                        <li class="list-group-item">
+                            <input name="newColumnPath4_columnName" type="text" readonly class="form-control-plaintext">
+                        </li>
+                        <!--  -->
+                        <input name="newColumnPath5_flag" class="form-check-input flag" type="checkbox">
+                        <li class="list-group-item">
+                            <input name="newColumnPath5_columnName" type="text" readonly class="form-control-plaintext">
+                        </li>
+                        <!--  -->
+                        <input name="newColumnPath6_flag" class="form-check-input flag" type="checkbox">
+                        <li class="list-group-item">
+                            <input name="newColumnPath6_columnName" type="text" readonly class="form-control-plaintext">
+                        </li>
+                        <!--  -->
+                        <input name="newColumnPath7_flag" class="form-check-input flag" type="checkbox">
+                        <li class="list-group-item">
+                            <input name="newColumnPath7_columnName" type="text" readonly class="form-control-plaintext">
+                        </li>
+                    </ul>
+                    <div class="input-group" style="margin-top: 5px; margin-bottom: 20px;">
+                        <input oninput="myFetch('./auto_correct_column_path/form')" type="text" class="form-control" name="newColumnPathInput">
+                        <button onclick="myFetch('./add_column_path/form')" type="button" class="btn btn-primary">
+                            追加
+                        </button>
+                    </div>
+                    <button onclick="myFetch('./create_view_column/form')" type="button" class="btn btn-primary">
+                        OK
+                    </button>
+                </div>
             </div>
         </form>
     </body>

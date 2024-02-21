@@ -124,7 +124,6 @@ hr {
 .tab-pane {
     background: #fafafa;
     width: 100%;
-    padding: 10px;
     box-sizing: border-box;
     min-height: 70vh;
     position: absolute;

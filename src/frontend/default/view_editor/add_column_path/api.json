@@ -1,0 +1,64 @@
+{
+    "httpMethod": "POST",
+    "description": "カラムパスを１つ伸ばします",
+    "commandName": "ADD_COLUMN_PATH",
+    "queryParameters": {
+        "view": {
+            "dataType": "INTEGER",
+            "description": "ビューID",
+            "isRequired": true,
+            "example": 23
+        }
+    },
+    "requestBody": {
+        "isToParent": {
+            "dataType": "BOOL",
+            "description": "参照先のテーブルに向ってカラムパスを構築するか否か",
+            "isRequired": true,
+            "example": true
+        },
+        "newColumnPath": {
+            "title": "カラムパスを構築するカラム名の一覧",
+            "isArray": true,
+            "onePageMaxSize": 8,
+            "children": {
+                "columnName": {
+                    "dataType": "TEXT",
+                    "description": "ビューカラムのID",
+                    "example": "氏名"
+                }
+            }
+        },
+        "newColumnPathInput": {
+            "dataType": "TEXT",
+            "description": "新しく表示したいカラム名",
+            "isRequired": true,
+            "example": "氏名"
+        }
+    },
+    "response": {
+        "newColumnPath": {
+            "title": "カラムパスを構築するカラム名の一覧",
+            "isArray": true,
+            "onePageMaxSize": 8,
+            "children": {
+                "columnName": {
+                    "dataType": "TEXT",
+                    "description": "ビューカラムのID",
+                    "example": "氏名"
+                }
+            }
+        },
+        "newColumnPath_total": {
+            "dataType": "INTEGER",
+            "description": "カラムパスの長さ",
+            "example": 8
+        },
+        "newColumnPathInput": {
+            "dataType": "TEXT",
+            "description": "新しく表示したいカラム名",
+            "isRequired": true,
+            "example": ""
+        }
+    }
+}

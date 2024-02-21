@@ -168,7 +168,7 @@ import {
 } from "./067_generate_sql_validate.js";
 import {
   startUp,  // プログラム起動
-  addViewColumn,  // ビューカラムを作成
+  _addViewColumn,  // 【サブ】ビューカラムを作成
   createColumn,  // カラムを作成
   createView,  // ビューを作成
   listViewColumns,  // ビューカラムの一覧を取得
@@ -186,9 +186,12 @@ import {
   clearCache,  // インメモリキャッシュを削除する
   getViewColumnName,  // ビューカラムの名前を取得
   getViewColumnFromName,  // 名前からビューカラムの情報を取得
-  autoCorrectColumnsToParents,  // 新しいビューカラムの予測を取得（子→親）
-  autoCorrectColumnsToChild,  // 新しいビューカラムの予測を取得（親→子）
+  _autoCorrectColumnsToParents,  // 新しいビューカラムの予測を取得（子→親）
+  _autoCorrectColumnsToChildren,  // 新しいビューカラムの予測を取得（親→子）
   getViewColumnInfo,  // ビューカラムの情報を取得
+  addColumnPath,  // カラムパスを伸ばす
+  autoCorrectColumnPath,  // カラムパスの予測変換
+  createViewColumn,  // ビューカラムを新規作成
 } from "./061_view_column_validate.js";
 import { setBugMode } from "./062_view_column.js";
 
@@ -198,7 +201,7 @@ export async function test060() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 59; i++ ) {
+    for ( i = 1; i <= 78; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

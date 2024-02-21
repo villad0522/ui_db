@@ -1,0 +1,47 @@
+{
+    "httpMethod": "POST",
+    "description": "カラムパスの予測変換を取得します",
+    "commandName": "AUTO_CORRECT_COLUMN_PATH",
+    "queryParameters": {
+        "view": {
+            "dataType": "INTEGER",
+            "description": "ビューID",
+            "isRequired": true,
+            "example": 23
+        }
+    },
+    "requestBody": {
+        "isToParent": {
+            "dataType": "BOOL",
+            "description": "参照先のテーブルに向ってカラムパスを構築するか否か",
+            "isRequired": true,
+            "example": true
+        },
+        "newColumnPath": {
+            "title": "カラムパスを構築するカラム名の一覧",
+            "isArray": true,
+            "onePageMaxSize": 8,
+            "children": {
+                "columnName": {
+                    "dataType": "TEXT",
+                    "description": "ビューカラムのID",
+                    "example": "氏名"
+                }
+            }
+        },
+        "newColumnPathInput": {
+            "dataType": "TEXT",
+            "description": "新しく表示したいカラム名",
+            "isRequired": true,
+            "example": "氏名"
+        }
+    },
+    "response": {
+        "newColumnPathInput_option": {
+            "dataType": "TEXT",
+            "description": "新しく表示したいカラム名の予測変換",
+            "isRequired": true,
+            "example": "氏名"
+        }
+    }
+}

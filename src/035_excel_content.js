@@ -40,16 +40,19 @@ import {
 } from "./121_primary_key_validate.js";
 import {
   clearCache,
+  _addViewColumn,
   listViewColumns,
   _deleteViewColumns,
   regenerateInputElements,
-  _addViewColumn,
   getViewColumnFromColumn,
   getViewColumnName,
   getViewColumnFromName,
-  autoCorrectColumnsToParents,
-  autoCorrectColumnsToChild,
+  _autoCorrectColumnsToParents,
+  _autoCorrectColumnsToChildren,
   getViewColumnInfo,
+  addColumnPath,
+  autoCorrectColumnPath,
+  createViewColumn,
 } from "./061_view_column_validate.js";
 import {
   createColumn,
@@ -61,11 +64,11 @@ import {
   deletePage,
   pastePage,
   updateView,
-  addViewColumn,
   deleteViewColumn,
   reorderViewColumnToRight,
   reorderViewColumnToLeft,
   regeneratePage,
+  addViewColumn,
 } from "./040_regenerate_page_validate.js";
 import {
   listDataTypes,
