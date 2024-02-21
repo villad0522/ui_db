@@ -216,7 +216,7 @@ export async function startUp_core( localUrl, isDebug ){
 
 
 // 【サブ】ビューカラムを作成
-export async function _addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName ){
+export async function _createViewColumnOuter_core( viewId, viewColumnType, columnPath, viewColumnName ){
   if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     await _addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName );
     if( viewColumnType==="RAW" ){
@@ -224,8 +224,9 @@ export async function _addViewColumn_core( viewId, viewColumnType, columnPath, v
         // 入力要素を再構築する
         await regenerateInputElements_core( viewId );
     }
-    buf[viewId] = {};
-    buf2[viewId] = {};
+    buf[viewId] = undefined;
+    buf2[viewId] = undefined;
+    return "新しいビューカラムを追加しました";
 }
 
 
@@ -343,13 +344,15 @@ export async function createView_core( pageId, tableName ){
 
 
 let buf2 = {
-    // "viewId": {
+    // "viewId": [
+    //   {
     //     "viewColumnId": viewColumn.viewColumnId,
     //     "viewColumnName": viewColumn.viewColumnName,
     //     "viewColumnType": viewColumn.viewColumnType,
     //     "excelColumnText": _convertToExcelColumn(excelStartColumn + offset),
     //     "columnPath": viewColumn.columnPath
-    // }
+    //   }
+    // ]
 };
 
 
@@ -782,10 +785,6 @@ export async function clearCache_core(  ){
 // ビューカラムの名前を取得
 export async function getViewColumnName_core( viewId, viewColumnId ){
   if(bugMode === 49) throw "MUTATION49";  // 意図的にバグを混入させる（ミューテーション解析）
-    if( buf2[viewId] && buf2[viewId][viewColumnId] ){
-        if(bugMode === 50) throw "MUTATION50";  // 意図的にバグを混入させる（ミューテーション解析）
-        return buf2[viewId][viewColumnId].viewColumnName;
-    }
     const viewColumns = await runSqlReadOnly(
         `SELECT
             "d" || view_column_id AS viewColumnId,
@@ -803,27 +802,23 @@ export async function getViewColumnName_core( viewId, viewColumnId ){
     if(viewColumns.length===0){
         throw `ビューカラムが見つかりません。\nviewColumnId = ${viewColumnId}`;
     }
-    if(!buf2[viewId]){
-        if(bugMode === 51) throw "MUTATION51";  // 意図的にバグを混入させる（ミューテーション解析）
-        buf2[viewId] = undefined;
-    }
     //
     const { excelStartColumn } = await getViewInfo( viewId );
     //
     const offset = viewColumns[0].excelColumnIndex;
-    buf2[viewId][viewColumnId] = {
+    const result = {
         "viewColumnId": viewColumns[0].viewColumnId,
         "viewColumnName": viewColumns[0].viewColumnName,
         "viewColumnType": viewColumns[0].viewColumnType,
         "excelColumnText": _convertToExcelColumn(excelStartColumn + offset),
         "columnPath": viewColumns[0].columnPath
     };
-    return viewColumns[0].viewColumnName;
+    return result;
 }
 
 // 名前からビューカラムの情報を取得
 export async function getViewColumnFromName_core( viewColumnName ){
-  if(bugMode === 52) throw "MUTATION52";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 50) throw "MUTATION50";  // 意図的にバグを混入させる（ミューテーション解析）
     const viewColumns = await runSqlReadOnly(
         `SELECT
             "d" || view_column_id AS viewColumnId,
@@ -848,30 +843,35 @@ export async function getViewColumnFromName_core( viewColumnName ){
     const { excelStartColumn } = await getViewInfo( viewId );
     //
     const offset = viewColumns[0].excelColumnIndex;
-    buf2[viewId][viewColumnId] = {
+    const result = {
         "viewColumnId": viewColumns[0].viewColumnId,
         "viewColumnName": viewColumns[0].viewColumnName,
         "viewColumnType": viewColumns[0].viewColumnType,
         "excelColumnText": _convertToExcelColumn(excelStartColumn + offset),
         "columnPath": viewColumns[0].columnPath
     };
-    return buf2[viewId][viewColumnId];
+    return result;
 }
 
 
 
 // 新しいビューカラムの予測を取得（子→親）
 export async function _autoCorrectColumnsToParents_core( viewId, inputText, lastColumnName ){
-  if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 51) throw "MUTATION51";  // 意図的にバグを混入させる（ミューテーション解析）
     let parentTableId = "";
     if( lastColumnName ){
-        if(bugMode === 54) throw "MUTATION54";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 52) throw "MUTATION52";  // 意図的にバグを混入させる（ミューテーション解析）
         const childColumnId = await getColumnIdFromName( lastColumnName );
         // 現在のカラムが参照している親テーブルのカラムから選ばせる
         parentTableId = await getParentTableId( childColumnId );
+        if(!parentTableId){
+            if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
+            // 末端に到達した場合
+            return [];
+        }
     }
     else {
-        if(bugMode === 55) throw "MUTATION55";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 54) throw "MUTATION54";  // 意図的にバグを混入させる（ミューテーション解析）
         // 現在のテーブルのカラムから選ばせる
         const viewInfo = await getViewInfo( viewId );
         parentTableId = viewInfo.tableId;
@@ -884,18 +884,21 @@ export async function _autoCorrectColumnsToParents_core( viewId, inputText, last
 
 // 新しいビューカラムの予測を取得（親→子）
 export async function _autoCorrectColumnsToChildren_core( viewId, inputText, lastColumnName ){
-  if(bugMode === 56) throw "MUTATION56";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 55) throw "MUTATION55";  // 意図的にバグを混入させる（ミューテーション解析）
     let parentTableId = "";
     // 現在のテーブルを取得する
     if( lastColumnName ){
-        if(bugMode === 57) throw "MUTATION57";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 56) throw "MUTATION56";  // 意図的にバグを混入させる（ミューテーション解析）
         const parentColumnId = await getColumnIdFromName( lastColumnName );
         parentTableId = await getTableId( parentColumnId );
     }
     else {
-        if(bugMode === 58) throw "MUTATION58";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 57) throw "MUTATION57";  // 意図的にバグを混入させる（ミューテーション解析）
         const viewInfo = await getViewInfo( viewId );
         parentTableId = viewInfo.tableId;
+    }
+    if(!parentTableId){
+        throw `parentTableIdがNULLです`;
     }
     // 現在のテーブルを参照しているカラムから選ばせる
     const columnIdList = await listChildrenColumnId( parentTableId );
@@ -907,7 +910,7 @@ export async function _autoCorrectColumnsToChildren_core( viewId, inputText, las
 
 // ビューカラムの情報を取得
 export async function getViewColumnInfo_core( viewColumnId ){
-  if(bugMode === 59) throw "MUTATION59";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 58) throw "MUTATION58";  // 意図的にバグを混入させる（ミューテーション解析）
     const viewColumns = await runSqlReadOnly(
         `SELECT
             "d" || view_column_id AS viewColumnId,
@@ -931,7 +934,7 @@ export async function getViewColumnInfo_core( viewColumnId ){
     const { excelStartColumn } = await getViewInfo( viewId );
     //
     const offset = viewColumns[0].excelColumnIndex;
-    buf2[viewId][viewColumnId] = {
+    const result = {
         "viewId": viewId,
         "viewColumnId": viewColumns[0].viewColumnId,
         "viewColumnName": viewColumns[0].viewColumnName,
@@ -939,56 +942,66 @@ export async function getViewColumnInfo_core( viewColumnId ){
         "excelColumnText": _convertToExcelColumn(excelStartColumn + offset),
         "columnPath": viewColumns[0].columnPath
     };
-    return buf2[viewId][viewColumnId];
+    return result;
 }
 
 
 // カラムパスを伸ばす
 export async function addColumnPath_core( viewId, requestBody ){
-  if(bugMode === 60) throw "MUTATION60";  // 意図的にバグを混入させる（ミューテーション解析）
-    const { isToParent, newColumnPath, newColumnPathInput } = requestBody;
+  if(bugMode === 59) throw "MUTATION59";  // 意図的にバグを混入させる（ミューテーション解析）
+    let { isToParent, newColumnPath, newColumnPathInput } = requestBody;
     const inputText = newColumnPathInput;
     if(!inputText){
-        if(bugMode === 61) throw "MUTATION61";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 60) throw "MUTATION60";  // 意図的にバグを混入させる（ミューテーション解析）
         return { 
             isToParent, 
             newColumnPath,
+            newColumnPath_total: newColumnPath.length,
             newColumnPathInput,
             newColumnPathInput_option: await autoCorrectColumnPath_core( viewId, requestBody ),
         };
     }
     if( newColumnPath.length>0 ){
-        if(bugMode === 62) throw "MUTATION62";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 61) throw "MUTATION61";  // 意図的にバグを混入させる（ミューテーション解析）
         // 既にカラムパスの長さが１以上のとき
         const lastColumnName = newColumnPath[newColumnPath.length-1].columnName;
         if(isToParent){
-            if(bugMode === 63) throw "MUTATION63";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 62) throw "MUTATION62";  // 意図的にバグを混入させる（ミューテーション解析）
             const columnId = await getColumnIdFromName( lastColumnName );
             // カラムが参照している親テーブル
             const parentTableId = await getParentTableId( columnId );
+            if( !parentTableId ){
+                throw "既に末端に到達しているため、これ以上カラムパスを伸ばせません";
+            }
             // 親テーブルのカラム
             const parentColumns = await listColumnsAll( parentTableId );
             const parentColumnNames = parentColumns.map( ({ name }) => name );
             if( parentColumnNames.includes(inputText) ){
-                if(bugMode === 64) throw "MUTATION64";  // 意図的にバグを混入させる（ミューテーション解析）
+                if(bugMode === 63) throw "MUTATION63";  // 意図的にバグを混入させる（ミューテーション解析）
                 // 合格
-                newColumnPath.push(inputText);
+                newColumnPath.push({ "columnName": inputText });
+                newColumnPathInput = "";
             }
             else{
                 throw `不正な値です`;
             }
         }
         else{
-            if(bugMode === 65) throw "MUTATION65";  // 意図的にバグを混入させる（ミューテーション解析）
+            if(bugMode === 64) throw "MUTATION64";  // 意図的にバグを混入させる（ミューテーション解析）
             // 現在のテーブルを取得する
             const { tableId } = await getViewInfo( viewId );
             // 現在のテーブルを参照しているカラム
             const children = await listChildrenColumnId( tableId );
-            const childColumnNames = children.map( async (columnId) => await getColumnName(columnId) );
+            const childColumnNames = [];
+            for( const columnId of children ){
+                if(bugMode === 65) throw "MUTATION65";  // 意図的にバグを混入させる（ミューテーション解析）
+                childColumnNames.push( await getColumnName(columnId) );
+            }
             if( childColumnNames.includes(inputText) ){
                 if(bugMode === 66) throw "MUTATION66";  // 意図的にバグを混入させる（ミューテーション解析）
                 // 合格
-                newColumnPath.push(inputText);
+                newColumnPath.push({ "columnName": inputText });
+                newColumnPathInput = "";
             }
             else{
                 throw `不正な値です`;
@@ -999,30 +1012,32 @@ export async function addColumnPath_core( viewId, requestBody ){
         if(bugMode === 67) throw "MUTATION67";  // 意図的にバグを混入させる（ミューテーション解析）
         // 初めてカラムパスを伸ばすとき
         //
-        const columnId = await getColumnIdFromName( lastColumnName );
-        // カラムが参照している親テーブル
-        const parentTableId = await getParentTableId( columnId );
-        // 親テーブルのカラム
-        const parentColumns = await listColumnsAll( parentTableId );
-        const parentColumnNames = parentColumns.map( ({ name }) => name );
-        if( parentColumnNames.includes(inputText) ){
+        // 現在のテーブルを取得する
+        const { tableId } = await getViewInfo( viewId );
+        // 現在のテーブルのカラム
+        const columns = await listColumnsAll( tableId );
+        const columnNames = columns.map( ({ name }) => name );
+        if( columnNames.includes(inputText) ){
             if(bugMode === 68) throw "MUTATION68";  // 意図的にバグを混入させる（ミューテーション解析）
             // 合格
-            newColumnPath.push(inputText);
+            newColumnPath.push({ "columnName": inputText });
+            newColumnPathInput = "";
             isToParent = true;
         }
         else{
             if(bugMode === 69) throw "MUTATION69";  // 意図的にバグを混入させる（ミューテーション解析）
-            //
-            // 現在のテーブルを取得する
-            const { tableId } = await getViewInfo( viewId );
             // 現在のテーブルを参照しているカラム
             const children = await listChildrenColumnId( tableId );
-            const childColumnNames = children.map( async (columnId) => await getColumnName(columnId) );
-            if( childColumnNames.includes(inputText) ){
+            const childColumnNames = [];
+            for( const columnId of children ){
                 if(bugMode === 70) throw "MUTATION70";  // 意図的にバグを混入させる（ミューテーション解析）
+                childColumnNames.push( await getColumnName(columnId) );
+            }
+            if( childColumnNames.includes(inputText) ){
+                if(bugMode === 71) throw "MUTATION71";  // 意図的にバグを混入させる（ミューテーション解析）
                 // 合格
-                newColumnPath.push(inputText);
+                newColumnPath.push({ "columnName": inputText });
+                newColumnPathInput = "";
                 isToParent = false;
             }
             else{
@@ -1033,6 +1048,7 @@ export async function addColumnPath_core( viewId, requestBody ){
     return { 
         isToParent, 
         newColumnPath,
+        newColumnPath_total: newColumnPath.length,
         newColumnPathInput,
         newColumnPathInput_option: await autoCorrectColumnPath_core( viewId, { isToParent, newColumnPath, newColumnPathInput: "" } ),
     };
@@ -1040,32 +1056,37 @@ export async function addColumnPath_core( viewId, requestBody ){
 
 // カラムパスの予測変換
 export async function autoCorrectColumnPath_core( viewId, requestBody ){
-  if(bugMode === 71) throw "MUTATION71";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 72) throw "MUTATION72";  // 意図的にバグを混入させる（ミューテーション解析）
     const { isToParent, newColumnPath, newColumnPathInput } = requestBody;
     const inputText = newColumnPathInput;
     if( newColumnPath.length===0 ){
-        if(bugMode === 72) throw "MUTATION72";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 73) throw "MUTATION73";  // 意図的にバグを混入させる（ミューテーション解析）
         // 現在のテーブルを取得する
         const { tableId } = await getViewInfo( viewId );
         // 現在のテーブルを参照しているカラム
-        const children = await listChildrenColumnId( parentTableId );
-        const childColumnNameList = children.map( async (columnId) => await getColumnName(columnId) );
+        const children = await listChildrenColumnId( tableId );
+        const childColumnNameList = [];
+        for( const columnId of children ){
+            if(bugMode === 74) throw "MUTATION74";  // 意図的にバグを混入させる（ミューテーション解析）
+            childColumnNameList.push( await getColumnName(columnId) );
+        }
         // 現在のテーブルのカラム
         const columns = await listColumnsAll( tableId );
         const columnNameList = columns.map( ({ name }) => name );
-        const suggestions = [
+        let suggestions = [
             ...childColumnNameList,
             ...columnNameList,
         ];
-        return  Array.from(new Set(suggestions)).slice(0,19);
+        suggestions = Array.from(new Set(suggestions)).slice(0,19);
+        return suggestions;
     }
     const lastColumnName = newColumnPath[newColumnPath.length-1].columnName;
     if(isToParent){
-        if(bugMode === 73) throw "MUTATION73";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 75) throw "MUTATION75";  // 意図的にバグを混入させる（ミューテーション解析）
         return await _autoCorrectColumnsToParents_core( viewId, inputText, lastColumnName );
     }
     else{
-        if(bugMode === 74) throw "MUTATION74";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 76) throw "MUTATION76";  // 意図的にバグを混入させる（ミューテーション解析）
         return [
             ...await _autoCorrectColumnsToChildren_core( viewId, inputText, lastColumnName ),
             "の件数",
@@ -1079,7 +1100,7 @@ export async function autoCorrectColumnPath_core( viewId, requestBody ){
 
 // ビューカラムを新規作成
 export async function createViewColumn_core( viewId, requestBody ){
-  if(bugMode === 75) throw "MUTATION75";  // 意図的にバグを混入させる（ミューテーション解析）
+  if(bugMode === 77) throw "MUTATION77";  // 意図的にバグを混入させる（ミューテーション解析）
     const { isToParent, newColumnPath } = await addColumnPath_core( viewId, requestBody );
     if( newColumnPath.length===0 ){
         throw `カラムパスの長さがゼロです`;
@@ -1088,7 +1109,7 @@ export async function createViewColumn_core( viewId, requestBody ){
     const viewColumnName = lastColumnName;
     const columnIdList = [];
     for( const { columnName } of newColumnPath ){
-        if(bugMode === 76) throw "MUTATION76";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 78) throw "MUTATION78";  // 意図的にバグを混入させる（ミューテーション解析）
         const columnId = await getColumnIdFromName( columnName );
         if(!columnId){
             throw `columnIdがNULLです。`;
@@ -1096,15 +1117,15 @@ export async function createViewColumn_core( viewId, requestBody ){
         columnIdList.push(columnId);
     }
     if(isToParent){
-        if(bugMode === 77) throw "MUTATION77";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 79) throw "MUTATION79";  // 意図的にバグを混入させる（ミューテーション解析）
         const columnPathText = `main.` + columnIdList.join(" > ");
         console.log(columnPathText);
-        return await _addViewColumn( viewId, "RAW", columnPathText, viewColumnName );
+        return await _createViewColumnOuter_core( viewId, "RAW", columnPathText, viewColumnName );
     }
     else{
-        if(bugMode === 78) throw "MUTATION78";  // 意図的にバグを混入させる（ミューテーション解析）
+        if(bugMode === 80) throw "MUTATION80";  // 意図的にバグを混入させる（ミューテーション解析）
         const columnPathText = columnIdList.reverse().join(" > ") + ` > main`;
         console.log(columnPathText);
-        return await _addViewColumn( viewId, "COUNT", columnPathText, viewColumnName + "の件数" );
+        return await _createViewColumnOuter_core( viewId, "COUNT", columnPathText, viewColumnName + "の件数" );
     }
 }

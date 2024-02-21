@@ -1,6 +1,6 @@
 import {
   startUp_core,  // プログラム起動
-  _addViewColumn_core,  // 【サブ】ビューカラムを作成
+  _createViewColumnOuter_core,  // 【サブ】ビューカラムを作成
   createColumn_core,  // カラムを作成
   createView_core,  // ビューを作成
   listViewColumns_core,  // ビューカラムの一覧を取得
@@ -75,44 +75,44 @@ export async function startUp( localUrl, isDebug ){
 
 
 //#######################################################################################
-// 関数「_addViewColumn_core」に、引数と戻り値のチェック機能を追加した関数
+// 関数「_createViewColumnOuter_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function _addViewColumn( viewId, viewColumnType, columnPath, viewColumnName ){
+export async function _createViewColumnOuter( viewId, viewColumnType, columnPath, viewColumnName ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewId !== "number" ){
     if( !viewId ){
-      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : _addViewColumn`);
+      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : _createViewColumnOuter`);
     }
     else{
-      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : _addViewColumn`);
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : _createViewColumnOuter`);
     }
   }
   else if( isNaN(viewId) ){
-    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : _addViewColumn`);
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : _createViewColumnOuter`);
   }
   if( typeof viewColumnType !== "string" ){
     if( !viewColumnType ){
-      throw new Error(`viewColumnTypeがNULLです。\nレイヤー : view_column\n関数 : _addViewColumn`);
+      throw new Error(`viewColumnTypeがNULLです。\nレイヤー : view_column\n関数 : _createViewColumnOuter`);
     }
     else{
-      throw new Error(`viewColumnTypeが文字列ではありません。\nレイヤー : view_column\n関数 : _addViewColumn`);
+      throw new Error(`viewColumnTypeが文字列ではありません。\nレイヤー : view_column\n関数 : _createViewColumnOuter`);
     }
   }
   if( typeof columnPath !== "string" ){
     if( !columnPath ){
-      throw new Error(`columnPathがNULLです。\nレイヤー : view_column\n関数 : _addViewColumn`);
+      throw new Error(`columnPathがNULLです。\nレイヤー : view_column\n関数 : _createViewColumnOuter`);
     }
     else{
-      throw new Error(`columnPathが文字列ではありません。\nレイヤー : view_column\n関数 : _addViewColumn`);
+      throw new Error(`columnPathが文字列ではありません。\nレイヤー : view_column\n関数 : _createViewColumnOuter`);
     }
   }
   if( typeof viewColumnName !== "string" ){
     if( !viewColumnName ){
-      throw new Error(`viewColumnNameがNULLです。\nレイヤー : view_column\n関数 : _addViewColumn`);
+      throw new Error(`viewColumnNameがNULLです。\nレイヤー : view_column\n関数 : _createViewColumnOuter`);
     }
     else{
-      throw new Error(`viewColumnNameが文字列ではありません。\nレイヤー : view_column\n関数 : _addViewColumn`);
+      throw new Error(`viewColumnNameが文字列ではありません。\nレイヤー : view_column\n関数 : _createViewColumnOuter`);
     }
   }
   //
@@ -120,11 +120,11 @@ export async function _addViewColumn( viewId, viewColumnType, columnPath, viewCo
   // メイン処理を実行
   let result;
   try{
-    result = await _addViewColumn_core( viewId, viewColumnType, columnPath, viewColumnName );
+    result = await _createViewColumnOuter_core( viewId, viewColumnType, columnPath, viewColumnName );
   }
   catch(error){
     if( typeof error === "string" ){
-      throw new Error(`${error}\nレイヤー : view_column\n関数 : _addViewColumn`);
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : _createViewColumnOuter`);
     }
     else{
       throw error;
@@ -133,6 +133,14 @@ export async function _addViewColumn( viewId, viewColumnType, columnPath, viewCo
   //
   //--------------------------------------------------------------------------
   // 戻り値を検証
+  if( typeof result !== "string" ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : _createViewColumnOuter`);
+    }
+    else{
+      throw new Error(`resultが文字列ではありません。\nレイヤー : view_column\n関数 : _createViewColumnOuter`);
+    }
+  }
   //
   //--------------------------------------------------------------------------
   return result;
@@ -1498,6 +1506,17 @@ export async function addColumnPath( viewId, requestBody ){
         throw new Error(`result.newColumnPath[${i}].columnNameが文字列ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
       }
     }
+  }
+  if( typeof result.newColumnPath_total !== "number" ){
+    if( !result.newColumnPath_total ){
+      throw new Error(`result.newColumnPath_totalがNULLです。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+    else{
+      throw new Error(`result.newColumnPath_totalが数値ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
+    }
+  }
+  else if( isNaN(result.newColumnPath_total) ){
+    throw new Error(`result.newColumnPath_totalが数値ではありません。\nレイヤー : view_column\n関数 : addColumnPath`);
   }
   if( typeof result.newColumnPathInput !== "string" ){
     if( !result.newColumnPathInput ){

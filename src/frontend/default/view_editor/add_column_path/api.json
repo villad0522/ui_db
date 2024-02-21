@@ -37,6 +37,12 @@
         }
     },
     "response": {
+        "isToParent": {
+            "dataType": "BOOL",
+            "description": "参照先のテーブルに向ってカラムパスを構築するか否か",
+            "isRequired": true,
+            "example": true
+        },
         "newColumnPath": {
             "title": "カラムパスを構築するカラム名の一覧",
             "isArray": true,
@@ -57,8 +63,14 @@
         "newColumnPathInput": {
             "dataType": "TEXT",
             "description": "新しく表示したいカラム名",
-            "isRequired": true,
+            "isRequired": false,
             "example": ""
+        },
+        "newColumnPathInput_option": {
+            "dataType": "TEXT",
+            "description": "新しく表示したいカラム名の予測変換",
+            "isRequired": true,
+            "example": "氏名"
         }
     }
 }

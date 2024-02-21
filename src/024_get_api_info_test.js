@@ -36,10 +36,11 @@ import {
   getPrimaryKey,
 } from "./121_primary_key_validate.js";
 import {
-  _addViewColumn,
+  _createViewColumnOuter,
   listViewColumns,
   _deleteViewColumns,
   regenerateInputElements,
+  _addViewColumn,
   getViewColumnFromColumn,
   getViewColumnName,
   getViewColumnFromName,

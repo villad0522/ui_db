@@ -194,10 +194,11 @@ import {
   isExistView,
 } from "./064_page_and_view_validate.js";
 import {
-  _addViewColumn,
+  _createViewColumnOuter,
   listViewColumns,
   _deleteViewColumns,
   regenerateInputElements,
+  _addViewColumn,
   getViewColumnFromColumn,
   getViewColumnName,
   getViewColumnFromName,

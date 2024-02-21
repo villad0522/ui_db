@@ -195,10 +195,11 @@ import {
   isExistView,
 } from "./064_page_and_view_validate.js";
 import {
-  _addViewColumn,
+  _createViewColumnOuter,
   listViewColumns,
   _deleteViewColumns,
   regenerateInputElements,
+  _addViewColumn,
   getViewColumnFromColumn,
   getViewColumnName,
   getViewColumnFromName,
@@ -320,7 +321,7 @@ export async function runApi_core( httpMethod, endpointPath, queryParameters, re
       const viewId = Number(queryParameters["view"]);
       return {
         "userMessage": await createViewColumn(viewId,requestBody),
-        "nextUrl": "./?" + await convertQuery_core(newQueryParameters),
+        "nextUrl": "./?" + await convertQuery_core(queryParameters),
       }
     }
     //======================================================================

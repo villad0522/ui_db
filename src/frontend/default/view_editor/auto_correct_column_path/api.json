@@ -32,7 +32,7 @@
         "newColumnPathInput": {
             "dataType": "TEXT",
             "description": "新しく表示したいカラム名",
-            "isRequired": true,
+            "isRequired": false,
             "example": "氏名"
         }
     },

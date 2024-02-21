@@ -168,7 +168,7 @@ import {
 } from "./067_generate_sql_validate.js";
 import {
   startUp,  // プログラム起動
-  _addViewColumn,  // 【サブ】ビューカラムを作成
+  _createViewColumnOuter,  // 【サブ】ビューカラムを作成
   createColumn,  // カラムを作成
   createView,  // ビューを作成
   listViewColumns,  // ビューカラムの一覧を取得
@@ -201,7 +201,7 @@ export async function test060() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 78; i++ ) {
+    for ( i = 1; i <= 80; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

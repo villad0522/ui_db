@@ -51,10 +51,11 @@ import {
 } from "./121_primary_key_validate.js";
 import {
   clearCache,
-  _addViewColumn,
+  _createViewColumnOuter,
   listViewColumns,
   _deleteViewColumns,
   regenerateInputElements,
+  _addViewColumn,
   getViewColumnFromColumn,
   getViewColumnName,
   getViewColumnFromName,

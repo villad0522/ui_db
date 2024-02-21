@@ -462,5 +462,5 @@ export async function updateRecords_core( tableId, records ){
 // 参照元のカラムIDの一覧を取得する
 export async function listChildrenColumnId_core( tableId ){
   if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
-  return cacheData2[tableId];
+  return cacheData2[tableId] ?? [];
 }
