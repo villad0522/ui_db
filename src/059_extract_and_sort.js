@@ -22,6 +22,7 @@ import {
   getViewColumnFromName,
   autoCorrectColumnsToParents,
   autoCorrectColumnsToChild,
+  getViewColumnInfo,
 } from "./061_view_column_validate.js";
 import {
   getLocalIp,

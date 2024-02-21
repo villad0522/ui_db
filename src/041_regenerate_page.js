@@ -52,6 +52,7 @@ import {
   getViewColumnFromName,
   autoCorrectColumnsToParents,
   autoCorrectColumnsToChild,
+  getViewColumnInfo,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -547,8 +548,11 @@ export async function createColumn_core( tableId, columnName, dataType, parentTa
 // ビューカラムを左へ移動
 export async function reorderViewColumnToLeft_core( viewColumnId ){
   if(bugMode === 31) throw "MUTATION31";  // 意図的にバグを混入させる（ミューテーション解析）
-    const result = await updateView( params );    // 下層の関数を呼び出す
-    const { viewId } = params;
+    const result = await reorderViewColumnToLeft( viewColumnId );    // 下層の関数を呼び出す
+    const { viewId } = await getViewColumnInfo(viewColumnId);
+    if(!viewId){
+        throw `viewIdがnullです`;
+    }
     const { pageId } = await getViewInfo( viewId );
     await regeneratePage_core( pageId );
     return result;
@@ -557,11 +561,25 @@ export async function reorderViewColumnToLeft_core( viewColumnId ){
 // ビューカラムを右へ移動
 export async function reorderViewColumnToRight_core( viewColumnId ){
   if(bugMode === 32) throw "MUTATION32";  // 意図的にバグを混入させる（ミューテーション解析）
-  throw "この関数は未実装です。";
+    const result = await reorderViewColumnToRight( viewColumnId );    // 下層の関数を呼び出す
+    const { viewId } = await getViewColumnInfo(viewColumnId);
+    if(!viewId){
+        throw `viewIdがnullです`;
+    }
+    const { pageId } = await getViewInfo( viewId );
+    await regeneratePage_core( pageId );
+    return result;
 }
 
 // ビューカラムを削除
 export async function deleteViewColumn_core( viewColumnId ){
   if(bugMode === 33) throw "MUTATION33";  // 意図的にバグを混入させる（ミューテーション解析）
-  throw "この関数は未実装です。";
+    const { viewId } = await getViewColumnInfo(viewColumnId);
+    if(!viewId){
+        throw `viewIdがnullです`;
+    }
+    const result = await deleteViewColumn( viewId, viewColumnId );    // 下層の関数を呼び出す
+    const { pageId } = await getViewInfo( viewId );
+    await regeneratePage_core( pageId );
+    return result;
 }

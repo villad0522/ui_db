@@ -777,7 +777,7 @@ export async function _fillMasterData_core( viewId, childGroupId, childRecordDat
 // 入力方式を取得
 export async function getInputType_core( viewColumnId ){
   if(bugMode === 49) throw "MUTATION49";  // 意図的にバグを混入させる（ミューテーション解析）
-  return cacheData3[viewColumnId];
+  return cacheData3[viewColumnId] ?? "TEXTBOX";
 }
 
 

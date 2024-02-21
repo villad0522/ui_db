@@ -342,7 +342,15 @@ export async function createView_core( pageId, tableName ){
 }
 
 
-let buf2 = {};
+let buf2 = {
+    // "viewId": {
+    //     "viewColumnId": viewColumn.viewColumnId,
+    //     "viewColumnName": viewColumn.viewColumnName,
+    //     "viewColumnType": viewColumn.viewColumnType,
+    //     "excelColumnText": _convertToExcelColumn(excelStartColumn + offset),
+    //     "columnPath": viewColumn.columnPath
+    // }
+};
 
 
 // ビューカラムの一覧を取得
@@ -400,8 +408,8 @@ function _convertToExcelColumn(number) {
 // ビューを削除
 export async function deleteView_core( viewId ){
   if(bugMode === 16) throw "MUTATION16";  // 意図的にバグを混入させる（ミューテーション解析）
-    buf[viewId] = {};
-    buf2[viewId] = [];
+    buf[viewId] = undefined;
+    buf2[viewId] = undefined;
     await _deleteViewColumns_core( viewId );
     return await deleteView( viewId );  // 下層の関数を実行する
 }
@@ -428,9 +436,11 @@ export async function _deleteViewColumns_core( viewId ){
         // ビューカラムを一括削除（再帰呼び出し）
         await _deleteViewColumns_core( viewId );
     }
-    buf[viewId] = {};
-    buf2[viewId] = [];
+    buf[viewId] = undefined;
+    buf2[viewId] = undefined;
 }
+
+
 
 // 【サブ関数】入力要素を全て作り直す
 export async function regenerateInputElements_core( viewId ){
@@ -523,8 +533,8 @@ export async function regenerateInputElements_core( viewId ){
             columnId,
         );
     }
-    buf[viewId] = {};
-    buf2[viewId] = [];
+    buf[viewId] = undefined;
+    buf2[viewId] = undefined;
 }
 
 
@@ -588,8 +598,8 @@ export async function _addViewColumn_core( viewId, viewColumnType, columnPath, v
             ":excelColumnIndex": excelColumnIndex,
         },
     );
-    buf[viewId] = {};
-    buf2[viewId] = [];
+    buf[viewId] = undefined;
+    buf2[viewId] = undefined;
 }
 
 // ページを削除
@@ -602,8 +612,8 @@ export async function deletePage_core( pageId ){
     if(bugMode === 30) throw "MUTATION30";  // 意図的にバグを混入させる（ミューテーション解析）
     // ビューカラムを一括削除
     await _deleteViewColumns_core( viewId );
-    buf[viewId] = {};
-    buf2[viewId] = [];
+    buf[viewId] = undefined;
+    buf2[viewId] = undefined;
   }
   // 親のビューを取得
   const view = await runSqlReadOnly(
@@ -666,7 +676,7 @@ export async function updateView_core( params ){
 }
 
 // ビューカラムを削除
-export async function deleteViewColumn_core( viewColumnId ){
+export async function deleteViewColumn_core( viewId, viewColumnId ){
   if(bugMode === 37) throw "MUTATION37";  // 意図的にバグを混入させる（ミューテーション解析）
     // 削除
     if(true/*一番左のビューカラムを削除する場合 */){
@@ -676,15 +686,15 @@ export async function deleteViewColumn_core( viewColumnId ){
     }
     await runSqlWriteOnly(
         `DELETE FROM view_columns
-            WHERE view_column_id = :viewId;`,
+            WHERE view_column_id = :viewColumnId;`,
         {
-            ":viewId": viewId,
+            ":viewColumnId": viewColumnId,
         },
     );
     // 入力要素と入力グループを全て消し去る
     await deleteViewInput(viewId);
-    buf[viewId] = {};
-    buf2[viewId] = [];
+    buf[viewId] = undefined;
+    buf2[viewId] = undefined;
     return "ビューカラムを削除しました";
 }
 
@@ -746,7 +756,7 @@ export async function getViewColumnFromColumn_core( columnId, viewId ){
         //  "c78": [ "d45", "d99" ],
         //  "c6": [ "d12" ],
     };
-    buf2[viewId] = [];
+    buf2[viewId] = undefined;
     for( const { viewColumnId, columnId } of viewColumns ){
         if(bugMode === 46) throw "MUTATION46";  // 意図的にバグを混入させる（ミューテーション解析）
         if( !buf[viewId][columnId] ){
@@ -795,7 +805,7 @@ export async function getViewColumnName_core( viewId, viewColumnId ){
     }
     if(!buf2[viewId]){
         if(bugMode === 51) throw "MUTATION51";  // 意図的にバグを混入させる（ミューテーション解析）
-        buf2[viewId] = {};
+        buf2[viewId] = undefined;
     }
     //
     const { excelStartColumn } = await getViewInfo( viewId );
@@ -887,4 +897,43 @@ export async function autoCorrectColumnsToChild_core( viewId, inputText, columnN
     const columnIdList = await listChildrenColumnId( parentTableId );
     const columnNameList = columnIdList.map( async (columnId) => await getColumnName(columnId) );
     return await autoCorrectFromArray( inputText, columnNameList );
+}
+
+
+
+// ビューカラムの情報を取得
+export async function getViewColumnInfo_core( viewColumnId ){
+  if(bugMode === 59) throw "MUTATION59";  // 意図的にバグを混入させる（ミューテーション解析）
+    const viewColumns = await runSqlReadOnly(
+        `SELECT
+            "d" || view_column_id AS viewColumnId,
+            view_id AS viewId,
+            view_column_type AS viewColumnType,
+            column_path AS columnPath,
+            view_column_name AS viewColumnName,
+            excel_column_index AS excelColumnIndex
+        FROM view_columns
+        WHERE view_column_id = :viewColumnId
+        LIMIT 1;`,
+        {
+            ":viewColumnId": viewColumnId.replace("d",""),
+        },
+    );
+    if(viewColumns.length===0){
+        throw `ビューカラムが見つかりません。\nviewColumnId = ${viewColumnId}`;
+    }
+    const viewId = viewColumns[0].viewId;
+    //
+    const { excelStartColumn } = await getViewInfo( viewId );
+    //
+    const offset = viewColumns[0].excelColumnIndex;
+    buf2[viewId][viewColumnId] = {
+        "viewId": viewId,
+        "viewColumnId": viewColumns[0].viewColumnId,
+        "viewColumnName": viewColumns[0].viewColumnName,
+        "viewColumnType": viewColumns[0].viewColumnType,
+        "excelColumnText": _convertToExcelColumn(excelStartColumn + offset),
+        "columnPath": viewColumns[0].columnPath
+    };
+    return buf2[viewId][viewColumnId];
 }
