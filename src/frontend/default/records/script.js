@@ -2,25 +2,24 @@
 import { myFetch, jumpWithQuery } from "/default/my_lib.js";
 
 //###############################################################
-// ページを読み込んだら、はじめに実行する関数
+// ページを読み込んだら、はじめに実行する
 window.addEventListener('DOMContentLoaded', async () => {
-    await myFetch("./form" + location.search, { method: "GET" });
+    //---------------------------------------------------------------
+    const searchParams = new URLSearchParams(location.search);
+    const tableId = searchParams.get("table");
+    const pageNumber = searchParams.get("page_records") ?? 1;
+    if (!tableId) {
+        // 前のページに戻る
+        location.href = "/default/tables/index.html";
+        setTimeout(() => {
+            alert("クエリパラメータ―に「table」が設定されていません");
+        }, 1000);
+        return;
+    }
     //
     //---------------------------------------------------------------
-    // 以前開いていたスクロール位置を読み込む
-    const scrollXText = sessionStorage.getItem("scrollX");
-    const scrollYText = sessionStorage.getItem("scrollY");
-    if (scrollXText && scrollYText) {
-        const scrollX = Number(scrollXText);
-        const scrollY = Number(scrollYText);
-        if (!isNaN(scrollX) && !isNaN(scrollY)) {
-            window.scroll({
-                top: scrollY,
-                left: scrollX,
-                behavior: "instant", // スクロールを単一のジャンプで即座に行う
-            });
-        }
-    }
+    const formData = await myFetch("./form?table=" + tableId, { method: "GET" });
+    //
     //---------------------------------------------------------------
     // スクロール位置を保存する
     let pastScrollTime = 0;
@@ -33,10 +32,37 @@ window.addEventListener('DOMContentLoaded', async () => {
             timerId = null;
         }
         timerId = window.setTimeout(() => {
-            sessionStorage.setItem("scrollX", document.documentElement.scrollLeft);
-            sessionStorage.setItem("scrollY", document.documentElement.scrollTop);
+            sessionStorage.setItem("scrollX" + tableId + pageNumber, document.documentElement.scrollLeft);
+            sessionStorage.setItem("scrollY" + tableId + pageNumber, document.documentElement.scrollTop);
         }, 300);
     });
+    //
+    const recordOffset = Number(formData.get("recordOffset"));
+    if (recordOffset >= 0) {
+        // フォーカス中の場所にスクロールする
+        const trElement = document.getElementById("offset" + recordOffset);
+        trElement.scrollIntoView({
+            behavior: "instant", // スクロールを単一のジャンプで即座に行う
+            block: "center",
+        });
+    }
+    else {
+        // 以前開いていたスクロール位置を読み込む
+        const scrollXText = sessionStorage.getItem("scrollX" + tableId + pageNumber);
+        const scrollYText = sessionStorage.getItem("scrollY" + tableId + pageNumber);
+        if (scrollXText && scrollYText) {
+            const scrollX = Number(scrollXText);
+            const scrollY = Number(scrollYText);
+            if (!isNaN(scrollX) && !isNaN(scrollY)) {
+                window.scroll({
+                    top: scrollY,
+                    left: scrollX,
+                    behavior: "instant", // スクロールを単一のジャンプで即座に行う
+                });
+            }
+        }
+    }
+    //
     //---------------------------------------------------------------
     //
     document.body.style.visibility = "visible";
@@ -44,32 +70,18 @@ window.addEventListener('DOMContentLoaded', async () => {
     //---------------------------------------------------------------
 });
 //
-//###############################################################
-// 編集スイッチが切り替えられたとき
-window.handleEditSwitch = function (event) {
-    jumpWithQuery(`/default/page_editor/index.html?page_id=1`);
-    event.target.checked = false;   // スイッチを「編集中ではない」に戻す
-    // ↑ この処理の意義は、
-    // 「編集内容は破棄されます。よろしいですか？」に
-    // Noと答えた場合に、スイッチを戻すため。
+//#####################################################################
+// テーブルを丸ごと削除する関数
+window.handleDeleteTable = async function () {
+    if (!confirm("本当に削除しますか？この操作は二度と元に戻せません。")) return;
+    await myFetch('./delete_table/json');
 }
 //
 //###############################################################
-// 削除ボタンが押されたとき
-window.handleDeleteButton = async function (viewId, i) {
-    const recordId = document.getElementsByName(`view${viewId}_${i}_id`)[0].value;
-    await myFetch(`./delete_record/form?view_id=${viewId}&record_id=${recordId}`);
-}
-//
-//###############################################################
-// テーブルがクリックされたときに実行する関数
-window.tableButton = function (i) {
-    // テーブル名
-    let tableId = document.getElementsByName(`tables${i}_id`)[0].value;
-    //
-    // 別のページに移動する
-    tableId = encodeURIComponent(tableId);
-    window.location.href = `../records?table=${tableId}`;
+// レコードIDを取得する関数
+window.getRecordId = function (i) {
+    const recordId = document.getElementsByName(`records${i}_id`)[0].innerText;
+    return recordId;
 }
 //
 //###############################################################
@@ -77,7 +89,9 @@ window.tableButton = function (i) {
 window.paginationButtonFirst = function (arrayName) {
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_view1_", 1);
+    searchParams.set("page_records", 1);
+    searchParams.delete("record");
+    searchParams.delete("paste");
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -86,10 +100,12 @@ window.paginationButtonFirst = function (arrayName) {
 // ページネーションボタンの「Prev」がクリックされたときに実行する関数
 window.paginationButtonPrev = function () {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("view1__pagePrev")[0].innerText;
+    const pageNumber = document.getElementsByName("records_pagePrev")[0].innerText;
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_view1_", pageNumber);
+    searchParams.set("page_records", pageNumber);
+    searchParams.delete("record");
+    searchParams.delete("paste");
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -98,10 +114,12 @@ window.paginationButtonPrev = function () {
 // ページネーションボタンの「Next」がクリックされたときに実行する関数
 window.paginationButtonNext = function () {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("view1__pageNext")[0].innerText;
+    const pageNumber = document.getElementsByName("records_pageNext")[0].innerText;
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_view1_", pageNumber);
+    searchParams.set("page_records", pageNumber);
+    searchParams.delete("record");
+    searchParams.delete("paste");
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }
@@ -110,10 +128,12 @@ window.paginationButtonNext = function () {
 // ページネーションボタンの「Last」がクリックされたときに実行する関数
 window.paginationButtonLast = function () {
     // 次に進むべきページ番号
-    const pageNumber = document.getElementsByName("view1__pageLast")[0].value;
+    const pageNumber = document.getElementsByName("records_pageLast")[0].value;
     // クエリパラメータ―を作成
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("page_view1_", pageNumber);
+    searchParams.set("page_records", pageNumber);
+    searchParams.delete("record");
+    searchParams.delete("paste");
     // ページを再読み込み
     window.location.href = "./?" + searchParams.toString();
 }

@@ -10,7 +10,7 @@ import {
 //#######################################################################################
 // 関数「openExcel_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function openExcel( clientIpAddress, pageId, queryParameters ){
+export async function openExcel( clientIpAddress, nowPageId, queryParameters ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof clientIpAddress !== "string" ){
@@ -21,16 +21,16 @@ export async function openExcel( clientIpAddress, pageId, queryParameters ){
       throw new Error(`clientIpAddressが文字列ではありません。\nレイヤー : excel_file\n関数 : openExcel`);
     }
   }
-  if( typeof pageId !== "number" ){
-    if( !pageId ){
-      throw new Error(`pageIdがNULLです。\nレイヤー : excel_file\n関数 : openExcel`);
+  if( typeof nowPageId !== "number" ){
+    if( !nowPageId ){
+      throw new Error(`nowPageIdがNULLです。\nレイヤー : excel_file\n関数 : openExcel`);
     }
     else{
-      throw new Error(`pageIdが数値ではありません。\nレイヤー : excel_file\n関数 : openExcel`);
+      throw new Error(`nowPageIdが数値ではありません。\nレイヤー : excel_file\n関数 : openExcel`);
     }
   }
-  else if( isNaN(pageId) ){
-    throw new Error(`pageIdが数値ではありません。\nレイヤー : excel_file\n関数 : openExcel`);
+  else if( isNaN(nowPageId) ){
+    throw new Error(`nowPageIdが数値ではありません。\nレイヤー : excel_file\n関数 : openExcel`);
   }
   if( queryParameters===null || queryParameters===undefined ){
     throw new Error(`queryParametersがNULLです。\nレイヤー : excel_file\n関数 : openExcel`);
@@ -51,7 +51,7 @@ export async function openExcel( clientIpAddress, pageId, queryParameters ){
   // メイン処理を実行
   let result;
   try{
-    result = await openExcel_core( clientIpAddress, pageId, queryParameters );
+    result = await openExcel_core( clientIpAddress, nowPageId, queryParameters );
   }
   catch(error){
     if( typeof error === "string" ){

@@ -7,17 +7,17 @@ import {
 } from "./037_excel_template_validate.js";
 import {
   getLocalIp,
-} from "./136_ip_address_validate.js";
+} from "./139_ip_address_validate.js";
 import {
   createDirectories,
 } from "./052_frontend_files_validate.js";
 import {
   getPath,
-} from "./133_directory_validate.js";
+} from "./136_directory_validate.js";
 import {
   getDebugMode,
   getDB,
-} from "./130_connect_database_validate.js";
+} from "./133_connect_database_validate.js";
 import {
   runSqlReadOnly,
   runSqlWriteOnly,
@@ -25,17 +25,17 @@ import {
   checkColumnEnabled,
   getColumnName,
   getColumnIdFromName,
-} from "./109_column_name_validate.js";
+} from "./112_column_name_validate.js";
 import {
   getTimestamp,
-} from "./127_timezone_validate.js";
+} from "./130_timezone_validate.js";
 import {
   startTransaction,
   endTransaction,
-} from "./124_transaction_lower_validate.js";
+} from "./127_transaction_lower_validate.js";
 import {
   getPrimaryKey,
-} from "./121_primary_key_validate.js";
+} from "./124_primary_key_validate.js";
 import {
   clearCache,
   _createViewColumnOuter,
@@ -52,7 +52,7 @@ import {
   addColumnPath,
   autoCorrectColumnPath,
   createViewColumn,
-} from "./061_view_column_validate.js";
+} from "./064_view_column_validate.js";
 import {
   createColumn,
   deleteTable,
@@ -71,7 +71,7 @@ import {
 } from "./040_regenerate_page_validate.js";
 import {
   listDataTypes,
-} from "./118_data_type_validate.js";
+} from "./121_data_type_validate.js";
 import {
   createRecord,
   updateRecords,
@@ -82,14 +82,14 @@ import {
   listColumnsAll,
   getParentTableId,
   listChildrenColumnId,
-} from "./100_relation_validate.js";
+} from "./103_relation_validate.js";
 import {
   createTable,
   updateTableName,
   updateColumnName,
   autoCorrectTableName,
   autoCorrectColumnName,
-} from "./097_system_auto_correct_validate.js";
+} from "./100_system_auto_correct_validate.js";
 import {
   deleteRecords,
   disableTable,
@@ -101,7 +101,7 @@ import {
   scanKeywords,
   getScanKeywordsProgress,
   stopScanKeywords,
-} from "./103_search_text_validate.js";
+} from "./106_search_text_validate.js";
 import {
   reload,
   checkTableEnabled,
@@ -109,7 +109,7 @@ import {
   listTableNamesAll,
   getTableIdFromName,
   listTablesInSQL,
-} from "./112_table_name_validate.js";
+} from "./115_table_name_validate.js";
 import {
   cutRecord,
   copyRecord,
@@ -119,7 +119,7 @@ import {
   _moveRecord,
   _copyRecord,
   _generateRecordSortNumber,
-} from "./115_sort_validate.js";
+} from "./118_sort_validate.js";
 import {
   listTables,
   listRecords,
@@ -131,14 +131,14 @@ import {
   _deleteTitleColumn,
   getParentValue,
   _getRecordOffset,
-} from "./085_record_title_validate.js";
+} from "./088_record_title_validate.js";
 import {
   reserveWord,
   checkReservedWord,
-} from "./106_reserved_word_validate.js";
+} from "./109_reserved_word_validate.js";
 import {
   formatField,
-} from "./094_db_formatter_validate.js";
+} from "./097_db_formatter_validate.js";
 import {
   autoFill,
   _autoFill,
@@ -153,7 +153,7 @@ import {
   updateRecordsFromView,
   createRecordFromView,
   _convertToRecord,
-} from "./088_input_element_validate.js";
+} from "./091_input_element_validate.js";
 import {
   _getConditions,
   generateSQL,
@@ -161,18 +161,18 @@ import {
   autoCorrectConditionalValue,
   deleteCondition,
   addCondition,
-} from "./058_extract_and_sort_validate.js";
+} from "./061_extract_and_sort_validate.js";
 import {
   createRecordsFromCsv,
   getCsvProgress,
   destroyCSV,
-} from "./082_csv_validate.js";
+} from "./085_csv_validate.js";
 import {
   getPathLength,
   slicePath,
   checkPath,
   pathToColumnId,
-} from "./079_columnPath_validate.js";
+} from "./082_columnPath_validate.js";
 import {
   getJoinIdMap,
   checkTableDuplication,
@@ -180,13 +180,13 @@ import {
   getJoinData,
   getWhereData,
   getOrderData,
-} from "./076_convert_sql_data_validate.js";
+} from "./079_convert_sql_data_validate.js";
 import {
   generateSQLwithoutDuplication,
-} from "./073_generate_sql2_validate.js";
+} from "./076_generate_sql2_validate.js";
 import {
   generateSQLwithDuplication,
-} from "./070_generate_sql1_validate.js";
+} from "./073_generate_sql1_validate.js";
 import {
   getPageInfo,
   listViewsFromTableId,
@@ -206,12 +206,16 @@ import {
   _copyPage,
   getViewInfo,
   isExistView,
-} from "./064_page_and_view_validate.js";
+} from "./067_page_and_view_validate.js";
 import {
   getPageDataForGUI,
   getPageDataForExcel,
-  myFunc,
-} from "./055_page_data_validate.js";
+  _getDataList,
+  _getSheetDatas,
+} from "./058_page_data_validate.js";
+import {
+  getExcelId,
+} from "./055_excel_multiple_validate.js";
 import {
   generateViewHTML_table,
   generateViewHTML_card,

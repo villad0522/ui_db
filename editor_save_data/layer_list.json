@@ -85,6 +85,11 @@
     "layerNameEN": "frontend_files"
   },
   {
+    "layerId": "01HQ61FP89HJ2FTBB59T2SAV8Z",
+    "layerNameJP": "Excelをまとめて出力",
+    "layerNameEN": "excel_multiple"
+  },
+  {
     "layerId": "01HN70A4E7DJ4K23AN20CHPDR9",
     "layerNameJP": "ページデータのやり取り",
     "layerNameEN": "page_data"
