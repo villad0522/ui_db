@@ -89,6 +89,7 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
+  listChildrenColumnId,
 } from "./100_relation_validate.js";
 import {
   createTable,
@@ -796,7 +797,17 @@ export async function getViewColumnName_core( viewId, viewColumnId ){
         if(bugMode === 51) throw "MUTATION51";  // 意図的にバグを混入させる（ミューテーション解析）
         buf2[viewId] = {};
     }
-    buf2[viewId][viewColumnId] = viewColumns[0];
+    //
+    const { excelStartColumn } = await getViewInfo( viewId );
+    //
+    const offset = viewColumns[0].excelColumnIndex;
+    buf2[viewId][viewColumnId] = {
+        "viewColumnId": viewColumns[0].viewColumnId,
+        "viewColumnName": viewColumns[0].viewColumnName,
+        "viewColumnType": viewColumns[0].viewColumnType,
+        "excelColumnText": _convertToExcelColumn(excelStartColumn + offset),
+        "columnPath": viewColumns[0].columnPath
+    };
     return viewColumns[0].viewColumnName;
 }
 
@@ -819,13 +830,61 @@ export async function getViewColumnFromName_core( viewColumnName ){
         },
     );
     if(viewColumns.length===0){
-        throw `ビューカラムが見つかりません。\nviewColumnId = ${viewColumnId}`;
-    }
-    if(!buf2[viewId]){
-        if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
-        buf2[viewId] = {};
+        throw `ビューカラムが見つかりません。\nviewColumnName = ${viewColumnName}`;
     }
     const viewId = viewColumns[0].viewId;
-    buf2[viewId][viewColumnId] = viewColumns[0];
-    return viewColumns[0];
+    const viewColumnId = viewColumns[0].viewColumnId;
+    //
+    const { excelStartColumn } = await getViewInfo( viewId );
+    //
+    const offset = viewColumns[0].excelColumnIndex;
+    buf2[viewId][viewColumnId] = {
+        "viewColumnId": viewColumns[0].viewColumnId,
+        "viewColumnName": viewColumns[0].viewColumnName,
+        "viewColumnType": viewColumns[0].viewColumnType,
+        "excelColumnText": _convertToExcelColumn(excelStartColumn + offset),
+        "columnPath": viewColumns[0].columnPath
+    };
+    return buf2[viewId][viewColumnId];
+}
+
+
+
+// 新しいビューカラムの予測を取得（子→親）
+export async function autoCorrectColumnsToParents_core( viewId, inputText, columnNames ){
+  if(bugMode === 53) throw "MUTATION53";  // 意図的にバグを混入させる（ミューテーション解析）
+    let parentTableId = "";
+    if( columnNames.length === 0 ){
+        if(bugMode === 54) throw "MUTATION54";  // 意図的にバグを混入させる（ミューテーション解析）
+        const viewInfo = await getViewInfo( viewId );
+        parentTableId = viewInfo.tableId;
+    }
+    else {
+        if(bugMode === 55) throw "MUTATION55";  // 意図的にバグを混入させる（ミューテーション解析）
+        const childColumnId = await getColumnIdFromName( columnNames[columnNames.length-1] );
+        parentTableId = await getParentTableId( childColumnId );
+    }
+    return await autoCorrectColumnName( inputText, parentTableId );
+}
+
+
+
+
+// 新しいビューカラムの予測を取得（親→子）
+export async function autoCorrectColumnsToChild_core( viewId, inputText, columnNames ){
+  if(bugMode === 56) throw "MUTATION56";  // 意図的にバグを混入させる（ミューテーション解析）
+    let parentTableId = "";
+    if( columnNames.length === 0 ){
+        if(bugMode === 57) throw "MUTATION57";  // 意図的にバグを混入させる（ミューテーション解析）
+        const viewInfo = await getViewInfo( viewId );
+        parentTableId = viewInfo.tableId;
+    }
+    else {
+        if(bugMode === 58) throw "MUTATION58";  // 意図的にバグを混入させる（ミューテーション解析）
+        const parentColumnId = await getColumnIdFromName( columnNames[columnNames.length-1] );
+        parentTableId = await getTableId( parentColumnId );
+    }
+    const columnIdList = await listChildrenColumnId( parentTableId );
+    const columnNameList = columnIdList.map( async (columnId) => await getColumnName(columnId) );
+    return await autoCorrectFromArray( inputText, columnNameList );
 }

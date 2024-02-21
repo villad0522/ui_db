@@ -1,0 +1,27 @@
+{
+    "httpMethod": "POST",
+    "description": "抽出条件を削除します。",
+    "commandName": "DELETE_CONDITION",
+    "queryParameters": {
+        "condition": {
+            "dataType": "TEXT",
+            "description": "抽出条件のID",
+            "isRequired": true,
+            "example": "p1c32"
+        },
+        "view": {
+            "dataType": "INTEGER",
+            "description": "ビューID",
+            "isRequired": true,
+            "example": 23
+        }
+    },
+    "requestBody": {},
+    "response": {
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "./"
+        }
+    }
+}

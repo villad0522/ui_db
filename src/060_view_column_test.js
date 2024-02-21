@@ -81,6 +81,7 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
+  listChildrenColumnId,
 } from "./100_relation_validate.js";
 import {
   createTable,
@@ -185,6 +186,8 @@ import {
   clearCache,  // インメモリキャッシュを削除する
   getViewColumnName,  // ビューカラムの名前を取得
   getViewColumnFromName,  // 名前からビューカラムの情報を取得
+  autoCorrectColumnsToParents,  // 新しいビューカラムの予測を取得（子→親）
+  autoCorrectColumnsToChild,  // 新しいビューカラムの予測を取得（親→子）
 } from "./061_view_column_validate.js";
 import { setBugMode } from "./062_view_column.js";
 
@@ -194,7 +197,7 @@ export async function test060() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 53; i++ ) {
+    for ( i = 1; i <= 58; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

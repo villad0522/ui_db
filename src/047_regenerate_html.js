@@ -50,6 +50,8 @@ import {
   getViewColumnFromColumn,
   getViewColumnName,
   getViewColumnFromName,
+  autoCorrectColumnsToParents,
+  autoCorrectColumnsToChild,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -63,6 +65,7 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
+  listChildrenColumnId,
 } from "./100_relation_validate.js";
 import {
   createTable,
@@ -370,15 +373,15 @@ export async function regenerateHTML_core( pageId ){
         switch( viewType ){
             case "BUTTON":
                 if(bugMode === 6) throw "MUTATION6";  // 意図的にバグを混入させる（ミューテーション解析）
-                mainHtmlText += await generateViewHTML_button( viewId, tableId, onePageMaxSize, childPageId );
+                mainHtmlText += await generateViewHTML_button( viewId, tableId, onePageMaxSize, childPageId, i );
                 break;
             case "TABLE":
                 if(bugMode === 7) throw "MUTATION7";  // 意図的にバグを混入させる（ミューテーション解析）
-                mainHtmlText += await generateViewHTML_table( viewId, tableId, onePageMaxSize, childPageId );
+                mainHtmlText += await generateViewHTML_table( viewId, tableId, onePageMaxSize, childPageId, i );
                 break;
             case "CARD":
                 if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
-                mainHtmlText += await generateViewHTML_card( viewId, tableId, onePageMaxSize, childPageId );
+                mainHtmlText += await generateViewHTML_card( viewId, tableId, onePageMaxSize, childPageId, i );
                 break;
             default:
                 throw `ビューの種類(viewType)がサポートされていません。\nviewType = ${viewType}`;

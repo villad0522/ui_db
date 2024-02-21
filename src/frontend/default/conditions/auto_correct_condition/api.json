@@ -1,0 +1,49 @@
+{
+    "httpMethod": "POST",
+    "description": "抽出条件を追加します。",
+    "commandName": "AUTO_CORRECT_CONDITION",
+    "queryParameters": {},
+    "requestBody": {
+        "views": {
+            "title": "ビューの一覧",
+            "isArray": true,
+            "onePageMaxSize": 5,
+            "children": {
+                "viewId": {
+                    "dataType": "INTEGER",
+                    "description": "ビューのID",
+                    "example": 5
+                },
+                "newExtractionTarget": {
+                    "dataType": "TEXT",
+                    "description": "新しい抽出条件の列名。（ビューカラム名）",
+                    "example": "学年"
+                },
+                "newExtractionValue": {
+                    "dataType": "TEXT",
+                    "description": "新しい抽出条件の値。",
+                    "example": "3"
+                }
+            }
+        }
+    },
+    "response": {
+        "views": {
+            "title": "ビューの一覧",
+            "isArray": true,
+            "onePageMaxSize": 5,
+            "children": {
+                "newExtractionValue_option": {
+                    "dataType": "TEXT",
+                    "description": "新しい抽出条件の予測変換。",
+                    "example": "3"
+                }
+            }
+        },
+        "views_total": {
+            "dataType": "INTEGER",
+            "description": "ビューの個数",
+            "example": 1
+        }
+    }
+}

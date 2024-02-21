@@ -1,0 +1,49 @@
+{
+    "httpMethod": "POST",
+    "description": "抽出条件を追加します。",
+    "commandName": "ADD_CONDITION",
+    "queryParameters": {
+        "view": {
+            "dataType": "INTEGER",
+            "description": "ビューID",
+            "isRequired": true,
+            "example": 23
+        }
+    },
+    "requestBody": {
+        "views": {
+            "title": "ビューの一覧",
+            "isArray": true,
+            "onePageMaxSize": 5,
+            "children": {
+                "viewId": {
+                    "dataType": "INTEGER",
+                    "description": "ビューのID",
+                    "example": 5
+                },
+                "newExtractionTarget": {
+                    "dataType": "TEXT",
+                    "description": "新しい抽出条件の列名。（ビューカラム名）",
+                    "example": "学年"
+                },
+                "newExtractionExpression": {
+                    "dataType": "TEXT",
+                    "description": "新しい抽出条件の条件演算子",
+                    "example": "="
+                },
+                "newExtractionValue": {
+                    "dataType": "TEXT",
+                    "description": "新しい抽出条件の値。",
+                    "example": "3"
+                }
+            }
+        }
+    },
+    "response": {
+        "nextUrl": {
+            "dataType": "TEXT",
+            "description": "完了した場合に、移動すべきURL",
+            "example": "./"
+        }
+    }
+}

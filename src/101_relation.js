@@ -115,6 +115,8 @@ export async function startUp_core( localUrl, isDebug ){
   await _reload();    // メモリに再読み込み
 }
 
+
+
 let cacheData1 = {
   // 代入例
   //  "c23": "t4",
@@ -319,6 +321,8 @@ export async function listColumnsAll_core( tableId ){
   return columns2;
 }
 
+
+
 // 参照先のテーブルIDを取得する
 export async function getParentTableId_core( columnId ){
   if(bugMode === 19) throw "MUTATION19";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -424,6 +428,8 @@ export async function checkRecord_core( tableId, recordData ){
   return await _checkRecord( tableId, recordData );
 }
 
+
+
 // レコードを作成
 export async function createRecord_core( tableId, recordData ){
   if(bugMode === 26) throw "MUTATION26";  // 意図的にバグを混入させる（ミューテーション解析）
@@ -434,6 +440,8 @@ export async function createRecord_core( tableId, recordData ){
   }
   return await createRecord( tableId, recordData ); // 下層の関数を呼び出す
 }
+
+
 
 // レコードを上書き
 export async function updateRecords_core( tableId, records ){
@@ -447,4 +455,12 @@ export async function updateRecords_core( tableId, records ){
     }
   }
   return await updateRecords( tableId, records ); // 下層の関数を呼び出す
+}
+
+
+
+// 参照元のカラムIDの一覧を取得する
+export async function listChildrenColumnId_core( tableId ){
+  if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
+  return cacheData2[tableId];
 }

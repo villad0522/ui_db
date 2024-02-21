@@ -50,6 +50,8 @@ import {
   getViewColumnFromColumn,
   getViewColumnName,
   getViewColumnFromName,
+  autoCorrectColumnsToParents,
+  autoCorrectColumnsToChild,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -63,6 +65,7 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
+  listChildrenColumnId,
 } from "./100_relation_validate.js";
 import {
   createTable,
@@ -215,11 +218,13 @@ export function setBugMode( mode ){
 
 
 // ビューのHTMLを生成（表）
-export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSize, childPageId ){
+export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSize, childPageId, viewIndex ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
     const viewColumns = await listViewColumns( viewId );
     let mainHtmlText = "";
     mainHtmlText += `
+        <input type="checkbox" name="views${viewIndex}_flag" style="display: none;">
+        <input type="text" name="views${viewIndex}_viewId" style="display: none;">
         <div class="card" style="background: none; ">
             <div class="card-body row" oninput="myFetch('./auto_correct_view${viewId}/form?is_auto_fill=false')">`;
     //
@@ -477,11 +482,11 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                     <div class="row">
                         <div class="col-lg-10 mb-2">
                             <div class="input-group flex-nowrap">
-                                <select name="newExtractionTarget${viewId}" class="form-select">
+                                <select name="views${viewIndex}_newExtractionTarget" class="form-select">
                                 </select>
                                 <span class="input-group-text">が</span>
-                                <input name="newExtractionValue${viewId}" type="text" class="form-control">
-                                <select name="newExtractionExpression${viewId}" class="form-select" style="max-width: 150px;">
+                                <input oninput="myFetch('/default/conditions/auto_correct_condition/form');" name="views${viewIndex}_newExtractionValue" type="text" class="form-control">
+                                <select name="views${viewIndex}_newExtractionExpression" class="form-select" style="max-width: 150px;">
                                     <option value="LIKE" selected>を含む</option>
                                     <option value="=">と等しい</option>
                                     <option value="!=">以外</option>
@@ -490,7 +495,7 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
                                     <option value="<=">以下</option>
                                     <option value=">-">以上</option>
                                 </select>
-                                <button onclick="myFetch('./add_extraction_view${viewId}/form');" type="button" class="btn btn-primary">
+                                <button onclick="myFetch('/default/conditions/add_condition/form?view=${viewId}');" type="button" class="btn btn-primary">
                                     <i class="bi bi-plus"></i>
                                     条件追加
                                 </button>
@@ -501,10 +506,10 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
         if(bugMode === 13) throw "MUTATION13";  // 意図的にバグを混入させる（ミューテーション解析）
         mainHtmlText += `
                         <div class="col-lg-6" name="extraction${viewId}_${i}_flag">
+                            <input name="extraction${viewId}_${i}_conditionId" type="text" style="display: none;">
                             <div class="input-group flex-nowrap">
-                                <input name="extraction${viewId}_${i}_conditionId" type="text" style="display: none;">
                                 <input name="extraction${viewId}_${i}_text" disabled type="text" class="form-control" style="border: solid 1px #aaa;">
-                                <button onclick="deleteExtraction(${viewId},${i})" type="button" class="btn btn-outline-danger">
+                                <button onclick="deleteCondition(${viewId},${i})" type="button" class="btn btn-outline-danger">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>
@@ -524,13 +529,13 @@ export async function generateViewHTML_table_core( viewId, tableId, onePageMaxSi
 }
 
 // ビューのHTMLを生成（カード）
-export async function generateViewHTML_card_core( viewId, tableId, onePageMaxSize, childPageId ){
+export async function generateViewHTML_card_core( viewId, tableId, onePageMaxSize, childPageId, viewIndex ){
   if(bugMode === 14) throw "MUTATION14";  // 意図的にバグを混入させる（ミューテーション解析）
     return "";
 }
 
 // ビューのHTMLを生成（ボタン）
-export async function generateViewHTML_button_core( viewId, tableId, onePageMaxSize, childPageId ){
+export async function generateViewHTML_button_core( viewId, tableId, onePageMaxSize, childPageId, number ){
   if(bugMode === 15) throw "MUTATION15";  // 意図的にバグを混入させる（ミューテーション解析）
     return "";
 }

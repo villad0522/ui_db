@@ -69,7 +69,7 @@ export async function autoCorrectTableName( inputText ){
 //#######################################################################################
 // 関数「autoCorrectColumnName_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function autoCorrectColumnName( inputText, tableName ){
+export async function autoCorrectColumnName( inputText, tableId ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof inputText !== "string" ){
@@ -80,12 +80,12 @@ export async function autoCorrectColumnName( inputText, tableName ){
       throw new Error(`inputTextが文字列ではありません。\nレイヤー : system_auto_correct\n関数 : autoCorrectColumnName`);
     }
   }
-  if( typeof tableName !== "string" ){
-    if( !tableName ){
-      throw new Error(`tableNameがNULLです。\nレイヤー : system_auto_correct\n関数 : autoCorrectColumnName`);
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : system_auto_correct\n関数 : autoCorrectColumnName`);
     }
     else{
-      throw new Error(`tableNameが文字列ではありません。\nレイヤー : system_auto_correct\n関数 : autoCorrectColumnName`);
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : system_auto_correct\n関数 : autoCorrectColumnName`);
     }
   }
   //
@@ -93,7 +93,7 @@ export async function autoCorrectColumnName( inputText, tableName ){
   // メイン処理を実行
   let result;
   try{
-    result = await autoCorrectColumnName_core( inputText, tableName );
+    result = await autoCorrectColumnName_core( inputText, tableId );
   }
   catch(error){
     if( typeof error === "string" ){

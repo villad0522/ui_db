@@ -449,14 +449,6 @@ export async function _getConditions( viewId, queryParameters ){
         throw new Error(`result[${i}].viewColumnTypeが文字列ではありません。\nレイヤー : extract_and_sort\n関数 : _getConditions`);
       }
     }
-    if( typeof result[i].columnId !== "string" ){
-      if( !result[i].columnId ){
-        throw new Error(`result[${i}].columnIdがNULLです。\nレイヤー : extract_and_sort\n関数 : _getConditions`);
-      }
-      else{
-        throw new Error(`result[${i}].columnIdが文字列ではありません。\nレイヤー : extract_and_sort\n関数 : _getConditions`);
-      }
-    }
     if( typeof result[i].viewColumnId !== "string" ){
       if( !result[i].viewColumnId ){
         throw new Error(`result[${i}].viewColumnIdがNULLです。\nレイヤー : extract_and_sort\n関数 : _getConditions`);
@@ -547,9 +539,20 @@ export async function autoCorrectConditionalValue( viewColumnName, inputText ){
 //#######################################################################################
 // 関数「deleteCondition_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function deleteCondition( targetConditionId, oldQueryParameters ){
+export async function deleteCondition( viewId, targetConditionId, oldQueryParameters ){
   //--------------------------------------------------------------------------
   // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : extract_and_sort\n関数 : deleteCondition`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : extract_and_sort\n関数 : deleteCondition`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : extract_and_sort\n関数 : deleteCondition`);
+  }
   if( typeof targetConditionId !== "string" ){
     if( !targetConditionId ){
       throw new Error(`targetConditionIdがNULLです。\nレイヤー : extract_and_sort\n関数 : deleteCondition`);
@@ -577,7 +580,7 @@ export async function deleteCondition( targetConditionId, oldQueryParameters ){
   // メイン処理を実行
   let result;
   try{
-    result = await deleteCondition_core( targetConditionId, oldQueryParameters );
+    result = await deleteCondition_core( viewId, targetConditionId, oldQueryParameters );
   }
   catch(error){
     if( typeof error === "string" ){

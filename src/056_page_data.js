@@ -62,6 +62,8 @@ import {
   getViewColumnFromColumn,
   getViewColumnName,
   getViewColumnFromName,
+  autoCorrectColumnsToParents,
+  autoCorrectColumnsToChild,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -75,6 +77,7 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
+  listChildrenColumnId,
 } from "./100_relation_validate.js";
 import {
   createTable,
@@ -211,6 +214,7 @@ export async function getPageDataForGUI_core( pageId, queryParameters ){
   if(bugMode === 1) throw "MUTATION1";  // 意図的にバグを混入させる（ミューテーション解析）
   let results = {};
   const views = await listChildrenView( pageId );
+  const viewColumnNames = {};
   for( const { viewId } of views ){
     if(bugMode === 2) throw "MUTATION2";  // 意図的にバグを混入させる（ミューテーション解析）
     const { normalSQL, countSQL, normalParameters, countParameters } = await generateSQL( viewId, queryParameters, false );
@@ -221,19 +225,25 @@ export async function getPageDataForGUI_core( pageId, queryParameters ){
     }
     const extractions = await getExtractionsAsJP( viewId, queryParameters );
     const viewColumns = await listViewColumns(viewId);
-    const viewColumnNames = viewColumns.map( ({viewColumnName})=>viewColumnName);
+    viewColumnNames[viewId] = viewColumns.map( ({viewColumnName})=>viewColumnName);
     //
     results = {
       ...await autoFill( viewId, {}, false ),
       ...results,
       [`extraction${viewId}_`]: extractions,
       [`extraction${viewId}__total`]: extractions.length,
-      [`newExtractionTarget${viewId}_option`]: viewColumnNames,
       ["view" + viewId + "_"]: await runSqlReadOnly( normalSQL, normalParameters ),
       ["view" + viewId + "__total"]: total,
     };
   }
-  return results;
+  return {
+    ...results,
+    "views": views.map( ({ viewId }) => ({
+      "viewId": viewId,
+      "newExtractionTarget_option": viewColumnNames[viewId],
+    }) ),
+    "views_total": views.length,
+  };
 }
 
 

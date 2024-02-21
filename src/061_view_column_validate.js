@@ -18,6 +18,8 @@ import {
   clearCache_core,  // インメモリキャッシュを削除する
   getViewColumnName_core,  // ビューカラムの名前を取得
   getViewColumnFromName_core,  // 名前からビューカラムの情報を取得
+  autoCorrectColumnsToParents_core,  // 新しいビューカラムの予測を取得（子→親）
+  autoCorrectColumnsToChild_core,  // 新しいビューカラムの予測を取得（親→子）
 } from "./062_view_column.js";
 
 
@@ -1113,6 +1115,182 @@ export async function getViewColumnFromName( viewColumnName ){
     }
     else{
       throw new Error(`result.excelColumnTextが文字列ではありません。\nレイヤー : view_column\n関数 : getViewColumnFromName`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「autoCorrectColumnsToParents_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function autoCorrectColumnsToParents( viewId, inputText, columnNames ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+  }
+  if( typeof inputText !== "string" ){
+    if( !inputText ){
+      throw new Error(`inputTextがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+    }
+    else{
+      throw new Error(`inputTextが文字列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+    }
+  }
+  if( !Array.isArray(columnNames) ){
+    if( !columnNames ){
+      throw new Error(`columnNamesがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+    }
+    else{
+      throw new Error(`columnNamesが配列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+    }
+  }
+  for( let i=0; i<columnNames.length; i++ ){
+    if( typeof columnNames[i] !== "number" ){
+      if( !columnNames[i] ){
+        throw new Error(`columnNames[${i}]がNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+      }
+      else{
+        throw new Error(`columnNames[${i}]が数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+      }
+    }
+    else if( isNaN(columnNames[i]) ){
+      throw new Error(`columnNames[${i}]が数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await autoCorrectColumnsToParents_core( viewId, inputText, columnNames );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( !Array.isArray(result) ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+    }
+    else{
+      throw new Error(`resultが配列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+    }
+  }
+  for( let i=0; i<result.length; i++ ){
+    if( typeof result[i] !== "string" ){
+      if( !result[i] ){
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+      }
+      else{
+        throw new Error(`result[${i}]が文字列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToParents`);
+      }
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「autoCorrectColumnsToChild_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function autoCorrectColumnsToChild( viewId, inputText, columnNames ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof viewId !== "number" ){
+    if( !viewId ){
+      throw new Error(`viewIdがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+    }
+    else{
+      throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+    }
+  }
+  else if( isNaN(viewId) ){
+    throw new Error(`viewIdが数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+  }
+  if( typeof inputText !== "string" ){
+    if( !inputText ){
+      throw new Error(`inputTextがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+    }
+    else{
+      throw new Error(`inputTextが文字列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+    }
+  }
+  if( !Array.isArray(columnNames) ){
+    if( !columnNames ){
+      throw new Error(`columnNamesがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+    }
+    else{
+      throw new Error(`columnNamesが配列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+    }
+  }
+  for( let i=0; i<columnNames.length; i++ ){
+    if( typeof columnNames[i] !== "number" ){
+      if( !columnNames[i] ){
+        throw new Error(`columnNames[${i}]がNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+      }
+      else{
+        throw new Error(`columnNames[${i}]が数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+      }
+    }
+    else if( isNaN(columnNames[i]) ){
+      throw new Error(`columnNames[${i}]が数値ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await autoCorrectColumnsToChild_core( viewId, inputText, columnNames );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( !Array.isArray(result) ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+    }
+    else{
+      throw new Error(`resultが配列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+    }
+  }
+  for( let i=0; i<result.length; i++ ){
+    if( typeof result[i] !== "string" ){
+      if( !result[i] ){
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+      }
+      else{
+        throw new Error(`result[${i}]が文字列ではありません。\nレイヤー : view_column\n関数 : autoCorrectColumnsToChild`);
+      }
     }
   }
   //

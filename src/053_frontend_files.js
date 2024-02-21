@@ -62,6 +62,8 @@ import {
   getViewColumnFromColumn,
   getViewColumnName,
   getViewColumnFromName,
+  autoCorrectColumnsToParents,
+  autoCorrectColumnsToChild,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -75,6 +77,7 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
+  listChildrenColumnId,
 } from "./100_relation_validate.js";
 import {
   createTable,

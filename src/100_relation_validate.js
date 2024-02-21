@@ -11,6 +11,7 @@ import {
   checkRecord_core,  // レコードを検証
   createRecord_core,  // レコードを作成
   updateRecords_core,  // レコードを上書き
+  listChildrenColumnId_core,  // 参照元のカラムIDの一覧を取得する
 } from "./101_relation.js";
 
 
@@ -818,6 +819,62 @@ export async function updateRecords( tableId, records ){
     }
     else{
       throw new Error(`resultが文字列ではありません。\nレイヤー : relation\n関数 : updateRecords`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  return result;
+}
+
+
+//#######################################################################################
+// 関数「listChildrenColumnId_core」に、引数と戻り値のチェック機能を追加した関数
+//
+export async function listChildrenColumnId( tableId ){
+  //--------------------------------------------------------------------------
+  // 引数を検証
+  if( typeof tableId !== "string" ){
+    if( !tableId ){
+      throw new Error(`tableIdがNULLです。\nレイヤー : relation\n関数 : listChildrenColumnId`);
+    }
+    else{
+      throw new Error(`tableIdが文字列ではありません。\nレイヤー : relation\n関数 : listChildrenColumnId`);
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // メイン処理を実行
+  let result;
+  try{
+    result = await listChildrenColumnId_core( tableId );
+  }
+  catch(error){
+    if( typeof error === "string" ){
+      throw new Error(`${error}\nレイヤー : relation\n関数 : listChildrenColumnId`);
+    }
+    else{
+      throw error;
+    }
+  }
+  //
+  //--------------------------------------------------------------------------
+  // 戻り値を検証
+  if( !Array.isArray(result) ){
+    if( !result ){
+      throw new Error(`resultがNULLです。\nレイヤー : relation\n関数 : listChildrenColumnId`);
+    }
+    else{
+      throw new Error(`resultが配列ではありません。\nレイヤー : relation\n関数 : listChildrenColumnId`);
+    }
+  }
+  for( let i=0; i<result.length; i++ ){
+    if( typeof result[i] !== "string" ){
+      if( !result[i] ){
+        throw new Error(`result[${i}]がNULLです。\nレイヤー : relation\n関数 : listChildrenColumnId`);
+      }
+      else{
+        throw new Error(`result[${i}]が文字列ではありません。\nレイヤー : relation\n関数 : listChildrenColumnId`);
+      }
     }
   }
   //

@@ -8,7 +8,7 @@ import {
 //#######################################################################################
 // 関数「generateViewHTML_table_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function generateViewHTML_table( viewId, tableId, onePageMaxSize, childPageId ){
+export async function generateViewHTML_table( viewId, tableId, onePageMaxSize, childPageId, viewIndex ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewId !== "number" ){
@@ -52,12 +52,23 @@ export async function generateViewHTML_table( viewId, tableId, onePageMaxSize, c
   else if( isNaN(childPageId) ){
     throw new Error(`childPageIdが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_table`);
   }
+  if( typeof viewIndex !== "number" ){
+    if( !viewIndex ){
+      throw new Error(`viewIndexがNULLです。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_table`);
+    }
+    else{
+      throw new Error(`viewIndexが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_table`);
+    }
+  }
+  else if( isNaN(viewIndex) ){
+    throw new Error(`viewIndexが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_table`);
+  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await generateViewHTML_table_core( viewId, tableId, onePageMaxSize, childPageId );
+    result = await generateViewHTML_table_core( viewId, tableId, onePageMaxSize, childPageId, viewIndex );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -87,7 +98,7 @@ export async function generateViewHTML_table( viewId, tableId, onePageMaxSize, c
 //#######################################################################################
 // 関数「generateViewHTML_card_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function generateViewHTML_card( viewId, tableId, onePageMaxSize, childPageId ){
+export async function generateViewHTML_card( viewId, tableId, onePageMaxSize, childPageId, viewIndex ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewId !== "number" ){
@@ -131,12 +142,23 @@ export async function generateViewHTML_card( viewId, tableId, onePageMaxSize, ch
   else if( isNaN(childPageId) ){
     throw new Error(`childPageIdが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_card`);
   }
+  if( typeof viewIndex !== "number" ){
+    if( !viewIndex ){
+      throw new Error(`viewIndexがNULLです。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_card`);
+    }
+    else{
+      throw new Error(`viewIndexが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_card`);
+    }
+  }
+  else if( isNaN(viewIndex) ){
+    throw new Error(`viewIndexが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_card`);
+  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await generateViewHTML_card_core( viewId, tableId, onePageMaxSize, childPageId );
+    result = await generateViewHTML_card_core( viewId, tableId, onePageMaxSize, childPageId, viewIndex );
   }
   catch(error){
     if( typeof error === "string" ){
@@ -166,7 +188,7 @@ export async function generateViewHTML_card( viewId, tableId, onePageMaxSize, ch
 //#######################################################################################
 // 関数「generateViewHTML_button_core」に、引数と戻り値のチェック機能を追加した関数
 //
-export async function generateViewHTML_button( viewId, tableId, onePageMaxSize, childPageId ){
+export async function generateViewHTML_button( viewId, tableId, onePageMaxSize, childPageId, number ){
   //--------------------------------------------------------------------------
   // 引数を検証
   if( typeof viewId !== "number" ){
@@ -210,12 +232,23 @@ export async function generateViewHTML_button( viewId, tableId, onePageMaxSize, 
   else if( isNaN(childPageId) ){
     throw new Error(`childPageIdが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
   }
+  if( typeof number !== "number" ){
+    if( !number ){
+      throw new Error(`numberがNULLです。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
+    }
+    else{
+      throw new Error(`numberが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
+    }
+  }
+  else if( isNaN(number) ){
+    throw new Error(`numberが数値ではありません。\nレイヤー : regenerate_view_html\n関数 : generateViewHTML_button`);
+  }
   //
   //--------------------------------------------------------------------------
   // メイン処理を実行
   let result;
   try{
-    result = await generateViewHTML_button_core( viewId, tableId, onePageMaxSize, childPageId );
+    result = await generateViewHTML_button_core( viewId, tableId, onePageMaxSize, childPageId, number );
   }
   catch(error){
     if( typeof error === "string" ){

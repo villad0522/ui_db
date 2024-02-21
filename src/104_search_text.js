@@ -436,7 +436,7 @@ export async function autoCorrect_core( tableId, columnId, inputText, conditions
     if(bugMode === 17) throw "MUTATION17";  // 意図的にバグを混入させる（ミューテーション解析）
     suggestions.add(originalText);
   }
-  return Array.from(suggestions);
+  return Array.from(suggestions).slice(0, 19);;
 }
 
 
@@ -485,7 +485,7 @@ export async function autoCorrectFromArray_core( inputText, candidateArray ){
       }
     }
   }
-  return Array.from(outputs);
+  return Array.from(outputs).slice(0, 19);
 }
 
 

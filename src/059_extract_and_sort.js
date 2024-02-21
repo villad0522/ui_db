@@ -20,6 +20,8 @@ import {
   getViewColumnFromColumn,
   getViewColumnName,
   getViewColumnFromName,
+  autoCorrectColumnsToParents,
+  autoCorrectColumnsToChild,
 } from "./061_view_column_validate.js";
 import {
   getLocalIp,
@@ -67,6 +69,7 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
+  listChildrenColumnId,
 } from "./100_relation_validate.js";
 import {
   createTable,
@@ -453,7 +456,6 @@ export async function _getConditions_core( viewId, queryParameters ){
             "savedConditionId": savedConditionId,
             "queryParameterKey": null,
             "viewColumnType": viewColumnType,
-            "columnId": columnId,
             "viewColumnId": viewColumnId,
             "conditionalExpression": conditionalExpression,
             "conditionalValue": value,
@@ -510,7 +512,6 @@ export async function _getConditions_core( viewId, queryParameters ){
             "savedConditionId": null,
             "queryParameterKey": key,
             "viewColumnType": "RAW",
-            "columnId": columnId,
             "viewColumnId": viewColumnId,
             "conditionalExpression": "=",
             "conditionalValue": await formatField( inputText, columnId, false ),
@@ -532,7 +533,7 @@ export async function autoCorrectConditionalValue_core( viewColumnName, inputTex
 
 
 // 抽出条件を削除する
-export async function deleteCondition_core( targetConditionId, oldQueryParameters ){
+export async function deleteCondition_core( viewId, targetConditionId, oldQueryParameters ){
   if(bugMode === 29) throw "MUTATION29";  // 意図的にバグを混入させる（ミューテーション解析）
     const conditionInfoList = await _getConditions_core( viewId, oldQueryParameters );
     const newQueryParameters = {};
@@ -601,7 +602,7 @@ export async function addCondition_core( viewColumnName, conditionalExpression, 
         `INSERT INTO conditions ( "view_column_id", "conditional_expression", "conditional_value" )
             VALUES ( :viewColumnId, :conditionalExpression, :conditionalValue );`,
         {
-            ":viewColumnId": viewColumnInfo.viewColumnId,
+            ":viewColumnId": viewColumnInfo.viewColumnId.replace("d",""),
             ":conditionalExpression": conditionalExpression,
             ":conditionalValue": conditionalValue,
         },

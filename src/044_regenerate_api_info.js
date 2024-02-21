@@ -50,6 +50,8 @@ import {
   getViewColumnFromColumn,
   getViewColumnName,
   getViewColumnFromName,
+  autoCorrectColumnsToParents,
+  autoCorrectColumnsToChild,
 } from "./061_view_column_validate.js";
 import {
   listDataTypes,
@@ -63,6 +65,7 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
+  listChildrenColumnId,
 } from "./100_relation_validate.js";
 import {
   createTable,
@@ -354,8 +357,9 @@ export async function regenerateAPI_read_core( pageId ){
         }
     }
     //
-    for( const { viewId, name, tableId, onePageMaxSize, viewType, childPageId } of views ){
+    for( let i=0; i<views.length; i++ ){
         if(bugMode === 8) throw "MUTATION8";  // 意図的にバグを混入させる（ミューテーション解析）
+        const { viewId, name, tableId, onePageMaxSize, viewType, childPageId } = views[i];
         const viewColumns = await listViewColumns( viewId );
         const tableName = await getTableName(tableId);
         const children = {};
@@ -432,13 +436,6 @@ export async function regenerateAPI_read_core( pageId ){
             "example": 2,
             "isRequired": true,
         };
-        // 抽出条件の予測変換
-        response[`newExtractionTarget${viewId}_option`] = {
-            "dataType": "TEXT",
-            "description": `${name}(view${viewId})の列名（ビューカラム名）の一覧。`,
-            "example": "",
-            "isRequired": false,
-        };
     }
     return {
         "pageId": pageId,
@@ -447,7 +444,33 @@ export async function regenerateAPI_read_core( pageId ){
         "commandName": "GET_PAGE_DATA",
         "queryParameters": queryParameters,
         "requestBody": {},
-        "response": response,
+        "response": {
+            ...response,
+            "views": {
+                "title": "ビューの一覧",
+                "isArray": true,
+                "onePageMaxSize": 5,
+                "children": {
+                    "viewId": {
+                        "dataType": "INTEGER",
+                        "description": "ビューのID",
+                        "example": 5
+                    },
+                    "newExtractionTarget_option": {
+                        "dataType": "TEXT",
+                        "description": `ビューカラム名の一覧。`,
+                        "example": "",
+                        "isRequired": false,
+                    }
+                }
+            },
+            "views_total": {
+                "dataType": "INTEGER",
+                "description": `ビューの個数。`,
+                "example": 2,
+                "isRequired": true,
+            }
+        },
     };
 }
 

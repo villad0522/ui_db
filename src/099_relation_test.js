@@ -83,6 +83,7 @@ import {
   checkRecord,  // レコードを検証
   createRecord,  // レコードを作成
   updateRecords,  // レコードを上書き
+  listChildrenColumnId,  // 参照元のカラムIDの一覧を取得する
 } from "./100_relation_validate.js";
 import { setBugMode } from "./101_relation.js";
 
@@ -92,7 +93,7 @@ export async function test099() {
     await _test();  // テストを実行（意図的にバグを混入させない）
     await close();
     let i;
-    for ( i = 1; i <= 28; i++ ) {
+    for ( i = 1; i <= 29; i++ ) {
         setBugMode(i);      // 意図的にバグを混入させる
         try {
             await _test();  // 意図的にバグを混入させてテストを実行

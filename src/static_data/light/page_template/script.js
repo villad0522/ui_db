@@ -55,10 +55,17 @@ window.handleEditSwitch = function (event, pageId) {
 }
 //
 //###############################################################
-// 削除ボタンが押されたとき
+// レコードの削除ボタンが押されたとき
 window.handleDeleteButton = async function (viewId, i) {
     const recordId = document.getElementsByName(`view${viewId}_${i}_id`)[0].value;
     await myFetch(`./delete_record/form?view_id=${viewId}&record_id=${recordId}`);
+}
+//
+//###############################################################
+// 抽出条件の削除ボタンが押されたとき
+window.deleteCondition = async function (viewId, i) {
+    const conditionId = document.getElementsByName(`extraction${viewId}_${i}_conditionId`)[0].value;
+    await myFetch(`/default/conditions/delete_condition/form?view=${viewId}&condition=${conditionId}`);
 }
 //
 //###############################################################

@@ -13,6 +13,7 @@ import {
   listColumnsForGUI,
   listColumnsAll,
   getParentTableId,
+  listChildrenColumnId,
 } from "./100_relation_validate.js";
 import {
   getLocalIp,
@@ -128,7 +129,7 @@ export async function autoCorrectTableName_core( inputText ){
 }
 
 // カラム名を入力させる
-export async function autoCorrectColumnName_core( inputText, tableName ){
+export async function autoCorrectColumnName_core( inputText, tableId ){
   if(bugMode === 4) throw "MUTATION4";  // 意図的にバグを混入させる（ミューテーション解析）
   const columns = await listColumnsAll( tableId );
   const columnNames = columns.map( ({name})=>name );
